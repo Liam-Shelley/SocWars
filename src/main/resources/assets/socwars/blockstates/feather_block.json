@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "socwars:block/feather_block"
+    }
+  }
+}

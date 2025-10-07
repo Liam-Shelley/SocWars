@@ -7,7 +7,7 @@ import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 
 public interface BlockTags {
-    TagKey<Block> EXPLOSION_IMMUNE = from_string("explosion_immune");
+    TagKey<Block> IMMUNE = from_string("immune");
     TagKey<Block> MAP_PLACEHOLDER = from_string("map_placeholder");
 
     private static TagKey<Block> from_string(String id) {

@@ -2,6 +2,7 @@ package com.soc;
 
 import com.soc.blocks.util.ModBlocks;
 import com.soc.entities.BigTntEntity;
+import com.soc.items.FeatherBlockItem;
 import com.soc.networking.S2CReceivers;
 import com.soc.renderer.BigTntRenderer;
 import com.soc.renderer.CollectibleBlockEntityRenderer;
@@ -13,14 +14,33 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.hud.DebugHud;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.BlockRenderLayer;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexRendering;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.Item;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ColorHelper;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.shape.VoxelShapes;
 import org.lwjgl.glfw.GLFW;
+
+import java.awt.*;
+import java.util.EnumSet;
 
 import static com.soc.blocks.blockentities.ModBlockEntities.COLLECTIBLE_BLOCK_ENTITY;
 import static com.soc.blocks.blockentities.ModBlockEntities.MAP_BLOCK_ENTITY;
@@ -53,6 +73,66 @@ public class SocWarsClient implements ClientModInitializer {
 				final ClientPlayerEntity player = client.player;
 				player.getStackInHand(Hand.MAIN_HAND).getComponents().forEach(component -> player.sendMessage(Text.literal(component.toString()), false));
 			}
+		});
+
+		WorldRenderEvents.BEFORE_ENTITIES.register(renderContext -> {
+			final MinecraftClient client = MinecraftClient.getInstance();
+
+			final boolean mainHandCheck = client.player.getStackInHand(Hand.MAIN_HAND).getItem() instanceof FeatherBlockItem;
+			final boolean offHandCheck = client.player.getStackInHand(Hand.OFF_HAND).getItem() instanceof FeatherBlockItem;
+			if (!mainHandCheck && !offHandCheck) return;
+
+			final float tickProgress = renderContext.tickCounter().getTickProgress(true);
+			final Vec3d lookOffset = client.player.getRotationVec(tickProgress).multiply(client.player.getBlockInteractionRange());
+
+			final BlockPos pos = BlockPos.ofFloored(client.player.getEyePos().add(lookOffset));
+			if (client.crosshairTarget.getType() == HitResult.Type.BLOCK) return;
+
+			final WorldRenderContext context = WorldRenderContext.getInstance(client.worldRenderer);
+			final MatrixStack matrices = context.matrixStack();
+			final VertexConsumer consumer = context.consumers().getBuffer(RenderLayer.LINES);
+
+			final int colour = Color.HSBtoRGB(client.world.getTime() / 50f, 1, 1);
+
+			matrices.push();
+			matrices.translate(context.camera().getCameraPos().multiply(-1d));
+			matrices.translate(Vec3d.of(pos));
+			VertexRendering.drawOutline(
+					matrices,
+					consumer,
+					VoxelShapes.fullCube(),
+					0d,
+					0d,
+					0d,
+					colour
+			);
+			matrices.pop();
+		});
+
+		ClientTickEvents.END_CLIENT_TICK.register(client -> {
+			if (client.player == null) return;
+
+			try {
+				WorldRenderContext context = WorldRenderContext.getInstance(client.worldRenderer);
+				MatrixStack matrices = context.matrixStack();
+				VertexConsumer consumer = context.consumers().getBuffer(RenderLayer.LINES);
+
+				BlockPos pos = BlockPos.ofFloored(client.player.getPos());
+
+				matrices.push();
+				matrices.translate(pos.toCenterPos());
+				VertexRendering.drawOutline(
+						matrices,
+						consumer,
+						VoxelShapes.fullCube(),
+						0,
+						0,
+						0,
+						0
+				);
+				matrices.pop();
+			} catch (Exception ignored) {}
+
 		});
 	}
 }

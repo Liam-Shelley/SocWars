@@ -3,33 +3,37 @@ package com.soc.blocks.util;
 import com.soc.SocWars;
 import com.soc.blocks.*;
 import com.soc.entities.BigTntEntity;
+import com.soc.items.FeatherBlockItem;
 import com.soc.items.util.ModItems;
 import net.minecraft.block.*;
 import net.minecraft.block.piston.PistonBehavior;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCollisionHandler;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.util.*;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 public class ModBlocks {
     public static void initialise() {}
+
+    public static final Block PLASTIC_BLOCK = ModBlocks.register("plastic_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(2f, 2), true);
+    public static final Block RUBBER_BLOCK = ModBlocks.register("rubber_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(4f, 3), true);
+    public static final Block PERSPEX_BLOCK = ModBlocks.register("perspex_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(2f, 1200f), true);
+    public static final Block HARDENED_LAVA_BLOCK = ModBlocks.register("hardened_lava_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(25f, 1200f), settings -> settings.rarity(Rarity.RARE));
+    public static final Block UNOBTANIUM_BLOCK = ModBlocks.register("unobtanium_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(50f, 1200f), settings -> settings.rarity(Rarity.RARE));
+    public static final Block NEAR_INFINITE_DENSITY_BLOCK = ModBlocks.register("near_infinite_density_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(75f, 1200f), settings -> settings.rarity(Rarity.EPIC));
+    public static final Block LIAM_BLOCK = ModBlocks.register("liam_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(100f, 1200f), settings -> settings.rarity(Rarity.EPIC));
+    //public static final Block MANY_BEDS_BLOCK = ModBlocks.register("many_beds_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(2f, 1200f), settings -> settings.rarity(Rarity.UNCOMMON));
+    public static final Block FEATHER_BLOCK = ModBlocks.register("feather_block", Block::new, AbstractBlock.Settings.create().breakInstantly(), FeatherBlockItem::new);
+    public static final Block GALLIUM_BLOCK = ModBlocks.register("gallium_block", settings -> new GalliumBlock(new ColorCode(0), settings), AbstractBlock.Settings.create().requiresTool().strength(1f, 2.5f).noCollision(), settings -> settings.rarity(Rarity.UNCOMMON));
 
     public static final Block SPAWN_PLACEHOLDER = ModBlocks.register("spawn_placeholder", ColourStateBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true);
     public static final Block CENTRE_PLACEHOLDER = ModBlocks.register("centre_placeholder", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true);
@@ -68,20 +72,25 @@ public class ModBlocks {
     //public static final Block BLUE_BEDWARS_BED = ModBlocks.register("blue_bedwars_bed", (settings) -> new BedwarsBed(DyeColor.BLUE, settings), bedSettings(DyeColor.BLUE), true);
 
     public static Block register(String name, Function<AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings settings, boolean shouldRegisterItem) {
+        return ModBlocks.register(name, blockFactory, settings, shouldRegisterItem ? UnaryOperator.identity() : null);
+    }
 
+    public static Block register(String name, Function<AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings settings, @Nullable UnaryOperator<Item.Settings> itemSettings) {
+        return ModBlocks.register(name, blockFactory, settings, itemSettings == null ? null : (block, itemKey) -> new BlockItem(block, itemSettings.apply(new Item.Settings().registryKey(itemKey))));
+    }
+
+    public static Block register(String name, Function<AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings settings, @Nullable BiFunction<Block, RegistryKey<Item>, ? extends BlockItem> itemFunction) {
         // Create a registry key for the block
         RegistryKey<Block> blockKey = keyOfBlock(name);
         // Create the block instance
         Block block = blockFactory.apply(settings.registryKey(blockKey));
 
-        // Sometimes, you may not want to register an item for the block.
-        // Eg: if it's a technical block like `minecraft:moving_piston` or `minecraft:end_gateway`
-        if (shouldRegisterItem) {
+        if (itemFunction != null) {
             // Items need to be registered with a different type of registry key, but the ID
             // can be the same.
             RegistryKey<Item> itemKey = keyOfItem(name);
 
-            BlockItem blockItem = new BlockItem(block, new Item.Settings().registryKey(itemKey));
+            BlockItem blockItem = itemFunction.apply(block, itemKey);
             Registry.register(Registries.ITEM, itemKey, blockItem);
             ModItems.addItemToGroups(blockItem.asItem(), ModItems.SOCWARS_ITEM_GROUP_KEY);
         }

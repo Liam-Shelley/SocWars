@@ -2,6 +2,10 @@ package com.soc.lib;
 
 import com.google.common.collect.ImmutableMap;
 import com.soc.SocWars;
+import com.soc.util.BlockTags;
+import com.soc.util.Random;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
@@ -15,6 +19,8 @@ import net.minecraft.util.math.Vec3i;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class SocWarsLib {
@@ -114,5 +120,33 @@ public class SocWarsLib {
         final double result = 1d / cosAngle;
 
         return result;
+    }
+
+    public static void iterateInSphere(Vec3i centre, float radius, float randomRadiusFactor, Consumer<BlockPos> function) {
+        final int intRadius = (int)Math.ceil(radius);
+        final Predicate<BlockPos> sphereCheckFunction = randomRadiusFactor > 10e-5 ? pos -> centre.isWithinDistance(pos, radius - Random.RANDOM.nextFloat()) : pos -> centre.isWithinDistance(pos, radius);
+
+        iterateInCube(centre, intRadius, pos -> {
+            if (sphereCheckFunction.test(pos)) function.accept(pos);
+        });
+    }
+
+    public static void iterateInCube(Vec3i centre, int radius, Consumer<BlockPos> function) {
+        final Vec3i cornerSize = new Vec3i(radius, radius, radius);
+
+        final Vec3i minPos = centre.subtract(cornerSize);
+        final Vec3i maxPos = centre.add(cornerSize).add(1, 1, 1);
+
+        iterateInCube(minPos, maxPos, function);
+    }
+
+    public static void iterateInCube(Vec3i minPos, Vec3i maxPos, Consumer<BlockPos> function) {
+        for (int x = minPos.getX(); x < maxPos.getX(); x++) {
+            for (int y = minPos.getY(); y < maxPos.getY(); y++) {
+                for (int z = minPos.getZ(); z < maxPos.getZ(); z++) {
+                    function.accept(new BlockPos(x, y, z));
+                }
+            }
+        }
     }
 }

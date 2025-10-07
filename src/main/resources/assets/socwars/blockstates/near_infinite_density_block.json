@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "socwars:block/near_infinite_density_block"
+    }
+  }
+}

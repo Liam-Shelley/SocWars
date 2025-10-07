@@ -7,6 +7,7 @@ import com.soc.items.util.UseFunction;
 import com.soc.lib.Coroutine;
 import com.soc.lib.Coroutines;
 import com.soc.materials.ToolMaterials;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.TooltipDisplayComponent;
@@ -26,11 +27,17 @@ import net.minecraft.item.Items;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.state.property.Properties;
 import net.minecraft.text.Text;
 import net.minecraft.util.*;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -54,10 +61,14 @@ public class UseFunctionWeapon extends Item {
         addItemToGroups(YELLOW_SWORD, ItemGroups.COMBAT);
         addItemToGroups(GRAVITY_ORB, ItemGroups.COMBAT);
         addItemToGroups(GOD_COMPLEX, ItemGroups.COMBAT);
+        addItemToGroups(SCROLL_OF_EAU, ItemGroups.COMBAT);
+        addItemToGroups(SCROLL_OF_HELLFIRE, ItemGroups.COMBAT);
+        addItemToGroups(C_U_E_B, ItemGroups.COMBAT);
         addItemToGroups(SHRINK_RAY, ItemGroups.COMBAT);
         addItemToGroups(BIGGENING_RAY, ItemGroups.COMBAT);
         addItemToGroups(THE_LINE, ItemGroups.COMBAT);
         addItemToGroups(WHEATENATOR, ItemGroups.COMBAT);
+        addItemToGroups(DEATH_RAIN, ItemGroups.COMBAT);
     }
 
     public static final Item DASHREND = ModItems.register("dashrend", (settings) -> new UseFunctionWeapon(settings, (world, user, hand) -> {
@@ -148,6 +159,54 @@ public class UseFunctionWeapon extends Item {
             .component(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true)
             .rarity(Rarity.EPIC)
     );
+    public static final Item SCROLL_OF_EAU = ModItems.register("scroll_of_eau", (settings) -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+                final BlockHitResult hit = world.raycast(new RaycastContext(user.getEyePos(), user.getEyePos().add(user.getRotationVector().multiply(25f)), RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.ANY, user));
+
+                if (hit != null && !world.isAir(hit.getBlockPos())) {
+                    iterateInSphere(hit.getBlockPos(), 5.5f, 0f, pos -> {
+                        if (world.isAir(pos)) world.setBlockState(pos, Blocks.WATER.getDefaultState().with(Properties.LEVEL_15, 7));
+                    });
+                    world.setBlockState(hit.getBlockPos().add(0,5,0), Blocks.WATER.getDefaultState());
+                }
+
+                user.getStackInHand(hand).decrementUnlessCreative(1, user);
+
+                return ActionResult.SUCCESS;
+            }), new Settings()
+            .useCooldown(1f)
+            .rarity(Rarity.UNCOMMON)
+    );
+    public static final Item SCROLL_OF_HELLFIRE = ModItems.register("scroll_of_hellfire", (settings) -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+                final BlockHitResult hit = world.raycast(new RaycastContext(user.getEyePos(), user.getEyePos().add(user.getRotationVector().multiply(25f)), RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.ANY, user));
+
+                if (hit != null && !world.isAir(hit.getBlockPos())) {
+                    iterateInSphere(hit.getBlockPos(), 5.5f, 0f, pos -> {
+                        if (world.isAir(pos)) world.setBlockState(pos, Blocks.LAVA.getDefaultState());
+                    });
+                }
+
+                user.getStackInHand(hand).decrementUnlessCreative(1, user);
+
+                return ActionResult.SUCCESS;
+            }), new Settings()
+            .useCooldown(1f)
+            .rarity(Rarity.UNCOMMON)
+    );
+    public static final Item C_U_E_B = ModItems.register("c_u_e_b", (settings) -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+                final BlockPos centre = BlockPos.ofFloored(user.getEyePos().add(user.getRotationVector().multiply(20f)));
+
+                iterateInCube(centre, 7, pos -> {
+                    if (world.isAir(pos)) world.setBlockState(pos, Blocks.IRON_BLOCK.getDefaultState());
+                });
+
+                world.playSound(null, centre, SoundEvents.BLOCK_ANVIL_LAND, SoundCategory.BLOCKS);
+
+                user.getStackInHand(hand).decrementUnlessCreative(1, user);
+
+                return ActionResult.SUCCESS;
+            }), new Settings()
+            .useCooldown(1f)
+    );
     public static final Item SHRINK_RAY = ModItems.register("shrink_ray", (settings) -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 shootEntity(user, hand, 1, 10, 2 * 20, entity -> scaleEntity(entity, SQRT2 * 0.5f));
 
@@ -210,7 +269,23 @@ public class UseFunctionWeapon extends Item {
 
                 return ActionResult.SUCCESS;
             }), new Settings()
+            .sword(ToolMaterials.BASE, 4.5f, -2.4f)
             .maxDamage(350)
+            .useCooldown(0.25f)
+    );
+    public static final Item DEATH_RAIN = ModItems.register("death_rain", (settings) -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+                for (int i = 0; i < 20; i++) {
+                    final double range = 15f * Math.sqrt(world.random.nextFloat());
+                    final double angle = world.random.nextFloat() * 2d * Math.PI;
+                    final Vec3d pos = new Vec3d(Math.cos(angle) * range, 20f + 15f * world.random.nextFloat(), Math.sin(angle) * range).add(user.getPos());
+
+                    final TntEntity tnt = new TntEntity(world, pos.x, pos.y, pos.z, user);
+                    tnt.setFuse(world.random.nextBetween(45, 75));
+                    world.spawnEntity(tnt);
+                }
+
+                return ActionResult.SUCCESS;
+            }), new Settings()
             .useCooldown(0.25f)
             .rarity(Rarity.RARE)
     );
@@ -227,6 +302,8 @@ public class UseFunctionWeapon extends Item {
             case "socwars:knockforward_sword" -> textConsumer.accept(Text.literal("The Hypixel special").formatted(Formatting.GOLD));
             case "socwars:god_complex" -> textConsumer.accept(Text.translatable("tooltip.god_complex"));
             case "socwars:shrink_ray" -> textConsumer.accept(Text.translatable("tooltip.shrink_ray"));
+            case "socwars:scroll_of_eau" -> textConsumer.accept(Text.translatable("tooltip.scroll_of_eau"));
+            case "socwars:scroll_of_hellfire" -> textConsumer.accept(Text.translatable("tooltip.scroll_of_hellfire"));
         }
     }
 

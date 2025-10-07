@@ -118,7 +118,7 @@ public class AttackFunctionWeapon extends Item {
                     DamageSource damageSource = new DamageSource(
                             world.getRegistryManager()
                                     .getOrThrow(RegistryKeys.DAMAGE_TYPE)
-                                    .getEntry(DamageTypes.LIFETHIEF.getValue()).get()
+                                    .getEntry(DamageTypes.NETHERWRONG_SWORD.getValue()).get()
                     );
                     attacker.damage(serverWorld, damageSource, 7.5f);
                 }

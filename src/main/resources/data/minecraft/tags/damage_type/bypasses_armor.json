@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "socwars:lifethief"
+    "socwars:lifethief",
+    "socwars:gallium"
   ]
 }
