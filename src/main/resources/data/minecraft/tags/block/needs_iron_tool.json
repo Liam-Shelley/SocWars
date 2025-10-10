@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "socwars:perspex_block",
+    "socwars:hardened_lava_block"
+  ]
+}

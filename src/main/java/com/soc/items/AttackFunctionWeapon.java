@@ -91,7 +91,7 @@ public class AttackFunctionWeapon extends Item {
         net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents.LOAD.register((a, b) -> WORLD = b);
     }
 
-    public static final Item LIFETHIEF = ModItems.register("lifethief", (settings) -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
+    public static final Item LIFETHIEF = ModItems.register("lifethief", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
                 int bonusHealth = attacker.getWorld().random.nextBetween(-1, 2);
 
                 if (bonusHealth >= 0) {
@@ -110,9 +110,8 @@ public class AttackFunctionWeapon extends Item {
             }), new Settings()
             .rarity(Rarity.RARE)
             .sword(ToolMaterials.LIFETHIEF, 2.5f, -2.2f)
-            .component(DataComponentTypes.TOOLTIP_DISPLAY, new TooltipDisplayComponent(false, ReferenceSortedSets.emptySet()))
     );
-    public static final Item DEVASTATOR_PRIME = ModItems.register("devastator_prime", (settings) -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
+    public static final Item DEVASTATOR_PRIME = ModItems.register("devastator_prime", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
                 target.addStatusEffect(new StatusEffectInstance(StatusEffects.WITHER, 3 * 20, 1));
                 target.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 3 * 20, 2));
             }), new Settings()
@@ -120,7 +119,7 @@ public class AttackFunctionWeapon extends Item {
             .sword(ToolMaterials.DEVASTATOR, 2f, -3.7f)
             .component(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true)
     );
-    public static final Item NETHERWRONG_SWORD = ModItems.register("netherwrong_sword", (settings) -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
+    public static final Item NETHERWRONG_SWORD = ModItems.register("netherwrong_sword", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
                 World world = attacker.getWorld();
                 if (attacker instanceof LivingEntity && world instanceof ServerWorld serverWorld) {
                     DamageSource damageSource = new DamageSource(
@@ -133,13 +132,13 @@ public class AttackFunctionWeapon extends Item {
             }), new Settings()
             .sword(ToolMaterial.NETHERITE, -3f, -3f)
     );
-    public static final Item ORANGE_SWORD = ModItems.register("orange_sword", (settings) -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
+    public static final Item ORANGE_SWORD = ModItems.register("orange_sword", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
                 attacker.getWorld().playSound(null, target.getBlockPos(), Sounds.VINE_BOOM, SoundCategory.MASTER, 1f, 1f);
             }), new Settings()
             .sword(ToolMaterials.BASE, 5f, -2.1f)
             .maxDamage(500)
     );
-    public static final Item BLUE_SWORD = ModItems.register("blue_sword", (settings) -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
+    public static final Item BLUE_SWORD = ModItems.register("blue_sword", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
                 World world = attacker.getWorld();
                 if (world instanceof ServerWorld serverWorld) {
                     SlimeEntity slime = new SlimeEntity(EntityType.SLIME, world);
@@ -152,14 +151,14 @@ public class AttackFunctionWeapon extends Item {
             .sword(ToolMaterials.BASE, 8f, -2.15f)
             .maxDamage(800)
     );
-    public static final Item PINK_SWORD = ModItems.register("pink_sword", (settings) -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
+    public static final Item PINK_SWORD = ModItems.register("pink_sword", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
                 attacker.setAbsorptionAmount(attacker.getAbsorptionAmount() + 1);
             }), new Settings()
             .rarity(Rarity.EPIC)
             .sword(ToolMaterials.BASE, 10f, -2.2f)
             .maxDamage(1000)
     );
-    public static final Item KNOCKFORWARD_SWORD = ModItems.register("knockforward_sword", (settings) -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
+    public static final Item KNOCKFORWARD_SWORD = ModItems.register("knockforward_sword", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
                 target.addVelocity(attacker.getRotationVector().multiply(-0.8f));
             }), new Settings()
             .rarity(Rarity.UNCOMMON)
@@ -167,7 +166,7 @@ public class AttackFunctionWeapon extends Item {
             .component(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true)
             .maxDamage(450)
     );
-    public static final Item TRANSPORTAS = ModItems.register("transportas", (settings) -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
+    public static final Item TRANSPORTAS = ModItems.register("transportas", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
                 if (target.getWorld().random.nextBetween(1, 4) == 1) {
                     target.setPosition(target.getPos().add(target.getRotationVector().multiply(3f)));
                 }
@@ -176,7 +175,7 @@ public class AttackFunctionWeapon extends Item {
             .sword(ToolMaterials.BASE, 5.5f, -2f)
             .maxDamage(450)
     );
-    public static final Item STORMAGEDDON = ModItems.register("stormageddon", (settings) -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
+    public static final Item STORMAGEDDON = ModItems.register("stormageddon", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
                 LightningEntity lightning = new LightningEntity(EntityType.LIGHTNING_BOLT, target.getWorld());
                 lightning.setPosition(target.getPos());
                 target.getWorld().spawnEntity(lightning);
@@ -185,7 +184,7 @@ public class AttackFunctionWeapon extends Item {
             .sword(ToolMaterials.BASE, 5f, -2.1f)
             .maxDamage(500)
     );
-    public static final Item DETONATOR = ModItems.register("detonator", (settings) -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
+    public static final Item DETONATOR = ModItems.register("detonator", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
                 TntEntity tnt = new TntEntity(target.getWorld(), target.getX(), target.getY(), target.getZ(), attacker);
                 tnt.setFuse(4);
 
@@ -195,7 +194,7 @@ public class AttackFunctionWeapon extends Item {
             .sword(ToolMaterials.BASE, 4.5f, -2.2f)
             .maxDamage(400)
     );
-    public static final Item SHATTERSTAR = ModItems.register("shatterstar", (settings) -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
+    public static final Item SHATTERSTAR = ModItems.register("shatterstar", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
                 modifyEquipment(target, attacker, ReplaceMode.PRESENT, (targetEntity, slot) -> {
                     target.equipStack(slot, ItemStack.EMPTY);
                 }, (targetEntity, slot) -> {
@@ -206,7 +205,7 @@ public class AttackFunctionWeapon extends Item {
             .maxDamage(0)
             .rarity(Rarity.RARE)
     );
-    public static final Item LEATHERER = ModItems.register("leatherer", (settings) -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
+    public static final Item LEATHERER = ModItems.register("leatherer", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
                 modifyEquipment(target, attacker, ReplaceMode.NOT_LEATHER, (targetEntity, slot) -> {
                     ItemStack item = leatherArmour(slot).getDefaultStack();
                     item.addEnchantment(enchantmentEntry(target.getWorld(), Enchantments.BINDING_CURSE), 1);
@@ -220,7 +219,7 @@ public class AttackFunctionWeapon extends Item {
             .maxDamage(0)
             .rarity(Rarity.RARE)
     );
-    public static final Item SPRING_SWORD = ModItems.register("spring_sword", (settings) -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
+    public static final Item SPRING_SWORD = ModItems.register("spring_sword", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
                 if (attacker.getWorld().random.nextBetween(1, attacker.isOnGround() ? 8 : 6) == 1) {
                     ItemEntity item = attacker.dropItem(stack, true, false);
                     item.setVelocity(attacker.getRotationVector().multiply(0.3f));
@@ -232,12 +231,12 @@ public class AttackFunctionWeapon extends Item {
             .maxDamage(350)
             .rarity(Rarity.UNCOMMON)
     );
-    public static final Item FLESHY_BLADE = ModItems.register("fleshy_blade", (settings) -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
+    public static final Item FLESHY_BLADE = ModItems.register("fleshy_blade", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
                 WORLD = target.getWorld(); // Horrible gross disgusting code
                 attacker.getWorld().playSound(null, target.getBlockPos(), Sounds.FLESH, SoundCategory.MASTER, 1f, 1f);
     }), new Settings()
             .sword(ToolMaterials.BASE, 6f, -2.2f));
-    public static final Item FIRESTORM = ModItems.register("firestorm", (settings) -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
+    public static final Item FIRESTORM = ModItems.register("firestorm", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
                 final World world = target.getWorld();
                 iterateInSphere(target.getBlockPos(), 4, 0, pos -> {
                     if (world.random.nextFloat() < 0.1f && AbstractFireBlock.canPlaceAt(world, pos, Direction.DOWN)) {
@@ -248,7 +247,7 @@ public class AttackFunctionWeapon extends Item {
             .sword(ToolMaterials.BASE, 5.5f, -2.5f)
             .maxDamage(400)
             .rarity(Rarity.RARE));
-    public static final Item CORRUPTED_SWORD = ModItems.register("corrupted_sword", (settings) -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
+    public static final Item CORRUPTED_SWORD = ModItems.register("corrupted_sword", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
                 final World world = target.getWorld();
                 iterateInSphere(target.getBlockPos(), 4, 0, pos -> {
                     if (world.random.nextFloat() < 0.2f && !isBlockHidden(world, pos)) {
@@ -298,6 +297,6 @@ public class AttackFunctionWeapon extends Item {
             case "socwars:stormageddon" -> textConsumer.accept(Text.literal("He speaks baby"));
             case "socwars:spring_sword" -> textConsumer.accept(Text.literal("Potentially charged").formatted(Formatting.YELLOW));
             case "socwars:fleshy_blade" -> textConsumer.accept(Text.literal(WORLD == null || WORLD.getTime() % 25 > 2 ? "*crunch*" : "*crunches wetly*").formatted(Formatting.RED));
-        };
+        }
     }
 }
