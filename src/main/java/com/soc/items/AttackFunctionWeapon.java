@@ -7,6 +7,7 @@ import com.soc.items.util.ModifyEquipmentFunction;
 import com.soc.materials.ToolMaterials;
 import com.soc.util.Sounds;
 import it.unimi.dsi.fastutil.objects.ReferenceSortedSets;
+import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.TooltipDisplayComponent;
@@ -17,6 +18,7 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.SlimeEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.registry.RegistryKey;
@@ -30,16 +32,18 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.Unit;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
 import static com.soc.items.util.ModItems.addItemToGroups;
+import static com.soc.lib.SocWarsLib.iterateInSphere;
 
 public class AttackFunctionWeapon extends Item {
     private final AttackFunction attackFunction;
-    private static World world;
+    private static World WORLD;
 
     private static final EquipmentSlot[] ARMOUR_SLOTS = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
     private static Item leatherArmour(EquipmentSlot slot) {
@@ -79,8 +83,9 @@ public class AttackFunctionWeapon extends Item {
         addItemToGroups(LEATHERER, ItemGroups.COMBAT);
         addItemToGroups(SPRING_SWORD, ItemGroups.COMBAT);
         addItemToGroups(FLESHY_BLADE, ItemGroups.COMBAT);
+        addItemToGroups(FIRESTORM, ItemGroups.COMBAT);
 
-        net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents.LOAD.register((a, b) -> world = b);
+        net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents.LOAD.register((a, b) -> WORLD = b);
     }
 
     public static final Item LIFETHIEF = ModItems.register("lifethief", (settings) -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
@@ -225,10 +230,21 @@ public class AttackFunctionWeapon extends Item {
             .rarity(Rarity.UNCOMMON)
     );
     public static final Item FLESHY_BLADE = ModItems.register("fleshy_blade", (settings) -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
-                world = target.getWorld(); // Horrible gross disgusting code
+                WORLD = target.getWorld(); // Horrible gross disgusting code
                 attacker.getWorld().playSound(null, target.getBlockPos(), Sounds.FLESH, SoundCategory.MASTER, 1f, 1f);
     }), new Settings()
             .sword(ToolMaterials.BASE, 6f, -2.2f));
+    public static final Item FIRESTORM = ModItems.register("firestorm", (settings) -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
+                World world = target.getWorld();
+                iterateInSphere(target.getBlockPos(), 4, 0, pos -> {
+                    if (world.random.nextFloat() < 0.1f && AbstractFireBlock.canPlaceAt(world, pos, Direction.DOWN)) {
+                        world.setBlockState(pos, AbstractFireBlock.getState(world, pos));
+                    }
+                });
+    }), new Settings()
+            .sword(ToolMaterials.BASE, 5.5f, -2.5f)
+            .maxDamage(400)
+            .rarity(Rarity.RARE));
 
 
     private static void modifyEquipment(LivingEntity target, LivingEntity attacker, ReplaceMode replaceMode, ModifyEquipmentFunction armourFunction, ModifyEquipmentFunction handFunction) {
@@ -268,7 +284,7 @@ public class AttackFunctionWeapon extends Item {
             }
             case "socwars:stormageddon" -> textConsumer.accept(Text.literal("He speaks baby"));
             case "socwars:spring_sword" -> textConsumer.accept(Text.literal("Potentially charged").formatted(Formatting.YELLOW));
-            case "socwars:fleshy_blade" -> textConsumer.accept(Text.literal(world == null || world.getTime() % 25 > 2 ? "*crunch*" : "*crunches wetly*").formatted(Formatting.RED));
+            case "socwars:fleshy_blade" -> textConsumer.accept(Text.literal(WORLD == null || WORLD.getTime() % 25 > 2 ? "*crunch*" : "*crunches wetly*").formatted(Formatting.RED));
         };
     }
 }

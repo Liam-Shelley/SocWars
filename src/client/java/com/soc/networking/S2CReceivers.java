@@ -1,5 +1,6 @@
 package com.soc.networking;
 
+import com.soc.networking.s2c.DiceOfFatePayload;
 import com.soc.networking.s2c.JoinQueuePayload;
 import com.soc.networking.s2c.LeaveQueuePayload;
 import com.soc.networking.s2c.PlayerDataPayload;
@@ -17,6 +18,12 @@ public class S2CReceivers {
         });
         ClientPlayNetworking.registerGlobalReceiver(PlayerDataPayload.ID, (payload, context) -> {
             PlayerDataManager.setPlayerData(context.player(), payload.playerData());
+        });
+        ClientPlayNetworking.registerGlobalReceiver(DiceOfFatePayload.ID, (payload, context) -> {
+            switch(payload.effect()) {
+                case LAUNCH -> context.player().addVelocity(0d, 2.5d, 0d);
+                default -> {}
+            }
         });
     }
 }

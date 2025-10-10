@@ -1,7 +1,6 @@
 package com.soc.networking.s2c;
 
 import com.soc.SocWars;
-import com.soc.player.PlayerData;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;

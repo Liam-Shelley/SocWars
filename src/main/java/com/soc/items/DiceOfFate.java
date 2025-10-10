@@ -2,26 +2,62 @@ package com.soc.items;
 
 import com.soc.items.util.EffectRecord;
 import com.soc.items.util.ModItems;
+import com.soc.networking.s2c.DiceOfFatePayload;
+import io.netty.buffer.ByteBuf;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.PacketCodecs;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Rarity;
-import net.minecraft.util.math.random.LocalRandom;
+import net.minecraft.util.StringIdentifiable;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
 
+import java.util.Arrays;
+
 import static com.soc.items.util.ModItems.addItemToGroups;
 import static net.minecraft.item.Items.*;
-import static org.apache.commons.io.IOUtils.length;
 
 public class DiceOfFate extends Item {
+    public enum Effect implements StringIdentifiable {
+        SWORD("sword"),
+        ENCHANTED_GAPPLE("enchanted_gapple"),
+        EXPLODE("explode"),
+        POTION_RING("potion_ring"),
+        LAUNCH("launch"),
+        DEBUFFS("debuffs");
+
+        public static final PacketCodec<ByteBuf, Effect> PACKET_CODEC = PacketCodecs.indexed(Effect::fromOrdinal, Effect::ordinal);
+
+        private final String name;
+
+        Effect(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String asString() {
+            return name;
+        }
+
+        public static Effect fromOrdinal(int ordinal) {
+            Effect[] values = Effect.values();
+            if (ordinal >= values.length || ordinal < 0) throw new IllegalArgumentException("No DiceOfFate.Effect value with ordinal " + ordinal);
+
+            return values[ordinal];
+        }
+    }
+
     private static final Item[] RANDOM_RINGS = {
         InvisibilityRing.INVISIBILITY_RING,
         PotionRing.LESSER_SPEED_RING,
@@ -45,53 +81,46 @@ public class DiceOfFate extends Item {
         super(settings);
     }
 
-    static LocalRandom random = new LocalRandom(0);
-
     public static void initialise() {
         addItemToGroups(DICE_OF_FATE);
     }
 
     public static final Item DICE_OF_FATE = ModItems.register("dice_of_fate", DiceOfFate::new, new Settings()
             .maxCount(1)
-            .rarity(Rarity.EPIC)
+            .rarity(Rarity.RARE)
     );
 
     @Override
     public ActionResult use(World world, PlayerEntity user, Hand hand) {
-        int randomCase = random.nextBetween(1, 6);
+        if (world.isClient) return ActionResult.SUCCESS;
 
-        if (world.isClient() && randomCase != 5) {
-            return ActionResult.SUCCESS;
-        }
+        final Effect effect = Effect.fromOrdinal(world.random.nextBetween(0, 5));
 
-        user.sendMessage(Text.literal("The dice of fate lands on a " + randomCase + "!"), true);
-        switch (randomCase) {
-            case 1:
-                user.setStackInHand(hand, NETHERITE_SWORD.getDefaultStack());
-                break;
-            case 2:
-                user.setStackInHand(hand, ENCHANTED_GOLDEN_APPLE.getDefaultStack());
-                break;
-            case 3:
-                user.setStackInHand(hand, ItemStack.EMPTY);
-                explode(world, user);
-                break;
-            case 4:
-                user.setStackInHand(hand, RANDOM_RINGS[random.nextBetween(0, length(RANDOM_RINGS) - 1)].getDefaultStack());
-                break;
-            case 5:
-                user.setStackInHand(hand, ItemStack.EMPTY);
-                user.addVelocity(0, 1.5f, 0);
-                break;
-            case 6:
-                user.setStackInHand(hand, ItemStack.EMPTY);
-                for (EffectRecord effectRecord : GARBO_EFFECTS) {
-                    user.addStatusEffect(new StatusEffectInstance(effectRecord.effect(), 20 * 20, effectRecord.amplifier(), false, true, true));
-                }
-                break;
+        final ItemStack stack = user.getStackInHand(hand);
+        stack.decrementUnlessCreative(1, user);
+        user.sendMessage(Text.translatable("dice_of_fate.roll_result", effect.ordinal() + 1), true); //Make translatable
+
+        switch (effect) {
+            case SWORD -> giveItem(user, NETHERITE_SWORD.getDefaultStack(), hand);
+            case ENCHANTED_GAPPLE -> giveItem(user, ENCHANTED_GOLDEN_APPLE.getDefaultStack(), hand);
+            case EXPLODE -> explode(world, user);
+            case POTION_RING -> {
+                ItemStack ring = RANDOM_RINGS[world.random.nextBetween(0, RANDOM_RINGS.length - 1)].getDefaultStack();
+                giveItem(user, ring, hand);
+            }
+            case LAUNCH -> ServerPlayNetworking.send((ServerPlayerEntity) user, new DiceOfFatePayload(effect));
+            case DEBUFFS -> Arrays.stream(GARBO_EFFECTS).forEach(effectRecord -> user.addStatusEffect(new StatusEffectInstance(effectRecord.effect(), 20 * 20, effectRecord.amplifier(), false, true, true)));
         }
 
         return ActionResult.FAIL;
+    }
+
+    private static void giveItem(PlayerEntity user, ItemStack item, Hand hand) {
+        if (user.getStackInHand(hand).isEmpty()) {
+            user.setStackInHand(hand, item);
+        } else {
+            user.giveItemStack(item);
+        }
     }
 
     private static void explode(World world, PlayerEntity user) {
