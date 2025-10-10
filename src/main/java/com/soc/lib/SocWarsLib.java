@@ -15,7 +15,9 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
@@ -148,5 +150,12 @@ public class SocWarsLib {
                 }
             }
         }
+    }
+
+    public static boolean isBlockHidden(World world, BlockPos pos) {
+        for (Direction direction : Direction.values()) {
+            if (world.isAir(pos.offset(direction))) return false;
+        }
+        return true;
     }
 }

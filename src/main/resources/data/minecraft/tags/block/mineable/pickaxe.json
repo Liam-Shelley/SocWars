@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "socwars:plastic_block",
+    "socwars:perspex_block",
+    "socwars:hardened_lava_block",
+    "socwars:unobtanium_block",
+    "socwars:near_infinite_density_block",
+    "socwars:liam_block",
+    "socwars:gallium_block"
+  ]
+}

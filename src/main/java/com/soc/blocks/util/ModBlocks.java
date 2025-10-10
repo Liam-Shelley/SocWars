@@ -33,7 +33,7 @@ public class ModBlocks {
     public static final Block LIAM_BLOCK = ModBlocks.register("liam_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(100f, 1200f), settings -> settings.rarity(Rarity.EPIC));
     //public static final Block MANY_BEDS_BLOCK = ModBlocks.register("many_beds_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(2f, 1200f), settings -> settings.rarity(Rarity.UNCOMMON));
     public static final Block FEATHER_BLOCK = ModBlocks.register("feather_block", Block::new, AbstractBlock.Settings.create().breakInstantly(), FeatherBlockItem::new);
-    public static final Block GALLIUM_BLOCK = ModBlocks.register("gallium_block", settings -> new GalliumBlock(new ColorCode(0), settings), AbstractBlock.Settings.create().requiresTool().strength(1f, 2.5f).noCollision(), settings -> settings.rarity(Rarity.UNCOMMON));
+    public static final Block GALLIUM_BLOCK = ModBlocks.register("gallium_block", settings -> new GalliumBlock(new ColorCode(0), settings), AbstractBlock.Settings.create().requiresTool().strength(0.35f, 2.5f).noCollision(), settings -> settings.rarity(Rarity.UNCOMMON));
 
     public static final Block SPAWN_PLACEHOLDER = ModBlocks.register("spawn_placeholder", ColourStateBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true);
     public static final Block CENTRE_PLACEHOLDER = ModBlocks.register("centre_placeholder", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true);

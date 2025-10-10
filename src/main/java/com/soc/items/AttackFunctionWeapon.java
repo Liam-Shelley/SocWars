@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.function.Consumer;
 
 import static com.soc.items.util.ModItems.addItemToGroups;
+import static com.soc.lib.SocWarsLib.isBlockHidden;
 import static com.soc.lib.SocWarsLib.iterateInSphere;
 
 public class AttackFunctionWeapon extends Item {
@@ -250,7 +251,7 @@ public class AttackFunctionWeapon extends Item {
     public static final Item CORRUPTED_SWORD = ModItems.register("corrupted_sword", (settings) -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
                 final World world = target.getWorld();
                 iterateInSphere(target.getBlockPos(), 4, 0, pos -> {
-                    if (world.random.nextFloat() < 0.125f) {
+                    if (world.random.nextFloat() < 0.2f && !isBlockHidden(world, pos)) {
                         world.setBlockState(pos, Blocks.AIR.getDefaultState());
                     }
                 });
@@ -258,7 +259,6 @@ public class AttackFunctionWeapon extends Item {
             .sword(ToolMaterials.BASE, 5.5f, -2.3f)
             .maxDamage(550)
             .rarity(Rarity.UNCOMMON));
-
 
     private static void modifyEquipment(LivingEntity target, LivingEntity attacker, ReplaceMode replaceMode, ModifyEquipmentFunction armourFunction, ModifyEquipmentFunction handFunction) {
         ArrayList<EquipmentSlot> armour = new ArrayList<>();
