@@ -109,12 +109,7 @@ public class UseFunctionWeapon extends Item {
                     VexEntity vex = new VexEntity(EntityType.VEX, world);
                     vex.setPosition(user.getEyePos().add(user.getRotationVector()));
 
-                    Scoreboard scoreboard = world.getScoreboard();
-                    if (user.getScoreboardTeam() == null) {
-                        user.sendMessage(Text.literal("You are not assigned to a team, go yell at Liam"), false);
-                    } else {
-                        scoreboard.addScoreHolderToTeam(vex.getUuidAsString(), user.getScoreboardTeam());
-                    }
+                    copyTeam(world, vex, user);
 
                     world.spawnEntity(vex);
 

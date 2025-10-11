@@ -14,10 +14,13 @@ import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.scoreboard.Scoreboard;
+import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -204,5 +207,14 @@ public class SocWarsLib {
 
     public static DamageSource damageSource(World world, RegistryKey<DamageType> damageType) {
         return damageSource(world, damageType, null);
+    }
+
+    public static void copyTeam(World world, LivingEntity assignee, LivingEntity source) {
+        Scoreboard scoreboard = world.getScoreboard();
+        if (source.getScoreboardTeam() == null && source instanceof PlayerEntity player) {
+            player.sendMessage(Text.literal("You are not assigned to a team, go yell at Liam"), false);
+        } else {
+            scoreboard.addScoreHolderToTeam(assignee.getUuidAsString(), source.getScoreboardTeam());
+        }
     }
 }

@@ -4,6 +4,7 @@ import com.soc.items.util.ModItems;
 import com.soc.items.util.StopUsingFunction;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.mob.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.WindChargeEntity;
 import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
@@ -15,6 +16,7 @@ import net.minecraft.item.consume.UseAction;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -26,6 +28,7 @@ import net.minecraft.world.explosion.AdvancedExplosionBehavior;
 import java.util.Optional;
 import java.util.function.Function;
 
+import static com.soc.lib.SocWarsLib.copyTeam;
 import static com.soc.lib.SocWarsLib.getHoldTimeSeconds;
 
 public class DrawableWeapon extends Item {
@@ -39,6 +42,7 @@ public class DrawableWeapon extends Item {
     public static void initialise() {
         ModItems.addItemToGroups(ENDER_STAFF, ItemGroups.COMBAT);
         ModItems.addItemToGroups(WIND_STAFF, ItemGroups.COMBAT);
+        ModItems.addItemToGroups(MOBBING_STAFF, ItemGroups.COMBAT);
     }
 
     public static final Item ENDER_STAFF = ModItems.register("ender_staff", settings -> new DrawableWeapon(settings, (stack, world, user, progress) -> {
@@ -87,6 +91,42 @@ public class DrawableWeapon extends Item {
             .maxDamage(12)
             .rarity(Rarity.UNCOMMON)
             .useCooldown(0.5f)
+    );
+    public static final Item MOBBING_STAFF = ModItems.register("mobbing_staff", settings -> new DrawableWeapon(settings, (stack, world, user, progress) -> {
+                if (world instanceof ServerWorld serverWorld) {
+                    final int randomMob = world.random.nextBetween(0, 10);
+                    final LivingEntity mob = switch (randomMob) {
+                        case 0 -> new ZombieEntity(EntityType.ZOMBIE, world);
+                        case 1 -> new SkeletonEntity(EntityType.SKELETON, world);
+                        case 2 -> new CreeperEntity(EntityType.CREEPER, world);
+                        case 3 -> new SpiderEntity(EntityType.SPIDER, world);
+                        case 4 -> new GhastEntity(EntityType.GHAST, world);
+                        case 5 -> new PiglinBruteEntity(EntityType.PIGLIN_BRUTE, world);
+                        case 6 -> new EndermanEntity(EntityType.ENDERMAN, world);
+                        case 7 -> new GuardianEntity(EntityType.GUARDIAN, world);
+                        case 8 -> new PhantomEntity(EntityType.PHANTOM, world);
+                        case 9 -> {
+                            final CreeperEntity creeper = new CreeperEntity(EntityType.CREEPER, world);
+                            creeper.onStruckByLightning(serverWorld, null);
+                            yield creeper;
+                        }
+                        case 10 -> new WardenEntity(EntityType.WARDEN, world);
+                        default -> throw new IllegalStateException("RNG set up incorrectly, leading to an invalid switch case");
+                    };
+                    mob.setPosition(user.getPos());
+                    mob.setVelocity(user.getRotationVector().multiply(getHoldTimeSeconds(progress) * 0.5f + 0.5f));
+
+                    copyTeam(world, mob, user);
+
+                    world.spawnEntity(mob);
+
+                    stack.damage(1, user, user.getActiveHand());
+                }
+                return false;
+            }), new Settings()
+            .maxDamage(40)
+            .rarity(Rarity.RARE)
+            .useCooldown(5f)
     );
 
     @Override

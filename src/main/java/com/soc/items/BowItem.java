@@ -192,6 +192,8 @@ public class BowItem extends RangedWeaponItem {
     @Override
     public boolean onStoppedUsing(ItemStack stack, World world, LivingEntity user, int remainingUseTicks) {
         final float drawProgress = this.drawProgress(stack, remainingUseTicks);
+        if (drawProgress < 0.2f) return false;
+
         final float speed = drawProgress * this.speed.apply(stack);
 
         List<ItemStack> arrowStack = load(stack, user.getProjectileType(stack), user);
