@@ -6,6 +6,7 @@ import com.soc.util.Random;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
@@ -18,6 +19,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -166,5 +168,23 @@ public class SocWarsLib {
 
     public static boolean hasInfinity(ItemStack stack) {
         return stack.getOrDefault(DataComponentTypes.ENCHANTMENTS, ItemEnchantmentsComponent.DEFAULT).getEnchantments().stream().anyMatch(entry -> entry.getKey().isPresent() && entry.getKey().get() == Enchantments.INFINITY);
+    }
+
+    public static boolean randomTeleport(World world, Entity user, int attempts, int range, float minRange) {
+        for (int i = 0; i < attempts; i++) {
+            final int candidateX = (int)user.getX() + world.random.nextBetween(-range, range);
+            final int candidateZ = (int)user.getZ() + world.random.nextBetween(-range, range);
+
+            final int height = world.getTopY(Heightmap.Type.WORLD_SURFACE, candidateX, candidateZ);
+
+            if (Math.abs(height - user.getY()) > 10) continue;
+            final float dX = candidateX - (float)user.getX();
+            final float dZ = candidateZ - (float)user.getZ();
+            if (dX * dX + dZ * dZ < minRange * minRange) continue; //Make sure the user teleports at least 15 blocks away
+
+            user.requestTeleport(candidateX, height, candidateZ);
+            return true;
+        }
+        return false;
     }
 }

@@ -1,0 +1,6 @@
+{
+  "parent": "socwars:item/chorus_bow/base",
+  "textures": {
+    "layer0": "socwars:item/chorus_bow/hold_1"
+  }
+}

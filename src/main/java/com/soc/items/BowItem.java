@@ -24,7 +24,9 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static com.soc.items.EatFunctionFood.CHORUS_SALAD_TRIES;
 import static com.soc.lib.SocWarsLib.hasInfinity;
+import static com.soc.lib.SocWarsLib.randomTeleport;
 import static com.soc.util.SphereExplosion.fireExplosion;
 
 public class BowItem extends RangedWeaponItem {
@@ -57,6 +59,7 @@ public class BowItem extends RangedWeaponItem {
         ModItems.addItemToGroups(MEGABOOM_BOW, ItemGroups.COMBAT);
         ModItems.addItemToGroups(FALCON_BOW, ItemGroups.COMBAT);
         ModItems.addItemToGroups(HEATER_BOW, ItemGroups.COMBAT);
+        ModItems.addItemToGroups(CHORUS_BOW, ItemGroups.COMBAT);
     }
 
     public static final Item BOOM_BOW = ModItems.register("boom_bow", settings -> new BowItem(settings, (world, user, projectileStack,weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
@@ -123,6 +126,23 @@ public class BowItem extends RangedWeaponItem {
             }, stack -> 1f, stack -> 3.5f), new Settings()
             .rarity(Rarity.UNCOMMON)
             .maxDamage(250)
+    );
+    public static final Item CHORUS_BOW = ModItems.register("chorus_bow", settings -> new BowItem(settings, (world, user, projectileStack,weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
+                @Override
+                protected void onHit(LivingEntity target) {
+                    super.onHit(target);
+                    this.discard();
+                    randomTeleport(world, target, CHORUS_SALAD_TRIES, 7, 1f);
+                }
+
+                @Override
+                protected void onBlockHit(BlockHitResult blockHitResult) {
+                    super.onBlockHit(blockHitResult);
+                    randomTeleport(world, this, 2, 15, 2f);
+                }
+            }, stack -> 1f, stack -> 3.5f), new Settings()
+            .rarity(Rarity.RARE)
+            .maxDamage(350)
     );
 
     @Override

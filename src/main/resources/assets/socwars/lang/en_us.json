@@ -76,6 +76,7 @@
   "item.socwars.megaboom_bow": "Megaboom Bow",
   "item.socwars.falcon_bow": "Falcon Bow!",
   "item.socwars.heater_bow": "Heater",
+  "item.socwars.chorus_bow": "Chorus String Bow",
   "tooltip.extendo_bridge": "Want to go over there? Well now you can.",
   "tooltip.gravity_orb": "Not similar to the gravitation potion",
   "tooltip.god_complex": "I have the power of god and anime on my side",
@@ -184,5 +185,6 @@
   "direction.west": "West",
   "direction.up": "Up",
   "direction.down": "Down",
-  "dice_of_fate.roll_result": "The dice of fate lands on a %s!  "
+  "dice_of_fate.roll_result": "The dice of fate lands on a %s!",
+  "chorus_fruit_salad.fail": "Failed to find a suitable location to teleport; go yell at Liam"
 }
