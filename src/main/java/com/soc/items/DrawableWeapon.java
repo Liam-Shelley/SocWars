@@ -22,10 +22,11 @@ import net.minecraft.util.Rarity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.AdvancedExplosionBehavior;
-import net.minecraft.world.explosion.ExplosionBehavior;
 
 import java.util.Optional;
 import java.util.function.Function;
+
+import static com.soc.lib.SocWarsLib.getHoldTimeSeconds;
 
 public class DrawableWeapon extends Item {
     private final StopUsingFunction stopUsingFunction;
@@ -43,7 +44,7 @@ public class DrawableWeapon extends Item {
     public static final Item ENDER_STAFF = ModItems.register("ender_staff", settings -> new DrawableWeapon(settings, (stack, world, user, progress) -> {
                 final EnderPearlEntity pearl = new EnderPearlEntity(world, user, Items.ENDER_PEARL.getDefaultStack());
                 pearl.setPosition(user.getEyePos());
-                pearl.setVelocity(user.getRotationVector().multiply(getHoldAmount(progress) * 1.5f + 0.5f));
+                pearl.setVelocity(user.getRotationVector().multiply(getHoldTimeSeconds(progress) * 1.5f + 0.5f));
 
                 world.spawnEntity(pearl);
 
@@ -52,7 +53,8 @@ public class DrawableWeapon extends Item {
             }), new Settings()
             .maxDamage(8)
             .rarity(Rarity.UNCOMMON)
-            .useCooldown(0.5f));
+            .useCooldown(0.5f)
+    );
     public static final Item WIND_STAFF = ModItems.register("wind_staff", settings -> new DrawableWeapon(settings, (stack, world, user, progress) -> {
                 final WindChargeEntity charge = new WindChargeEntity(EntityType.WIND_CHARGE, world) {
                     @Override
@@ -60,7 +62,7 @@ public class DrawableWeapon extends Item {
                         this.getWorld().createExplosion(
                                 this,
                                 null,
-                                new AdvancedExplosionBehavior(true, false, Optional.of(1.2f + getHoldAmount(progress) * 0.3f), Registries.BLOCK.getOptional(BlockTags.BLOCKS_WIND_CHARGE_EXPLOSIONS).map(Function.identity())),
+                                new AdvancedExplosionBehavior(true, false, Optional.of(1.2f + getHoldTimeSeconds(progress) * 0.3f), Registries.BLOCK.getOptional(BlockTags.BLOCKS_WIND_CHARGE_EXPLOSIONS).map(Function.identity())),
                                 pos.getX(),
                                 pos.getY(),
                                 pos.getZ(),
@@ -74,7 +76,7 @@ public class DrawableWeapon extends Item {
                     }
                 };
                 charge.setPosition(user.getEyePos());
-                charge.setVelocity(user.getRotationVector().multiply(getHoldAmount(progress) * 1.5f + 0.5f));
+                charge.setVelocity(user.getRotationVector().multiply(getHoldTimeSeconds(progress) * 1.5f + 0.5f));
                 charge.setOwner(user);
 
                 world.spawnEntity(charge);
@@ -86,10 +88,6 @@ public class DrawableWeapon extends Item {
             .rarity(Rarity.UNCOMMON)
             .useCooldown(0.5f)
     );
-
-    public static float getHoldAmount(int progress) {
-        return Math.min(1, -progress / 20f);
-    }
 
     @Override
     public UseAction getUseAction(ItemStack stack) {

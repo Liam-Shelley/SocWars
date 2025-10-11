@@ -127,7 +127,7 @@ public class AttackFunctionWeapon extends Item {
                                     .getOrThrow(RegistryKeys.DAMAGE_TYPE)
                                     .getEntry(DamageTypes.NETHERWRONG_SWORD.getValue()).get()
                     );
-                    attacker.damage(serverWorld, damageSource, 7.5f);
+                    attacker.damage(serverWorld, damageSource, 8f);
                 }
             }), new Settings()
             .sword(ToolMaterial.NETHERITE, -3f, -3f)
@@ -235,7 +235,8 @@ public class AttackFunctionWeapon extends Item {
                 WORLD = target.getWorld(); // Horrible gross disgusting code
                 attacker.getWorld().playSound(null, target.getBlockPos(), Sounds.FLESH, SoundCategory.MASTER, 1f, 1f);
     }), new Settings()
-            .sword(ToolMaterials.BASE, 6f, -2.2f));
+            .sword(ToolMaterials.BASE, 6f, -2.2f)
+    );
     public static final Item FIRESTORM = ModItems.register("firestorm", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
                 final World world = target.getWorld();
                 iterateInSphere(target.getBlockPos(), 4, 0, pos -> {
@@ -246,7 +247,8 @@ public class AttackFunctionWeapon extends Item {
     }), new Settings()
             .sword(ToolMaterials.BASE, 5.5f, -2.5f)
             .maxDamage(400)
-            .rarity(Rarity.RARE));
+            .rarity(Rarity.RARE)
+    );
     public static final Item CORRUPTED_SWORD = ModItems.register("corrupted_sword", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
                 final World world = target.getWorld();
                 iterateInSphere(target.getBlockPos(), 4, 0, pos -> {
@@ -257,7 +259,8 @@ public class AttackFunctionWeapon extends Item {
     }), new Settings()
             .sword(ToolMaterials.BASE, 5.5f, -2.3f)
             .maxDamage(550)
-            .rarity(Rarity.UNCOMMON));
+            .rarity(Rarity.UNCOMMON)
+    );
 
     private static void modifyEquipment(LivingEntity target, LivingEntity attacker, ReplaceMode replaceMode, ModifyEquipmentFunction armourFunction, ModifyEquipmentFunction handFunction) {
         ArrayList<EquipmentSlot> armour = new ArrayList<>();

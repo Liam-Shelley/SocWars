@@ -2,14 +2,15 @@ package com.soc.lib;
 
 import com.google.common.collect.ImmutableMap;
 import com.soc.SocWars;
-import com.soc.util.BlockTags;
 import com.soc.util.Random;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ItemEnchantmentsComponent;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
@@ -157,5 +158,13 @@ public class SocWarsLib {
             if (world.isAir(pos.offset(direction))) return false;
         }
         return true;
+    }
+
+    public static float getHoldTimeSeconds(int progress) {
+        return Math.min(1, -progress / 20f);
+    }
+
+    public static boolean hasInfinity(ItemStack stack) {
+        return stack.getOrDefault(DataComponentTypes.ENCHANTMENTS, ItemEnchantmentsComponent.DEFAULT).getEnchantments().stream().anyMatch(entry -> entry.getKey().isPresent() && entry.getKey().get() == Enchantments.INFINITY);
     }
 }

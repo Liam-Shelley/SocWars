@@ -17,6 +17,7 @@ import net.minecraft.entity.TntEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.mob.VexEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ArrowEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.entity.projectile.SpectralArrowEntity;
@@ -69,9 +70,10 @@ public class UseFunctionWeapon extends Item {
         addItemToGroups(THE_LINE, ItemGroups.COMBAT);
         addItemToGroups(WHEATENATOR, ItemGroups.COMBAT);
         addItemToGroups(DEATH_RAIN, ItemGroups.COMBAT);
+        addItemToGroups(ALPHA_BOW, ItemGroups.COMBAT);
     }
 
-    public static final Item DASHREND = ModItems.register("dashrend", (settings) -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+    public static final Item DASHREND = ModItems.register("dashrend", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 float pitchClosenessToHorizontal = 1f - Math.abs(user.getPitch() / 90f);
                 float pitchStrength = pitchClosenessToHorizontal * 0.5f + 0.5f;
                 float dashStrength = (float) Math.sqrt(pitchStrength) * (user.isOnGround() ? 2f : 0.75f) * 0.5f;
@@ -87,7 +89,7 @@ public class UseFunctionWeapon extends Item {
             .useCooldown(3.5f)
             .rarity(Rarity.RARE)
     );
-    public static final Item VELOCITY_STAFF = ModItems.register("velocity_staff", (settings) -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+    public static final Item VELOCITY_STAFF = ModItems.register("velocity_staff", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 float pitchClosenessToHorizontal = 1f - Math.abs(user.getPitch() / 90f);
                 float pitchStrength = pitchClosenessToHorizontal * 0.5f + 0.5f;
                 float dashStrength = (float) Math.sqrt(pitchStrength) * (user.isOnGround() ? 2f : 0.75f) * 0.85f;
@@ -102,7 +104,7 @@ public class UseFunctionWeapon extends Item {
             .useCooldown(1.2f)
             .rarity(Rarity.RARE)
     );
-    public static final Item VEXING_STAFF = ModItems.register("vexing_staff", (settings) -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+    public static final Item VEXING_STAFF = ModItems.register("vexing_staff", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 for (int i = 0; i < 2; i++) {
                     VexEntity vex = new VexEntity(EntityType.VEX, world);
                     vex.setPosition(user.getEyePos().add(user.getRotationVector()));
@@ -125,13 +127,15 @@ public class UseFunctionWeapon extends Item {
             .useCooldown(45f)
             .rarity(Rarity.RARE)
     );
-    public static final Item YELLOW_SWORD = ModItems.register("yellow_sword", (settings) -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+    public static final Item YELLOW_SWORD = ModItems.register("yellow_sword", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 ItemStack itemStack = user.getStackInHand(hand);
 
                 if (world instanceof ServerWorld serverWorld) {
                     SpectralArrowEntity arrow = ProjectileEntity.spawn(new SpectralArrowEntity(world, user, Items.AIR.getDefaultStack(), itemStack), serverWorld, itemStack);
                     arrow.setPosition(user.getEyePos());
                     arrow.setVelocity(user.getRotationVector().multiply(2f));
+                    arrow.setPitch(user.getPitch());
+                    arrow.setYaw(user.getYaw());
                 }
 
                 itemStack.damage(3, user, hand);
@@ -142,7 +146,7 @@ public class UseFunctionWeapon extends Item {
             .useCooldown(1.5f)
             .maxDamage(600)
     );
-    public static final Item GRAVITY_ORB = ModItems.register("gravity_orb", (settings) -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+    public static final Item GRAVITY_ORB = ModItems.register("gravity_orb", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 user.addStatusEffect(new StatusEffectInstance(AntiGravity.ANTI_GRAVITY, (int) 7.5 * 20, 2, false, false));
 
                 return ActionResult.SUCCESS;
@@ -150,7 +154,7 @@ public class UseFunctionWeapon extends Item {
             .useCooldown(7.5f)
             .rarity(Rarity.UNCOMMON)
     );
-    public static final Item GOD_COMPLEX = ModItems.register("god_complex", (settings) -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+    public static final Item GOD_COMPLEX = ModItems.register("god_complex", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 user.addStatusEffect(new StatusEffectInstance(Flight.FLIGHT, 5 * 20, 0, false, false));
 
                 return ActionResult.SUCCESS;
@@ -159,7 +163,7 @@ public class UseFunctionWeapon extends Item {
             .component(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true)
             .rarity(Rarity.EPIC)
     );
-    public static final Item SCROLL_OF_EAU = ModItems.register("scroll_of_eau", (settings) -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+    public static final Item SCROLL_OF_EAU = ModItems.register("scroll_of_eau", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 final BlockHitResult hit = world.raycast(new RaycastContext(user.getEyePos(), user.getEyePos().add(user.getRotationVector().multiply(25f)), RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.ANY, user));
 
                 if (hit != null && !world.isAir(hit.getBlockPos())) {
@@ -176,7 +180,7 @@ public class UseFunctionWeapon extends Item {
             .useCooldown(1f)
             .rarity(Rarity.UNCOMMON)
     );
-    public static final Item SCROLL_OF_HELLFIRE = ModItems.register("scroll_of_hellfire", (settings) -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+    public static final Item SCROLL_OF_HELLFIRE = ModItems.register("scroll_of_hellfire", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 final BlockHitResult hit = world.raycast(new RaycastContext(user.getEyePos(), user.getEyePos().add(user.getRotationVector().multiply(25f)), RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.ANY, user));
 
                 if (hit != null && !world.isAir(hit.getBlockPos())) {
@@ -192,7 +196,7 @@ public class UseFunctionWeapon extends Item {
             .useCooldown(1f)
             .rarity(Rarity.UNCOMMON)
     );
-    public static final Item C_U_E_B = ModItems.register("c_u_e_b", (settings) -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+    public static final Item C_U_E_B = ModItems.register("c_u_e_b", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 final BlockPos centre = BlockPos.ofFloored(user.getEyePos().add(user.getRotationVector().multiply(20f)));
 
                 iterateInCube(centre, 7, pos -> {
@@ -207,7 +211,7 @@ public class UseFunctionWeapon extends Item {
             }), new Settings()
             .useCooldown(1f)
     );
-    public static final Item SHRINK_RAY = ModItems.register("shrink_ray", (settings) -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+    public static final Item SHRINK_RAY = ModItems.register("shrink_ray", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 shootEntity(user, hand, 1, 10, 2 * 20, entity -> scaleEntity(entity, SQRT2 * 0.5f));
 
                 return ActionResult.SUCCESS;
@@ -215,7 +219,7 @@ public class UseFunctionWeapon extends Item {
             .maxDamage(16)
             .rarity(Rarity.RARE)
     );
-    public static final Item BIGGENING_RAY = ModItems.register("biggening_ray", (settings) -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+    public static final Item BIGGENING_RAY = ModItems.register("biggening_ray", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 shootEntity(user, hand, 1, 10, 2 * 20, entity -> scaleEntity(entity, SQRT2));
 
                 return ActionResult.SUCCESS;
@@ -223,7 +227,7 @@ public class UseFunctionWeapon extends Item {
             .maxDamage(16)
             .rarity(Rarity.RARE)
     );
-    public static final Item THE_LINE = ModItems.register("the_line", (settings) -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+    public static final Item THE_LINE = ModItems.register("the_line", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 if (world.isClient) return ActionResult.SUCCESS;
 
                 final boolean allowsMovementControl = user.isSneaking();
@@ -253,7 +257,7 @@ public class UseFunctionWeapon extends Item {
             .useCooldown(0f)
             .rarity(Rarity.RARE)
     );
-    public static final Item WHEATENATOR = ModItems.register("wheatenator", (settings) -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+    public static final Item WHEATENATOR = ModItems.register("wheatenator", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 final Vec3d rotationVec = user.getRotationVector();
                 final double rotationAngle = Math.atan2(rotationVec.z, rotationVec.x);
 
@@ -273,8 +277,8 @@ public class UseFunctionWeapon extends Item {
             .maxDamage(350)
             .useCooldown(0.25f)
     );
-    public static final Item DEATH_RAIN = ModItems.register("death_rain", (settings) -> new UseFunctionWeapon(settings, (world, user, hand) -> {
-                for (int i = 0; i < 20; i++) {
+    public static final Item DEATH_RAIN = ModItems.register("death_rain", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+                for (int i = 0; i < 15; i++) {
                     final double range = 15f * Math.sqrt(world.random.nextFloat());
                     final double angle = world.random.nextFloat() * 2d * Math.PI;
                     final Vec3d pos = new Vec3d(Math.cos(angle) * range, 20f + 15f * world.random.nextFloat(), Math.sin(angle) * range).add(user.getPos());
@@ -284,9 +288,31 @@ public class UseFunctionWeapon extends Item {
                     world.spawnEntity(tnt);
                 }
 
+                user.getStackInHand(hand).damage(1, user);
+
                 return ActionResult.SUCCESS;
             }), new Settings()
-            .useCooldown(0.25f)
+            .maxDamage(3)
+            .rarity(Rarity.RARE)
+    );
+    public static final Item ALPHA_BOW = ModItems.register("alpha_bow", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+                ItemStack itemStack = user.getStackInHand(hand);
+
+                if (world instanceof ServerWorld serverWorld) {
+                    ArrowEntity arrow = new ArrowEntity(world, user, Items.AIR.getDefaultStack(), itemStack);
+                    arrow.setPosition(user.getEyePos());
+                    arrow.setVelocity(user.getRotationVector().multiply(1.75f));
+                    arrow.setPitch(-user.getPitch());
+                    arrow.setYaw(-user.getYaw());
+
+                    ProjectileEntity.spawn(arrow, serverWorld, itemStack);
+                }
+
+                itemStack.damage(1, user, hand);
+
+                return ActionResult.FAIL;
+            }), new Settings()
+            .maxDamage(256)
             .rarity(Rarity.RARE)
     );
 
