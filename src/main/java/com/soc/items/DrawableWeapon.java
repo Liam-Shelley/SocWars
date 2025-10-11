@@ -28,8 +28,7 @@ import net.minecraft.world.explosion.AdvancedExplosionBehavior;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static com.soc.lib.SocWarsLib.copyTeam;
-import static com.soc.lib.SocWarsLib.getHoldTimeSeconds;
+import static com.soc.lib.SocWarsLib.*;
 
 public class DrawableWeapon extends Item {
     private final StopUsingFunction stopUsingFunction;
@@ -94,30 +93,9 @@ public class DrawableWeapon extends Item {
     );
     public static final Item MOBBING_STAFF = ModItems.register("mobbing_staff", settings -> new DrawableWeapon(settings, (stack, world, user, progress) -> {
                 if (world instanceof ServerWorld serverWorld) {
-                    final int randomMob = world.random.nextBetween(0, 10);
-                    final LivingEntity mob = switch (randomMob) {
-                        case 0 -> new ZombieEntity(EntityType.ZOMBIE, world);
-                        case 1 -> new SkeletonEntity(EntityType.SKELETON, world);
-                        case 2 -> new CreeperEntity(EntityType.CREEPER, world);
-                        case 3 -> new SpiderEntity(EntityType.SPIDER, world);
-                        case 4 -> new GhastEntity(EntityType.GHAST, world);
-                        case 5 -> new PiglinBruteEntity(EntityType.PIGLIN_BRUTE, world);
-                        case 6 -> new EndermanEntity(EntityType.ENDERMAN, world);
-                        case 7 -> new GuardianEntity(EntityType.GUARDIAN, world);
-                        case 8 -> new PhantomEntity(EntityType.PHANTOM, world);
-                        case 9 -> {
-                            final CreeperEntity creeper = new CreeperEntity(EntityType.CREEPER, world);
-                            creeper.onStruckByLightning(serverWorld, null);
-                            yield creeper;
-                        }
-                        case 10 -> new WardenEntity(EntityType.WARDEN, world);
-                        default -> throw new IllegalStateException("RNG set up incorrectly, leading to an invalid switch case");
-                    };
-                    mob.setPosition(user.getPos());
+                    final LivingEntity mob = randomHostileMob(serverWorld, user.getEyePos());
                     mob.setVelocity(user.getRotationVector().multiply(getHoldTimeSeconds(progress) * 0.5f + 0.5f));
-
                     copyTeam(world, mob, user);
-
                     world.spawnEntity(mob);
 
                     stack.damage(1, user, user.getActiveHand());

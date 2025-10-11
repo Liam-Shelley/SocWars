@@ -8,24 +8,28 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageType;
+import net.minecraft.entity.mob.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.scoreboard.Scoreboard;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
@@ -216,5 +220,31 @@ public class SocWarsLib {
         } else {
             scoreboard.addScoreHolderToTeam(assignee.getUuidAsString(), source.getScoreboardTeam());
         }
+    }
+
+    public static LivingEntity randomHostileMob(ServerWorld world, Vec3d pos) {
+        final int index = world.random.nextBetween(0, 10);
+        final LivingEntity mob = switch (index) {
+            case 0 -> new ZombieEntity(EntityType.ZOMBIE, world);
+            case 1 -> new SkeletonEntity(EntityType.SKELETON, world);
+            case 2 -> new CreeperEntity(EntityType.CREEPER, world);
+            case 3 -> new SpiderEntity(EntityType.SPIDER, world);
+            case 4 -> new GhastEntity(EntityType.GHAST, world);
+            case 5 -> new PiglinBruteEntity(EntityType.PIGLIN_BRUTE, world);
+            case 6 -> new EndermanEntity(EntityType.ENDERMAN, world);
+            case 7 -> new GuardianEntity(EntityType.GUARDIAN, world);
+            case 8 -> new PhantomEntity(EntityType.PHANTOM, world);
+            case 9 -> {
+                final CreeperEntity creeper = new CreeperEntity(EntityType.CREEPER, world);
+                creeper.onStruckByLightning(world, null);
+                yield creeper;
+            }
+            case 10 -> new WardenEntity(EntityType.WARDEN, world);
+            default -> throw new IllegalStateException("RNG set up incorrectly, leading to an invalid switch case");
+        };
+
+        mob.setPosition(pos);
+
+        return mob;
     }
 }
