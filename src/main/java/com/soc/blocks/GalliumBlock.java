@@ -1,6 +1,6 @@
 package com.soc.blocks;
 
-import com.soc.items.util.DamageTypes;
+import com.soc.util.DamageTypes;
 import com.soc.util.BlockTags;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -15,6 +15,8 @@ import net.minecraft.util.ColorCode;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
+
+import static com.soc.lib.SocWarsLib.damageSource;
 
 public class GalliumBlock extends ColoredFallingBlock {
     public GalliumBlock(ColorCode color, Settings settings) {
@@ -37,7 +39,7 @@ public class GalliumBlock extends ColoredFallingBlock {
     protected void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity, EntityCollisionHandler handler) {
         if (entity instanceof final LivingEntity livingEntity && !world.isClient()) {
             final float damage = livingEntity.getArmor() * 0.15f + 3f;
-            final DamageSource source = new DamageSource(world.getRegistryManager().getOrThrow(RegistryKeys.DAMAGE_TYPE).getEntry(DamageTypes.GALLIUM.getValue()).get());
+            final DamageSource source = damageSource(world, DamageTypes.GALLIUM);
             livingEntity.damage((ServerWorld)world, source, damage);
         }
     }

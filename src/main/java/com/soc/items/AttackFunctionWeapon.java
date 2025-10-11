@@ -1,13 +1,11 @@
 package com.soc.items;
 
-import com.soc.items.util.DamageTypes;
+import com.soc.util.DamageTypes;
 import com.soc.items.util.ModItems;
 import com.soc.items.util.AttackFunction;
 import com.soc.items.util.ModifyEquipmentFunction;
 import com.soc.materials.ToolMaterials;
 import com.soc.util.Sounds;
-import it.unimi.dsi.fastutil.objects.ReferenceSortedSets;
-import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.block.Blocks;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.DataComponentTypes;
@@ -19,7 +17,6 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.SlimeEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.registry.RegistryKey;
@@ -33,15 +30,13 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.Unit;
-import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
 import static com.soc.items.util.ModItems.addItemToGroups;
-import static com.soc.lib.SocWarsLib.isBlockHidden;
-import static com.soc.lib.SocWarsLib.iterateInSphere;
+import static com.soc.lib.SocWarsLib.*;
 import static com.soc.util.SphereExplosion.fireExplosion;
 
 public class AttackFunctionWeapon extends Item {
@@ -100,11 +95,7 @@ public class AttackFunctionWeapon extends Item {
                 } else {
                     World world = attacker.getWorld();
                     if (attacker instanceof LivingEntity && world instanceof ServerWorld serverWorld) {
-                        DamageSource damageSource = new DamageSource(
-                                world.getRegistryManager()
-                                        .getOrThrow(RegistryKeys.DAMAGE_TYPE)
-                                        .getEntry(DamageTypes.LIFETHIEF.getValue()).get()
-                        );
+                        DamageSource damageSource = damageSource(world, DamageTypes.LIFETHIEF);
                         attacker.damage(serverWorld, damageSource, 1.0f);
                     }
                 }
@@ -123,11 +114,7 @@ public class AttackFunctionWeapon extends Item {
     public static final Item NETHERWRONG_SWORD = ModItems.register("netherwrong_sword", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
                 World world = attacker.getWorld();
                 if (attacker instanceof LivingEntity && world instanceof ServerWorld serverWorld) {
-                    DamageSource damageSource = new DamageSource(
-                            world.getRegistryManager()
-                                    .getOrThrow(RegistryKeys.DAMAGE_TYPE)
-                                    .getEntry(DamageTypes.NETHERWRONG_SWORD.getValue()).get()
-                    );
+                    final DamageSource damageSource = damageSource(world, DamageTypes.NETHERWRONG_SWORD);
                     attacker.damage(serverWorld, damageSource, 8f);
                 }
             }), new Settings()

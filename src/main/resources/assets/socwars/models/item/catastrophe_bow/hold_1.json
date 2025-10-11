@@ -1,0 +1,6 @@
+{
+  "parent": "socwars:item/catastrophe_bow/base",
+  "textures": {
+    "layer0": "socwars:item/catastrophe_bow/hold_1"
+  }
+}

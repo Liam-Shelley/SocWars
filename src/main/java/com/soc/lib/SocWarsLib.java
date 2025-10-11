@@ -2,6 +2,7 @@ package com.soc.lib;
 
 import com.google.common.collect.ImmutableMap;
 import com.soc.SocWars;
+import com.soc.util.DamageTypes;
 import com.soc.util.Random;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ItemEnchantmentsComponent;
@@ -11,8 +12,12 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -186,5 +191,18 @@ public class SocWarsLib {
             return true;
         }
         return false;
+    }
+
+    public static DamageSource damageSource(World world, RegistryKey<DamageType> damageType, Entity attacker) {
+        return new DamageSource(
+                world.getRegistryManager()
+                        .getOrThrow(RegistryKeys.DAMAGE_TYPE)
+                        .getEntry(damageType.getValue()).get(),
+                attacker
+        );
+    }
+
+    public static DamageSource damageSource(World world, RegistryKey<DamageType> damageType) {
+        return damageSource(world, damageType, null);
     }
 }

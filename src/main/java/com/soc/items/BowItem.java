@@ -2,9 +2,11 @@ package com.soc.items;
 
 import com.soc.items.util.ArrowFactory;
 import com.soc.items.util.ModItems;
+import com.soc.util.DamageTypes;
 import com.soc.util.SphereExplosion;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ArrowEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
@@ -12,6 +14,9 @@ import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.*;
 import net.minecraft.item.consume.UseAction;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
@@ -25,8 +30,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.soc.items.EatFunctionFood.CHORUS_SALAD_TRIES;
-import static com.soc.lib.SocWarsLib.hasInfinity;
-import static com.soc.lib.SocWarsLib.randomTeleport;
+import static com.soc.lib.SocWarsLib.*;
 import static com.soc.util.SphereExplosion.fireExplosion;
 
 public class BowItem extends RangedWeaponItem {
@@ -60,6 +64,7 @@ public class BowItem extends RangedWeaponItem {
         ModItems.addItemToGroups(FALCON_BOW, ItemGroups.COMBAT);
         ModItems.addItemToGroups(HEATER_BOW, ItemGroups.COMBAT);
         ModItems.addItemToGroups(CHORUS_BOW, ItemGroups.COMBAT);
+        ModItems.addItemToGroups(CATASTROPHE_BOW, ItemGroups.COMBAT);
     }
 
     public static final Item BOOM_BOW = ModItems.register("boom_bow", settings -> new BowItem(settings, (world, user, projectileStack,weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
@@ -123,7 +128,7 @@ public class BowItem extends RangedWeaponItem {
                     this.discard();
                     fireExplosion(world, blockHitResult.getBlockPos(), 4f, 0.175f);
                 }
-            }, stack -> 1f, stack -> 3.5f), new Settings()
+            }, stack -> 1f, stack -> 3f), new Settings()
             .rarity(Rarity.UNCOMMON)
             .maxDamage(250)
     );
@@ -140,9 +145,30 @@ public class BowItem extends RangedWeaponItem {
                     super.onBlockHit(blockHitResult);
                     randomTeleport(world, this, 2, 15, 2f);
                 }
-            }, stack -> 1f, stack -> 3.5f), new Settings()
+            }, stack -> 1f, stack -> 3f), new Settings()
             .rarity(Rarity.RARE)
             .maxDamage(350)
+    );
+    public static final Item CATASTROPHE_BOW = ModItems.register("catastrophe_bow", settings -> new BowItem(settings, (world, user, projectileStack,weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
+                @Override
+                protected void onHit(LivingEntity target) {
+                    super.onHit(target);
+                    this.discard();
+                    if (world instanceof ServerWorld serverWorld) {
+                        target.damage(serverWorld, damageSource(world, DamageTypes.CATASTROPHE_BOW, user), 69420f);
+                    }
+                }
+            }, stack -> 3.5f, stack -> 5f) {
+                @Override
+                public void usageTick(World world, LivingEntity user, ItemStack stack, int remainingUseTicks) {
+                    super.usageTick(world, user, stack, remainingUseTicks);
+                    if (rawDrawProgress(remainingUseTicks) > 7.5f) {
+                        SphereExplosion.explode(world, user.getPos(), 5f, 2.5f, 1.75f);
+                    }
+                }
+            }, new Settings()
+            .rarity(Rarity.EPIC)
+            .maxDamage(10)
     );
 
     @Override
@@ -180,6 +206,17 @@ public class BowItem extends RangedWeaponItem {
         }
 
         stack.set(DataComponentTypes.ITEM_MODEL, this.itemModels[0]);
+
+        world.playSound(
+                null,
+                user.getX(),
+                user.getY(),
+                user.getZ(),
+                SoundEvents.ENTITY_ARROW_SHOOT,
+                SoundCategory.PLAYERS,
+                1f,
+                1f / (world.getRandom().nextFloat() * 0.4f + 1.2f) + drawProgress * 0.5f
+        );
 
         return true;
     }

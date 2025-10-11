@@ -1,4 +1,4 @@
-package com.soc.items.util;
+package com.soc.util;
 
 import com.soc.SocWars;
 import net.minecraft.entity.damage.DamageType;
@@ -10,4 +10,5 @@ public interface DamageTypes {
     RegistryKey<DamageType> LIFETHIEF = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, Identifier.of(SocWars.MOD_ID, "lifethief"));
     RegistryKey<DamageType> NETHERWRONG_SWORD = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, Identifier.of(SocWars.MOD_ID, "netherwrong_sword"));
     RegistryKey<DamageType> GALLIUM = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, Identifier.of(SocWars.MOD_ID, "gallium"));
+    RegistryKey<DamageType> CATASTROPHE_BOW = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, Identifier.of(SocWars.MOD_ID, "catastrophe_bow"));
 }
