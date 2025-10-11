@@ -1,0 +1,6 @@
+{
+  "parent": "socwars:item/heater_bow/base",
+  "textures": {
+    "layer0": "socwars:item/heater_bow/hold_2"
+  }
+}

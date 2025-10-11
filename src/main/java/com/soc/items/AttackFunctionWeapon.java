@@ -42,6 +42,7 @@ import java.util.function.Consumer;
 import static com.soc.items.util.ModItems.addItemToGroups;
 import static com.soc.lib.SocWarsLib.isBlockHidden;
 import static com.soc.lib.SocWarsLib.iterateInSphere;
+import static com.soc.util.SphereExplosion.fireExplosion;
 
 public class AttackFunctionWeapon extends Item {
     private final AttackFunction attackFunction;
@@ -239,11 +240,7 @@ public class AttackFunctionWeapon extends Item {
     );
     public static final Item FIRESTORM = ModItems.register("firestorm", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
                 final World world = target.getWorld();
-                iterateInSphere(target.getBlockPos(), 4, 0, pos -> {
-                    if (world.random.nextFloat() < 0.1f && AbstractFireBlock.canPlaceAt(world, pos, Direction.DOWN)) {
-                        world.setBlockState(pos, AbstractFireBlock.getState(world, pos));
-                    }
-                });
+                fireExplosion(world, target.getBlockPos(), 4f);
     }), new Settings()
             .sword(ToolMaterials.BASE, 5.5f, -2.5f)
             .maxDamage(400)

@@ -2,7 +2,6 @@ package com.soc.items;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import com.soc.SocWars;
 import com.soc.items.util.ModItems;
 import com.soc.util.Random;
 import net.minecraft.component.type.TooltipDisplayComponent;
@@ -24,7 +23,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
 import java.util.function.Consumer;
 
 public class GamblerSword extends Item {

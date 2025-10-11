@@ -1,18 +1,22 @@
 package com.soc.items;
 
+import com.soc.items.util.ArrowFactory;
 import com.soc.items.util.ModItems;
+import com.soc.util.SphereExplosion;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.ItemEnchantmentsComponent;
-import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ArrowEntity;
+import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.*;
 import net.minecraft.item.consume.UseAction;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.Rarity;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,28 +24,106 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.soc.lib.SocWarsLib.getHoldTimeSeconds;
 import static com.soc.lib.SocWarsLib.hasInfinity;
+import static com.soc.util.SphereExplosion.fireExplosion;
 
 public class BowItem extends RangedWeaponItem {
-    private final ArrowEntity arrow;
+    private final ArrowFactory<? extends ArrowEntity> arrowFactory;
     private final Function<ItemStack, Float> drawTime;
     private final Function<ItemStack, Float> speed;
-    private final float knockbackMultiplier;
 
-    public BowItem(Settings settings, ArrowEntity arrow, Function<ItemStack, Float> drawTime, Function<ItemStack, Float> speed, float knockbackMultiplier) {
+    private final Identifier[] itemModels;
+
+    private static final int MAX_USE_TICKS = 72000;
+
+    public static final String[] MODEL_SUFFIXES = {
+            "/base",
+            "/hold_0",
+            "/hold_1",
+            "/hold_2"
+    };
+
+    public BowItem(Settings settings, ArrowFactory<? extends ArrowEntity> arrowFactory, Function<ItemStack, Float> drawTime, Function<ItemStack, Float> speed) {
         super(settings);
-        this.arrow = arrow;
+        this.arrowFactory = arrowFactory;
         this.drawTime = drawTime;
         this.speed = speed;
-        this.knockbackMultiplier = knockbackMultiplier;
+
+        this.itemModels = this.makeItemModels();
     }
 
     public static void initialise() {
         ModItems.addItemToGroups(BOOM_BOW, ItemGroups.COMBAT);
+        ModItems.addItemToGroups(MEGABOOM_BOW, ItemGroups.COMBAT);
+        ModItems.addItemToGroups(FALCON_BOW, ItemGroups.COMBAT);
+        ModItems.addItemToGroups(HEATER_BOW, ItemGroups.COMBAT);
     }
 
-    public static final Item BOOM_BOW = ModItems.register("boom_bow", settings -> new BowItem(settings, null, stack -> 1f, stack -> 4f, 1f), new Settings());
+    public static final Item BOOM_BOW = ModItems.register("boom_bow", settings -> new BowItem(settings, (world, user, projectileStack,weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
+                @Override
+                protected void onHit(LivingEntity target) {
+                    super.onHit(target);
+                    this.discard();
+                    SphereExplosion.explode(world, target.getPos(), 4f, 0.9f, 1.75f);
+                }
+
+                @Override
+                protected void onBlockHit(BlockHitResult blockHitResult) {
+                    super.onBlockHit(blockHitResult);
+                    this.discard();
+                    SphereExplosion.explode(world, blockHitResult.getPos(), 4f, 1.2f, 2f);
+                }
+    }, stack -> 1.25f, stack -> 3f), new Settings()
+            .rarity(Rarity.UNCOMMON)
+            .maxDamage(300)
+    );
+    public static final Item MEGABOOM_BOW = ModItems.register("megaboom_bow", settings -> new BowItem(settings, (world, user, projectileStack,weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
+                @Override
+                protected void onHit(LivingEntity target) {
+                    super.onHit(target);
+                    this.discard();
+                    SphereExplosion.explode(world, target.getPos(), 7f, 1.5f, 3f);
+                }
+
+                @Override
+                protected void onBlockHit(BlockHitResult blockHitResult) {
+                    super.onBlockHit(blockHitResult);
+                    this.discard();
+                    SphereExplosion.explode(world, blockHitResult.getPos(), 8f, 2f, 4f);
+                }
+    }, stack -> 2f, stack -> 2f), new Settings()
+            .rarity(Rarity.RARE)
+            .maxDamage(30)
+    );
+    public static final Item FALCON_BOW = ModItems.register("falcon_bow", settings -> new BowItem(settings, (world, user, projectileStack,weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
+                @Override
+                protected void onHit(LivingEntity target) {
+                    super.onHit(target);
+                    this.discard();
+                    target.addVelocity(this.getVelocity().getHorizontal().multiply(1.25f).add(0d, 0.5d, 0d));
+                }
+            }, stack -> 1f, stack -> 3.5f), new Settings()
+            .rarity(Rarity.EPIC)
+            .maxDamage(50)
+    );
+    public static final Item HEATER_BOW = ModItems.register("heater_bow", settings -> new BowItem(settings, (world, user, projectileStack,weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
+                @Override
+                protected void onHit(LivingEntity target) {
+                    super.onHit(target);
+                    this.discard();
+                    fireExplosion(world, target.getBlockPos(), 5f, 0.125f);
+                }
+
+                @Override
+                protected void onBlockHit(BlockHitResult blockHitResult) {
+                    super.onBlockHit(blockHitResult);
+                    this.discard();
+                    fireExplosion(world, blockHitResult.getBlockPos(), 4f, 0.175f);
+                }
+            }, stack -> 1f, stack -> 3.5f), new Settings()
+            .rarity(Rarity.UNCOMMON)
+            .maxDamage(250)
+    );
 
     @Override
     public UseAction getUseAction(ItemStack stack) {
@@ -52,6 +134,7 @@ public class BowItem extends RangedWeaponItem {
     public ActionResult use(World world, PlayerEntity user, Hand hand) {
         ItemStack stack = user.getStackInHand(hand);
         boolean hasArrowOrInfinity = !user.getProjectileType(stack).isEmpty() || hasInfinity(stack);
+
         if (user.isInCreativeMode() || hasArrowOrInfinity) {
             user.setCurrentHand(hand);
             return ActionResult.CONSUME;
@@ -65,13 +148,25 @@ public class BowItem extends RangedWeaponItem {
         final float drawProgress = this.drawProgress(stack, remainingUseTicks);
         final float speed = drawProgress * this.speed.apply(stack);
 
+        List<ItemStack> arrowStack = load(stack, user.getProjectileType(stack), user);
+        if (arrowStack.isEmpty()) arrowStack = List.of(Items.ARROW.getDefaultStack());
+
         if (world instanceof ServerWorld serverWorld) {
-            this.shootAll(serverWorld, user, user.getActiveHand(), stack, List.of(Items.ARROW.getDefaultStack()), speed, 1f - drawProgress, drawProgress > 0.95f, null);
+            this.shootAll(serverWorld, user, user.getActiveHand(), stack, arrowStack, speed, 1f - drawProgress, drawProgress > 0.95f, null);
         }
 
-        if (user instanceof PlayerEntity player) stack.damage(1, player);
+        if (user instanceof PlayerEntity player) {
+            stack.damage(arrowStack.size(), player);
+        }
+
+        stack.set(DataComponentTypes.ITEM_MODEL, this.itemModels[0]);
 
         return true;
+    }
+
+    @Override
+    public void usageTick(World world, LivingEntity user, ItemStack stack, int remainingUseTicks) {
+        stack.set(DataComponentTypes.ITEM_MODEL, this.getItemModel(this.drawProgress(stack, remainingUseTicks)));
     }
 
     @Override
@@ -89,10 +184,47 @@ public class BowItem extends RangedWeaponItem {
         projectile.setVelocity(shooter, shooter.getPitch(), shooter.getYaw() + yaw * 0.25f, 0f, speed, divergence);
     }
 
+    @Override
+    protected PersistentProjectileEntity createArrowEntity(World world, LivingEntity shooter, ItemStack weaponStack, ItemStack projectileStack, boolean critical) {
+        final ArrowEntity arrowEntity = this.arrowFactory.build(world, shooter, projectileStack, weaponStack);
+        if (critical) {
+            arrowEntity.setCritical(true);
+        }
+
+        return arrowEntity;
+    }
+
+    @Override
+    public int getMaxUseTime(ItemStack stack, LivingEntity user) {
+        return MAX_USE_TICKS;
+    }
+
     private float drawProgress(ItemStack stack, int remainingUseTicks) {
-        final float getHeldAmount = getHoldTimeSeconds(remainingUseTicks);
+        final float getHeldAmount = rawDrawProgress(remainingUseTicks);
         final float drawTime = this.drawTime.apply(stack);
 
         return Math.min(1f, getHeldAmount / drawTime);
+    }
+
+    private static float rawDrawProgress(int remainingUseTicks) {
+        return (MAX_USE_TICKS - remainingUseTicks) / 20f;
+    }
+
+    private Identifier[] makeItemModels() {
+        final Identifier base = this.getDefaultStack().getComponents().get(DataComponentTypes.ITEM_MODEL);
+        final Identifier[] models = new Identifier[MODEL_SUFFIXES.length];
+
+        if (base != null) {
+            for (int i = 0; i < MODEL_SUFFIXES.length; i++) {
+                models[i] = base.withSuffixedPath(MODEL_SUFFIXES[i]);
+            }
+        }
+
+        return models;
+    }
+
+    private Identifier getItemModel(float drawProgress) {
+        if (drawProgress > 1f) return this.itemModels[0];
+        return this.itemModels[(int)Math.floor(drawProgress * drawProgress * (this.itemModels.length - 2)) + 1];
     }
 }

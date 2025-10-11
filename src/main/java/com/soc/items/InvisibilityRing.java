@@ -21,15 +21,6 @@ public class InvisibilityRing extends RingItem {
 
     public static void initialise() {
         addItemToGroups(INVISIBILITY_RING, ItemGroups.TOOLS);
-
-        /*
-        ItemTooltipCallback.EVENT.register((itemStack, tooltipContext, tooltipType, list) -> {
-            if (!itemStack.isOf(INVISIBILITY_RING)) {
-                return;
-            }
-            list.add(Text.translatable("item.socwars.invisibility_ring.tooltip"));
-        });
-        */
     }
 
     public static final Item INVISIBILITY_RING = ModItems.register("invisibility_ring", InvisibilityRing::new, new Settings().maxDamage(20 * 40).rarity(Rarity.UNCOMMON));

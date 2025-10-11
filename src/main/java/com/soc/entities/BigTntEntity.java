@@ -203,7 +203,7 @@ public class BigTntEntity extends Entity implements Ownable {
     private void explode() {
         final BigTntExplosionBehaviour behaviour = new BigTntExplosionBehaviour();
         behaviour.setKnockbackModifier(this.tntType.explosionRadius * 0.125f);
-        SphereExplosion.explode(this.getWorld(), this.getBlockPos(), this.tntType.explosionRadius, behaviour);
+        SphereExplosion.explode(this.getWorld(), this.getPos(), this.tntType.explosionRadius, behaviour);
     }
 
     protected void writeCustomData(WriteView view) {

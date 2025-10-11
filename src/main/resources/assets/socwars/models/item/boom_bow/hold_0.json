@@ -1,0 +1,6 @@
+{
+  "parent": "socwars:item/boom_bow/base",
+  "textures": {
+    "layer0": "socwars:item/boom_bow/hold_0"
+  }
+}

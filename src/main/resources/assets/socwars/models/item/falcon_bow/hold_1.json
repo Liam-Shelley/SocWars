@@ -1,0 +1,6 @@
+{
+  "parent": "socwars:item/falcon_bow/base",
+  "textures": {
+    "layer0": "socwars:item/falcon_bow/hold_1"
+  }
+}
