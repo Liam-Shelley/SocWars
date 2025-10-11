@@ -278,12 +278,12 @@ public class AttackFunctionWeapon extends Item {
     public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
         switch (stack.getItem().toString()) {
             case "socwars:knockforward_sword" -> {
-                textConsumer.accept(Text.literal("The Hypixel special").formatted(Formatting.GOLD));
-                textConsumer.accept(Text.literal("Knockback -II").formatted(Formatting.GRAY));
+                textConsumer.accept(Text.translatable("tooltip.knockforward_sword").formatted(Formatting.GOLD));
+                textConsumer.accept(Text.translatable("tooltip.knockforward_sword.knockback").formatted(Formatting.GRAY));
             }
-            case "socwars:stormageddon" -> textConsumer.accept(Text.literal("He speaks baby"));
-            case "socwars:spring_sword" -> textConsumer.accept(Text.literal("Potentially charged").formatted(Formatting.YELLOW));
-            case "socwars:fleshy_blade" -> textConsumer.accept(Text.literal(WORLD == null || WORLD.getTime() % 25 > 2 ? "*crunch*" : "*crunches wetly*").formatted(Formatting.RED));
+            case "socwars:stormageddon" -> textConsumer.accept(Text.translatable("tooltip.stormageddon"));
+            case "socwars:spring_sword" -> textConsumer.accept(Text.translatable("tooltip.spring_sword").formatted(Formatting.YELLOW));
+            case "socwars:fleshy_blade" -> textConsumer.accept(Text.translatable(WORLD == null || WORLD.getTime() % 25 > 2 ? "tooltip.fleshy_blade" : "tooltip.fleshy_blade.wet").formatted(Formatting.RED));
         }
     }
 }

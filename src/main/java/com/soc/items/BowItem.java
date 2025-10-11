@@ -5,6 +5,7 @@ import com.soc.items.util.ModItems;
 import com.soc.util.DamageTypes;
 import com.soc.util.SphereExplosion;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
@@ -13,19 +14,18 @@ import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.*;
 import net.minecraft.item.consume.UseAction;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Rarity;
+import net.minecraft.util.*;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -283,5 +283,13 @@ public class BowItem extends RangedWeaponItem {
     private Identifier getItemModel(float drawProgress) {
         if (drawProgress > 1f) return this.itemModels[0];
         return this.itemModels[(int)Math.floor(drawProgress * drawProgress * (this.itemModels.length - 2)) + 1];
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
+        switch (stack.getItem().toString()) {
+            case "socwars:catastrophe_bow" -> textConsumer.accept(Text.translatable("tooltip.catastrophe_bow").formatted(Formatting.DARK_RED));
+        }
     }
 }

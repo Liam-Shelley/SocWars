@@ -325,7 +325,6 @@ public class UseFunctionWeapon extends Item {
     @SuppressWarnings("deprecation")
     public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
         switch (stack.getItem().toString()) {
-            case "socwars:knockforward_sword" -> textConsumer.accept(Text.literal("The Hypixel special").formatted(Formatting.GOLD));
             case "socwars:god_complex" -> textConsumer.accept(Text.translatable("tooltip.god_complex"));
             case "socwars:shrink_ray" -> textConsumer.accept(Text.translatable("tooltip.shrink_ray"));
             case "socwars:scroll_of_eau" -> textConsumer.accept(Text.translatable("tooltip.scroll_of_eau"));

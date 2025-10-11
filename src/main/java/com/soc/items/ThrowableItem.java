@@ -95,8 +95,8 @@ public class ThrowableItem extends Item {
     public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
         Text text = switch (this.fireballType) {
             case FIREBALL, TNT, ENDER -> null;
-            case SNAIL -> Text.literal("WHERE IS OMNI MAN").withColor(0xe6e475);
-            case DRAGON -> Text.literal("nuts across your face").withColor(Color.HSBtoRGB(world == null ? 0f : world.getTime() / 50f, 1f, 1f));
+            case SNAIL -> Text.translatable("tooltip.snail_fireball").withColor(0xe6e475);
+            case DRAGON -> Text.translatable("tooltip.dragon_fireball").withColor(Color.HSBtoRGB(world == null ? 0f : world.getTime() / 50f, 1f, 1f));
         };
 
         if (text != null) {

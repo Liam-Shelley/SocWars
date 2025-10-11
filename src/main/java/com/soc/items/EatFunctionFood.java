@@ -3,16 +3,21 @@ package com.soc.items;
 import com.soc.items.util.FinishUsingFunction;
 import com.soc.items.util.ModItems;
 import net.minecraft.component.type.FoodComponent;
+import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
+
+import java.util.function.Consumer;
 
 import static com.soc.items.util.ModItems.addItemToGroups;
 import static com.soc.lib.SocWarsLib.*;
@@ -61,5 +66,14 @@ public class EatFunctionFood extends Item {
     public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
         this.finishUsingFunction.finishUsing(stack, world, user);
         return super.finishUsing(stack, world, user);
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
+        switch (stack.getItem().toString()) {
+            case "socwars:shrinking_pills" -> textConsumer.accept(Text.translatable("tooltip.shrinking_pills"));
+            case "socwars:biggening_pills" -> textConsumer.accept(Text.translatable("tooltip.biggening_pills"));
+        }
     }
 }

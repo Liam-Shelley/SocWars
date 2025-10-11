@@ -106,7 +106,7 @@ public class PotionFood extends Item {
     @Override
     public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
         switch (stack.getItem().toString()) {
-            case "socwars:jelly_donut": textConsumer.accept(Text.literal("What the fuck is that?")); break;
+            case "socwars:jelly_donut": textConsumer.accept(Text.translatable("tooltip.jelly_donut")); break;
             default: {
                 List<Pair<RegistryEntry<EntityAttribute>, EntityAttributeModifier>> list = Lists.newArrayList();
 

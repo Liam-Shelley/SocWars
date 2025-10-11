@@ -43,8 +43,8 @@ public class BaseWeapon extends Item {
     @SuppressWarnings("deprecation")
     public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
         Text text = switch (stack.getItem().toString()) {
-            case "socwars:bat" -> Text.literal("*hits you cutely*");
-            case "socwars:saw_blade_bat" -> Text.literal("Last day").formatted(Formatting.DARK_RED);
+            case "socwars:bat" -> Text.translatable("tooltip.bat");
+            case "socwars:saw_blade_bat" -> Text.translatable("tooltip.saw_blade_bat").formatted(Formatting.DARK_RED);
             default -> null;
         };
 
