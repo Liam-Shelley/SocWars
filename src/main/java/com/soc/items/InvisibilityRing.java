@@ -4,6 +4,7 @@ import com.soc.items.util.ModItems;
 import com.soc.items.util.RingItem;
 import com.soc.player.PlayerData;
 import com.soc.player.PlayerDataManager;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
@@ -25,14 +26,16 @@ public class InvisibilityRing extends RingItem {
 
     public static final Item INVISIBILITY_RING = ModItems.register("invisibility_ring", InvisibilityRing::new, new Settings().maxDamage(20 * 40).rarity(Rarity.UNCOMMON));
 
-    protected void ringUse(World world, PlayerEntity user, Hand hand) {
+    @Override
+    protected void ringUse(LivingEntity user) {
         PlayerData playerData = PlayerDataManager.getPlayerData(user.getUuid());
 
         playerData.invisible = true;
         user.setInvisible(true);
     }
 
-    protected void ringFinishUse(World world, PlayerEntity user, Hand hand) {
+    @Override
+    protected void ringFinishUse(LivingEntity user) {
         PlayerData playerData = PlayerDataManager.getPlayerData(user.getUuid());
 
         playerData.invisible = false;

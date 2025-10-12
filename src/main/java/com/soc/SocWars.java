@@ -5,6 +5,7 @@ import com.soc.blocks.util.ModBlocks;
 import com.soc.effects.util.ModEffects;
 import com.soc.entities.util.ModEntities;
 import com.soc.game.manager.GamesManager;
+import com.soc.items.components.ModComponents;
 import com.soc.items.util.ModItems;
 import com.soc.lib.Coroutines;
 import com.soc.networking.C2SPayloads;
@@ -33,6 +34,7 @@ public class SocWars implements ModInitializer {
 		LOGGER.info("Hello Fabric world!");
 
 		ModItems.initialise();
+		ModComponents.initialise();
 		ModBlocks.initialise();
 		ModEntities.initialise();
 		ModBlockEntities.initialise();

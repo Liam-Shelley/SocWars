@@ -8,6 +8,7 @@ import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
@@ -25,11 +26,13 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -287,5 +290,17 @@ public class SocWarsLib {
             final Vec3d pos = new Vec3d(Math.cos(angle) * range, minHeight + heightRange * world.random.nextFloat(), Math.sin(angle) * range).add(origin);
             function.accept(pos);
         }
+    }
+
+    public static Optional<Hand> handFromEquipmentSlot(@Nullable EquipmentSlot slot) {
+        return switch (slot) {
+            case MAINHAND -> Optional.of(Hand.MAIN_HAND);
+            case OFFHAND -> Optional.of(Hand.OFF_HAND);
+            case null, default -> Optional.empty();
+        };
+    }
+
+    public static boolean EquipmentSlotIsHand(@Nullable EquipmentSlot slot) {
+        return slot == EquipmentSlot.MAINHAND || slot == EquipmentSlot.OFFHAND;
     }
 }
