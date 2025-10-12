@@ -67,8 +67,8 @@ public class ThrowableItem extends Item {
 
         if (world instanceof ServerWorld serverWorld) {
             switch (this.fireballType) {
-                case FIREBALL -> spawnEntityWithVelocity(new BWFireballEntity(world, user, Vec3d.ZERO, 3), serverWorld, user, 0.8f);
-                case SNAIL -> spawnEntityWithVelocity(new BWFireballEntity(world, user, Vec3d.ZERO, 25), serverWorld, user, 0.2f);
+                case FIREBALL -> spawnEntityWithVelocity(new BWFireballEntity(world, user, Vec3d.ZERO, 4), serverWorld, user, 0.8f);
+                case SNAIL -> spawnEntityWithVelocity(new BWFireballEntity(world, user, Vec3d.ZERO, 10), serverWorld, user, 0.2f);
                 case DRAGON -> spawnEntityWithVelocity(new DragonFireballEntity(world, user, Vec3d.ZERO), serverWorld, user, 0.8f);
                 case TNT -> {
                     TntEntity tnt = ((TntEntity)spawnEntityWithVelocity(new TntEntity(EntityType.TNT, world), serverWorld, user, 0.6f));

@@ -2,6 +2,7 @@ package com.soc.entities;
 
 import com.soc.SocWars;
 import com.soc.entities.util.ModEntities;
+import com.soc.util.SphereExplosion;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -70,17 +71,7 @@ public class BWFireballEntity extends FireballEntity {
     @Override
     protected void onCollision(HitResult hitResult) {
         if (this.getWorld() instanceof ServerWorld serverWorld) {
-            serverWorld.createExplosion(
-                    this,
-                    this.damageSource(),
-                    new BWFireballBehaviour(),
-                    this.getX(),
-                    this.getY(),
-                    this.getZ(),
-                    this.explosionPower,
-                    true,
-                    World.ExplosionSourceType.TNT
-            );
+            SphereExplosion.explode(serverWorld, this.getPos(), this.explosionPower, 0.2f, 1f);
             this.discard();
         }
     }

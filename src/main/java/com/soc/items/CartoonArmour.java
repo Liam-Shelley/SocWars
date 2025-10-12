@@ -5,6 +5,7 @@ import com.soc.items.util.ArmourItem;
 import com.soc.items.util.ModItems;
 import com.soc.items.util.OnHitArmour;
 import com.soc.networking.s2c.AddVelocityPayload;
+import com.soc.util.BlockTags;
 import com.soc.util.SphereExplosion;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.Blocks;
@@ -131,7 +132,7 @@ public class CartoonArmour extends ArmourItem implements OnHitArmour {
                 case 3 -> {
                     final BlockPos centre = wearer.getBlockPos();
                     iterateInSphere(centre, 10f, 0f, pos -> {
-                        if (centre.isWithinDistance(pos, 7f)) return;
+                        if (centre.isWithinDistance(pos, 7f) || world.getBlockState(pos).isIn(BlockTags.IMMUNE)) return;
                         world.setBlockState(pos, Blocks.STICKY_PISTON.getDefaultState().with(Properties.FACING, Direction.byIndex(world.random.nextBetween(1, 6))));
                     });
                 }

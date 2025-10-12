@@ -1,6 +1,7 @@
 package com.soc.items;
 
 import com.soc.networking.s2c.AddVelocityPayload;
+import com.soc.util.BlockTags;
 import com.soc.util.DamageTypes;
 import com.soc.items.util.ModItems;
 import com.soc.items.util.AttackFunction;
@@ -246,7 +247,7 @@ public class AttackFunctionWeapon extends Item {
     public static final Item CORRUPTED_SWORD = ModItems.register("corrupted_sword", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
                 final World world = target.getWorld();
                 iterateInSphere(target.getBlockPos(), 4, 0, pos -> {
-                    if (world.random.nextFloat() < 0.2f && !isBlockHidden(world, pos)) {
+                    if (world.random.nextFloat() < 0.2f && !isBlockHidden(world, pos) && !world.getBlockState(pos).isIn(BlockTags.IMMUNE)) {
                         world.setBlockState(pos, Blocks.AIR.getDefaultState());
                     }
                 });
