@@ -1,9 +1,11 @@
 package com.soc;
 
 import com.soc.blocks.util.ModBlocks;
+import com.soc.entities.BWFireballEntity;
 import com.soc.entities.BigTntEntity;
 import com.soc.items.FeatherBlockItem;
 import com.soc.networking.S2CReceivers;
+import com.soc.renderer.BWFireballEntityRenderer;
 import com.soc.renderer.BigTntRenderer;
 import com.soc.renderer.CollectibleBlockEntityRenderer;
 import com.soc.renderer.MapBlockEntityRenderer;
@@ -17,7 +19,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.hud.DebugHud;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.BlockRenderLayer;
@@ -27,20 +28,15 @@ import net.minecraft.client.render.VertexRendering;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.Item;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ColorHelper;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShapes;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
-import java.util.EnumSet;
 
 import static com.soc.blocks.blockentities.ModBlockEntities.COLLECTIBLE_BLOCK_ENTITY;
 import static com.soc.blocks.blockentities.ModBlockEntities.MAP_BLOCK_ENTITY;
@@ -53,6 +49,7 @@ public class SocWarsClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		EntityRendererRegistry.register(BigTntEntity.NUCLEAR_BOMB, BigTntRenderer::new);
 		EntityRendererRegistry.register(BigTntEntity.HYDROGEN_BOMB, BigTntRenderer::new);
+		EntityRendererRegistry.register(BWFireballEntity.BW_FIREBALL_TYPE, BWFireballEntityRenderer::new);
 
 		BlockEntityRendererFactories.register(MAP_BLOCK_ENTITY, MapBlockEntityRenderer::new);
 		BlockEntityRendererFactories.register(COLLECTIBLE_BLOCK_ENTITY, CollectibleBlockEntityRenderer::new);

@@ -55,7 +55,7 @@ public class BWFireballEntity extends FireballEntity {
             .dropsNothing()
             .dimensions(0.25F, 0.25F)
             .maxTrackingRange(4)
-            .trackingTickInterval(10)
+            .trackingTickInterval(1)
     );
 
     @Override

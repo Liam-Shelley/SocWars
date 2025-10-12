@@ -28,6 +28,7 @@ public class Flight extends StatusEffect {
     public void onApplied(LivingEntity entity, int amplifier) {
         if (entity instanceof PlayerEntity playerEntity) {
             this.playerEntity = playerEntity;
+            if (playerEntity == null) return;
             playerEntity.getAbilities().allowFlying = true;
             playerEntity.sendAbilitiesUpdate();
         }

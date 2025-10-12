@@ -2,7 +2,6 @@ package com.soc.lib;
 
 import com.google.common.collect.ImmutableMap;
 import com.soc.SocWars;
-import com.soc.util.DamageTypes;
 import com.soc.util.Random;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ItemEnchantmentsComponent;
@@ -27,10 +26,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.*;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
@@ -157,6 +153,15 @@ public class SocWarsLib {
         iterateInCube(minPos, maxPos, function);
     }
 
+    public static void iterateInPlane(Vec3i centre, int radius, Consumer<BlockPos> function) {
+        final Vec3i cornerSize = new Vec3i(radius, 0, radius);
+
+        final Vec3i minPos = centre.subtract(cornerSize);
+        final Vec3i maxPos = centre.add(cornerSize).add(1, 1, 1);
+
+        iterateInCube(minPos, maxPos, function);
+    }
+
     public static void iterateInCube(Vec3i minPos, Vec3i maxPos, Consumer<BlockPos> function) {
         for (int x = minPos.getX(); x < maxPos.getX(); x++) {
             for (int y = minPos.getY(); y < maxPos.getY(); y++) {
@@ -183,21 +188,28 @@ public class SocWarsLib {
     }
 
     public static boolean randomTeleport(World world, Entity user, int attempts, int range, float minRange) {
+        Optional<Vec3d> destination = findRandomOpenPos(world, user.getPos(), attempts, range, minRange);
+
+        destination.ifPresent(pos -> user.requestTeleport(pos.x, pos.y, pos.z));
+
+        return destination.isPresent();
+    }
+
+    public static Optional<Vec3d> findRandomOpenPos(World world, Position origin, int attempts, int range, float minRange) {
         for (int i = 0; i < attempts; i++) {
-            final int candidateX = (int)user.getX() + world.random.nextBetween(-range, range);
-            final int candidateZ = (int)user.getZ() + world.random.nextBetween(-range, range);
+            final int candidateX = (int)origin.getX() + world.random.nextBetween(-range, range);
+            final int candidateZ = (int)origin.getZ() + world.random.nextBetween(-range, range);
 
             final int height = world.getTopY(Heightmap.Type.WORLD_SURFACE, candidateX, candidateZ);
+            if (Math.abs(height - origin.getY()) > 10) continue;
 
-            if (Math.abs(height - user.getY()) > 10) continue;
-            final float dX = candidateX - (float)user.getX();
-            final float dZ = candidateZ - (float)user.getZ();
-            if (dX * dX + dZ * dZ < minRange * minRange) continue; //Make sure the user teleports at least 15 blocks away
+            final float dX = candidateX - (float)origin.getX();
+            final float dZ = candidateZ - (float)origin.getZ();
+            if (dX * dX + dZ * dZ < minRange * minRange) continue;
 
-            user.requestTeleport(candidateX, height, candidateZ);
-            return true;
+            return Optional.of(new Vec3d(candidateX, height, candidateZ));
         }
-        return false;
+        return Optional.empty();
     }
 
     public static DamageSource damageSource(World world, RegistryKey<DamageType> damageType, Entity attacker) {
@@ -246,5 +258,34 @@ public class SocWarsLib {
         mob.setPosition(pos);
 
         return mob;
+    }
+
+    public static void swapPositions(Entity a, Entity b) {
+        final Vec3d aPos = new Vec3d(a.getPos().toVector3f());
+        final Vec3d bPos = new Vec3d(b.getPos().toVector3f());
+
+        if (a instanceof PlayerEntity player) {
+            player.requestTeleport(bPos.getX(), bPos.getY(), bPos.getZ());
+        } else {
+            a.setPosition(bPos);
+        }
+
+        if (b instanceof PlayerEntity player) {
+            player.requestTeleport(aPos.getX(), aPos.getY(), aPos.getZ());
+        } else {
+            b.setPosition(aPos);
+        }
+    }
+
+    public static void rainPositions(World world, Vec3d origin, int num, float radius, float minHeight, float maxHeight, Consumer<Vec3d> function) {
+        final float heightRange = maxHeight - minHeight;
+
+        for (int i = 0; i < num; i++) {
+            final double range = radius * Math.sqrt(world.random.nextFloat());
+            final double angle = world.random.nextFloat() * 2d * Math.PI;
+
+            final Vec3d pos = new Vec3d(Math.cos(angle) * range, minHeight + heightRange * world.random.nextFloat(), Math.sin(angle) * range).add(origin);
+            function.accept(pos);
+        }
     }
 }

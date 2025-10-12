@@ -152,6 +152,7 @@ public class UseFunctionWeapon extends Item {
     );
     public static final Item GOD_COMPLEX = ModItems.register("god_complex", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 user.addStatusEffect(new StatusEffectInstance(Flight.FLIGHT, 5 * 20, 0, false, false));
+                user.getStackInHand(hand).decrementUnlessCreative(1, user);
 
                 return ActionResult.SUCCESS;
             }), new Settings()
@@ -250,7 +251,7 @@ public class UseFunctionWeapon extends Item {
                 return ActionResult.SUCCESS;
             }), new Settings()
             .maxCount(4)
-            .useCooldown(0f)
+            .useCooldown(2f)
             .rarity(Rarity.RARE)
     );
     public static final Item WHEATENATOR = ModItems.register("wheatenator", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
@@ -274,17 +275,14 @@ public class UseFunctionWeapon extends Item {
             .useCooldown(0.25f)
     );
     public static final Item DEATH_RAIN = ModItems.register("death_rain", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
-                for (int i = 0; i < 15; i++) {
-                    final double range = 15f * Math.sqrt(world.random.nextFloat());
-                    final double angle = world.random.nextFloat() * 2d * Math.PI;
-                    final Vec3d pos = new Vec3d(Math.cos(angle) * range, 20f + 15f * world.random.nextFloat(), Math.sin(angle) * range).add(user.getPos());
-
+                rainPositions(world, user.getPos(), 15, 15f, 20f, 35f, pos -> {
                     final TntEntity tnt = new TntEntity(world, pos.x, pos.y, pos.z, user);
+
                     tnt.setFuse(world.random.nextBetween(45, 75));
                     world.spawnEntity(tnt);
-                }
+                });
 
-                user.getStackInHand(hand).damage(1, user);
+                user.getStackInHand(hand).damage(1, user, hand);
 
                 return ActionResult.SUCCESS;
             }), new Settings()

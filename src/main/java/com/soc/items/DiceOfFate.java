@@ -2,7 +2,7 @@ package com.soc.items;
 
 import com.soc.items.util.EffectRecord;
 import com.soc.items.util.ModItems;
-import com.soc.networking.s2c.DiceOfFatePayload;
+import com.soc.networking.s2c.AddVelocityPayload;
 import io.netty.buffer.ByteBuf;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -19,6 +19,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.StringIdentifiable;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
@@ -108,7 +109,7 @@ public class DiceOfFate extends Item {
                 ItemStack ring = RANDOM_RINGS[world.random.nextBetween(0, RANDOM_RINGS.length - 1)].getDefaultStack();
                 giveItem(user, ring, hand);
             }
-            case LAUNCH -> ServerPlayNetworking.send((ServerPlayerEntity) user, new DiceOfFatePayload(effect));
+            case LAUNCH -> ServerPlayNetworking.send((ServerPlayerEntity)user, new AddVelocityPayload(new Vec3d(0d, 2.5d, 0d)));
             case DEBUFFS -> Arrays.stream(GARBO_EFFECTS).forEach(effectRecord -> user.addStatusEffect(new StatusEffectInstance(effectRecord.effect(), 20 * 20, effectRecord.amplifier(), false, true, true)));
         }
 

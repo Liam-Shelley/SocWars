@@ -1,11 +1,13 @@
 package com.soc.items;
 
+import com.soc.networking.s2c.AddVelocityPayload;
 import com.soc.util.DamageTypes;
 import com.soc.items.util.ModItems;
 import com.soc.items.util.AttackFunction;
 import com.soc.items.util.ModifyEquipmentFunction;
 import com.soc.materials.ToolMaterials;
 import com.soc.util.Sounds;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.Blocks;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.DataComponentTypes;
@@ -22,6 +24,7 @@ import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -30,6 +33,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.Unit;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -147,7 +151,13 @@ public class AttackFunctionWeapon extends Item {
             .maxDamage(1000)
     );
     public static final Item KNOCKFORWARD_SWORD = ModItems.register("knockforward_sword", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
-                target.addVelocity(attacker.getRotationVector().multiply(-0.8f));
+                final Vec3d velocity = attacker.getRotationVector().multiply(-0.75f);
+
+                if (target instanceof ServerPlayerEntity serverPlayer) {
+                    ServerPlayNetworking.send(serverPlayer, new AddVelocityPayload(velocity));
+                } else {
+                    target.addVelocity(velocity);
+                }
             }), new Settings()
             .rarity(Rarity.UNCOMMON)
             .sword(ToolMaterials.BASE, 5.5f, -2.2f)
@@ -258,7 +268,7 @@ public class AttackFunctionWeapon extends Item {
             target.playSound(SoundEvents.ENTITY_ITEM_BREAK.value());
             attacker.playSound(SoundEvents.ENTITY_ITEM_BREAK.value());
 
-            attacker.setStackInHand(Hand.MAIN_HAND, ItemStack.EMPTY);
+            attacker.getStackInHand(Hand.MAIN_HAND).decrementUnlessCreative(1, attacker);
         }
 
         if (!armour.isEmpty()) {

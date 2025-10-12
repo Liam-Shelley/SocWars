@@ -27,10 +27,10 @@ public class ModBlocks {
     public static final Block PLASTIC_BLOCK = ModBlocks.register("plastic_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(2f, 2), true);
     public static final Block RUBBER_BLOCK = ModBlocks.register("rubber_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(4f, 3), true);
     public static final Block PERSPEX_BLOCK = ModBlocks.register("perspex_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(2f, 1200f), true);
-    public static final Block HARDENED_LAVA_BLOCK = ModBlocks.register("hardened_lava_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(25f, 1200f), settings -> settings.rarity(Rarity.RARE));
-    public static final Block UNOBTANIUM_BLOCK = ModBlocks.register("unobtanium_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(50f, 1200f), settings -> settings.rarity(Rarity.RARE));
-    public static final Block NEAR_INFINITE_DENSITY_BLOCK = ModBlocks.register("near_infinite_density_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(75f, 1200f), settings -> settings.rarity(Rarity.EPIC));
-    public static final Block LIAM_BLOCK = ModBlocks.register("liam_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(100f, 1200f), settings -> settings.rarity(Rarity.EPIC));
+    public static final Block HARDENED_LAVA_BLOCK = ModBlocks.register("hardened_lava_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(30f, 1200f), settings -> settings.rarity(Rarity.RARE));
+    public static final Block UNOBTANIUM_BLOCK = ModBlocks.register("unobtanium_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(60f, 1200f), settings -> settings.rarity(Rarity.RARE));
+    public static final Block NEAR_INFINITE_DENSITY_BLOCK = ModBlocks.register("near_infinite_density_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(100f, 1200f), settings -> settings.rarity(Rarity.EPIC));
+    public static final Block LIAM_BLOCK = ModBlocks.register("liam_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(200f, 1200f), settings -> settings.rarity(Rarity.EPIC));
     public static final Block MANY_BEDS_BLOCK = ModBlocks.register("many_beds_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(2f, 1200f), settings -> settings.rarity(Rarity.UNCOMMON));
     public static final Block FEATHER_BLOCK = ModBlocks.register("feather_block", Block::new, AbstractBlock.Settings.create().breakInstantly(), FeatherBlockItem::new);
     public static final Block GALLIUM_BLOCK = ModBlocks.register("gallium_block", settings -> new GalliumBlock(new ColorCode(0), settings), AbstractBlock.Settings.create().requiresTool().strength(0.35f, 2.5f).noCollision(), settings -> settings.rarity(Rarity.UNCOMMON));

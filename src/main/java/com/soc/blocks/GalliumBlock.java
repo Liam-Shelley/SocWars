@@ -38,7 +38,7 @@ public class GalliumBlock extends ColoredFallingBlock {
     @Override
     protected void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity, EntityCollisionHandler handler) {
         if (entity instanceof final LivingEntity livingEntity && !world.isClient()) {
-            final float damage = livingEntity.getArmor() * 0.15f + 3f;
+            final float damage = livingEntity.getArmor() * 0.045f + 0.9f;
             final DamageSource source = damageSource(world, DamageTypes.GALLIUM);
             livingEntity.damage((ServerWorld)world, source, damage);
         }

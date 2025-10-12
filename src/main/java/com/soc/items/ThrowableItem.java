@@ -6,6 +6,7 @@ import com.soc.items.util.ModItems;
 import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.TntEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.DragonFireballEntity;
@@ -81,7 +82,7 @@ public class ThrowableItem extends Item {
         return ActionResult.SUCCESS;
     }
 
-    private Entity spawnEntityWithVelocity(Entity entity, ServerWorld world, PlayerEntity user, float speed) {
+    public static Entity spawnEntityWithVelocity(Entity entity, ServerWorld world, LivingEntity user, float speed) {
         entity.setPosition(user.getEyePos());
         entity.setVelocity(user.getRotationVector().multiply(speed));
 
