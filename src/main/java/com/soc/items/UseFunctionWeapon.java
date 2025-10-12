@@ -44,6 +44,7 @@ import net.minecraft.world.World;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
+import static com.soc.items.BowItem.playBowSound;
 import static com.soc.items.util.ModItems.addItemToGroups;
 import static com.soc.lib.SocWarsLib.*;
 
@@ -60,11 +61,11 @@ public class UseFunctionWeapon extends Item {
         addItemToGroups(VELOCITY_STAFF, ItemGroups.TOOLS);
         addItemToGroups(VEXING_STAFF, ItemGroups.COMBAT);
         addItemToGroups(YELLOW_SWORD, ItemGroups.COMBAT);
-        addItemToGroups(GRAVITY_ORB, ItemGroups.COMBAT);
-        addItemToGroups(GOD_COMPLEX, ItemGroups.COMBAT);
+        addItemToGroups(GRAVITY_ORB, ItemGroups.TOOLS);
+        addItemToGroups(GOD_COMPLEX, ItemGroups.TOOLS);
         addItemToGroups(SCROLL_OF_EAU, ItemGroups.COMBAT);
         addItemToGroups(SCROLL_OF_HELLFIRE, ItemGroups.COMBAT);
-        addItemToGroups(C_U_E_B, ItemGroups.COMBAT);
+        addItemToGroups(C_U_E_B, ItemGroups.TOOLS);
         addItemToGroups(SHRINK_RAY, ItemGroups.COMBAT);
         addItemToGroups(BIGGENING_RAY, ItemGroups.COMBAT);
         addItemToGroups(THE_LINE, ItemGroups.COMBAT);
@@ -302,6 +303,8 @@ public class UseFunctionWeapon extends Item {
 
                     ProjectileEntity.spawn(arrow, serverWorld, itemStack);
                 }
+
+                playBowSound(world, user, 1f);
 
                 itemStack.damage(1, user, hand);
 

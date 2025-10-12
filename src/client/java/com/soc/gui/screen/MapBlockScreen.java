@@ -27,8 +27,6 @@ public class MapBlockScreen extends Screen {
     private final MapBlockEntity blockEntity;
     private boolean initialised = false;
 
-
-
     private final BlockPos.Mutable regionSize;
     private String mapName;
     private GameType mapType;

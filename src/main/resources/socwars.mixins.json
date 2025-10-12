@@ -4,7 +4,8 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "CancelSprintParticles",
-    "DropItemEvent"
+    "DropItemEvent",
+    "UseDurationScale"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -39,8 +39,8 @@ public class DrawableWeapon extends Item {
     }
 
     public static void initialise() {
-        ModItems.addItemToGroups(ENDER_STAFF, ItemGroups.COMBAT);
-        ModItems.addItemToGroups(WIND_STAFF, ItemGroups.COMBAT);
+        ModItems.addItemToGroups(ENDER_STAFF, ItemGroups.TOOLS);
+        ModItems.addItemToGroups(WIND_STAFF, ItemGroups.TOOLS);
         ModItems.addItemToGroups(MOBBING_STAFF, ItemGroups.COMBAT);
     }
 

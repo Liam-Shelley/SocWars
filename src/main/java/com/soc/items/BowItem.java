@@ -2,12 +2,11 @@ package com.soc.items;
 
 import com.soc.items.util.ArrowFactory;
 import com.soc.items.util.ModItems;
+import com.soc.items.util.ScaledUseDuration;
 import com.soc.util.DamageTypes;
 import com.soc.util.SphereExplosion;
-import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ArrowEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
@@ -33,29 +32,18 @@ import static com.soc.items.EatFunctionFood.CHORUS_SALAD_TRIES;
 import static com.soc.lib.SocWarsLib.*;
 import static com.soc.util.SphereExplosion.fireExplosion;
 
-public class BowItem extends RangedWeaponItem {
+public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
     private final ArrowFactory<? extends ArrowEntity> arrowFactory;
     private final Function<ItemStack, Float> drawTime;
     private final Function<ItemStack, Float> speed;
 
-    private final Identifier[] itemModels;
-
     private static final int MAX_USE_TICKS = 72000;
-
-    public static final String[] MODEL_SUFFIXES = {
-            "/base",
-            "/hold_0",
-            "/hold_1",
-            "/hold_2"
-    };
 
     public BowItem(Settings settings, ArrowFactory<? extends ArrowEntity> arrowFactory, Function<ItemStack, Float> drawTime, Function<ItemStack, Float> speed) {
         super(settings);
         this.arrowFactory = arrowFactory;
         this.drawTime = drawTime;
         this.speed = speed;
-
-        this.itemModels = this.makeItemModels();
     }
 
     public static void initialise() {
@@ -81,7 +69,7 @@ public class BowItem extends RangedWeaponItem {
                     this.discard();
                     SphereExplosion.explode(world, blockHitResult.getPos(), 4f, 1.2f, 2f);
                 }
-    }, stack -> 1.25f, stack -> 3f), new Settings()
+    }, stack -> 1.5f, stack -> 2.75f), new Settings()
             .rarity(Rarity.UNCOMMON)
             .maxDamage(300)
     );
@@ -99,7 +87,7 @@ public class BowItem extends RangedWeaponItem {
                     this.discard();
                     SphereExplosion.explode(world, blockHitResult.getPos(), 8f, 2f, 4f);
                 }
-    }, stack -> 2f, stack -> 2f), new Settings()
+    }, stack -> 2f, stack -> 2.25f), new Settings()
             .rarity(Rarity.RARE)
             .maxDamage(30)
     );
@@ -110,7 +98,7 @@ public class BowItem extends RangedWeaponItem {
                     this.discard();
                     target.addVelocity(this.getVelocity().getHorizontal().multiply(1.25f).add(0d, 0.5d, 0d));
                 }
-            }, stack -> 1f, stack -> 3.5f), new Settings()
+            }, stack -> 0.75f, stack -> 4f), new Settings()
             .rarity(Rarity.EPIC)
             .maxDamage(50)
     );
@@ -145,7 +133,7 @@ public class BowItem extends RangedWeaponItem {
                     super.onBlockHit(blockHitResult);
                     randomTeleport(world, this, 2, 15, 2f);
                 }
-            }, stack -> 1f, stack -> 3f), new Settings()
+            }, stack -> 0.4f, stack -> 3.5f), new Settings()
             .rarity(Rarity.RARE)
             .maxDamage(350)
     );
@@ -158,10 +146,9 @@ public class BowItem extends RangedWeaponItem {
                         target.damage(serverWorld, damageSource(world, DamageTypes.CATASTROPHE_BOW, user), 69420f);
                     }
                 }
-            }, stack -> 3.5f, stack -> 5f) {
+            }, stack -> 3.5f, stack -> 7.5f) {
                 @Override
                 public void usageTick(World world, LivingEntity user, ItemStack stack, int remainingUseTicks) {
-                    super.usageTick(world, user, stack, remainingUseTicks);
                     if (rawDrawProgress(remainingUseTicks) > 7.5f) {
                         SphereExplosion.explode(world, user.getPos(), 5f, 2.5f, 1.75f);
                     }
@@ -192,7 +179,7 @@ public class BowItem extends RangedWeaponItem {
     @Override
     public boolean onStoppedUsing(ItemStack stack, World world, LivingEntity user, int remainingUseTicks) {
         final float drawProgress = this.drawProgress(stack, remainingUseTicks);
-        if (drawProgress < 0.2f) return false;
+        if (drawProgress < 0.2f && rawDrawProgress(remainingUseTicks) < 0.2f) return false;
 
         final float speed = drawProgress * this.speed.apply(stack);
 
@@ -207,25 +194,9 @@ public class BowItem extends RangedWeaponItem {
             stack.damage(arrowStack.size(), player);
         }
 
-        stack.set(DataComponentTypes.ITEM_MODEL, this.itemModels[0]);
-
-        world.playSound(
-                null,
-                user.getX(),
-                user.getY(),
-                user.getZ(),
-                SoundEvents.ENTITY_ARROW_SHOOT,
-                SoundCategory.PLAYERS,
-                1f,
-                1f / (world.getRandom().nextFloat() * 0.4f + 1.2f) + drawProgress * 0.5f
-        );
+        playBowSound(world, user, drawProgress);
 
         return true;
-    }
-
-    @Override
-    public void usageTick(World world, LivingEntity user, ItemStack stack, int remainingUseTicks) {
-        stack.set(DataComponentTypes.ITEM_MODEL, this.getItemModel(this.drawProgress(stack, remainingUseTicks)));
     }
 
     @Override
@@ -269,29 +240,29 @@ public class BowItem extends RangedWeaponItem {
         return (MAX_USE_TICKS - remainingUseTicks) / 20f;
     }
 
-    private Identifier[] makeItemModels() {
-        final Identifier base = this.getDefaultStack().getComponents().get(DataComponentTypes.ITEM_MODEL);
-        final Identifier[] models = new Identifier[MODEL_SUFFIXES.length];
-
-        if (base != null) {
-            for (int i = 0; i < MODEL_SUFFIXES.length; i++) {
-                models[i] = base.withSuffixedPath(MODEL_SUFFIXES[i]);
-            }
-        }
-
-        return models;
-    }
-
-    private Identifier getItemModel(float drawProgress) {
-        if (drawProgress > 1f) return this.itemModels[0];
-        return this.itemModels[(int)Math.floor(drawProgress * drawProgress * (this.itemModels.length - 2)) + 1];
-    }
-
     @Override
     @SuppressWarnings("deprecation")
     public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
         switch (stack.getItem().toString()) {
             case "socwars:catastrophe_bow" -> textConsumer.accept(Text.translatable("tooltip.catastrophe_bow").formatted(Formatting.DARK_RED));
         }
+    }
+
+    public static void playBowSound(World world, LivingEntity user, float drawAmount) {
+        world.playSound(
+                null,
+                user.getX(),
+                user.getY(),
+                user.getZ(),
+                SoundEvents.ENTITY_ARROW_SHOOT,
+                SoundCategory.PLAYERS,
+                1f,
+                1f / (world.getRandom().nextFloat() * 0.4f + 1.2f) + drawAmount * 0.5f
+        );
+    }
+
+    @Override
+    public float getScale(ItemStack stack) {
+        return this.drawTime.apply(stack);
     }
 }
