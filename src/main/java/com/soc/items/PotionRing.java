@@ -3,15 +3,20 @@ package com.soc.items;
 import com.soc.items.util.EffectRecord;
 import com.soc.items.util.ModItems;
 import com.soc.items.util.RingItem;
+import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.tooltip.TooltipType;
+import net.minecraft.text.Text;
 import net.minecraft.util.Rarity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static com.soc.items.util.ModItems.addItemToGroups;
 
@@ -31,14 +36,22 @@ public class PotionRing extends RingItem {
         addItemToGroups(INFLATABLE_IRON_INGOT, ItemGroups.TOOLS);
     }
 
-    public static final Item LESSER_SPEED_RING = ModItems.register("lesser_speed_ring", (settings) -> new PotionRing(settings, new EffectRecord(StatusEffects.SPEED, 0)), new Settings().maxDamage(30 * 20).rarity(Rarity.UNCOMMON));
-    public static final Item GREATER_SPEED_RING = ModItems.register("greater_speed_ring", (settings) -> new PotionRing(settings, new EffectRecord(StatusEffects.SPEED, 1)), new Settings().maxDamage(20 * 20).rarity(Rarity.UNCOMMON));
-    public static final Item LESSER_JUMP_RING = ModItems.register("lesser_jump_ring", (settings) -> new PotionRing(settings, new EffectRecord(StatusEffects.JUMP_BOOST, 1)), new Settings().maxDamage(15 * 20).rarity(Rarity.UNCOMMON));
-    public static final Item GREATER_JUMP_RING = ModItems.register("greater_jump_ring", (settings) -> new PotionRing(settings, new EffectRecord(StatusEffects.JUMP_BOOST, 3)), new Settings().maxDamage(5 * 20).rarity(Rarity.UNCOMMON));
-    public static final Item INFLATABLE_IRON_INGOT = ModItems.register("inflatable_iron_ingot", (settings) -> new PotionRing(settings, new EffectRecord(StatusEffects.LEVITATION, 1), new EffectRecord(StatusEffects.SLOW_FALLING, 1)), new Settings().maxDamage(30 * 20).rarity(Rarity.UNCOMMON));
+    public static final Item LESSER_SPEED_RING = ModItems.register("lesser_speed_ring", settings -> new PotionRing(settings, new EffectRecord(StatusEffects.SPEED, 0)), new Settings().maxDamage(30 * 20).rarity(Rarity.UNCOMMON));
+    public static final Item GREATER_SPEED_RING = ModItems.register("greater_speed_ring", settings -> new PotionRing(settings, new EffectRecord(StatusEffects.SPEED, 1)), new Settings().maxDamage(20 * 20).rarity(Rarity.UNCOMMON));
+    public static final Item LESSER_JUMP_RING = ModItems.register("lesser_jump_ring", settings -> new PotionRing(settings, new EffectRecord(StatusEffects.JUMP_BOOST, 1)), new Settings().maxDamage(15 * 20).rarity(Rarity.UNCOMMON));
+    public static final Item GREATER_JUMP_RING = ModItems.register("greater_jump_ring", settings -> new PotionRing(settings, new EffectRecord(StatusEffects.JUMP_BOOST, 3)), new Settings().maxDamage(5 * 20).rarity(Rarity.UNCOMMON));
+    public static final Item INFLATABLE_IRON_INGOT = ModItems.register("inflatable_iron_ingot", settings -> new PotionRing(settings, new EffectRecord(StatusEffects.LEVITATION, 1), new EffectRecord(StatusEffects.SLOW_FALLING, 0, 1 * 20)), new Settings().maxDamage(30 * 20).rarity(Rarity.UNCOMMON));
 
     @Override
     protected void ringUse(LivingEntity user) {
-        this.effects.forEach(effect -> user.addStatusEffect(new StatusEffectInstance( effect.effect(), GRACE_TICKS, effect.amplifier(), false, false, false)));
+        this.effects.forEach(effect -> user.addStatusEffect(new StatusEffectInstance(effect.effect(), effect.duration() > 0 ? effect.duration() : GRACE_TICKS, effect.amplifier(), false, false, false)));
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
+        switch (stack.getItem().toString()) {
+            case "socwars:inflatable_iron_ingot" -> textConsumer.accept(Text.translatable("tooltip.inflatable_iron_ingot"));
+        }
     }
 }
