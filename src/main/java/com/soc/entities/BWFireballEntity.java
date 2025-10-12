@@ -13,6 +13,7 @@ import net.minecraft.entity.projectile.FireballEntity;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -33,21 +34,19 @@ public class BWFireballEntity extends FireballEntity {
     }
 
     private final float explosionPower;
-    private final LivingEntity attacker;
 
     { this.accelerationPower = 0f; }
 
     public BWFireballEntity(EntityType<? extends BWFireballEntity> entityType, World world) {
         super(entityType, world);
         this.explosionPower = 0;
-        this.attacker = null;
     }
 
     public BWFireballEntity(World world, LivingEntity owner, Vec3d velocity, int explosionPower) {
         super(BW_FIREBALL_TYPE, world);
         this.setVelocity(velocity);
         this.explosionPower = explosionPower;
-        this.attacker = owner;
+        this.setOwner(owner);
     }
 
     public static void initialise() {}
@@ -65,11 +64,12 @@ public class BWFireballEntity extends FireballEntity {
     }
 
     private DamageSource damageSource() {
-        return new DamageSource(this.getWorld().getRegistryManager().getOrThrow(RegistryKeys.DAMAGE_TYPE).getOrThrow(DamageTypes.EXPLOSION), this.attacker, this.attacker);
+        return new DamageSource(this.getWorld().getRegistryManager().getOrThrow(RegistryKeys.DAMAGE_TYPE).getOrThrow(DamageTypes.EXPLOSION), this.getOwner(), this.getOwner());
     }
 
     @Override
     protected void onCollision(HitResult hitResult) {
+        if (hitResult.getType() == HitResult.Type.ENTITY && ((EntityHitResult)hitResult).getEntity() == this.getOwner()) return;
         if (this.getWorld() instanceof ServerWorld serverWorld) {
             SphereExplosion.explode(serverWorld, this.getPos(), this.explosionPower, 0.2f, 1f);
             this.discard();
