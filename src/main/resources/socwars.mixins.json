@@ -5,7 +5,8 @@
   "mixins": [
     "CancelSprintParticles",
     "DropItemEvent",
-    "UseDurationScale"
+    "UseDurationScale",
+    "VelocityPacketUnlimit"
   ],
   "injectors": {
     "defaultRequire": 1

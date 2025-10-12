@@ -146,7 +146,7 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
                         target.damage(serverWorld, damageSource(world, DamageTypes.CATASTROPHE_BOW, user), 69420f);
                     }
                 }
-            }, stack -> 3.5f, stack -> 7.5f) {
+            }, stack -> 3f, stack -> 6f) {
                 @Override
                 public void usageTick(World world, LivingEntity user, ItemStack stack, int remainingUseTicks) {
                     if (rawDrawProgress(remainingUseTicks) > 7.5f) {
