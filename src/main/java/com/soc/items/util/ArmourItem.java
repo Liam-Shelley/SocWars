@@ -19,7 +19,13 @@ public abstract class ArmourItem extends Item {
     protected final int armour;
 
     public ArmourItem(Settings settings, final EquipmentSlot slot, final int armour, final RegistryKey<EquipmentAsset> equipmentAsset) {
-        super(settings.component(DataComponentTypes.EQUIPPABLE, EquippableComponent.builder(slot).equipSound(ArmorMaterials.DIAMOND.equipSound()).model(equipmentAsset).build()).attributeModifiers(AttributeModifiersComponent.builder().add(EntityAttributes.ARMOR, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "armour." + slot.getName()), armour, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.ARMOR, AttributeModifiersComponent.Display.getHidden()).build()));
+        super(settings
+                .component(DataComponentTypes.EQUIPPABLE, EquippableComponent.builder(slot)
+                .equipSound(ArmorMaterials.DIAMOND.equipSound())
+                .model(equipmentAsset).build())
+                .attributeModifiers(AttributeModifiersComponent.builder().add(EntityAttributes.ARMOR, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "armour." + slot.getName()), armour, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.ARMOR, AttributeModifiersComponent.Display.getHidden()).build())
+                .maxCount(1)
+        );
         this.slot = slot;
         this.armour = armour;
     }

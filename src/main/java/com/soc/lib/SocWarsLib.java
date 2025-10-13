@@ -23,6 +23,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
@@ -31,12 +32,14 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 public class SocWarsLib {
@@ -303,4 +306,34 @@ public class SocWarsLib {
     public static boolean EquipmentSlotIsHand(@Nullable EquipmentSlot slot) {
         return slot == EquipmentSlot.MAINHAND || slot == EquipmentSlot.OFFHAND;
     }
+
+    public static <T> T getIndexWithFallback(T[] colours, int index, T fallback) {
+        return colours.length > index ? colours[index] : fallback;
+    }
+
+    public static int colourFromList(Integer[] colours, int index) {
+        return getIndexWithFallback(colours, index, 0xffffffff);
+    }
+
+    @SafeVarargs
+    public static Text getTimeFromTicksDynColours(float time, boolean includeTicks, UnaryOperator<Integer>... colours) {
+        final int minutes = (int)(time / 60);
+        final int seconds = (int)time % 60;
+
+        final MutableText minutesText = Text.literal(StringUtils.leftPad(String.valueOf(minutes), 2, '0')).withColor(getIndexWithFallback(colours, 0, a -> 0xffffffff).apply(minutes));
+        final Text secondsText = Text.literal(":" + StringUtils.leftPad(String.valueOf(seconds), 2, '0')).withColor(getIndexWithFallback(colours, 1, a -> 0xffffffff).apply(seconds));
+
+        if (!includeTicks) {
+            return minutesText.append(secondsText);
+        } else {
+            final int ticks = (int)(time * 20) % 20;
+            final Text ticksText = Text.literal("+" + StringUtils.leftPad(String.valueOf(ticks), 2, '0')).withColor(getIndexWithFallback(colours, 2, a -> 0xffffffff).apply(ticks));
+            return minutesText.append(secondsText).append(ticksText);
+        }
+    }
+
+    public static Text getTimeFromTicks(float time, boolean includeTicks, int... colours) {
+        return getTimeFromTicksDynColours(time, includeTicks, Arrays.stream(colours).mapToObj(colour -> (UnaryOperator<Integer>)(a -> colour)).toArray(UnaryOperator[]::new));
+    }
+
 }

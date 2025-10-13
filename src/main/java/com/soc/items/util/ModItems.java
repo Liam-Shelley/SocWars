@@ -46,6 +46,7 @@ public class ModItems {
         GamblerSword.initialise();
         SteadfastArmour.initialise();
         CartoonArmour.initialise();
+        TrainingWeights.initialise();
         ThrowableItem.initialise();
         ExtendoBridge.initialise();
     }
