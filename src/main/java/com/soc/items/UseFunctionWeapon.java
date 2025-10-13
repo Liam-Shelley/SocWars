@@ -1,13 +1,11 @@
 package com.soc.items;
 
-import com.soc.effects.AntiGravity;
-import com.soc.effects.Flight;
+import com.soc.effects.util.ModEffects;
 import com.soc.items.util.ModItems;
 import com.soc.items.util.UseFunction;
 import com.soc.lib.Coroutine;
 import com.soc.lib.Coroutines;
 import com.soc.materials.ToolMaterials;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.TooltipDisplayComponent;
@@ -26,7 +24,6 @@ import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -37,7 +34,6 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 
@@ -143,7 +139,7 @@ public class UseFunctionWeapon extends Item {
             .maxDamage(600)
     );
     public static final Item GRAVITY_ORB = ModItems.register("gravity_orb", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
-                user.addStatusEffect(new StatusEffectInstance(AntiGravity.ANTI_GRAVITY, (int) 7.5 * 20, 2, false, false));
+                user.addStatusEffect(new StatusEffectInstance(ModEffects.ANTI_GRAVITY, (int) 7.5 * 20, 2, false, false));
 
                 return ActionResult.SUCCESS;
             }), new Settings()
@@ -151,7 +147,7 @@ public class UseFunctionWeapon extends Item {
             .rarity(Rarity.UNCOMMON)
     );
     public static final Item GOD_COMPLEX = ModItems.register("god_complex", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
-                user.addStatusEffect(new StatusEffectInstance(Flight.FLIGHT, 5 * 20, 0, false, false));
+                user.addStatusEffect(new StatusEffectInstance(ModEffects.FLIGHT, 5 * 20, 0, false, false));
                 user.getStackInHand(hand).decrementUnlessCreative(1, user);
 
                 return ActionResult.SUCCESS;

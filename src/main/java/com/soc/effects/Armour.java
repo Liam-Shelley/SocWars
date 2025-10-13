@@ -2,8 +2,6 @@ package com.soc.effects;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import com.soc.SocWars;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.attribute.AttributeContainer;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
@@ -11,25 +9,15 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 import java.util.Objects;
 
 public class Armour extends StatusEffect {
-    protected Armour() {
+    public Armour() {
         super(StatusEffectCategory.BENEFICIAL, 0xbabbc7);
     }
-
-    public static void initialise() {}
-
-    public static final RegistryEntry<StatusEffect> ARMOUR =
-            Registry.registerReference(Registries.STATUS_EFFECT, Identifier.of(SocWars.MOD_ID, "armour"), new Armour());
 
     @Override
     public void onApplied(LivingEntity entity, int amplifier) {

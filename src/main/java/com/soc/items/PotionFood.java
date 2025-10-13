@@ -3,9 +3,9 @@ package com.soc.items;
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
 import com.soc.SocWars;
+import com.soc.effects.util.ModEffects;
 import com.soc.items.util.EffectRecord;
 import com.soc.items.util.ModItems;
-import com.soc.effects.Armour;
 import net.minecraft.component.type.*;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
@@ -45,7 +45,7 @@ public class PotionFood extends Item {
     }
 
     private final static EffectRecord[] IRON_APPLE_EFFECTS = {
-            new EffectRecord(Armour.ARMOUR, 5, 60 * 20),
+            new EffectRecord(ModEffects.ARMOUR, 5, 60 * 20),
     };
     private final static EffectRecord[] COPPER_APPLE_EFFECTS = {
             new EffectRecord(StatusEffects.RESISTANCE, 0, 60 * 20),

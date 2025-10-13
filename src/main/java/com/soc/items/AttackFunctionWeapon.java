@@ -8,6 +8,7 @@ import com.soc.items.util.AttackFunction;
 import com.soc.items.util.ModifyEquipmentFunction;
 import com.soc.materials.ToolMaterials;
 import com.soc.util.Sounds;
+import com.soc.util.SphereExplosion;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.Blocks;
 import net.minecraft.component.ComponentMap;
@@ -184,10 +185,7 @@ public class AttackFunctionWeapon extends Item {
             .maxDamage(500)
     );
     public static final Item DETONATOR = ModItems.register("detonator", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
-                TntEntity tnt = new TntEntity(target.getWorld(), target.getX(), target.getY(), target.getZ(), attacker);
-                tnt.setFuse(4);
-
-                target.getWorld().spawnEntity(tnt);
+                SphereExplosion.explode(target.getWorld(), target.getPos(), 5f, 0.4f, 0.7f);
             }), new Settings()
             .rarity(Rarity.RARE)
             .sword(ToolMaterials.BASE, 4.5f, -2.2f)
