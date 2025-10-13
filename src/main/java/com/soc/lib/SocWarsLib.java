@@ -241,7 +241,9 @@ public class SocWarsLib {
     }
 
     public static LivingEntity randomHostileMob(ServerWorld world, Vec3d pos) {
-        final int index = world.random.nextBetween(0, 10);
+        int index = world.random.nextBetween(0, 10);
+        if (index == 10 && world.random.nextFloat() < 0.8f) index = world.random.nextBetween(0, 9); //Hacky way to make the warden a 2% chance
+
         final LivingEntity mob = switch (index) {
             case 0 -> new ZombieEntity(EntityType.ZOMBIE, world);
             case 1 -> new SkeletonEntity(EntityType.SKELETON, world);

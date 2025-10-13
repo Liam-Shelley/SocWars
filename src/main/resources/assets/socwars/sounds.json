@@ -28,5 +28,11 @@
     "sounds": [
       "socwars:air_horn"
     ]
+  },
+  "bone_break": {
+    "subtitle": "sound.socwars.bone_break",
+    "sounds": [
+      "socwars:bone_break"
+    ]
   }
 }

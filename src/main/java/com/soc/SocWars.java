@@ -12,6 +12,7 @@ import com.soc.networking.C2SPayloads;
 import com.soc.networking.C2SReceivers;
 import com.soc.networking.S2CPayloads;
 import com.soc.player.PlayerDataManager;
+import com.soc.util.Sounds;
 import net.fabricmc.api.ModInitializer;
 
 import org.slf4j.Logger;
@@ -34,6 +35,7 @@ public class SocWars implements ModInitializer {
 		LOGGER.info("Hello Fabric world!");
 
 		ModItems.initialise();
+		Sounds.initialise();
 		ModComponents.initialise();
 		ModBlocks.initialise();
 		ModEntities.initialise();

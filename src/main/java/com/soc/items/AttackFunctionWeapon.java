@@ -1,5 +1,7 @@
 package com.soc.items;
 
+import com.soc.SocWars;
+import com.soc.effects.util.ModEffects;
 import com.soc.networking.s2c.AddVelocityPayload;
 import com.soc.util.BlockTags;
 import com.soc.util.DamageTypes;
@@ -37,6 +39,7 @@ import net.minecraft.util.Rarity;
 import net.minecraft.util.Unit;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
@@ -50,17 +53,17 @@ public class AttackFunctionWeapon extends Item {
     private static World WORLD;
 
     private static final EquipmentSlot[] ARMOUR_SLOTS = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
-    private static Item leatherArmour(EquipmentSlot slot) {
+    private static @NotNull Item leatherArmour(EquipmentSlot slot) {
         return switch (slot) {
             case HEAD -> Items.LEATHER_HELMET;
             case CHEST -> Items.LEATHER_CHESTPLATE;
             case LEGS -> Items.LEATHER_LEGGINGS;
             case FEET -> Items.LEATHER_BOOTS;
-            default -> null; //Unreachable
+            default -> throw new IllegalArgumentException("No such leather armour exists for slot " + slot.getName()); //Unreachable
         };
     }
     private static RegistryEntry<Enchantment> enchantmentEntry(World world, RegistryKey<Enchantment> enchantmentKey) {
-        return world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(Enchantments.BINDING_CURSE);
+        return world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(enchantmentKey);
     }
     private enum ReplaceMode {
         PRESENT,
@@ -89,6 +92,7 @@ public class AttackFunctionWeapon extends Item {
         addItemToGroups(FLESHY_BLADE, ItemGroups.COMBAT);
         addItemToGroups(FIRESTORM, ItemGroups.COMBAT);
         addItemToGroups(CORRUPTED_SWORD, ItemGroups.COMBAT);
+        addItemToGroups(POSTURA, ItemGroups.COMBAT);
 
         net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents.LOAD.register((a, b) -> WORLD = b);
     }
@@ -185,7 +189,7 @@ public class AttackFunctionWeapon extends Item {
             .maxDamage(500)
     );
     public static final Item DETONATOR = ModItems.register("detonator", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
-                SphereExplosion.explode(target.getWorld(), target.getPos(), 5f, 0.4f, 0.7f);
+                SphereExplosion.explode(target.getWorld(), target.getPos(), 5f, 1.2f, 0.7f);
             }), new Settings()
             .rarity(Rarity.RARE)
             .sword(ToolMaterials.BASE, 4.5f, -2.2f)
@@ -198,8 +202,7 @@ public class AttackFunctionWeapon extends Item {
                     target.setStackInHand(Hand.MAIN_HAND, ItemStack.EMPTY);
                 });
             }), new Settings()
-            .sword(ToolMaterials.BASE, -1f, -1f)
-            .maxDamage(0)
+            .maxCount(1)
             .rarity(Rarity.RARE)
     );
     public static final Item LEATHERER = ModItems.register("leatherer", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
@@ -212,8 +215,7 @@ public class AttackFunctionWeapon extends Item {
                     target.equipStack(slot, item);
                 }, null);
             }), new Settings()
-            .sword(ToolMaterials.BASE, -1f, -1f)
-            .maxDamage(0)
+            .maxCount(1)
             .rarity(Rarity.RARE)
     );
     public static final Item SPRING_SWORD = ModItems.register("spring_sword", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
@@ -226,18 +228,18 @@ public class AttackFunctionWeapon extends Item {
             }), new Settings()
             .sword(ToolMaterials.BASE, 4f, -1f)
             .maxDamage(350)
-            .rarity(Rarity.UNCOMMON)
+            .rarity(Rarity.RARE)
     );
     public static final Item FLESHY_BLADE = ModItems.register("fleshy_blade", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
                 WORLD = target.getWorld(); // Horrible gross disgusting code
                 attacker.getWorld().playSound(null, target.getBlockPos(), Sounds.FLESH, SoundCategory.MASTER, 1f, 1f);
-    }), new Settings()
+            }), new Settings()
             .sword(ToolMaterials.BASE, 6f, -2.2f)
     );
     public static final Item FIRESTORM = ModItems.register("firestorm", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
                 final World world = target.getWorld();
                 fireExplosion(world, target.getBlockPos(), 4f);
-    }), new Settings()
+            }), new Settings()
             .sword(ToolMaterials.BASE, 5.5f, -2.5f)
             .maxDamage(400)
             .rarity(Rarity.RARE)
@@ -249,9 +251,16 @@ public class AttackFunctionWeapon extends Item {
                         world.setBlockState(pos, Blocks.AIR.getDefaultState());
                     }
                 });
-    }), new Settings()
+            }), new Settings()
             .sword(ToolMaterials.BASE, 5.5f, -2.3f)
             .maxDamage(550)
+            .rarity(Rarity.UNCOMMON)
+    );
+    public static final Item POSTURA = ModItems.register("postura", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
+                target.addStatusEffect(new StatusEffectInstance(ModEffects.ARTHRODESIS, 40 * 20, 0, false, true));
+                stack.decrementUnlessCreative(1, attacker);
+            }), new Settings()
+            .maxCount(1)
             .rarity(Rarity.UNCOMMON)
     );
 
@@ -278,8 +287,8 @@ public class AttackFunctionWeapon extends Item {
     }
 
     @Override
-    public void postDamageEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        attackFunction.attack(stack, target, attacker);
+    public void postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        this.attackFunction.attack(stack, target, attacker);
     }
 
     @Override
@@ -293,6 +302,7 @@ public class AttackFunctionWeapon extends Item {
             case "socwars:stormageddon" -> textConsumer.accept(Text.translatable("tooltip.stormageddon"));
             case "socwars:spring_sword" -> textConsumer.accept(Text.translatable("tooltip.spring_sword").formatted(Formatting.YELLOW));
             case "socwars:fleshy_blade" -> textConsumer.accept(Text.translatable(WORLD == null || WORLD.getTime() % 25 > 2 ? "tooltip.fleshy_blade" : "tooltip.fleshy_blade.wet").formatted(Formatting.RED));
+            case "socwars:postura" -> textConsumer.accept(Text.translatable("tooltip.postura"));
         }
     }
 }

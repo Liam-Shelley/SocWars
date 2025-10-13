@@ -4,10 +4,8 @@ import com.soc.entities.BWFireballEntity;
 import com.soc.items.util.ArmourItem;
 import com.soc.items.util.ModItems;
 import com.soc.items.util.OnHitArmour;
-import com.soc.networking.s2c.AddVelocityPayload;
 import com.soc.util.BlockTags;
 import com.soc.util.SphereExplosion;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.Blocks;
 import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.entity.EntityType;
@@ -25,7 +23,6 @@ import net.minecraft.item.Items;
 import net.minecraft.item.equipment.EquipmentAsset;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -60,7 +57,7 @@ public class CartoonArmour extends ArmourItem implements OnHitArmour {
         ModItems.addItemToGroups(CARTOON_BOOTS, ItemGroups.COMBAT);
     }
 
-    public static final Item CARTOON_HELMET = ModItems.register("cartoon_helmet", (settings) -> new CartoonArmour(settings, EquipmentSlot.HEAD, 4, (stack, wearer, world) -> {
+    public static final Item CARTOON_HELMET = ModItems.register("cartoon_helmet", settings -> new CartoonArmour(settings, EquipmentSlot.HEAD, 4, (stack, wearer, world) -> {
             if (world.isClient) return true;
             final int random = world.random.nextBetween(1, 5);
             switch (random) {
@@ -79,7 +76,7 @@ public class CartoonArmour extends ArmourItem implements OnHitArmour {
 
             return true;
     }), new Settings().maxDamage(325).rarity(Rarity.RARE));
-    public static final Item CARTOON_CHESTPLATE = ModItems.register("cartoon_chestplate", (settings) -> new CartoonArmour(settings, EquipmentSlot.CHEST, 8, (stack, wearer, world) -> {
+    public static final Item CARTOON_CHESTPLATE = ModItems.register("cartoon_chestplate", settings -> new CartoonArmour(settings, EquipmentSlot.CHEST, 8, (stack, wearer, world) -> {
             if (world.isClient) return true;
             final int random = world.random.nextBetween(1, 5);
             switch (random) {
@@ -94,7 +91,7 @@ public class CartoonArmour extends ArmourItem implements OnHitArmour {
 
             return true;
     }), new Settings().maxDamage(400).rarity(Rarity.RARE));
-    public static final Item CARTOON_LEGGINGS = ModItems.register("cartoon_leggings", (settings) -> new CartoonArmour(settings, EquipmentSlot.LEGS, 6, (stack, wearer, world) -> {
+    public static final Item CARTOON_LEGGINGS = ModItems.register("cartoon_leggings", settings -> new CartoonArmour(settings, EquipmentSlot.LEGS, 6, (stack, wearer, world) -> {
             if (world.isClient) return true;
             final int random = world.random.nextBetween(1, 5);
             switch (random) {
@@ -119,7 +116,7 @@ public class CartoonArmour extends ArmourItem implements OnHitArmour {
 
             return true;
     }), new Settings().maxDamage(375).rarity(Rarity.RARE));
-    public static final Item CARTOON_BOOTS = ModItems.register("cartoon_boots", (settings) -> new CartoonArmour(settings, EquipmentSlot.FEET, 4, (stack, wearer, world) -> {
+    public static final Item CARTOON_BOOTS = ModItems.register("cartoon_boots", settings -> new CartoonArmour(settings, EquipmentSlot.FEET, 4, (stack, wearer, world) -> {
             if (world.isClient) return true;
             final int random = world.random.nextBetween(1, 5);
             switch (random) {
@@ -132,7 +129,7 @@ public class CartoonArmour extends ArmourItem implements OnHitArmour {
                 case 3 -> {
                     final BlockPos centre = wearer.getBlockPos();
                     iterateInSphere(centre, 10f, 0f, pos -> {
-                        if (centre.isWithinDistance(pos, 7f) || world.getBlockState(pos).isIn(BlockTags.IMMUNE)) return;
+                        if (centre.isWithinDistance(pos, 8f) || world.getBlockState(pos).isIn(BlockTags.IMMUNE)) return;
                         world.setBlockState(pos, Blocks.STICKY_PISTON.getDefaultState().with(Properties.FACING, Direction.byIndex(world.random.nextBetween(1, 6))));
                     });
                 }

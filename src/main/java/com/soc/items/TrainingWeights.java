@@ -36,7 +36,10 @@ public class TrainingWeights extends ArmourItem {
         ModItems.addItemToGroups(TRAINING_WEIGHTS, ItemGroups.COMBAT);
     }
 
-    public static final Item TRAINING_WEIGHTS = ModItems.register("training_weights", settings -> new TrainingWeights(settings, EquipmentSlot.FEET, 2), new Settings().rarity(Rarity.UNCOMMON));
+    public static final Item TRAINING_WEIGHTS = ModItems.register("training_weights", settings -> new TrainingWeights(settings, EquipmentSlot.FEET, 2), new Settings()
+            .rarity(Rarity.UNCOMMON)
+            .maxDamage(275)
+    );
 
     @Override
     public void inventoryTick(ItemStack stack, ServerWorld world, Entity entity, @Nullable EquipmentSlot slot) {

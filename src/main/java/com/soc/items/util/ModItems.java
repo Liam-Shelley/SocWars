@@ -27,8 +27,6 @@ public class ModItems {
     public static void initialise() {
         Registry.register(Registries.ITEM_GROUP, SOCWARS_ITEM_GROUP_KEY, SOCWARS_ITEM_GROUP);
 
-        Sounds.initialise();
-
         BaseWeapon.initialise();
         AttackFunctionWeapon.initialise();
         UseFunctionWeapon.initialise();
@@ -47,6 +45,7 @@ public class ModItems {
         SteadfastArmour.initialise();
         CartoonArmour.initialise();
         TrainingWeights.initialise();
+        SummonersGarb.initialise();
         ThrowableItem.initialise();
         ExtendoBridge.initialise();
     }

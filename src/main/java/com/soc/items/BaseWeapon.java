@@ -1,6 +1,5 @@
 package com.soc.items;
 
-import com.soc.SocWars;
 import com.soc.items.util.ModItems;
 import com.soc.materials.ToolMaterials;
 import net.minecraft.component.type.TooltipDisplayComponent;
@@ -42,16 +41,9 @@ public class BaseWeapon extends Item {
     @Override
     @SuppressWarnings("deprecation")
     public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
-        Text text = switch (stack.getItem().toString()) {
-            case "socwars:bat" -> Text.translatable("tooltip.bat");
-            case "socwars:saw_blade_bat" -> Text.translatable("tooltip.saw_blade_bat").formatted(Formatting.DARK_RED);
-            default -> null;
-        };
-
-        SocWars.LOGGER.info(stack.getItem().toString());
-
-        if (text != null) {
-            textConsumer.accept(text);
+        switch (stack.getItem().toString()) {
+            case "socwars:bat" -> textConsumer.accept(Text.translatable("tooltip.bat"));
+            case "socwars:saw_blade_bat" -> textConsumer.accept(Text.translatable("tooltip.saw_blade_bat").formatted(Formatting.DARK_RED));
         }
     }
 }

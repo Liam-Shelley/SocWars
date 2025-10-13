@@ -18,6 +18,6 @@ public class Arthrodesis extends StatusEffect {
 
     @Override
     public void onApplied(LivingEntity entity, int amplifier) {
-        entity.getWorld().playSound(null, entity.getX(), entity.getY(), entity.getZ(), Sounds.VINE_BOOM, SoundCategory.PLAYERS);
+        entity.getWorld().playSound(null, entity.getX(), entity.getY(), entity.getZ(), Sounds.BONE_BREAK, SoundCategory.PLAYERS);
     }
 }

@@ -14,6 +14,7 @@ public interface Sounds {
     SoundEvent NUCLEAR_SIREN = register("nuclear_siren");
     SoundEvent GIGA_CHAD = register("giga_chad");
     SoundEvent AIR_HORN = register("air_horn");
+    SoundEvent BONE_BREAK = register("bone_break");
 
     private static SoundEvent register(String id) {
         return Registry.register(Registries.SOUND_EVENT, Identifier.of(SocWars.MOD_ID, id), SoundEvent.of(Identifier.of(SocWars.MOD_ID, id)));
