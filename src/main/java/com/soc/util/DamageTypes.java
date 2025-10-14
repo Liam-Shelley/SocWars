@@ -11,4 +11,5 @@ public interface DamageTypes {
     RegistryKey<DamageType> NETHERWRONG_SWORD = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, Identifier.of(SocWars.MOD_ID, "netherwrong_sword"));
     RegistryKey<DamageType> GALLIUM = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, Identifier.of(SocWars.MOD_ID, "gallium"));
     RegistryKey<DamageType> CATASTROPHE_BOW = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, Identifier.of(SocWars.MOD_ID, "catastrophe_bow"));
+    RegistryKey<DamageType> EXPON = RegistryKey.of(RegistryKeys.DAMAGE_TYPE, Identifier.of(SocWars.MOD_ID, "expon"));
 }

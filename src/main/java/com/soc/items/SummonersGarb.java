@@ -36,7 +36,7 @@ public class SummonersGarb extends ArmourItem implements OnHitArmour {
 
     @Override
     public boolean onHit(ItemStack stack, LivingEntity wearer, World world) {
-        if (world instanceof ServerWorld serverWorld && world.random.nextFloat() > 0.5f) {
+        if (!world.isClient && world instanceof ServerWorld serverWorld && world.random.nextFloat() > 0.5f) {
             final LivingEntity mob = randomHostileMob(serverWorld, wearer.getPos());
             copyTeam(world, mob, wearer);
 

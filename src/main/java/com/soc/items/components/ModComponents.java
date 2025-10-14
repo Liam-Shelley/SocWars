@@ -18,6 +18,11 @@ public class ModComponents {
             Identifier.of(SocWars.MOD_ID, "training_weights_component"),
             ComponentType.<Integer>builder().codec(Codec.INT).build()
     );
+    public static final ComponentType<ExponComponent> EXPON_COMPONENT = Registry.register(
+            Registries.DATA_COMPONENT_TYPE,
+            Identifier.of(SocWars.MOD_ID, "expon_component"),
+            ComponentType.<ExponComponent>builder().codec(ExponComponent.CODEC).build()
+    );
 
     public static void initialise() {}
 }

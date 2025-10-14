@@ -6,7 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 public record RingItemComponent(long lastTimeUsed, boolean isUsing) {
     public static final Codec<RingItemComponent> CODEC = RecordCodecBuilder.create(builder -> builder.group(
             Codec.LONG.fieldOf("last_time_used").forGetter(RingItemComponent::lastTimeUsed),
-            Codec.BOOL.optionalFieldOf("is_using", false).forGetter(RingItemComponent::isUsing)
+            Codec.BOOL.fieldOf("is_using").forGetter(RingItemComponent::isUsing)
     ).apply(builder, RingItemComponent::new));
 
     public RingItemComponent withLastTimeUsed(long lastTimeUsed) {

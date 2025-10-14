@@ -2,7 +2,6 @@ package com.soc.items.util;
 
 import com.soc.SocWars;
 import com.soc.items.*;
-import com.soc.util.Sounds;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.Item;
@@ -46,6 +45,7 @@ public class ModItems {
         CartoonArmour.initialise();
         TrainingWeights.initialise();
         SummonersGarb.initialise();
+        Expon.initialise();
         ThrowableItem.initialise();
         ExtendoBridge.initialise();
     }
