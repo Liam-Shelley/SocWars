@@ -93,6 +93,7 @@ public class AttackFunctionWeapon extends Item {
         addItemToGroups(FIRESTORM, ItemGroups.COMBAT);
         addItemToGroups(CORRUPTED_SWORD, ItemGroups.COMBAT);
         addItemToGroups(POSTURA, ItemGroups.COMBAT);
+        addItemToGroups(FULL_METAL_SWORD, ItemGroups.COMBAT);
 
         net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents.LOAD.register((a, b) -> WORLD = b);
     }
@@ -131,7 +132,7 @@ public class AttackFunctionWeapon extends Item {
             .sword(ToolMaterial.NETHERITE, -3f, -3f)
     );
     public static final Item ORANGE_SWORD = ModItems.register("orange_sword", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
-                attacker.getWorld().playSound(null, target.getBlockPos(), Sounds.VINE_BOOM, SoundCategory.MASTER, 1f, 1f);
+                attacker.getWorld().playSound(null, attacker.getBlockPos(), Sounds.VINE_BOOM, SoundCategory.PLAYERS, 1f, 1f);
             }), new Settings()
             .sword(ToolMaterials.BASE, 5f, -2.1f)
             .maxDamage(500)
@@ -263,6 +264,12 @@ public class AttackFunctionWeapon extends Item {
             .maxCount(1)
             .rarity(Rarity.UNCOMMON)
     );
+    public static final Item FULL_METAL_SWORD = ModItems.register("full_metal_sword", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
+                attacker.getWorld().playSound(null, attacker.getBlockPos(), Sounds.GET_SOME, SoundCategory.PLAYERS, 1f, 1f);
+            }), new Settings()
+            .sword(ToolMaterials.BASE, 4.5f, -2.3f)
+            .maxDamage(500)
+    );
 
     private static void modifyEquipment(LivingEntity target, LivingEntity attacker, ReplaceMode replaceMode, ModifyEquipmentFunction armourFunction, ModifyEquipmentFunction handFunction) {
         ArrayList<EquipmentSlot> armour = new ArrayList<>();
@@ -287,8 +294,13 @@ public class AttackFunctionWeapon extends Item {
     }
 
     @Override
-    public void postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+    public void postDamageEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         this.attackFunction.attack(stack, target, attacker);
+    }
+
+    @Override
+    public void postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        if (stack.get(DataComponentTypes.WEAPON) == null) this.attackFunction.attack(stack, target, attacker);
     }
 
     @Override
@@ -303,6 +315,7 @@ public class AttackFunctionWeapon extends Item {
             case "socwars:spring_sword" -> textConsumer.accept(Text.translatable("tooltip.spring_sword").formatted(Formatting.YELLOW));
             case "socwars:fleshy_blade" -> textConsumer.accept(Text.translatable(WORLD == null || WORLD.getTime() % 25 > 2 ? "tooltip.fleshy_blade" : "tooltip.fleshy_blade.wet").formatted(Formatting.RED));
             case "socwars:postura" -> textConsumer.accept(Text.translatable("tooltip.postura"));
+            case "socwars:full_metal_sword" -> textConsumer.accept(Text.translatable("tooltip.full_metal_sword"));
         }
     }
 }

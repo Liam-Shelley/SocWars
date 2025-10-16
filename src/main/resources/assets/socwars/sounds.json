@@ -34,5 +34,11 @@
     "sounds": [
       "socwars:bone_break"
     ]
+  },
+  "get_some": {
+    "subtitle": "sound.socwars.get_some",
+    "sounds": [
+      "socwars:get_some"
+    ]
   }
 }
