@@ -3,6 +3,7 @@ package com.soc;
 import com.soc.blocks.util.ModBlocks;
 import com.soc.entities.BWFireballEntity;
 import com.soc.entities.BigTntEntity;
+import com.soc.entities.util.ModEntities;
 import com.soc.items.FeatherBlockItem;
 import com.soc.networking.S2CReceivers;
 import com.soc.renderer.BWFireballEntityRenderer;
@@ -47,9 +48,9 @@ public class SocWarsClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		EntityRendererRegistry.register(BigTntEntity.NUCLEAR_BOMB, BigTntRenderer::new);
-		EntityRendererRegistry.register(BigTntEntity.HYDROGEN_BOMB, BigTntRenderer::new);
-		EntityRendererRegistry.register(BWFireballEntity.BW_FIREBALL_TYPE, BWFireballEntityRenderer::new);
+		EntityRendererRegistry.register(ModEntities.NUCLEAR_BOMB, BigTntRenderer::new);
+		EntityRendererRegistry.register(ModEntities.HYDROGEN_BOMB, BigTntRenderer::new);
+		EntityRendererRegistry.register(ModEntities.BW_FIREBALL_TYPE, BWFireballEntityRenderer::new);
 
 		BlockEntityRendererFactories.register(MAP_BLOCK_ENTITY, MapBlockEntityRenderer::new);
 		BlockEntityRendererFactories.register(COLLECTIBLE_BLOCK_ENTITY, CollectibleBlockEntityRenderer::new);

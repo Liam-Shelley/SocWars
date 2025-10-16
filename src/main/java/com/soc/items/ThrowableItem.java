@@ -2,6 +2,7 @@ package com.soc.items;
 
 import com.soc.entities.BWFireballEntity;
 import com.soc.entities.EnderBeamEntity;
+import com.soc.entities.util.ModEntities;
 import com.soc.items.util.ModItems;
 import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.entity.Entity;
@@ -74,7 +75,7 @@ public class ThrowableItem extends Item {
                     TntEntity tnt = ((TntEntity)spawnEntityWithVelocity(new TntEntity(EntityType.TNT, world), serverWorld, user, 0.6f));
                     tnt.setFuse(40);
                 }
-                case ENDER -> spawnEntityWithVelocity(new EnderBeamEntity(EnderBeamEntity.ENDER_BEAM_TYPE, world), serverWorld, user, 1f);
+                case ENDER -> spawnEntityWithVelocity(new EnderBeamEntity(ModEntities.ENDER_BEAM_TYPE, world), serverWorld, user, 1f);
             }
         }
 

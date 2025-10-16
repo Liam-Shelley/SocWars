@@ -1,7 +1,5 @@
 package com.soc.entities;
 
-import com.soc.SocWars;
-import com.soc.entities.util.ModEntities;
 import com.soc.util.SphereExplosion;
 import net.minecraft.entity.*;
 import net.minecraft.entity.damage.DamageSource;
@@ -11,12 +9,14 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
 import net.minecraft.world.explosion.ExplosionBehavior;
 import org.jetbrains.annotations.Nullable;
+
+import static com.soc.entities.util.ModEntities.HYDROGEN_BOMB;
+import static com.soc.entities.util.ModEntities.NUCLEAR_BOMB;
 
 public class BigTntEntity extends Entity implements Ownable {
     public static class BigTntExplosionBehaviour extends ExplosionBehavior {
@@ -60,6 +60,12 @@ public class BigTntEntity extends Entity implements Ownable {
         //this.intersectionChecked = true;
     }
 
+    public BigTntEntity(EntityType<BigTntEntity> entityType, World world, BigTntType type) {
+        super(entityType, world);
+        this.tntType = type;
+        //this.intersectionChecked = true;
+    }
+
     public BigTntEntity(World world, Vec3d position, @Nullable LivingEntity igniter, BigTntType tntType) {
         this(switch (tntType) {
             case NUCLEAR -> NUCLEAR_BOMB;
@@ -72,30 +78,6 @@ public class BigTntEntity extends Entity implements Ownable {
         this.tntType = tntType;
         this.setFuse(tntType.fuse);
         if (igniter != null) this.igniter = new LazyEntityReference<>(igniter);
-    }
-
-    public static final EntityType<BigTntEntity> NUCLEAR_BOMB = ModEntities.registerType(
-            Identifier.of(SocWars.MOD_ID, "nuclear_bomb"),
-            EntityType.Builder.<BigTntEntity>create(BigTntEntity::new, SpawnGroup.MISC)
-                    .dropsNothing()
-                    .makeFireImmune()
-                    .dimensions(0.98F, 0.98F)
-                    .eyeHeight(0.15F)
-                    .maxTrackingRange(10)
-                    .trackingTickInterval(10)
-    );
-    public static final EntityType<BigTntEntity> HYDROGEN_BOMB = ModEntities.registerType(
-            Identifier.of(SocWars.MOD_ID, "hydrogen_bomb"),
-            EntityType.Builder.<BigTntEntity>create(BigTntEntity::new, SpawnGroup.MISC)
-                    .dropsNothing()
-                    .makeFireImmune()
-                    .dimensions(0.98F, 0.98F)
-                    .eyeHeight(0.15F)
-                    .maxTrackingRange(10)
-                    .trackingTickInterval(10)
-    );
-
-    public static void initialise() {
     }
 
     protected void initDataTracker(DataTracker.Builder builder) {
@@ -143,19 +125,10 @@ public class BigTntEntity extends Entity implements Ownable {
     }
 
     @Nullable
+    @Override
     public LivingEntity getOwner() {
         return LazyEntityReference.resolve(this.igniter, this.getWorld(), LivingEntity.class);
     }
-
-    /*
-    public void copyFrom(Entity original) {
-        super.copyFrom(original);
-        if (original instanceof BigTnt bigTnt) {
-            this.causingEntity = bigTnt.causingEntity;
-        }
-
-    }
-     */
 
     public void setFuse(int fuse) {
         this.dataTracker.set(FUSE, fuse);
@@ -169,7 +142,7 @@ public class BigTntEntity extends Entity implements Ownable {
         return this.tntType;
     }
 
-    public final boolean damage(ServerWorld world, DamageSource source, float amount) {
+    public boolean damage(ServerWorld world, DamageSource source, float amount) {
         return false;
     }
 }

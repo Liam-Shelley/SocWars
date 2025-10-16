@@ -61,10 +61,13 @@ public class EatFunctionFood extends Item { //rewrite all of this as consumable 
             }, new FoodComponent(6, 4, true)), new Settings()
             .useCooldown(5f)
             .rarity(Rarity.RARE)
-    );public static final Item RED_SHELL = ModItems.register("red_shell", settings -> new EatFunctionFood(settings, (stack, world, user) -> {
+    );
+    public static final Item RED_SHELL = ModItems.register("red_shell", settings -> new EatFunctionFood(settings, (stack, world, user) -> {
                 if (world.isClient) return null;
 
-                
+                if (user instanceof PlayerEntity player) {
+                    player.sendMessage(Text.of("wahoo!"), false);
+                }
 
                 return null;
             }, new FoodComponent(6, 4, true)), new Settings()
