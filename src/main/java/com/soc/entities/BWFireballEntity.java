@@ -40,7 +40,7 @@ public class BWFireballEntity extends FireballEntity {
     protected void onCollision(HitResult hitResult) {
         if (hitResult.getType() == HitResult.Type.ENTITY && ((EntityHitResult)hitResult).getEntity() == this.getOwner()) return;
         if (this.getWorld() instanceof ServerWorld serverWorld) {
-            SphereExplosion.explode(serverWorld, this.getPos(), this.explosionPower, 0.2f, 1f);
+            SphereExplosion.explode(serverWorld, this.getPos(), this.explosionPower, this.explosionPower * 0.025f, (float)Math.sqrt(this.explosionPower) * 0.8f);
             this.discard();
         }
     }

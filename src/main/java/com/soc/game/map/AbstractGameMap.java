@@ -6,6 +6,7 @@ import com.soc.SocWars;
 import com.soc.util.Random;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -22,6 +23,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.*;
 
+import static com.soc.lib.SocWarsLib.iterateInCube;
 import static com.soc.lib.SocWarsLib.putBlockPosCollection;
 
 public abstract class AbstractGameMap {
@@ -75,7 +77,7 @@ public abstract class AbstractGameMap {
             } else {
                 final BlockPos pos = this.pos(rawPos);
 
-                player.setPosition(pos.toCenterPos());
+                player.requestTeleport(pos.getX() + 0.5d, pos.getY() + 0.5d, pos.getZ() + 0.5d);
             }
         });
     }
@@ -102,15 +104,20 @@ public abstract class AbstractGameMap {
 
         return file;
     }
+
     public static File[] getMaps(String fileExtension) {
         final var files = getMapDirectory().listFiles(file -> file.toString().endsWith("." + fileExtension));
 
         return (files != null) ? files : new File[0];
     }
-    public static File getRandomMap(String fileExtension, World world, @Nullable String preferred_map) {
+
+    public static Optional<File> getRandomMap(String fileExtension, World world, @Nullable String preferred_map) {
         final File[] maps = getMaps(fileExtension);
-        return maps[world.random.nextBetween(0, maps.length - 1)];
+        if (maps.length == 0) return Optional.empty();
+
+        return Optional.of(maps[world.random.nextBetween(0, maps.length - 1)]);
     }
+
     public static Stack<ServerPlayerEntity> getRandomPlayerStack(Collection<ServerPlayerEntity> players) {
         final Stack<ServerPlayerEntity> playerStack = new Stack<>();
         Collections.shuffle((ArrayList<?>) new ArrayList<>(players).clone());
@@ -118,6 +125,7 @@ public abstract class AbstractGameMap {
 
         return playerStack;
     }
+
     public final BlockPos pos(BlockPos pos) {
         return pos.add(this.absoluteCentrePos);
     }
@@ -127,5 +135,17 @@ public abstract class AbstractGameMap {
 
     public final void placeMap() {
         this.structure.place(this.world, this.absoluteCentrePos.subtract(this.centrePos), this.absoluteCentrePos, new StructurePlacementData(), this.world.random, Block.NOTIFY_LISTENERS);
+    }
+
+    public final void destroyMap() {
+        iterateInCube(this.absoluteCentrePos.subtract(this.centrePos), this.absoluteCentrePos.subtract(this.centrePos).add(this.structure.getSize()), pos -> this.world.setBlockState(pos, Blocks.AIR.getDefaultState()));
+    }
+
+    public final BlockPos getSpawnPosition(DyeColor team) {
+        return this.pos(this.spawnPositions.get(team));
+    }
+
+    public final BlockPos getCentrePos() {
+        return this.absoluteCentrePos;
     }
 }

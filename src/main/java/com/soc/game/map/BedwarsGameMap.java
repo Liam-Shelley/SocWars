@@ -85,7 +85,9 @@ public class BedwarsGameMap extends AbstractGameMap {
     }
 
     public static Optional<BedwarsGameMap> loadRandomMap(@NotNull ServerWorld world, @NotNull BlockPos centrePos) {
-        return loadFromFile(AbstractGameMap.getRandomMap(FILE_EXTENSION, world, null), world, centrePos);
+        Optional<File> file = AbstractGameMap.getRandomMap(FILE_EXTENSION, world, null);
+
+        return file.flatMap(optional -> loadFromFile(file.get(), world, centrePos));
     }
 
     public static Optional<BedwarsGameMap> loadFromFile(File file, @NotNull ServerWorld world, @NotNull BlockPos centrePos) {

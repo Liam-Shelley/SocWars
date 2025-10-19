@@ -8,6 +8,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.DyeColor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -49,7 +50,7 @@ public class BedwarsGameManager extends AbstractGameManager {
     }
 
     @Override
-    protected EventQueue buildEventQueue() {
+    protected @Nullable EventQueue buildEventQueue() {
         final EventQueue queue = new EventQueue();
 
         queue.addEventMinutesSeconds(3, 30, (manager) -> {}, "events.bedwars.diamond2");

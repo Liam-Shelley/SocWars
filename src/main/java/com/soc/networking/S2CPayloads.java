@@ -1,9 +1,6 @@
 package com.soc.networking;
 
-import com.soc.networking.s2c.AddVelocityPayload;
-import com.soc.networking.s2c.JoinQueuePayload;
-import com.soc.networking.s2c.LeaveQueuePayload;
-import com.soc.networking.s2c.PlayerDataPayload;
+import com.soc.networking.s2c.*;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 
 public class S2CPayloads {
@@ -12,5 +9,7 @@ public class S2CPayloads {
         PayloadTypeRegistry.playS2C().register(LeaveQueuePayload.ID, LeaveQueuePayload.CODEC);
         PayloadTypeRegistry.playS2C().register(PlayerDataPayload.ID, PlayerDataPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(AddVelocityPayload.ID, AddVelocityPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(StartGamePayload.ID, StartGamePayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(EndGamePayload.ID, EndGamePayload.CODEC);
     }
 }

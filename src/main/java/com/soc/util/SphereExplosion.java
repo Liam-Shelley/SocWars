@@ -36,7 +36,7 @@ public class SphereExplosion {
                 if (damage) world.setBlockState(pos, Blocks.AIR.getDefaultState());
         });
 
-        world.createExplosion(null, Explosion.createDamageSource(world, null), behaviour, centre.getX(), centre.getY() - 2, centre.getZ(), (float)Math.sqrt(explosionRadius), false, World.ExplosionSourceType.TNT);
+        world.createExplosion(null, Explosion.createDamageSource(world, null), behaviour, centre.getX(), centre.getY(), centre.getZ(), (float)Math.sqrt(explosionRadius), false, World.ExplosionSourceType.TNT);
     }
 
     public static void explode(World world, Vec3d centre, float explosionRadius, ExplosionBehavior behaviour) {

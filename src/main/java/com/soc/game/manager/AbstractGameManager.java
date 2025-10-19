@@ -17,6 +17,7 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,7 +34,7 @@ public abstract class AbstractGameManager {
     protected final ServerWorld world;
     protected final ImmutableMultimap<DyeColor, ServerPlayerEntity> teams;
     protected final ImmutableMap<DyeColor, Team> scoreboardTeams;
-    protected final EventQueue eventQueue;
+    protected final @Nullable EventQueue eventQueue;
 
     private final int gameId;
 
@@ -58,7 +59,7 @@ public abstract class AbstractGameManager {
 
         return builder.build();
     }
-    protected abstract EventQueue buildEventQueue();
+    protected abstract @Nullable EventQueue buildEventQueue();
 
     public void startGame() {
         this.getMap().placeMap();
@@ -66,6 +67,7 @@ public abstract class AbstractGameManager {
     }
     public void endGame() {
         this.removeTeams();
+        this.getMap().destroyMap();
         GamesManager.getInstance().endGame(this.gameId);
     }
     public boolean onPlayerDeath(ServerPlayerEntity entity, DamageSource source, float amount) {
@@ -105,6 +107,8 @@ public abstract class AbstractGameManager {
     }
 
     private void updateEventQueue() {
+        if (this.eventQueue == null) return;
+
         final Collection<Pair<Consumer<AbstractGameManager>, String>> events = this.eventQueue.tryPopEvents(this.time);
         events.forEach(event -> {
             event.getLeft().accept(this);
@@ -118,8 +122,17 @@ public abstract class AbstractGameManager {
     public final int getGameId() {
         return this.gameId;
     }
+
     public final BlockPos generateCentrePosition() {
-        final BlockPos initial = new BlockPos(1000, 0, 10000);
-        return initial.add(0, 0, -500 * this.gameId);
+        final BlockPos initial = new BlockPos(10000, 0, 10000);
+        return initial.add(0, 0, 500 * this.gameId);
+    }
+
+    public final DyeColor getTeam(ServerPlayerEntity player) {
+        return this.teams.inverse().get(player).stream().findFirst().orElse(null);
+    }
+
+    public final BlockPos getSpawnPosition(ServerPlayerEntity player) {
+        return this.getMap().getSpawnPosition(this.getTeam(player));
     }
 }

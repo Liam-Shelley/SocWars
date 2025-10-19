@@ -119,6 +119,10 @@
   "item.socwars.steadfast_chestplate": "Steadfast Chestplate",
   "item.socwars.steadfast_leggings": "Steadfast Leggings",
   "item.socwars.steadfast_boots": "Steadfast Boots",
+  "item.socwars.cartoon_helmet": "Cartoon Helmet",
+  "item.socwars.cartoon_chestplate": "Cartoon Chestplate",
+  "item.socwars.cartoon_leggings": "Cartoon Leggings",
+  "item.socwars.cartoon_boots": "Cartoon Boots",
   "item.socwars.collectible_block": "Collectible Block",
   "steadfast_knockback_amount": "+%s%% Knockback Resistance",
   "full_set_worn": "When Worn as a Full Set:",
@@ -217,5 +221,7 @@
   "direction.up": "Up",
   "direction.down": "Down",
   "dice_of_fate.roll_result": "The dice of fate lands on a %s!",
-  "chorus_fruit_salad.fail": "Failed to find a suitable location to teleport; go yell at Liam"
+  "chorus_fruit_salad.fail": "Failed to find a suitable location to teleport; go yell at Liam",
+  "hud.queue_time_remaining": "Remaining time: %s",
+  "hud.queue_not_starting": "Waiting for more players (%s / %s min)"
 }

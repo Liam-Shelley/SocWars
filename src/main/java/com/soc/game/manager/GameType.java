@@ -5,8 +5,8 @@ import net.minecraft.util.StringIdentifiable;
 import org.apache.commons.lang3.StringUtils;
 
 public enum GameType implements QueueProgress, StringIdentifiable {
-    SKYWARS(2, 8, "skywars"),
-    BEDWARS(1, 4, "bedwars"),
+    SKYWARS(1, 8, "skywars"),
+    BEDWARS(1, 16, "bedwars"),
     PROP_HUNT(2, 8, "prop_hunt");
 
     private final int minPlayers;
@@ -28,7 +28,7 @@ public enum GameType implements QueueProgress, StringIdentifiable {
     }
 
     public int minPlayers() {
-        return this.maxPlayers;
+        return this.minPlayers;
     }
 
     public int maxPlayers() {
@@ -39,7 +39,7 @@ public enum GameType implements QueueProgress, StringIdentifiable {
     public float getQueueProgress(int playerCount) {
         if (playerCount < this.minPlayers) return 0;
 
-        float offset = (float) this.maxPlayers / (4 * this.minPlayers());
+        float offset = (float) this.maxPlayers / (8 * this.minPlayers);
         float rawProgress = (playerCount - this.minPlayers + offset) / (this.maxPlayers - this.minPlayers + offset);
         return (float) Math.pow(rawProgress, 2.5f);
     }

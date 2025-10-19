@@ -1,6 +1,7 @@
 package com.soc.lib;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMultimap;
 import com.soc.SocWars;
 import com.soc.util.Random;
 import net.minecraft.component.DataComponentTypes;
@@ -42,7 +43,7 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
-public class SocWarsLib {
+public final class SocWarsLib {
     public static final Identifier SCALE_MODIFIER_ID = Identifier.of(SocWars.MOD_ID, "scale");
     public static final float SQRT2 = (float)Math.sqrt(2d);
     public static final float MAX_SCALE_FACTOR = 4f;
@@ -50,6 +51,19 @@ public class SocWarsLib {
 
     public static <T, U> ImmutableMap<T, U> mapFromCollections(Collection<T> t1, Collection<U> t2) {
         ImmutableMap.Builder<T, U> builder = ImmutableMap.builder();
+
+        Iterator<T> t1Iterator = t1.iterator();
+        Iterator<U> t2Iterator = t2.iterator();
+
+        while (t1Iterator.hasNext() && t2Iterator.hasNext()) {
+            builder.put(t1Iterator.next(), t2Iterator.next());
+        }
+
+        return builder.build();
+    }
+
+    public static <T, U> ImmutableMultimap<T, U> multimapFromCollections(Collection<T> t1, Collection<U> t2) {
+        ImmutableMultimap.Builder<T, U> builder = ImmutableMultimap.builder();
 
         Iterator<T> t1Iterator = t1.iterator();
         Iterator<U> t2Iterator = t2.iterator();
