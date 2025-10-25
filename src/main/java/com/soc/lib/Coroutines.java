@@ -21,7 +21,7 @@ public class Coroutines {
             if (!server.getTickManager().isFrozen()) instance.runCoroutines();
         });
 
-        SocWars.LOGGER.warn("This coroutines implementation is utter garbage and has ");
+        SocWars.LOGGER.warn("This coroutines implementation is utter garbage");
     }
 
     private void runCoroutines() {

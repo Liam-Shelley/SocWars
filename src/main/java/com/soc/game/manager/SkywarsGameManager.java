@@ -4,9 +4,14 @@ import com.google.common.collect.ImmutableMultimap;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.SkywarsGameMap;
 import com.soc.game.map.SpreadRules;
+import com.soc.lib.Events;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
+import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
@@ -19,14 +24,24 @@ import static com.soc.game.map.AbstractGameMap.getRandomPlayerStack;
 import static com.soc.lib.SocWarsLib.multimapFromCollections;
 
 public class SkywarsGameManager extends AbstractGameManager {
-    private final int numLives;
+    private final Settings settings;
     private final Map<ServerPlayerEntity, PlayerStats> playerMap;
+
+    public static class Settings {
+        public static final Settings DEFAULT = new Settings(5);
+
+        private final int lives;
+
+        public Settings(int lives) {
+            this.lives = lives;
+        }
+    }
 
     private class PlayerStats {
         private int lives;
 
         public PlayerStats() {
-            this.lives = SkywarsGameManager.this.numLives;
+            this.lives = SkywarsGameManager.this.settings.lives;
         }
 
         public boolean kill() {
@@ -43,10 +58,10 @@ public class SkywarsGameManager extends AbstractGameManager {
             Set<ServerPlayerEntity> players,
             @Nullable SpreadRules spreadRules,
             int gameId,
-            int numLives
+            Settings settings
     ) {
         super(world, players, spreadRules, gameId);
-        this.numLives = numLives;
+        this.settings = settings;
         this.playerMap = players.stream().collect(Collectors.toMap(key -> key, key -> new PlayerStats()));
     }
 
@@ -78,33 +93,20 @@ public class SkywarsGameManager extends AbstractGameManager {
     }
 
     @Override
-    public void startGame() {
-        super.startGame();
-    }
+    public boolean onPlayerDeath(ServerPlayerEntity player, DamageSource source, float amount) {
+        final boolean canRespawn = this.playerMap.get(player).kill();
 
-    @Override
-    public void endGame() {
-        super.endGame();
-    }
-
-    @Override
-    public boolean onPlayerDeath(ServerPlayerEntity entity, DamageSource source, float amount) {
-        final boolean canRespawn = this.playerMap.get(entity).kill();
-
-        entity.setHealth(entity.getMaxHealth());
+        player.setHealth(player.getMaxHealth());
+        super.makePlayerSpectator(player);
 
         if (canRespawn) {
-            final Vec3d pos = super.getSpawnPosition(entity).toCenterPos();
-            entity.requestTeleport(pos.x, pos.y, pos.z);
+            PrescheduledEvents.playCountdown(() -> super.respawnPlayer(player), this, 3, 20, SoundEvents.BLOCK_NOTE_BLOCK_GUITAR.value());
         } else {
-            final Vec3d pos = this.getMap().getCentrePos().up(30).toCenterPos();
-            entity.requestTeleport(pos.x, pos.y, pos.z);
-
-            entity.changeGameMode(GameMode.SPECTATOR);
+            player.networkHandler.sendPacket(new TitleS2CPacket(Text.translatable("skywars.game.lose")));
         }
 
-        if (this.numAlivePlayers() <= 0) {
-            super.endGame();
+        if (this.numAlivePlayers() < 1) {
+            Events.getInstance().scheduleEvent(this::endGame, 5 * 20);
         }
 
         return false;

@@ -15,6 +15,8 @@ import net.minecraft.structure.StructureTemplate;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.BiConsumer;
 
 import static com.soc.lib.SocWarsLib.iterateInCube;
 import static com.soc.lib.SocWarsLib.putBlockPosCollection;
@@ -142,10 +145,33 @@ public abstract class AbstractGameMap {
     }
 
     public final BlockPos getSpawnPosition(DyeColor team) {
-        return this.pos(this.spawnPositions.get(team));
+        final BlockPos pos = this.spawnPositions.get(team);
+        if (pos == null) throw new IllegalStateException("Tried to access spawn position for team that does not exist");
+
+        return this.pos(pos);
     }
 
     public final BlockPos getCentrePos() {
         return this.absoluteCentrePos;
+    }
+
+    public Vec3d getRespawnSpectatorPos() {
+        return this.absoluteCentrePos.up(30).toCenterPos();
+    }
+
+    public void spawnCages(boolean place) {
+        BiConsumer<Direction, BlockPos> function = place ? (direction, pos) -> {
+            final BlockPos currentPos = pos.offset(direction);
+            if (this.world.isAir(currentPos)) this.world.setBlockState(currentPos, Blocks.BARRIER.getDefaultState());
+        } : (direction, pos) -> {
+            final BlockPos currentPos = pos.offset(direction);
+            if (this.world.getBlockState(currentPos).isOf(Blocks.BARRIER)) this.world.setBlockState(currentPos, Blocks.AIR.getDefaultState());
+        };
+
+        this.spawnPositions.values().forEach(position -> {
+            Arrays.stream(Direction.values()).filter(direction -> direction.getAxis().isHorizontal()).forEach(direction -> {
+                function.accept(direction, this.pos(position));
+            });
+        });
     }
 }

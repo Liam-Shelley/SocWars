@@ -223,5 +223,6 @@
   "dice_of_fate.roll_result": "The dice of fate lands on a %s!",
   "chorus_fruit_salad.fail": "Failed to find a suitable location to teleport; go yell at Liam",
   "hud.queue_time_remaining": "Remaining time: %s",
-  "hud.queue_not_starting": "Waiting for more players (%s / %s min)"
+  "hud.queue_not_starting": "Waiting for more players (%s / %s min)",
+  "skywars.game.lose": "You lose!"
 }

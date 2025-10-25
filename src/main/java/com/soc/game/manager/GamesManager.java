@@ -33,8 +33,7 @@ public class GamesManager {
     private final HashMap<GameType, Float> queueProgress = new HashMap<>();
 
     private GamesManager() {
-        Arrays.stream(GameType.values()).forEach(queue -> this.queueProgress.put(queue, 0f));
-
+        for (GameType queue : GameType.values()) this.queueProgress.put(queue, 0f);
         this.initialiseEvents();
     }
 
@@ -46,12 +45,14 @@ public class GamesManager {
 
     public void initialiseEvents() {
         ServerLifecycleEvents.SERVER_STARTED.register(server -> this.world = server.getOverworld());
-        ServerLifecycleEvents.SERVER_STOPPING.register(server -> this.games.forEach(AbstractGameManager::endGame));
+        ServerLifecycleEvents.SERVER_STOPPING.register(server -> this.games.forEach(game -> {
+                if (game != null) game.endGame();
+        }));
         ServerTickEvents.START_SERVER_TICK.register(this::tick);
 
-        ServerLivingEntityEvents.ALLOW_DEATH.register((entity, source, amount) -> {
-            return this.getGame(entity).map(game -> game.onPlayerDeath((ServerPlayerEntity) entity, source, amount)).orElse(true);
-        });
+        ServerLivingEntityEvents.ALLOW_DEATH.register((entity, source, amount) ->
+                this.getGame(entity).map(game -> game.onPlayerDeath((ServerPlayerEntity) entity, source, amount)).orElse(true)
+        );
     }
 
     public boolean startGame(AbstractGameManager game) {
@@ -128,12 +129,12 @@ public class GamesManager {
         final int gameId = this.getNewGameId();
 
         final AbstractGameManager game = switch (queue) {
-            case SKYWARS -> new SkywarsGameManager(this.world, players, null, gameId, 5);
+            case SKYWARS -> new SkywarsGameManager(this.world, players, null, gameId, SkywarsGameManager.Settings.DEFAULT);
             case BEDWARS -> new BedwarsGameManager(this.world, players, new SpreadRules(4), gameId);
             case PROP_HUNT -> null; //Maybe get around to writing some of the game logic for prop hunt
         };
 
-        final boolean startedGame = startGame(game);
+        final boolean startedGame = this.startGame(game);
         if (!startedGame) SocWars.LOGGER.warn("Failed to start game {}", game.getGameId());
     }
 

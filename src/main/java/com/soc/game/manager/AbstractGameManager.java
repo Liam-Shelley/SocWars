@@ -6,22 +6,35 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.SpreadRules;
+import com.soc.lib.Events;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.network.packet.s2c.play.ClearTitleS2CPacket;
+import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
+import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.scoreboard.AbstractTeam;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.GameMode;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import static com.soc.lib.SocWarsLib.formattingColourFromDye;
@@ -62,15 +75,25 @@ public abstract class AbstractGameManager {
     protected abstract @Nullable EventQueue buildEventQueue();
 
     public void startGame() {
-        this.getMap().placeMap();
-        this.getMap().spreadPlayers(this.teams);
+        final AbstractGameMap map = this.getMap();
+        map.placeMap();
+        map.spawnCages(true);
+        map.spreadPlayers(this.teams);
+        this.setGameMode(GameMode.ADVENTURE);
+
+        PrescheduledEvents.playCountdown(() -> {
+            map.spawnCages(false);
+            this.setGameMode(GameMode.SURVIVAL);
+        }, this, 5, 20, 50, SoundEvents.BLOCK_NOTE_BLOCK_GUITAR.value());
     }
+
     public void endGame() {
         this.removeTeams();
         this.getMap().destroyMap();
         GamesManager.getInstance().endGame(this.gameId);
     }
-    public boolean onPlayerDeath(ServerPlayerEntity entity, DamageSource source, float amount) {
+
+    public boolean onPlayerDeath(ServerPlayerEntity player, DamageSource source, float amount) {
         return true;
     }
 
@@ -124,7 +147,7 @@ public abstract class AbstractGameManager {
     }
 
     public final BlockPos generateCentrePosition() {
-        final BlockPos initial = new BlockPos(10000, 0, 10000);
+        final BlockPos initial = new BlockPos(20000, 0, 20000);
         return initial.add(0, 0, 500 * this.gameId);
     }
 
@@ -134,5 +157,47 @@ public abstract class AbstractGameManager {
 
     public final BlockPos getSpawnPosition(ServerPlayerEntity player) {
         return this.getMap().getSpawnPosition(this.getTeam(player));
+    }
+
+    protected void broadcast(Text text, boolean overlay) {
+        this.getPlayers().forEach(player -> player.sendMessage(text, overlay));
+    }
+
+    protected void broadcastTitle(Text text) {
+        this.getPlayers().forEach(player -> player.networkHandler.sendPacket(new TitleS2CPacket(text)));
+    }
+
+    protected void clearTitle() {
+        this.getPlayers().forEach(player -> player.networkHandler.sendPacket(new ClearTitleS2CPacket(false)));
+    }
+
+    protected void broadcastSound(SoundEvent sound) {
+        this.getPlayers().forEach(player -> player.playSoundToPlayer(sound, SoundCategory.PLAYERS, 1f, 1f));
+    }
+
+    protected void setGameMode(GameMode gameMode) {
+        this.getPlayers().forEach(player -> player.changeGameMode(gameMode));
+    }
+
+    protected static void allowFlight(ServerPlayerEntity player, boolean allow) {
+        player.getAbilities().allowFlying = allow;
+    }
+
+    protected void allowFlight(boolean allow) {
+        this.getPlayers().forEach(player -> player.getAbilities().allowFlying = allow);
+    }
+
+    protected void makePlayerSpectator(ServerPlayerEntity player) {
+        final Vec3d pos = this.getMap().getRespawnSpectatorPos();
+        player.requestTeleport(pos.x, pos.y, pos.z);
+        player.networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(player.getId(), Vec3d.ZERO));
+        player.changeGameMode(GameMode.SPECTATOR);
+    }
+
+    protected void respawnPlayer(ServerPlayerEntity player) {
+        final Vec3d pos = this.getSpawnPosition(player).toCenterPos();
+        player.requestTeleport(pos.x, pos.y, pos.z);
+        player.networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(player.getId(), Vec3d.ZERO));
+        player.changeGameMode(GameMode.SURVIVAL);
     }
 }

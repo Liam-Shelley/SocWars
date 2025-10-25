@@ -1,8 +1,6 @@
 package com.soc;
 
 import com.soc.blocks.util.ModBlocks;
-import com.soc.entities.BWFireballEntity;
-import com.soc.entities.BigTntEntity;
 import com.soc.entities.util.ModEntities;
 import com.soc.items.FeatherBlockItem;
 import com.soc.networking.S2CReceivers;

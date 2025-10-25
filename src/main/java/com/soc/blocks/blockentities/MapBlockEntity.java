@@ -3,7 +3,6 @@ package com.soc.blocks.blockentities;
 import com.mojang.serialization.Codec;
 import com.soc.SocWars;
 import com.soc.blocks.ColourStateBlock;
-import com.soc.blocks.MapBlock;
 import com.soc.blocks.util.ModBlocks;
 import com.soc.game.manager.GameType;
 import com.soc.game.map.AbstractGameMap;
@@ -49,7 +48,8 @@ public class MapBlockEntity extends BlockEntity {
             CENTRE_PLACEHOLDER,
             DIAMOND_GEN_PLACEHOLDER,
             EMERALD_GEN_PLACEHOLDER,
-            ISLAND_GEN_PLACEHOLDER
+            ISLAND_GEN_PLACEHOLDER,
+            Blocks.AIR
     );
 
     private BlockPos.Mutable regionSize;
