@@ -74,6 +74,7 @@ public abstract class AbstractGameManager {
         map.placeMap();
         map.spawnCages(true);
         map.spreadPlayers(this.teams);
+        this.assignPlayersToTeams();
         this.setGameMode(GameMode.ADVENTURE);
 
         PrescheduledEvents.playCountdown(() -> {
@@ -127,6 +128,10 @@ public abstract class AbstractGameManager {
         colours.forEach(colour -> teams.add(this.addTeamFromColour(colour)));
 
         return teams;
+    }
+
+    private void assignPlayersToTeams() {
+        this.teams.forEach((team, player) -> world.getScoreboard().addScoreHolderToTeam(player.getNameForScoreboard(), this.scoreboardTeams.get(team)));
     }
 
     private void updateEventQueue() {

@@ -250,7 +250,7 @@ public final class SocWarsLib {
         if (source.getScoreboardTeam() == null && source instanceof PlayerEntity player) {
             player.sendMessage(Text.literal("You are not assigned to a team, go yell at Liam"), false);
         } else {
-            scoreboard.addScoreHolderToTeam(assignee.getUuidAsString(), source.getScoreboardTeam());
+            scoreboard.addScoreHolderToTeam(assignee.getNameForScoreboard(), source.getScoreboardTeam());
         }
     }
 
