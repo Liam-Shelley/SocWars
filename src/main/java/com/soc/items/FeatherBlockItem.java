@@ -14,6 +14,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.GameMode;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,6 +29,8 @@ public class FeatherBlockItem extends BlockItem {
 
     @Override
     public ActionResult use(World world, PlayerEntity user, Hand hand) {
+        if (user.getGameMode() == GameMode.ADVENTURE) return ActionResult.PASS;
+
         final BlockPos pos = BlockPos.ofFloored(user.getEyePos().add(user.getRotationVector().multiply(user.getBlockInteractionRange())));
         world.setBlockState(pos, ModBlocks.FEATHER_BLOCK.getDefaultState());
         user.getStackInHand(hand).decrementUnlessCreative(1, user);

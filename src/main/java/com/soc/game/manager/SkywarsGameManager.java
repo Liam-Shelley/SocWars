@@ -122,7 +122,7 @@ public class SkywarsGameManager extends AbstractGameManager {
         }
 
         if (canRespawn) {
-            PrescheduledEvents.playCountdown(() -> super.respawnPlayer(player), this, 3, 20, SoundEvents.BLOCK_NOTE_BLOCK_GUITAR.value());
+            PrescheduledEvents.playCountdown(() -> super.respawnPlayer(player), this, 3, 20, SoundEvents.BLOCK_NOTE_BLOCK_GUITAR.value(), player);
         } else {
             player.networkHandler.sendPacket(new TitleS2CPacket(Text.translatable("game.skywars.eliminate")));
         }

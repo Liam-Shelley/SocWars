@@ -31,12 +31,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import static com.soc.lib.SocWarsLib.formattingColourFromDye;
 
@@ -67,11 +65,7 @@ public abstract class AbstractGameManager {
     protected abstract AbstractGameMap buildMap();
     public abstract ImmutableMultimap<DyeColor, ServerPlayerEntity> buildTeams(Set<ServerPlayerEntity> players, SpreadRules spreadRules);
     public final ImmutableMap<DyeColor, Team> buildScoreboardTeams() {
-        ImmutableMap.Builder<DyeColor, Team> builder = ImmutableMap.builder();
-
-        this.teams.keySet().forEach(colour -> builder.put(colour, this.addTeamFromColour(colour)));
-
-        return builder.build();
+        return ImmutableMap.copyOf(this.teams.entries().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> this.addTeamFromColour(entry.getKey()))));
     }
     protected abstract @Nullable EventQueue buildEventQueue();
 
@@ -85,7 +79,7 @@ public abstract class AbstractGameManager {
         PrescheduledEvents.playCountdown(() -> {
             map.spawnCages(false);
             this.setGameMode(GameMode.SURVIVAL);
-        }, this, 5, 20, 50, SoundEvents.BLOCK_NOTE_BLOCK_GUITAR.value());
+        }, this, 5, 20, 50, SoundEvents.BLOCK_NOTE_BLOCK_GUITAR.value(), null);
     }
 
     public void endGame() {
@@ -122,6 +116,10 @@ public abstract class AbstractGameManager {
         team.setCollisionRule(AbstractTeam.CollisionRule.PUSH_OTHER_TEAMS);
 
         return team;
+    }
+
+    public final boolean teamAlreadyExists(DyeColor colour) {
+        return this.world.getScoreboard().getTeam(this.gameId + "_" + colour.toString()) != null;
     }
 
     public final ArrayList<Team> addTeamsFromColours(Set<DyeColor> colours) {

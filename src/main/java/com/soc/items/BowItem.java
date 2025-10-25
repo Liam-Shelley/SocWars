@@ -20,6 +20,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.*;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.world.GameMode;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -178,6 +179,8 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
 
     @Override
     public boolean onStoppedUsing(ItemStack stack, World world, LivingEntity user, int remainingUseTicks) {
+        if (user instanceof PlayerEntity player && player.getGameMode() == GameMode.SPECTATOR) return false;
+
         final float drawProgress = this.drawProgress(stack, remainingUseTicks);
         if (drawProgress < 0.2f && rawDrawProgress(remainingUseTicks) < 0.2f) return false;
 

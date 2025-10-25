@@ -22,7 +22,7 @@ public class ColourStateBlock extends Block {
     public static final IntProperty COLOUR = IntProperty.of("dye_colour_with_empty", 0, 16);
 
     @Override
-    public MapCodec<? extends ColourStateBlock> getCodec() {
+    public MapCodec<ColourStateBlock> getCodec() {
         return CODEC;
     }
 
