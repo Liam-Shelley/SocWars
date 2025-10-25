@@ -10,6 +10,7 @@ import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
@@ -79,6 +80,20 @@ public class SkywarsGameManager extends AbstractGameManager {
     }
 
     @Override
+    public void endGame() {
+        Events.getInstance().scheduleEvent(() -> {
+            this.playerMap.forEach((key, stats) -> {
+                final Text message = stats.isAlive() ? Text.translatable("game.skywars.win") : Text.translatable("game.skywars.lose");
+                key.networkHandler.sendPacket(new TitleS2CPacket(message));
+
+                key.playSoundToPlayer(stats.isAlive() ? SoundEvents.ENTITY_PLAYER_LEVELUP : SoundEvents.BLOCK_BELL_USE, SoundCategory.PLAYERS, 1, 1);
+            });
+        }, 10);
+
+        Events.getInstance().scheduleEvent(super::endGame, 5 * 20);
+    }
+
+    @Override
     public ImmutableMultimap<DyeColor, ServerPlayerEntity> buildTeams(Set<ServerPlayerEntity> players, @Nullable SpreadRules spreadRules) {
         final Stack<ServerPlayerEntity> playerStack = getRandomPlayerStack(players);
 
@@ -99,20 +114,23 @@ public class SkywarsGameManager extends AbstractGameManager {
         player.setHealth(player.getMaxHealth());
         super.makePlayerSpectator(player);
 
+        super.broadcastDeath(player, source, !canRespawn);
+
+        if (this.getAlivePlayers().size() < (this.getPlayers().size() > 1 ? 2 : 1)) {
+            this.endGame();
+            return false;
+        }
+
         if (canRespawn) {
             PrescheduledEvents.playCountdown(() -> super.respawnPlayer(player), this, 3, 20, SoundEvents.BLOCK_NOTE_BLOCK_GUITAR.value());
         } else {
-            player.networkHandler.sendPacket(new TitleS2CPacket(Text.translatable("skywars.game.lose")));
-        }
-
-        if (this.numAlivePlayers() < 1) {
-            Events.getInstance().scheduleEvent(this::endGame, 5 * 20);
+            player.networkHandler.sendPacket(new TitleS2CPacket(Text.translatable("game.skywars.eliminate")));
         }
 
         return false;
     }
 
-    private int numAlivePlayers() {
-        return (int)this.playerMap.values().stream().filter(PlayerStats::isAlive).count();
+    private List<ServerPlayerEntity> getAlivePlayers() {
+        return this.playerMap.entrySet().stream().filter(entry -> entry.getValue().isAlive()).map(Map.Entry::getKey).toList();
     }
 }

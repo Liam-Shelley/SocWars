@@ -20,6 +20,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
@@ -68,7 +69,7 @@ public abstract class AbstractGameManager {
     public final ImmutableMap<DyeColor, Team> buildScoreboardTeams() {
         ImmutableMap.Builder<DyeColor, Team> builder = ImmutableMap.builder();
 
-        this.teams.keySet().forEach(colour -> builder.put(colour, addTeamFromColour(colour)));
+        this.teams.keySet().forEach(colour -> builder.put(colour, this.addTeamFromColour(colour)));
 
         return builder.build();
     }
@@ -90,6 +91,7 @@ public abstract class AbstractGameManager {
     public void endGame() {
         this.removeTeams();
         this.getMap().destroyMap();
+        this.sendPlayersToLobby();
         GamesManager.getInstance().endGame(this.gameId);
     }
 
@@ -163,6 +165,17 @@ public abstract class AbstractGameManager {
         this.getPlayers().forEach(player -> player.sendMessage(text, overlay));
     }
 
+    protected void broadcastDeath(ServerPlayerEntity player, DamageSource source, boolean isFinal) {
+        final MutableText text = source.getAttacker() == null ?
+                player.getDamageTracker().getDeathMessage().copy() :
+                Text.translatable("game.player.kill", player.getDisplayName(), source.getAttacker().getDisplayName()
+        );
+
+        if (isFinal) text.append(Text.translatable("game.death.final"));
+
+        this.broadcast(text, false);
+    }
+
     protected void broadcastTitle(Text text) {
         this.getPlayers().forEach(player -> player.networkHandler.sendPacket(new TitleS2CPacket(text)));
     }
@@ -191,6 +204,7 @@ public abstract class AbstractGameManager {
         final Vec3d pos = this.getMap().getRespawnSpectatorPos();
         player.requestTeleport(pos.x, pos.y, pos.z);
         player.networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(player.getId(), Vec3d.ZERO));
+
         player.changeGameMode(GameMode.SPECTATOR);
     }
 
@@ -198,6 +212,17 @@ public abstract class AbstractGameManager {
         final Vec3d pos = this.getSpawnPosition(player).toCenterPos();
         player.requestTeleport(pos.x, pos.y, pos.z);
         player.networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(player.getId(), Vec3d.ZERO));
+
         player.changeGameMode(GameMode.SURVIVAL);
+
+        player.getHungerManager().setFoodLevel(20);
+        player.getHungerManager().setSaturationLevel(5f);
+    }
+
+    protected final void sendPlayersToLobby() {
+        final Vec3d pos = this.world.getSpawnPos().toCenterPos();
+
+        this.getPlayers().forEach(player -> player.requestTeleport(pos.x + this.world.random.nextFloat() * 3f, pos.y, pos.z + this.world.random.nextFloat() * 3f));
+        this.setGameMode(GameMode.ADVENTURE);
     }
 }

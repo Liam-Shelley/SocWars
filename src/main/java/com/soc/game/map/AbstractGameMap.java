@@ -7,6 +7,8 @@ import com.soc.util.Random;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -15,6 +17,7 @@ import net.minecraft.structure.StructureTemplate;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -141,7 +144,11 @@ public abstract class AbstractGameMap {
     }
 
     public final void destroyMap() {
-        iterateInCube(this.absoluteCentrePos.subtract(this.centrePos), this.absoluteCentrePos.subtract(this.centrePos).add(this.structure.getSize()), pos -> this.world.setBlockState(pos, Blocks.AIR.getDefaultState()));
+        final BlockPos minPos = this.absoluteCentrePos.subtract(this.centrePos);
+        final BlockPos maxPos = minPos.add(this.structure.getSize());
+        iterateInCube(minPos, maxPos, pos -> this.world.setBlockState(pos, Blocks.AIR.getDefaultState()));
+
+        this.world.getOtherEntities(null, new Box(minPos.toCenterPos(), maxPos.toCenterPos()), entity -> entity.getType() != EntityType.PLAYER).forEach(entity -> entity.kill(this.world));
     }
 
     public final BlockPos getSpawnPosition(DyeColor team) {

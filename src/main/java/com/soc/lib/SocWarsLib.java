@@ -220,7 +220,7 @@ public final class SocWarsLib {
             final int candidateX = (int)origin.getX() + world.random.nextBetween(-range, range);
             final int candidateZ = (int)origin.getZ() + world.random.nextBetween(-range, range);
 
-            final int height = world.getTopY(Heightmap.Type.WORLD_SURFACE, candidateX, candidateZ);
+            final int height = world.getTopY(Heightmap.Type.MOTION_BLOCKING, candidateX, candidateZ);
             if (Math.abs(height - origin.getY()) > 10) continue;
 
             final float dX = candidateX - (float)origin.getX();

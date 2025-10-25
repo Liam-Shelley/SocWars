@@ -224,5 +224,9 @@
   "chorus_fruit_salad.fail": "Failed to find a suitable location to teleport; go yell at Liam",
   "hud.queue_time_remaining": "Remaining time: %s",
   "hud.queue_not_starting": "Waiting for more players (%s / %s min)",
-  "skywars.game.lose": "You lose!"
+  "game.skywars.eliminate": "Get Lost!",
+  "game.skywars.win": "Victory!",
+  "game.skywars.lose": "Emotional Damage!",
+  "game.player.kill": "%1$s was obliterated by %2$s",
+  "game.death.final": " §4FINAL KILL!"
 }
