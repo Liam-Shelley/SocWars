@@ -123,11 +123,8 @@ public abstract class AbstractGameManager {
         return this.world.getScoreboard().getTeam(this.gameId + "_" + colour.toString()) != null;
     }
 
-    public final ArrayList<Team> addTeamsFromColours(Set<DyeColor> colours) {
-        final ArrayList<Team> teams = new ArrayList<>();
-        colours.forEach(colour -> teams.add(this.addTeamFromColour(colour)));
-
-        return teams;
+    public final List<Team> addTeamsFromColours(Set<DyeColor> colours) {
+        return colours.stream().map(this::addTeamFromColour).toList();
     }
 
     private void assignPlayersToTeams() {
