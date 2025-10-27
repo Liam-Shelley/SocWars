@@ -1,5 +1,6 @@
 package com.soc.database.stats;
 
+import com.soc.SocWars;
 import com.soc.database.SqlHelper;
 import net.minecraft.server.network.ServerPlayerEntity;
 
@@ -20,8 +21,12 @@ public abstract class BaseTable implements GetFields, TableName {
         this(null);
     }
 
-    public final BaseTable createSqlTable(Statement statement) throws SQLException {
-        statement.execute(this.createSqlTableRequest());
+    public final BaseTable createSqlTable(Statement statement) {
+        try {
+            statement.execute(this.createSqlTableRequest());
+        } catch (SQLException e) {
+            SocWars.LOGGER.error("Failed to create blank table for {}", this.getTableName());
+        }
         return this;
     }
 
@@ -35,8 +40,12 @@ public abstract class BaseTable implements GetFields, TableName {
         return builder.toString();
     }
 
-    public final BaseTable blankInsert(Statement statement) throws SQLException {
-        statement.execute(this.blankInsertRequest());
+    public final BaseTable blankInsert(Statement statement) {
+        try {
+            statement.execute(this.blankInsertRequest());
+        } catch (SQLException e) {
+            SocWars.LOGGER.error("Failed to create {} insert statement for {}", this.getTableName(), this.player);
+        }
         return this;
     }
 
@@ -63,8 +72,12 @@ public abstract class BaseTable implements GetFields, TableName {
         return builder.toString();
     }
 
-    public final BaseTable updateSql(Statement statement) throws SQLException {
-        statement.execute(this.updateSqlRequest());
+    public final BaseTable updateSql(Statement statement) {
+        try {
+            statement.execute(this.updateSqlRequest());
+        } catch (SQLException e) {
+            SocWars.LOGGER.error("Failed to update {} for {}", this.getTableName(), this.player);
+        }
         return this;
     }
 

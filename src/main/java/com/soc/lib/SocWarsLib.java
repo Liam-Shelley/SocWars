@@ -3,6 +3,7 @@ package com.soc.lib;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 import com.soc.SocWars;
+import com.soc.mixin.MostRecentDamage;
 import com.soc.util.Random;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ItemEnchantmentsComponent;
@@ -14,6 +15,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.damage.DamageRecord;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageType;
 import net.minecraft.entity.mob.*;
@@ -36,6 +38,7 @@ import net.minecraft.world.World;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Unique;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -362,4 +365,13 @@ public final class SocWarsLib {
         return getTimeFromTicksDynColours(time, includeTicks, Arrays.stream(colours).mapToObj(colour -> (UnaryOperator<Integer>)(a -> colour)).toArray(UnaryOperator[]::new));
     }
 
+    public static Optional<PlayerEntity> getPlayerAttacker(PlayerEntity player) {
+        for (DamageRecord record : ((MostRecentDamage)player.getDamageTracker()).getRecentDamage()) {
+            final Entity source = record.damageSource().getSource();
+            if (source != null && source.getType() == EntityType.PLAYER) {
+                return Optional.of((PlayerEntity)source);
+            }
+        }
+        return Optional.empty();
+    }
 }

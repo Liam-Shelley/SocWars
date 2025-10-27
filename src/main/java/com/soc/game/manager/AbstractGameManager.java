@@ -4,10 +4,16 @@ import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
+import com.soc.database.Database;
 import com.soc.database.stats.BaseGameTable;
+import com.soc.database.stats.CombatTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.SpreadRules;
+import com.soc.lib.SocWarsLib;
+import com.soc.mixin.MostRecentDamage;
+import net.minecraft.entity.damage.DamageRecord;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.ClearTitleS2CPacket;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
@@ -29,6 +35,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
+import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -60,7 +67,6 @@ public abstract class AbstractGameManager {
         this.dbTables = players.stream().collect(Collectors.toMap(key -> key, this.dbTableBuilder()));
     }
 
-
     protected abstract AbstractGameMap getMap();
     protected abstract AbstractGameMap buildMap();
     public abstract ImmutableMultimap<DyeColor, ServerPlayerEntity> buildTeams(Set<ServerPlayerEntity> players, SpreadRules spreadRules);
@@ -88,10 +94,17 @@ public abstract class AbstractGameManager {
         this.removeTeams();
         this.getMap().destroyMap();
         this.sendPlayersToLobby();
+
+        Database.getStatement().ifPresent(statement -> this.dbTables.values().forEach(table -> table.updateSql(statement)));
+
         GamesManager.getInstance().endGame(this.gameId);
     }
 
     public boolean onPlayerDeath(ServerPlayerEntity player, DamageSource source, float amount) {
+        ((CombatTable)this.dbTables.get(player)).grantDeath();
+
+        SocWarsLib.getPlayerAttacker(player).ifPresent(killer -> ((CombatTable)this.dbTables.get((ServerPlayerEntity)killer)).grantKill());
+
         return true;
     }
 

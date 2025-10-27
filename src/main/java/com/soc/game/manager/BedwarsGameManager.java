@@ -67,7 +67,7 @@ public class BedwarsGameManager extends AbstractGameManager {
     }
 
     @Override
-    public boolean onPlayerDeath(ServerPlayerEntity entity, DamageSource source, float amount) {
-        return true;
+    public boolean onPlayerDeath(ServerPlayerEntity player, DamageSource source, float amount) {
+        return super.onPlayerDeath(player, source, amount);
     }
 }

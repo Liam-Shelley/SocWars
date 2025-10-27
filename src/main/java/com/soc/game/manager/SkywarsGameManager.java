@@ -117,6 +117,8 @@ public class SkywarsGameManager extends AbstractGameManager {
 
     @Override
     public boolean onPlayerDeath(ServerPlayerEntity player, DamageSource source, float amount) {
+        super.onPlayerDeath(player, source, amount);
+
         final boolean canRespawn = this.playerMap.get(player).kill();
 
         player.setHealth(player.getMaxHealth());

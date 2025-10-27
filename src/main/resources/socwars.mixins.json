@@ -5,6 +5,7 @@
   "mixins": [
     "CancelSprintParticles",
     "DropItemEvent",
+    "MostRecentDamage",
     "OnHitArmour",
     "UseDurationScale",
     "VelocityPacketUnlimit"

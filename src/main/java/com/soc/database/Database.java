@@ -43,22 +43,14 @@ public final class Database {
     }
 
     public static void initialise() {
-        try {
-            new SkywarsTable().createSqlTable(STATEMENT);
-            new BedwarsTable().createSqlTable(STATEMENT);
-            new LobbyTable().createSqlTable(STATEMENT);
-        } catch (SQLException e) {
-            SocWars.LOGGER.error("Failed to create default database tables");
-        }
+        new SkywarsTable().createSqlTable(STATEMENT);
+        new BedwarsTable().createSqlTable(STATEMENT);
+        new LobbyTable().createSqlTable(STATEMENT);
 
         ServerPlayerEvents.JOIN.register(player -> {
-            try {
                 new LobbyTable(player).blankInsert(STATEMENT);
                 new SkywarsTable(player).blankInsert(STATEMENT);
                 new BedwarsTable(player).blankInsert(STATEMENT);
-            } catch (SQLException e) {
-                SocWars.LOGGER.error("Failed to create default database entries for {}", player.getNameForScoreboard());
-            }
         });
     }
 }
