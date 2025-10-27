@@ -10,11 +10,33 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Optional;
 
-public class Database {
+public final class Database {
     private Database() {}
 
-    private static Connection CONNECTION;
+    private static final Connection CONNECTION;
+    private static final Statement STATEMENT;
+
+    public static Optional<Statement> getStatement() {
+        return Optional.ofNullable(STATEMENT);
+    }
+
+    static {
+        Connection connection;
+        Statement statement;
+        try {
+            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/", "postgres", "postgrespassword");
+            statement = connection.createStatement();
+        } catch (SQLException e) {
+            connection = null;
+            statement = null;
+
+            SocWars.LOGGER.error("Failed to connect to database");
+        }
+        CONNECTION = connection;
+        STATEMENT = statement;
+    }
 
     public static void main(String[] args) {
         initialise();
@@ -22,34 +44,20 @@ public class Database {
 
     public static void initialise() {
         try {
-            CONNECTION = DriverManager.getConnection("jdbc:postgresql://localhost:5432/", "postgres", "postgrespassword");
-            Statement statement = CONNECTION.createStatement();
-
-            new BedwarsTable().createSqlTable(statement);
-            new SkywarsTable().createSqlTable(statement);
-            new LobbyTable().createSqlTable(statement);
-
-
-
-
-
+            new SkywarsTable().createSqlTable(STATEMENT);
+            new BedwarsTable().createSqlTable(STATEMENT);
+            new LobbyTable().createSqlTable(STATEMENT);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            SocWars.LOGGER.error("Failed to create default database tables");
         }
 
         ServerPlayerEvents.JOIN.register(player -> {
             try {
-                Statement statement = CONNECTION.createStatement();
-                SocWars.LOGGER.info(new BedwarsTable(player).updateSqlRequest());
-                new BedwarsTable(player).blankInsert(statement).updateSql(statement);
-
-
-
-
-
-
+                new LobbyTable(player).blankInsert(STATEMENT);
+                new SkywarsTable(player).blankInsert(STATEMENT);
+                new BedwarsTable(player).blankInsert(STATEMENT);
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                SocWars.LOGGER.error("Failed to create default database entries for {}", player.getNameForScoreboard());
             }
         });
     }

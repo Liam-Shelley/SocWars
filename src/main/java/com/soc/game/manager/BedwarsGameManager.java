@@ -1,6 +1,8 @@
 package com.soc.game.manager;
 
 import com.google.common.collect.ImmutableMultimap;
+import com.soc.database.stats.BaseGameTable;
+import com.soc.database.stats.BedwarsTable;
 import com.soc.game.map.BedwarsGameMap;
 import com.soc.game.map.SpreadRules;
 import net.minecraft.entity.damage.DamageSource;
@@ -11,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.Function;
 
 import static com.soc.game.map.AbstractGameMap.getRandomPlayerStack;
 
@@ -56,6 +59,11 @@ public class BedwarsGameManager extends AbstractGameManager {
         queue.addEventMinutesSeconds(3, 30, (manager) -> {}, "events.bedwars.diamond2");
 
         return queue;
+    }
+
+    @Override
+    protected Function<ServerPlayerEntity, BedwarsTable> dbTableBuilder() {
+        return BedwarsTable::new;
     }
 
     @Override

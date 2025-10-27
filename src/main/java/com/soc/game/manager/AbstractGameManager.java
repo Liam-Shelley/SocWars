@@ -4,10 +4,9 @@ import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
+import com.soc.database.stats.BaseGameTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.SpreadRules;
-import com.soc.lib.Events;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.network.packet.s2c.play.ClearTitleS2CPacket;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
@@ -24,7 +23,6 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import org.apache.commons.lang3.StringUtils;
@@ -32,21 +30,20 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.soc.lib.SocWarsLib.formattingColourFromDye;
 
 public abstract class AbstractGameManager {
-    public static final ImmutableSet<DyeColor> FOUR_TEAMS_COLOURS = ImmutableSet.copyOf(new DyeColor[]{DyeColor.RED, DyeColor.YELLOW, DyeColor.GREEN, DyeColor.LIGHT_BLUE});
-    public static final ImmutableSet<DyeColor> EIGHT_TEAMS_COLOURS = ImmutableSet.copyOf(new DyeColor[]{DyeColor.RED, DyeColor.ORANGE, DyeColor.YELLOW, DyeColor.GREEN, DyeColor.LIGHT_BLUE, DyeColor.BLUE, DyeColor.PURPLE, DyeColor.MAGENTA});
-
     protected final AbstractGameMap map;
     protected final ServerWorld world;
     protected final ImmutableMultimap<DyeColor, ServerPlayerEntity> teams;
     protected final ImmutableMap<DyeColor, Team> scoreboardTeams;
     protected final @Nullable EventQueue eventQueue;
+
+    protected final Map<ServerPlayerEntity, BaseGameTable> dbTables;
 
     private final int gameId;
 
@@ -59,7 +56,10 @@ public abstract class AbstractGameManager {
         this.scoreboardTeams = this.buildScoreboardTeams();
         this.eventQueue = this.buildEventQueue();
         this.gameId = gameId;
+
+        this.dbTables = players.stream().collect(Collectors.toMap(key -> key, this.dbTableBuilder()));
     }
+
 
     protected abstract AbstractGameMap getMap();
     protected abstract AbstractGameMap buildMap();
@@ -68,6 +68,7 @@ public abstract class AbstractGameManager {
         return ImmutableMap.copyOf(this.teams.entries().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> this.addTeamFromColour(entry.getKey()))));
     }
     protected abstract @Nullable EventQueue buildEventQueue();
+    protected abstract Function<ServerPlayerEntity, ? extends BaseGameTable> dbTableBuilder();
 
     public void startGame() {
         final AbstractGameMap map = this.getMap();

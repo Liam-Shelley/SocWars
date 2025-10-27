@@ -1,6 +1,8 @@
 package com.soc.game.manager;
 
 import com.google.common.collect.ImmutableMultimap;
+import com.soc.database.stats.BaseGameTable;
+import com.soc.database.stats.SkywarsTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.SkywarsGameMap;
 import com.soc.game.map.SpreadRules;
@@ -19,6 +21,7 @@ import net.minecraft.world.GameMode;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.soc.game.map.AbstractGameMap.getRandomPlayerStack;
@@ -105,6 +108,11 @@ public class SkywarsGameManager extends AbstractGameManager {
     @Override
     protected @Nullable EventQueue buildEventQueue() {
         return null;
+    }
+
+    @Override
+    protected Function<ServerPlayerEntity, SkywarsTable> dbTableBuilder() {
+        return SkywarsTable::new;
     }
 
     @Override
