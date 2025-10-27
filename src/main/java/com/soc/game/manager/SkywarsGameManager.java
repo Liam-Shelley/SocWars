@@ -1,23 +1,23 @@
 package com.soc.game.manager;
 
 import com.google.common.collect.ImmutableMultimap;
-import com.soc.database.stats.BaseGameTable;
+import com.soc.database.Database;
 import com.soc.database.stats.SkywarsTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.SkywarsGameMap;
 import com.soc.game.map.SpreadRules;
 import com.soc.lib.Events;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
+import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.GameMode;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -84,14 +84,26 @@ public class SkywarsGameManager extends AbstractGameManager {
 
     @Override
     public void endGame() {
-        Events.getInstance().scheduleEvent(() -> {
-            this.playerMap.forEach((key, stats) -> {
-                final Text message = stats.isAlive() ? Text.translatable("game.skywars.win") : Text.translatable("game.skywars.lose");
-                key.networkHandler.sendPacket(new TitleS2CPacket(message));
+        this.playerMap.forEach((player, stats) -> {
+            final Text message;
+            final SoundEvent sound;
+            final SkywarsTable dbTable = (SkywarsTable)this.dbTables.get(player);
+            if (stats.isAlive()) {
+                message = Text.translatable("game.skywars.win");
+                sound = SoundEvents.ENTITY_PLAYER_LEVELUP;
+                dbTable.win();
+            } else {
+                message = Text.translatable("game.skywars.lose");
+                sound = SoundEvents.BLOCK_BELL_USE;
+                dbTable.lose();
+            }
 
-                key.playSoundToPlayer(stats.isAlive() ? SoundEvents.ENTITY_PLAYER_LEVELUP : SoundEvents.BLOCK_BELL_USE, SoundCategory.PLAYERS, 1, 1);
-            });
-        }, 10);
+            Events.getInstance().scheduleEvent(() -> {
+                player.networkHandler.sendPacket(new TitleS2CPacket(message));
+
+                player.playSoundToPlayer(sound, SoundCategory.PLAYERS, 1, 1);
+            }, 10);
+        });
 
         Events.getInstance().scheduleEvent(super::endGame, 5 * 20);
     }
@@ -118,6 +130,8 @@ public class SkywarsGameManager extends AbstractGameManager {
     @Override
     public boolean onPlayerDeath(ServerPlayerEntity player, DamageSource source, float amount) {
         super.onPlayerDeath(player, source, amount);
+
+        if (source.isOf(DamageTypes.OUT_OF_WORLD)) ((SkywarsTable)this.dbTables.get(player)).fallInVoid();
 
         final boolean canRespawn = this.playerMap.get(player).kill();
 
