@@ -48,3 +48,4 @@ run/usercache.json
 /run
 /.idea
 .github/workflows/build.yml
+/logs

@@ -2,6 +2,7 @@ package com.soc;
 
 import com.soc.blocks.blockentities.ModBlockEntities;
 import com.soc.blocks.util.ModBlocks;
+import com.soc.database.Database;
 import com.soc.effects.util.ModEffects;
 import com.soc.entities.util.ModEntities;
 import com.soc.game.manager.GamesManager;
@@ -49,5 +50,7 @@ public class SocWars implements ModInitializer {
 		C2SReceivers.initialise();
 		Coroutines.initialise();
 		Events.initialise();
+
+		Database.initialise();
 	}
 }

@@ -163,7 +163,7 @@ public abstract class AbstractGameMap {
     }
 
     public Vec3d getRespawnSpectatorPos() {
-        return this.absoluteCentrePos.up(30).toCenterPos();
+        return this.absoluteCentrePos.up(this.structure.getSize().getY() + 15).toCenterPos();
     }
 
     public void spawnCages(boolean place) {

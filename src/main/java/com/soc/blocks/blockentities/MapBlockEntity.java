@@ -27,6 +27,7 @@ import net.minecraft.structure.StructureTemplate;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.GameRules;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
