@@ -3,6 +3,7 @@ package com.soc.blocks.blockentities;
 import com.mojang.serialization.Codec;
 import com.soc.SocWars;
 import com.soc.blocks.ColourStateBlock;
+import com.soc.blocks.TierBlock;
 import com.soc.blocks.util.ModBlocks;
 import com.soc.game.manager.GameType;
 import com.soc.game.map.AbstractGameMap;
@@ -32,12 +33,14 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
 import static com.soc.blocks.blockentities.ModBlockEntities.MAP_BLOCK_ENTITY;
 import static com.soc.blocks.util.ModBlocks.*;
 import static com.soc.game.map.AbstractGameMap.getMapDirectory;
+import static com.soc.lib.SocWarsLib.iterateInCube;
 
 public class MapBlockEntity extends BlockEntity {
     public static final int X_COLOUR = 0xdff21f43;
@@ -80,34 +83,32 @@ public class MapBlockEntity extends BlockEntity {
         HashSet<BlockPos> islandGens = new HashSet<>();
         HashSet<BlockPos> bedPositions = new HashSet<>();
 
+        //Skywars
+        HashMap<BlockPos, Integer> lootChests = new HashMap<>();
+
         //region Main structure check
         final BlockPos minPos = this.getPos().add(0, 1, 0);
         final BlockPos maxPos = minPos.add(this.regionSize);
-        for (int x = minPos.getX(); x < maxPos.getX(); x++) {
-            for (int y = minPos.getY(); y < maxPos.getY(); y++) {
-                for (int z = minPos.getZ(); z < maxPos.getZ(); z++) {
-                    final BlockPos currentPos = new BlockPos(x, y, z);
-                    final BlockState blockState = this.world.getBlockState(currentPos);
 
-                    if (blockState.isIn(BlockTags.MAP_PLACEHOLDER)) {
-                        switch (blockState.getBlock().getName().getString()) {
-                            case "Spawn Placeholder" -> spawnPositions.add(Pair.of(blockState.get(ColourStateBlock.COLOUR), currentPos));
-                            case "Centre Placeholder" -> centrePositions.add(currentPos);
-                            case "Diamond Generator Placeholder" -> diamondGens.add(currentPos);
-                            case "Emerald Generator Placeholder" -> emeraldGens.add(currentPos);
-                            case "Island Generator Placeholder" -> islandGens.add(currentPos);
-                            default -> {
-                                if (blockState.getBlock() instanceof BedBlock && blockState.get(BedBlock.PART) == BedPart.HEAD) {
-                                    bedPositions.add(currentPos);
-                                    continue;
-                                }
-                                SocWars.LOGGER.warn("Looks like someone accidentally assigned the map_placeholder tag to something that it shouldn't be assigned to");
-                            }
-                        }
-                    }
+        iterateInCube(minPos, maxPos, pos -> {
+            final BlockState blockState = this.world.getBlockState(pos);
+            if (!blockState.isIn(BlockTags.MAP_PLACEHOLDER)) return;
+
+            final Block block = blockState.getBlock();
+            if (block == SPAWN_PLACEHOLDER) spawnPositions.add(Pair.of(blockState.get(ColourStateBlock.COLOUR), pos));
+            else if (block == CENTRE_PLACEHOLDER) centrePositions.add(pos);
+            else if (block == DIAMOND_GEN_PLACEHOLDER) diamondGens.add(pos);
+            else if (block == EMERALD_GEN_PLACEHOLDER) emeraldGens.add(pos);
+            else if (block == ISLAND_GEN_PLACEHOLDER) islandGens.add(pos);
+            else if (block == CHEST_PLACEHOLDER) lootChests.put(pos, world.getBlockState(pos).get(TierBlock.TIER));
+            else {
+                if (blockState.getBlock() instanceof BedBlock && blockState.get(BedBlock.PART) == BedPart.HEAD) {
+                    bedPositions.add(pos);
+                    return;
                 }
+                SocWars.LOGGER.warn("Looks like someone accidentally assigned the map_placeholder tag to something that it shouldn't be assigned to");
             }
-        }
+        });
         //endregion
 
         //region Face bordering checks
@@ -167,7 +168,7 @@ public class MapBlockEntity extends BlockEntity {
         }
         //endregion
 
-        this.mapCheckResults = new MapCheckResults(spawnPositions, centrePositions, flaggedFaces, diamondGens, emeraldGens, islandGens, bedPositions);
+        this.mapCheckResults = new MapCheckResults(spawnPositions, centrePositions, flaggedFaces, diamondGens, emeraldGens, islandGens, bedPositions, lootChests);
         this.mapCheckInfo = mapCheckResults.generateInfo(this.mapType);
     }
 

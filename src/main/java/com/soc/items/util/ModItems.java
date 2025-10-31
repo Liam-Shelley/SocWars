@@ -1,6 +1,7 @@
 package com.soc.items.util;
 
 import com.soc.SocWars;
+import com.soc.blocks.util.ModBlocks;
 import com.soc.items.*;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
@@ -48,6 +49,10 @@ public class ModItems {
         Expon.initialise();
         ThrowableItem.initialise();
         ExtendoBridge.initialise();
+
+        addItemToGroups(ModBlocks.CHEST_PLACEHOLDER_TIER_1);
+        addItemToGroups(ModBlocks.CHEST_PLACEHOLDER_TIER_2);
+        addItemToGroups(ModBlocks.CHEST_PLACEHOLDER_TIER_3);
     }
 
     public static Item register(String name, Function<Item.Settings, Item> itemFactory, Item.Settings settings) {

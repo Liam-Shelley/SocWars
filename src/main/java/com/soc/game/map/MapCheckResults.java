@@ -10,16 +10,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.soc.lib.SocWarsLib.collectionPairToLeftList;
 import static com.soc.lib.SocWarsLib.dyeColourFromOrdinal;
 
-public record MapCheckResults(Set<Pair<Integer, BlockPos>> spawnPositions, Set<BlockPos> centrePositions, Set<Direction> flaggedFaces, Set<BlockPos> diamondGens, Set<BlockPos> emeraldGens, Set<BlockPos> islandGens, Set<BlockPos> bedPositions) {
+public record MapCheckResults(Set<Pair<Integer, BlockPos>> spawnPositions, Set<BlockPos> centrePositions, Set<Direction> flaggedFaces, Set<BlockPos> diamondGens, Set<BlockPos> emeraldGens, Set<BlockPos> islandGens, Set<BlockPos> bedPositions, Map<BlockPos, Integer> lootChests) {
     public InfoList generateWarnings(GameType mapType) {
         InfoList warnings = new InfoList();
 
@@ -141,6 +138,26 @@ public record MapCheckResults(Set<Pair<Integer, BlockPos>> spawnPositions, Set<B
                 results.add(
                         () -> !this.emeraldGens.isEmpty(),
                         Text.translatable("map_block.results.emerald_gens", this.emeraldGens.size()).formatted(Formatting.GREEN),
+                        new Text[0],
+                        InfoList.InfoType.INFO
+                );
+            }
+            case SKYWARS -> {
+                results.add(
+                        () -> this.lootChests.containsValue(1),
+                        Text.translatable("map_block.results.tier_1_chests", this.lootChests.values().stream().filter(tier -> tier == 1).count()).formatted(Formatting.GREEN),
+                        new Text[0],
+                        InfoList.InfoType.INFO
+                );
+                results.add(
+                        () -> this.lootChests.containsValue(2),
+                        Text.translatable("map_block.results.tier_2_chests", this.lootChests.values().stream().filter(tier -> tier == 2).count()).formatted(Formatting.GREEN),
+                        new Text[0],
+                        InfoList.InfoType.INFO
+                );
+                results.add(
+                        () -> this.lootChests.containsValue(3),
+                        Text.translatable("map_block.results.tier_3_chests", this.lootChests.values().stream().filter(tier -> tier == 3).count()).formatted(Formatting.GREEN),
                         new Text[0],
                         InfoList.InfoType.INFO
                 );
