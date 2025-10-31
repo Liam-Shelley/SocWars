@@ -228,5 +228,7 @@
   "game.skywars.win": "Victory!",
   "game.skywars.lose": "Emotional Damage!",
   "game.player.kill": "%1$s was obliterated by %2$s",
-  "game.death.final": " §4FINAL KILL!"
+  "game.death.final": " §4FINAL KILL!",
+  "game.chest.deposit": "Deposited %sx %s %s",
+  "game.chest.count": "(%s)"
 }

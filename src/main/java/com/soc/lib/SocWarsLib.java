@@ -123,9 +123,11 @@ public final class SocWarsLib {
     public static void scaleEntity(LivingEntity entity, float scale) {
         final EntityAttributeInstance scaleInstance = entity.getAttributeInstance(EntityAttributes.SCALE);
 
+        final double rawScale = scaleInstance.getModifier(SCALE_MODIFIER_ID) == null ? scale - 1f : (scaleInstance.getModifier(SCALE_MODIFIER_ID).value() + (scale - 1f) / scale);
+
         scaleInstance.overwritePersistentModifier(new EntityAttributeModifier(
                 SCALE_MODIFIER_ID,
-                Math.clamp(MAX_SCALE_FACTOR - 1, (1 - MAX_SCALE_FACTOR) / MAX_SCALE_FACTOR, scaleInstance.getModifier(SCALE_MODIFIER_ID) == null ? scale - 1f : (scaleInstance.getModifier(SCALE_MODIFIER_ID).value() + (scale - 1f) / scale) * scale),
+                Math.clamp(rawScale, (1 - MAX_SCALE_FACTOR) / MAX_SCALE_FACTOR, MAX_SCALE_FACTOR - 1) * scale,
                 EntityAttributeModifier.Operation.ADD_VALUE)
         );
 

@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
+import com.soc.SocWars;
 import com.soc.database.Database;
 import com.soc.database.stats.BaseGameTable;
 import com.soc.database.stats.CombatTable;
@@ -95,7 +96,10 @@ public abstract class AbstractGameManager {
         this.getMap().destroyMap();
         this.sendPlayersToLobby();
 
-        Database.getStatement().ifPresent(statement -> this.dbTables.values().forEach(table -> table.updateSql(statement)));
+        Database.getStatement().ifPresent(statement -> this.dbTables.values().forEach(table -> {
+            SocWars.LOGGER.info("Saving db table for {}", this.gameId);
+            table.updateSql(statement);
+        }));
 
         GamesManager.getInstance().endGame(this.gameId);
     }

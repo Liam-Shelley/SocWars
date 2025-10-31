@@ -22,7 +22,7 @@ public class SqlHelper {
             case "long" -> Optional.of(" bigint");
             case "short" -> Optional.of(" smallint");
             case "java.lang.String" -> Optional.of(" varchar");
-            case "java.util.UUID", "net.minecraft.server.network.ServerPlayerEntity" -> Optional.of(" uuid");
+            case "java.util.UUID", "net.minecraft.server.network.ServerPlayerEntity", "net.minecraft.class_3222" -> Optional.of(" uuid");
             default -> Optional.empty();
         };
     }
@@ -37,7 +37,7 @@ public class SqlHelper {
                 case "long" -> Optional.of(String.valueOf(field.getLong(obj)));
                 case "short" -> Optional.of(String.valueOf(field.getShort(obj)));
                 case "java.lang.String" -> Optional.of((String)field.get(obj));
-                case "net.minecraft.server.network.ServerPlayerEntity" -> Optional.of(sqlUUID((ServerPlayerEntity)field.get(obj)));
+                case "net.minecraft.server.network.ServerPlayerEntity", "net.minecraft.class_3222" -> Optional.of(sqlUUID((ServerPlayerEntity)field.get(obj)));
                 default -> Optional.empty();
             };
         } catch (IllegalAccessException e) {
@@ -50,9 +50,11 @@ public class SqlHelper {
     }
 
     public static String varbitFromBooleanArr(boolean[] bits) {
-        StringBuilder builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder("B'");
 
         for (boolean bool : bits) builder.append(bool ? 1 : 0);
+
+        builder.append('\'');
 
         return builder.toString();
     }

@@ -3,6 +3,9 @@
   "package": "com.soc.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "AbstractBlockBreak",
+    "DepositableChest",
+    "ChestDepositableProperty",
     "CancelSprintParticles",
     "DropItemEvent",
     "MostRecentDamage",
