@@ -83,7 +83,7 @@ public class SkywarsGameManager extends AbstractGameManager {
     }
 
     @Override
-    public void endGame() {
+    public void endGame(boolean immediate) {
         this.playerMap.forEach((player, stats) -> {
             final Text message;
             final SoundEvent sound;
@@ -105,7 +105,11 @@ public class SkywarsGameManager extends AbstractGameManager {
             }, 10);
         });
 
-        Events.getInstance().scheduleEvent(super::endGame, 5 * 20);
+        if (immediate) {
+            super.endGame(true);
+        } else {
+            Events.getInstance().scheduleEvent(() -> super.endGame(false), 5 * 20);
+        }
     }
 
     @Override
@@ -141,7 +145,7 @@ public class SkywarsGameManager extends AbstractGameManager {
         super.broadcastDeath(player, source, !canRespawn);
 
         if (this.getAlivePlayers().size() < (this.getPlayers().size() > 1 ? 2 : 1)) {
-            this.endGame();
+            this.endGame(false);
             return false;
         }
 

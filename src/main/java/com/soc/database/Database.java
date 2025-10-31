@@ -5,6 +5,8 @@ import com.soc.database.stats.BedwarsTable;
 import com.soc.database.stats.LobbyTable;
 import com.soc.database.stats.SkywarsTable;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -21,6 +23,10 @@ public final class Database {
         return Optional.ofNullable(STATEMENT);
     }
 
+    public static boolean isConnected() {
+        return STATEMENT != null;
+    }
+
     static {
         Connection connection;
         Statement statement;
@@ -28,6 +34,8 @@ public final class Database {
         try {
             connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/", "postgres", "postgrespassword");
             statement = connection.createStatement();
+
+            SocWars.LOGGER.info("Database successfully connected!");
         } catch (Exception e) {
             connection = null;
             statement = null;
@@ -36,8 +44,6 @@ public final class Database {
         }
         CONNECTION = connection;
         STATEMENT = statement;
-
-        SocWars.LOGGER.info("Database successfully connected!");
     }
 
     public static void initialise() {
@@ -46,6 +52,11 @@ public final class Database {
         new BedwarsTable().createSqlTable(STATEMENT);
 
         ServerPlayerEvents.JOIN.register(player -> {
+                if (player.getPermissionLevel() >= 2) {
+                    Text status = isConnected() ? Text.translatable("database.status.connected").formatted(Formatting.DARK_GREEN) : Text.translatable("database.status.disconnected").formatted(Formatting.RED);
+                    player.sendMessage(Text.translatable("database.status.op_message", status).formatted(Formatting.GOLD), false);
+                }
+
                 new LobbyTable(player).blankInsert(STATEMENT);
                 new SkywarsTable(player).blankInsert(STATEMENT);
                 new BedwarsTable(player).blankInsert(STATEMENT);

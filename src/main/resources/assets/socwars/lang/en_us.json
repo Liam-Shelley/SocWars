@@ -230,5 +230,8 @@
   "game.player.kill": "%1$s was obliterated by %2$s",
   "game.death.final": " §4FINAL KILL!",
   "game.chest.deposit": "Deposited %sx %s %s",
-  "game.chest.count": "(%s)"
+  "game.chest.count": "(%s)",
+  "database.status.op_message": "Database status: %s",
+  "database.status.connected": "Connected",
+  "database.status.disconnected": "Not Connected"
 }

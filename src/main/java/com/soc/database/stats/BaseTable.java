@@ -44,7 +44,6 @@ public abstract class BaseTable implements GetFields, TableName {
             statement.execute(this.blankInsertRequest());
         } catch (Exception e) {
             SocWars.LOGGER.error("Failed to create {} insert statement for {}", this.getTableName(), this.player);
-            SocWars.LOGGER.info(this.blankInsertRequest());
         }
         return this;
     }

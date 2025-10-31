@@ -46,7 +46,7 @@ public class GamesManager {
     public void initialiseEvents() {
         ServerLifecycleEvents.SERVER_STARTED.register(server -> this.world = server.getOverworld());
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> this.games.forEach(game -> {
-                if (game != null) game.endGame();
+                if (game != null) game.endGame(true);
         }));
         ServerTickEvents.START_SERVER_TICK.register(this::tick);
 

@@ -37,6 +37,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -91,9 +92,8 @@ public abstract class AbstractGameManager {
         }, this, 5, 20, 50, SoundEvents.BLOCK_NOTE_BLOCK_GUITAR.value(), null);
     }
 
-    public void endGame() {
+    public void endGame(boolean immediate) {
         this.removeTeams();
-        this.getMap().destroyMap();
         this.sendPlayersToLobby();
 
         Database.getStatement().ifPresent(statement -> this.dbTables.values().forEach(table -> {
@@ -102,12 +102,14 @@ public abstract class AbstractGameManager {
         }));
 
         GamesManager.getInstance().endGame(this.gameId);
+
+        this.getMap().destroyMap();
     }
 
     public boolean onPlayerDeath(ServerPlayerEntity player, DamageSource source, float amount) {
         ((CombatTable)this.dbTables.get(player)).grantDeath();
 
-        SocWarsLib.getPlayerAttacker(player).ifPresent(killer -> ((CombatTable)this.dbTables.get((ServerPlayerEntity)killer)).grantKill());
+        SocWarsLib.getPlayerAttacker(player).ifPresent(killer -> ((CombatTable)this.dbTables.get((ServerPlayerEntity)killer)).grantKill()); //This cast to CombatTable should be safe because this should either not be called in games that don't have combat, or they should just not call super
 
         return true;
     }
