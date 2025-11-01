@@ -24,5 +24,10 @@
     "id": "socwars:greater_jump_ring",
     "tier_1_weight": 5,
     "tier_2_weight": 10
+  },
+  {
+    "id": "socwars:inflatable_iron_ingot",
+    "tier_2_weight": 20,
+    "tier_3_weight": 20
   }
 ]

@@ -185,5 +185,10 @@
   {
     "id": "socwars:pink_sword",
     "tier_4_weight": 2
+  },
+  {
+    "id": "socwars:transportas",
+    "tier_2_weight": 10,
+    "tier_3_weight": 5
   }
 ]

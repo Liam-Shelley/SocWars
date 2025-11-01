@@ -1,0 +1,68 @@
+[
+  {
+    "id": "socwars:steadfast_helmet",
+    "tier_3_weight": 20,
+    "tier_4_weight": 15
+  },
+  {
+    "id": "socwars:steadfast_chestplate",
+    "tier_4_weight": 15
+  },
+  {
+    "id": "socwars:steadfast_leggings",
+    "tier_4_weight": 15
+  },
+  {
+    "id": "socwars:steadfast_boots",
+    "tier_3_weight": 20,
+    "tier_4_weight": 15
+  },
+  {
+    "id": "socwars:gambler_helmet",
+    "tier_3_weight": 15,
+    "tier_4_weight": 12
+  },
+  {
+    "id": "socwars:gambler_chestplate",
+    "tier_4_weight": 12
+  },
+  {
+    "id": "socwars:gambler_leggings",
+    "tier_4_weight": 12
+  },
+  {
+    "id": "socwars:gambler_boots",
+    "tier_3_weight": 15,
+    "tier_4_weight": 12
+  },
+  {
+    "id": "socwars:cartoon_helmet",
+    "tier_2_weight": 2,
+    "tier_3_weight": 7,
+    "tier_4_weight": 10
+  },
+  {
+    "id": "socwars:cartoon_chestplate",
+    "tier_4_weight": 10
+  },
+  {
+    "id": "socwars:cartoon_leggings",
+    "tier_3_weight": 2,
+    "tier_4_weight": 1
+  },
+  {
+    "id": "socwars:cartoon_boots",
+    "tier_2_weight": 2,
+    "tier_3_weight": 7,
+    "tier_4_weight": 10
+  },
+  {
+    "id": "socwars:training_weights",
+    "tier_1_weight": 15,
+    "tier_2_weight": 15
+  },
+  {
+    "id": "socwars:summoners_garb",
+    "tier_4_weight": 15
+  }
+]

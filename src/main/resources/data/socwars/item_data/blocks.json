@@ -1,0 +1,16 @@
+[
+  {
+    "id": "socwars:nuclear_bomb",
+    "tier_3_weight": 5,
+    "tier_4_weight": 7
+  },
+  {
+    "id": "socwars:hydrogen_bomb",
+    "tier_4_weight": 3
+  },
+  {
+    "id": "minecraft:oak_planks",
+    "tier_4_weight": 3,
+    "count": 32
+  }
+]

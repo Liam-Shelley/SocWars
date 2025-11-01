@@ -77,5 +77,23 @@
     "id": "socwars:death_rain",
     "tier_3_weight": 15,
     "tier_4_weight": 20
+  },
+  {
+    "id": "socwars:god_complex",
+    "tier_4_weight": 10
+  },
+  {
+    "id": "socwars:scroll_of_eau",
+    "tier_1_weight": 10,
+    "tier_2_weight": 15,
+    "tier_3_weight": 15
+  },
+  {
+    "id": "socwars:scroll_of_hellfire",
+    "tier_1_weight": 10
+  },
+  {
+    "id": "socwars:c_u_e_b",
+    "tier_1_weight": 20
   }
 ]
