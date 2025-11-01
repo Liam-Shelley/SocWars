@@ -85,6 +85,7 @@ public abstract class AbstractGameManager {
         map.spreadPlayers(this.teams);
         this.assignPlayersToTeams();
         this.setGameMode(GameMode.ADVENTURE);
+        this.healPlayers();
 
         PrescheduledEvents.playCountdown(() -> {
             map.spawnCages(false);
@@ -244,5 +245,14 @@ public abstract class AbstractGameManager {
 
         this.getPlayers().forEach(player -> player.requestTeleport(pos.x + this.world.random.nextFloat() * 3f, pos.y, pos.z + this.world.random.nextFloat() * 3f));
         this.setGameMode(GameMode.ADVENTURE);
+    }
+
+    protected final void healPlayers() {
+        this.getPlayers().forEach(player -> {
+            player.clearStatusEffects();
+            player.getHungerManager().setFoodLevel(16);
+            player.getHungerManager().setSaturationLevel(8);
+            player.setHealth(player.getMaxHealth());
+        });
     }
 }

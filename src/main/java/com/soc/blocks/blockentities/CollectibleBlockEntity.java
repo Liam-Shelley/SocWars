@@ -11,12 +11,15 @@ import net.minecraft.storage.WriteView;
 import net.minecraft.util.math.BlockPos;
 
 import static com.soc.blocks.blockentities.ModBlockEntities.COLLECTIBLE_BLOCK_ENTITY;
+import static net.minecraft.block.SkullBlock.ROTATION;
 
 public class CollectibleBlockEntity extends BlockEntity {
     private RegistryEntry<Item> collectible;
+    final int rotation;
 
     public CollectibleBlockEntity(BlockPos pos, BlockState state) {
         super(COLLECTIBLE_BLOCK_ENTITY, pos, state);
+        this.rotation = state.get(ROTATION);
     }
 
     public static void initialise() {}
@@ -24,6 +27,10 @@ public class CollectibleBlockEntity extends BlockEntity {
     public void setCollectible(RegistryEntry<Item> collectible) {
         this.collectible = collectible;
         this.markDirty();
+    }
+
+    public float getRotation() {
+        return this.rotation * -0.39269908169872414f + 3.141592653589793f; // -PI/8 + PI
     }
 
     public RegistryEntry<Item> getCollectible() {

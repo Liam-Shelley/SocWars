@@ -6,8 +6,8 @@ import com.soc.items.FeatherBlockItem;
 import com.soc.networking.S2CReceivers;
 import com.soc.renderer.BWFireballEntityRenderer;
 import com.soc.renderer.BigTntRenderer;
-import com.soc.renderer.CollectibleBlockEntityRenderer;
 import com.soc.renderer.MapBlockEntityRenderer;
+import com.soc.renderer.CollectibleBlockEntityRenderer;
 import com.soc.resourcedata.ResourceManager;
 import com.soc.resourcedata.SkywarsItemData;
 import net.fabricmc.api.ClientModInitializer;
@@ -56,6 +56,7 @@ public class SocWarsClient implements ClientModInitializer {
 		BlockEntityRendererFactories.register(COLLECTIBLE_BLOCK_ENTITY, CollectibleBlockEntityRenderer::new);
 
 		BlockRenderLayerMap.putBlock(ModBlocks.SPAWN_PLACEHOLDER, BlockRenderLayer.TRANSLUCENT);
+		BlockRenderLayerMap.putBlock(ModBlocks.ITSEVOCAT_SKULL, BlockRenderLayer.TRANSLUCENT);
 
 		S2CReceivers.initialise();
 

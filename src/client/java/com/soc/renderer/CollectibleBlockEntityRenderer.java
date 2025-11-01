@@ -1,24 +1,23 @@
 package com.soc.renderer;
 
 import com.soc.blocks.blockentities.CollectibleBlockEntity;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.item.ItemModelManager;
+import com.soc.blocks.util.ModBlocks;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.render.*;
+import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-import net.minecraft.client.render.item.ItemRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemDisplayContext;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
+import org.joml.Quaternionf;
 
 public class CollectibleBlockEntityRenderer implements BlockEntityRenderer<CollectibleBlockEntity> {
-    private final ItemModelManager itemModelManager;
+    private final BlockRenderManager blockRenderManager;
 
     public CollectibleBlockEntityRenderer(BlockEntityRendererFactory.Context context) {
-        this.itemModelManager = context.getItemModelManager();
+        this.blockRenderManager = context.getRenderManager();
     }
 
     @Override
@@ -28,14 +27,11 @@ public class CollectibleBlockEntityRenderer implements BlockEntityRenderer<Colle
         final RegistryEntry<Item> collectible = entity.getCollectible();
 
         if (collectible != null) {
-            matrices.translate(0.5f, 0.5f, 0.5f);
-            //matrices.scale(2f, 2f, 2f);
-            matrices.multiply(RotationAxis.POSITIVE_Y.rotation((float) Math.PI));
+            matrices.translate(0.5f, 0f, 0.5f);
+            matrices.multiply(new Quaternionf().rotateY(entity.getRotation()));
+            matrices.translate(-0.5f, 0f, -0.5f);
 
-            ItemRenderState state = new ItemRenderState();
-            itemModelManager.updateForLivingEntity(state, collectible.value().getDefaultStack(), ItemDisplayContext.GROUND, MinecraftClient.getInstance().player);
-
-            state.render(matrices, vertexConsumers, light, 0);
+            this.blockRenderManager.renderBlockAsEntity(ModBlocks.ITSEVOCAT_SKULL.getDefaultState(), matrices, vertexConsumers, light, overlay);
         }
 
         matrices.pop();

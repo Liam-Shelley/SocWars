@@ -190,5 +190,42 @@
     "id": "socwars:transportas",
     "tier_2_weight": 10,
     "tier_3_weight": 5
+  },
+  {
+    "id": "minecraft:stone_sword",
+    "tier_1_weight": 10,
+    "tier_2_weight": 5,
+    "pool": 1
+  },
+  {
+    "id": "minecraft:diamond_sword",
+    "tier_1_weight": 3,
+    "tier_2_weight": 6,
+    "tier_3_weight": 8,
+    "pool": 1
+  },
+  {
+    "id": "minecraft:netherite_sword",
+    "tier_1_weight": 1,
+    "tier_2_weight": 3,
+    "tier_3_weight": 4,
+    "tier_4_weight": 2,
+    "pool": 1
+  },
+  {
+    "id": "minecraft:trident",
+    "tier_1_weight": 2,
+    "tier_2_weight": 3,
+    "tier_3_weight": 4,
+    "tier_4_weight": 2,
+    "pool": 1
+  },
+  {
+    "id": "minecraft:mace",
+    "tier_1_weight": 1,
+    "tier_2_weight": 1,
+    "tier_3_weight": 1,
+    "tier_4_weight": 1,
+    "pool": 1
   }
 ]

@@ -9,8 +9,48 @@
     "tier_4_weight": 3
   },
   {
-    "id": "minecraft:oak_planks",
-    "tier_4_weight": 3,
-    "count": 32
+    "id": "minecraft:mangrove_planks",
+    "tier_1_weight": 65,
+    "tier_2_weight": 75,
+    "tier_3_weight": 65,
+    "tier_4_weight": 50,
+    "count": 16,
+    "pool": 1
+  },
+  {
+    "id": "minecraft:cherry_planks",
+    "tier_1_weight": 65,
+    "tier_2_weight": 75,
+    "tier_3_weight": 65,
+    "tier_4_weight": 50,
+    "count": 16,
+    "pool": 1
+  },
+  {
+    "id": "minecraft:stone",
+    "tier_1_weight": 40,
+    "tier_2_weight": 20,
+    "tier_3_weight": 10,
+    "tier_4_weight": 5,
+    "count": 12,
+    "pool": 1
+  },
+  {
+    "id": "minecraft:obsidian",
+    "tier_1_weight": 15,
+    "tier_2_weight": 15,
+    "tier_3_weight": 15,
+    "tier_4_weight": 15,
+    "count": 12,
+    "pool": 1
+  },
+  {
+    "id": "minecraft:bedrock",
+    "tier_1_weight": 2,
+    "tier_2_weight": 4,
+    "tier_3_weight": 5,
+    "tier_4_weight": 4,
+    "count": 8,
+    "pool": 1
   }
 ]

@@ -43,5 +43,30 @@
     "id": "socwars:chorus_fruit_salad",
     "tier_3_weight": 5,
     "tier_4_weight": 20
+  },
+  {
+    "id": "minecraft:golden_apple",
+    "tier_1_weight": 7,
+    "tier_2_weight": 12,
+    "tier_3_weight": 15,
+    "tier_4_weight": 9,
+    "pool": 1
+  },
+  {
+    "id": "minecraft:enchanted_golden_apple",
+    "tier_1_weight": 4,
+    "tier_2_weight": 6,
+    "tier_3_weight": 6,
+    "tier_4_weight": 5,
+    "pool": 1
+  },
+  {
+    "id": "minecraft:chorus_fruit",
+    "tier_1_weight": 5,
+    "tier_2_weight": 5,
+    "tier_3_weight": 5,
+    "tier_4_weight": 5,
+    "count": 3,
+    "pool": 1
   }
 ]

@@ -1,0 +1,47 @@
+{
+	"format_version": "1.21.6",
+	"credit": "Made with Blockbench",
+	"texture_size": [8, 8],
+	"textures": {
+		"0": "socwars:block/itsevocat_skull/outer_bottom",
+		"1": "socwars:block/itsevocat_skull/outer_top_back",
+		"2": "socwars:block/itsevocat_skull/outer_right",
+		"3": "socwars:block/itsevocat_skull/outer_left",
+		"4": "socwars:block/itsevocat_skull/outer_front",
+		"5": "socwars:block/itsevocat_skull/inner_bottom",
+		"6": "socwars:block/itsevocat_skull/inner_back",
+		"7": "socwars:block/itsevocat_skull/inner_top",
+		"8": "socwars:block/itsevocat_skull/inner_right",
+		"9": "socwars:block/itsevocat_skull/inner_left",
+		"10": "socwars:block/itsevocat_skull/inner_front",
+		"particle": "outer_bottom"
+	},
+	"elements": [
+		{
+			"from": [4, 0.5, 4],
+			"to": [12, 8.5, 12],
+			"rotation": {"angle": 0, "axis": "y", "origin": [4, 0, 4]},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#6"},
+				"east": {"uv": [0, 0, 16, 16], "texture": "#8"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#10"},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#9"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#7"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#5"}
+			}
+		},
+		{
+			"from": [3.5, 0, 3.5],
+			"to": [12.5, 9, 12.5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [4, 0, 4]},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#1"},
+				"east": {"uv": [0, 0, 16, 16], "texture": "#2"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#4"},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#3"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#1"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#0"}
+			}
+		}
+	]
+}

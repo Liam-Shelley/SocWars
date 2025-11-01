@@ -30,5 +30,12 @@
     "id": "socwars:chorus_bow",
     "tier_3_weight": 10,
     "tier_4_weight": 15
+  },
+  {
+    "id": "minecraft:bow",
+    "tier_1_weight": 7,
+    "tier_2_weight": 10,
+    "tier_3_weight": 12,
+    "pool": 1
   }
 ]

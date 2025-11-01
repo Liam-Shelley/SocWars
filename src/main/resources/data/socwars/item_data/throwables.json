@@ -30,5 +30,21 @@
     "id": "socwars:ender_beam",
     "tier_2_weight": 5,
     "tier_3_weight": 10
+  },
+  {
+    "id": "minecraft:ender_peal",
+    "tier_1_weight": 7,
+    "tier_2_weight": 4,
+    "tier_3_weight": 4,
+    "tier_4_weight": 4,
+    "pool": 1
+  },
+  {
+    "id": "minecraft:wind_charge",
+    "tier_1_weight": 15,
+    "tier_2_weight": 10,
+    "tier_3_weight": 5,
+    "tier_4_weight": 8,
+    "pool": 1
   }
 ]
