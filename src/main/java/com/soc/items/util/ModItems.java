@@ -49,11 +49,7 @@ public class ModItems {
         Expon.initialise();
         ThrowableItem.initialise();
         ExtendoBridge.initialise();
-
-        addItemToGroups(ModBlocks.CHEST_PLACEHOLDER_TIER_1);
-        addItemToGroups(ModBlocks.CHEST_PLACEHOLDER_TIER_2);
-        addItemToGroups(ModBlocks.CHEST_PLACEHOLDER_TIER_3);
-        addItemToGroups(ModBlocks.CHEST_PLACEHOLDER_TIER_4);
+        BlockItems.initialise();
     }
 
     public static Item register(String name, Function<Item.Settings, Item> itemFactory, Item.Settings settings) {

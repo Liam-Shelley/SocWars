@@ -189,6 +189,7 @@
   "item.socwars.chest_placeholder_tier_4": "Tier 4 Skywars Chest Placeholder",
   "block.socwars.moshpit_map": "Moshpit Map",
   "item.socwars.moshpit_map": "Moshpit Map",
+  "item.socwars.depositable_chest": "Depositable Chest",
   "text.map_block.enter_name_field": "Map Name:",
   "text.map_block.enter_x_field": "X Size: ",
   "text.map_block.enter_y_field": "Y Size: ",

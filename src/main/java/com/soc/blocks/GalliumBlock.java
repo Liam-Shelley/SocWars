@@ -9,11 +9,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCollisionHandler;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ColorCode;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 
 import static com.soc.lib.SocWarsLib.damageSource;
@@ -25,11 +23,9 @@ public class GalliumBlock extends ColoredFallingBlock {
 
     @Override
     protected void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
-        final BlockPos pos1 = pos.subtract(new Vec3i(0, 1, 0));
-        if (world.getBlockState(pos1).isIn(BlockTags.IMMUNE)) {
-            world.setBlockState(pos, Blocks.LAVA.getDefaultState());
-        } else {
-            world.setBlockState(pos1, Blocks.AIR.getDefaultState());
+        final BlockPos posDown = pos.down();
+        if (!world.getBlockState(posDown).isIn(BlockTags.IMMUNE)) {
+            world.setBlockState(posDown, Blocks.AIR.getDefaultState());
         }
 
         super.onBlockAdded(state, world, pos, oldState, notify);
