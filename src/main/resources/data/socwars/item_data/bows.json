@@ -1,0 +1,34 @@
+[
+  {
+    "id": "socwars:boom_bow",
+    "tier_2_weight": 10,
+    "tier_3_weight": 25
+  },
+  {
+    "id": "socwars:megaboom_bow",
+    "tier_3_weight": 15,
+    "tier_4_weight": 20
+  },
+  {
+    "id": "socwars:falcon_bow",
+    "tier_4_weight": 10
+  },
+  {
+    "id": "socwars:catastrophe_bow",
+    "tier_4_weight": 3
+  },
+  {
+    "id": "socwars:alpha_bow",
+    "tier_4_weight": 10
+  },
+  {
+    "id": "socwars:heater_bow",
+    "tier_2_weight": 10,
+    "tier_3_weight": 30
+  },
+  {
+    "id": "socwars:chorus_bow",
+    "tier_3_weight": 10,
+    "tier_4_weight": 15
+  }
+]

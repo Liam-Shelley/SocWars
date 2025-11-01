@@ -44,6 +44,21 @@
     },
     "facing=west,tier=3": {
       "model": "socwars:block/chest_placeholder/tier_3"
+    },
+    "facing=east,tier=4": {
+      "model": "socwars:block/chest_placeholder/tier_4",
+      "y": 180
+    },
+    "facing=north,tier=4": {
+      "model": "socwars:block/chest_placeholder/tier_4",
+      "y": 90
+    },
+    "facing=south,tier=4": {
+      "model": "socwars:block/chest_placeholder/tier_4",
+      "y": 270
+    },
+    "facing=west,tier=4": {
+      "model": "socwars:block/chest_placeholder/tier_4"
     }
   }
 }

@@ -1,0 +1,81 @@
+[
+  {
+    "id": "socwars:extendo_bridge",
+    "tier_1_weight": 5,
+    "tier_2_weight": 10,
+    "tier_3_weight": 10,
+    "tier_4_weight": 15
+  },
+  {
+    "id": "socwars:shatterstar",
+    "tier_1_weight": 10,
+    "tier_2_weight": 10,
+    "tier_3_weight": 10
+  },
+  {
+    "id": "socwars:leatherer",
+    "tier_1_weight": 15,
+    "tier_2_weight": 10
+  },
+  {
+    "id": "socwars:postura",
+    "tier_1_weight": 10,
+    "tier_2_weight": 15
+  },
+  {
+    "id": "socwars:shrink_ray",
+    "tier_1_weight": 10,
+    "tier_2_weight": 10
+  },
+  {
+    "id": "socwars:biggening_ray",
+    "tier_2_weight": 10,
+    "tier_3_weight": 10
+  },
+  {
+    "id": "socwars:gravity_orb",
+    "tier_1_weight": 15,
+    "tier_2_weight": 10
+  },
+  {
+    "id": "socwars:gravity_orb",
+    "tier_1_weight": 15,
+    "tier_2_weight": 10
+  },
+  {
+    "id": "socwars:dice_of_fate",
+    "tier_1_weight": 10,
+    "tier_2_weight": 10,
+    "tier_3_weight": 10,
+    "tier_4_weight": 10
+  },
+  {
+    "id": "socwars:wind_staff",
+    "tier_1_weight": 15,
+    "tier_2_weight": 15
+  },
+  {
+    "id": "socwars:ender_staff",
+    "tier_3_weight": 10,
+    "tier_4_weight": 15
+  },
+  {
+    "id": "socwars:mobbing_staff",
+    "tier_2_weight": 15,
+    "tier_3_weight": 15
+  },
+  {
+    "id": "socwars:velocity_staff",
+    "tier_3_weight": 15,
+    "tier_4_weight": 20
+  },
+  {
+    "id": "socwars:vexing_staff",
+    "tier_4_weight": 10
+  },
+  {
+    "id": "socwars:death_rain",
+    "tier_3_weight": 15,
+    "tier_4_weight": 20
+  }
+]

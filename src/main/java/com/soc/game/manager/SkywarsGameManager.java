@@ -83,6 +83,12 @@ public class SkywarsGameManager extends AbstractGameManager {
     }
 
     @Override
+    public void startGame() {
+        super.startGame();
+        this.getMap().placeLootChests();
+    }
+
+    @Override
     public void endGame(boolean immediate) {
         this.playerMap.forEach((player, stats) -> {
             final Text message;

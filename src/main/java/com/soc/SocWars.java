@@ -14,6 +14,7 @@ import com.soc.networking.C2SPayloads;
 import com.soc.networking.C2SReceivers;
 import com.soc.networking.S2CPayloads;
 import com.soc.player.PlayerDataManager;
+import com.soc.resourcedata.ResourceManager;
 import com.soc.util.Sounds;
 import net.fabricmc.api.ModInitializer;
 
@@ -50,6 +51,7 @@ public class SocWars implements ModInitializer {
 		C2SReceivers.initialise();
 		Coroutines.initialise();
 		Events.initialise();
+		ResourceManager.initialise();
 
 		Database.initialise();
 	}

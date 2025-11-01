@@ -43,6 +43,7 @@ public class ModBlocks {
     public static final Item CHEST_PLACEHOLDER_TIER_1 = ModItems.register("chest_placeholder_tier_1", settings -> new TierBlockItem(CHEST_PLACEHOLDER, settings, 1), new Item.Settings());
     public static final Item CHEST_PLACEHOLDER_TIER_2 = ModItems.register("chest_placeholder_tier_2", settings -> new TierBlockItem(CHEST_PLACEHOLDER, settings, 2), new Item.Settings());
     public static final Item CHEST_PLACEHOLDER_TIER_3 = ModItems.register("chest_placeholder_tier_3", settings -> new TierBlockItem(CHEST_PLACEHOLDER, settings, 3), new Item.Settings());
+    public static final Item CHEST_PLACEHOLDER_TIER_4 = ModItems.register("chest_placeholder_tier_4", settings -> new TierBlockItem(CHEST_PLACEHOLDER, settings, 4), new Item.Settings());
 
     public static final Block DIAMOND_GEN_PLACEHOLDER = ModBlocks.register("diamond_gen_placeholder", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true);
     public static final Block EMERALD_GEN_PLACEHOLDER = ModBlocks.register("emerald_gen_placeholder", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true);

@@ -53,6 +53,7 @@ public class MapBlockEntity extends BlockEntity {
             DIAMOND_GEN_PLACEHOLDER,
             EMERALD_GEN_PLACEHOLDER,
             ISLAND_GEN_PLACEHOLDER,
+            CHEST_PLACEHOLDER,
             Blocks.AIR
     );
 
@@ -184,7 +185,8 @@ public class MapBlockEntity extends BlockEntity {
             case SKYWARS -> new SkywarsGameMap(
                     structure,
                     this.mapCheckResults.relativeSpawnPositionsAsMap(),
-                    centrePos
+                    centrePos,
+                    this.mapCheckResults.getRelativeMap(this.mapCheckResults.lootChests())
             );
             case BEDWARS -> new BedwarsGameMap(
                     structure,

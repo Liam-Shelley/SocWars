@@ -8,6 +8,8 @@ import com.soc.renderer.BWFireballEntityRenderer;
 import com.soc.renderer.BigTntRenderer;
 import com.soc.renderer.CollectibleBlockEntityRenderer;
 import com.soc.renderer.MapBlockEntityRenderer;
+import com.soc.resourcedata.ResourceManager;
+import com.soc.resourcedata.SkywarsItemData;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -68,6 +70,9 @@ public class SocWarsClient implements ClientModInitializer {
 			while (KEY_BINDING.wasPressed()) {
 				final ClientPlayerEntity player = client.player;
 				player.getStackInHand(Hand.MAIN_HAND).getComponents().forEach(component -> player.sendMessage(Text.literal(component.toString()), false));
+
+				final SkywarsItemData data = ResourceManager.ITEM_DATA.getSkywarsItemData().get(player.getStackInHand(Hand.MAIN_HAND).getItem());
+				if (data != null) player.sendMessage(Text.translatable("debug.skywars_item_weights", data.weightT1(), data.weightT2(), data.weightT3(), data.weightT4()), false);
 			}
 		});
 

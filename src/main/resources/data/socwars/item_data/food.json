@@ -1,0 +1,47 @@
+[
+  {
+    "id": "socwars:iron_apple",
+    "tier_1_weight": 20,
+    "tier_2_weight": 20
+  },
+  {
+    "id": "socwars:copper_apple",
+    "tier_1_weight": 20,
+    "tier_2_weight": 20
+  },
+  {
+    "id": "socwars:diamond_apple",
+    "tier_2_weight": 10,
+    "tier_3_weight": 10,
+    "tier_4_weight": 5
+  },
+  {
+    "id": "socwars:emerald_apple",
+    "tier_2_weight": 5,
+    "tier_3_weight": 10,
+    "tier_4_weight": 10
+  },
+  {
+    "id": "socwars:biggening_pills",
+    "tier_1_weight": 15,
+    "tier_2_weight": 15
+  },
+  {
+    "id": "socwars:shrinking_pills",
+    "tier_2_weight": 10,
+    "tier_3_weight": 10
+  },
+  {
+    "id": "socwars:netherite_apple",
+    "tier_4_weight": 5
+  },
+  {
+    "id": "socwars:jelly_donut",
+    "tier_4_weight": 2
+  },
+  {
+    "id": "socwars:chorus_fruit_salad",
+    "tier_3_weight": 5,
+    "tier_4_weight": 20
+  }
+]

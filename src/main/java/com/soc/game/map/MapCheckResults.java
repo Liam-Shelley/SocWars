@@ -182,18 +182,20 @@ public record MapCheckResults(Set<Pair<Integer, BlockPos>> spawnPositions, Set<B
     public Set<Pair<Integer, BlockPos>> relativeSpawnPositions() {
         return this.spawnPositions.stream().map(spawn -> Pair.of(spawn.getLeft(), spawn.getRight().subtract(this.getSingleCentre()))).collect(Collectors.toSet());
     }
-    public Set<BlockPos> getRelative(Set<net.minecraft.util.math.BlockPos> positions) {
+
+    public Set<BlockPos> getRelative(Set<BlockPos> positions) {
         return positions.stream().map(pos -> pos.subtract(this.getSingleCentre())).collect(Collectors.toSet());
     }
 
-    public ImmutableMap<DyeColor, BlockPos> spawnPositionsAsMap() {
-        ImmutableMap.Builder<DyeColor, BlockPos> builder = new ImmutableMap.Builder<>();
-        this.spawnPositions.stream().forEach(spawn -> builder.put(dyeColourFromOrdinal(spawn.getLeft()), spawn.getRight()));
-        return builder.build();
-    }
     public ImmutableMap<DyeColor, BlockPos> relativeSpawnPositionsAsMap() {
         ImmutableMap.Builder<DyeColor, BlockPos> builder = new ImmutableMap.Builder<>();
         this.relativeSpawnPositions().stream().forEach(spawn -> builder.put(dyeColourFromOrdinal(spawn.getLeft()), spawn.getRight()));
+        return builder.build();
+    }
+
+    public <V> ImmutableMap<BlockPos, V> getRelativeMap(Map<BlockPos, V> positionsMap) {
+        ImmutableMap.Builder<BlockPos, V> builder = new ImmutableMap.Builder<>();
+        positionsMap.entrySet().forEach(entry -> builder.put(entry.getKey().subtract(this.getSingleCentre()), entry.getValue()));
         return builder.build();
     }
 

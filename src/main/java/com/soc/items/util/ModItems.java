@@ -53,6 +53,7 @@ public class ModItems {
         addItemToGroups(ModBlocks.CHEST_PLACEHOLDER_TIER_1);
         addItemToGroups(ModBlocks.CHEST_PLACEHOLDER_TIER_2);
         addItemToGroups(ModBlocks.CHEST_PLACEHOLDER_TIER_3);
+        addItemToGroups(ModBlocks.CHEST_PLACEHOLDER_TIER_4);
     }
 
     public static Item register(String name, Function<Item.Settings, Item> itemFactory, Item.Settings settings) {
