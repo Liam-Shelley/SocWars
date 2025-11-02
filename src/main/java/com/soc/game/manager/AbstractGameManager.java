@@ -59,12 +59,12 @@ public abstract class AbstractGameManager {
     protected int time;
 
     protected AbstractGameManager(ServerWorld world, Set<ServerPlayerEntity> players, SpreadRules spreadRules, int gameId) {
+        this.gameId = gameId;
         this.world = world;
         this.map = this.buildMap();
         this.teams = this.buildTeams(players, spreadRules);
         this.scoreboardTeams = this.buildScoreboardTeams();
         this.eventQueue = this.buildEventQueue();
-        this.gameId = gameId;
 
         this.dbTables = players.stream().collect(Collectors.toMap(key -> key, this.dbTableBuilder()));
     }
