@@ -7,6 +7,8 @@ import com.soc.resourcedata.ResourceManager;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtIo;
@@ -16,6 +18,7 @@ import net.minecraft.structure.StructureTemplateManager;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -61,15 +64,19 @@ public class SkywarsGameMap extends AbstractGameMap {
             this.world.setBlockState(chestPos, Blocks.CHEST.getDefaultState());
 
             final Inventory inventory = ChestBlock.getInventory((ChestBlock) Blocks.CHEST, this.world.getBlockState(chestPos), this.world, chestPos, true);
-            try {
-                if (inventory != null) this.populateInventory(inventory, tier);
-            } catch (Exception ignored) {}
+            if (inventory != null) this.populateInventory(inventory, tier);
         });
     }
 
     private void populateInventory(Inventory inventory, int tier) {
+        inventory.clear();
         for (int i = 0; i < inventory.size(); i++) {
-            inventory.setStack(i, ResourceManager.ITEM_DATA.getSkywarsItemData().getRandomItem(0, tier - 1, this.world.random).getDefaultStack());
+            final float random = this.world.random.nextFloat();
+            if (random > 0.45f + tier * 0.07f) {
+                final int pool = random < 0.7f + tier * 0.03f ? 0 : 1;
+                final Pair<Item, Integer> item = ResourceManager.ITEM_DATA.getSkywarsItemData().getRandomItem(pool, tier - 1, this.world.random);
+                inventory.setStack(i, new ItemStack(item.getLeft(), item.getRight()));
+            }
         }
     }
 

@@ -81,6 +81,7 @@ public abstract class AbstractGameManager {
     public void startGame() {
         final AbstractGameMap map = this.getMap();
         map.placeMap();
+        this.removePlayerVelocity();
         map.spawnCages(true);
         map.spreadPlayers(this.teams);
         this.assignPlayersToTeams();
@@ -95,6 +96,7 @@ public abstract class AbstractGameManager {
 
     public void endGame(boolean immediate) {
         this.removeTeams();
+        this.getMap().destroyMap();
         this.sendPlayersToLobby();
 
         Database.getStatement().ifPresent(statement -> this.dbTables.values().forEach(table -> {
@@ -103,8 +105,6 @@ public abstract class AbstractGameManager {
         }));
 
         GamesManager.getInstance().endGame(this.gameId);
-
-        this.getMap().destroyMap();
     }
 
     public boolean onPlayerDeath(ServerPlayerEntity player, DamageSource source, float amount) {
@@ -254,5 +254,9 @@ public abstract class AbstractGameManager {
             player.getHungerManager().setSaturationLevel(8);
             player.setHealth(player.getMaxHealth());
         });
+    }
+
+    protected final void removePlayerVelocity() {
+        this.getPlayers().forEach(player -> player.networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(player.getId(), Vec3d.ZERO)));
     }
 }
