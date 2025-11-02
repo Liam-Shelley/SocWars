@@ -1,7 +1,6 @@
 package com.soc.game.manager;
 
 import com.google.common.collect.ImmutableMultimap;
-import com.soc.database.Database;
 import com.soc.database.stats.SkywarsTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.SkywarsGameMap;
@@ -10,7 +9,6 @@ import com.soc.lib.Events;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
-import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -122,7 +120,8 @@ public class SkywarsGameManager extends AbstractGameManager {
     public ImmutableMultimap<DyeColor, ServerPlayerEntity> buildTeams(Set<ServerPlayerEntity> players, @Nullable SpreadRules spreadRules) {
         final Stack<ServerPlayerEntity> playerStack = getRandomPlayerStack(players);
 
-        final Set<DyeColor> teamColoursList = this.getMap().getTeamColours();
+        final List<DyeColor> teamColoursList = new ArrayList<>(this.getMap().getTeamColours());
+        Collections.shuffle(teamColoursList);
 
         return multimapFromCollections(teamColoursList, playerStack);
     }

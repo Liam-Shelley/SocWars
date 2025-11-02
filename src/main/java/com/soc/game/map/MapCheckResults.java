@@ -1,8 +1,11 @@
 package com.soc.game.map;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.soc.game.manager.GameType;
 import com.soc.lib.InfoList;
+import com.soc.nbt.SkywarsChest;
+import com.soc.nbt.SpawnPosition;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
@@ -16,7 +19,7 @@ import java.util.stream.Collectors;
 import static com.soc.lib.SocWarsLib.collectionPairToLeftList;
 import static com.soc.lib.SocWarsLib.dyeColourFromOrdinal;
 
-public record MapCheckResults(Set<Pair<Integer, BlockPos>> spawnPositions, Set<BlockPos> centrePositions, Set<Direction> flaggedFaces, Set<BlockPos> diamondGens, Set<BlockPos> emeraldGens, Set<BlockPos> islandGens, Set<BlockPos> bedPositions, Map<BlockPos, Integer> lootChests) {
+public record MapCheckResults(Set<SpawnPosition> spawnPositions, Set<BlockPos> centrePositions, Set<Direction> flaggedFaces, Set<BlockPos> diamondGens, Set<BlockPos> emeraldGens, Set<BlockPos> islandGens, Set<BlockPos> bedPositions, Set<SkywarsChest> lootChests) {
     public InfoList generateWarnings(GameType mapType) {
         InfoList warnings = new InfoList();
 
@@ -28,11 +31,8 @@ public record MapCheckResults(Set<Pair<Integer, BlockPos>> spawnPositions, Set<B
         );
         warnings.add(
                 () -> {
-                    List<Pair<Integer, BlockPos>> filteredSpawns = spawnPositions.stream().filter(spawn -> spawn.getLeft() != 16).toList(); //Filter to ignore duplicates of unassigned spawns
-                    List<Integer> teamList = collectionPairToLeftList(filteredSpawns);
-                    Set<Integer> teamSet = Set.copyOf(teamList);
-
-                    return teamList.size() != teamSet.size();
+                    List<SpawnPosition> filteredSpawns = spawnPositions.stream().filter(spawn -> spawn.colour() != 16).toList(); //Filter to ignore duplicates of unassigned spawns
+                    return filteredSpawns.stream().distinct().count() != filteredSpawns.size();
                 },
                 Text.translatable("map_block.results.duplicate_spawn_teams").formatted(Formatting.RED),
                 new Text[0],
@@ -45,10 +45,10 @@ public record MapCheckResults(Set<Pair<Integer, BlockPos>> spawnPositions, Set<B
                 InfoList.InfoType.ERROR
         );
         warnings.add(
-                () -> this.spawnPositions.stream().anyMatch(spawn -> spawn.getLeft() == 16),
+                () -> this.spawnPositions.stream().anyMatch(spawn -> spawn.colour() == 16),
                 () -> Text.translatable("map_block.results.spawn_missing_teams").formatted(Formatting.YELLOW),
                 () -> {
-                    List<BlockPos> positions = this.spawnPositions.stream().filter(spawn -> spawn.getLeft() == 16).map(Pair::getRight).toList();
+                    List<BlockPos> positions = this.spawnPositions.stream().filter(spawn -> spawn.colour() == 16).map(SpawnPosition::pos).toList();
 
                     ArrayList<Text> text = new ArrayList<>();
                     positions.forEach(pos -> text.add(Text.translatable("block_pos", pos.getX(), pos.getY(), pos.getZ())));
@@ -118,10 +118,7 @@ public record MapCheckResults(Set<Pair<Integer, BlockPos>> spawnPositions, Set<B
         switch (mapType) {
             case BEDWARS -> {
                 results.add(
-                        () -> {
-                            List<Pair<Integer, BlockPos>> validSpawnPositions = spawnPositions.stream().filter(spawn -> spawn.getLeft() != 16).toList();
-                            return validSpawnPositions.size() == this.islandGens.size();
-                        },
+                        () -> spawnPositions.stream().filter(spawn -> spawn.colour() != 16).count() == this.islandGens.size(),
                         () -> {
                             int islands = this.spawnPositions.size();
                             return Text.translatable("map_block.results.islands", islands).formatted(Arrays.stream(new int[]{2, 4, 8}).anyMatch(count -> count == islands) ? Formatting.DARK_GREEN : Formatting.GREEN);
@@ -144,20 +141,26 @@ public record MapCheckResults(Set<Pair<Integer, BlockPos>> spawnPositions, Set<B
             }
             case SKYWARS -> {
                 results.add(
-                        () -> this.lootChests.containsValue(1),
-                        Text.translatable("map_block.results.tier_1_chests", this.lootChests.values().stream().filter(tier -> tier == 1).count()).formatted(Formatting.GREEN),
+                        () -> this.lootChests.stream().anyMatch(chest -> chest.tier() == 1),
+                        Text.translatable("map_block.results.tier_1_chests", this.lootChests.stream().filter(chest -> chest.tier() == 1).count()).formatted(Formatting.GREEN),
                         new Text[0],
                         InfoList.InfoType.INFO
                 );
                 results.add(
-                        () -> this.lootChests.containsValue(2),
-                        Text.translatable("map_block.results.tier_2_chests", this.lootChests.values().stream().filter(tier -> tier == 2).count()).formatted(Formatting.GREEN),
+                        () -> this.lootChests.stream().anyMatch(chest -> chest.tier() == 2),
+                        Text.translatable("map_block.results.tier_2_chests", this.lootChests.stream().filter(chest -> chest.tier() == 2).count()).formatted(Formatting.GREEN),
                         new Text[0],
                         InfoList.InfoType.INFO
                 );
                 results.add(
-                        () -> this.lootChests.containsValue(3),
-                        Text.translatable("map_block.results.tier_3_chests", this.lootChests.values().stream().filter(tier -> tier == 3).count()).formatted(Formatting.GREEN),
+                        () -> this.lootChests.stream().anyMatch(chest -> chest.tier() == 3),
+                        Text.translatable("map_block.results.tier_3_chests", this.lootChests.stream().filter(chest -> chest.tier() == 3).count()).formatted(Formatting.GREEN),
+                        new Text[0],
+                        InfoList.InfoType.INFO
+                );
+                results.add(
+                        () -> this.lootChests.stream().anyMatch(chest -> chest.tier() == 4),
+                        Text.translatable("map_block.results.tier_4_chests", this.lootChests.stream().filter(chest -> chest.tier() == 4).count()).formatted(Formatting.GREEN),
                         new Text[0],
                         InfoList.InfoType.INFO
                 );
@@ -179,24 +182,16 @@ public record MapCheckResults(Set<Pair<Integer, BlockPos>> spawnPositions, Set<B
         return this.centrePositions.stream().findFirst().get();
     }
 
-    public Set<Pair<Integer, BlockPos>> relativeSpawnPositions() {
-        return this.spawnPositions.stream().map(spawn -> Pair.of(spawn.getLeft(), spawn.getRight().subtract(this.getSingleCentre()))).collect(Collectors.toSet());
-    }
-
     public Set<BlockPos> getRelative(Set<BlockPos> positions) {
         return positions.stream().map(pos -> pos.subtract(this.getSingleCentre())).collect(Collectors.toSet());
     }
 
-    public ImmutableMap<DyeColor, BlockPos> relativeSpawnPositionsAsMap() {
-        ImmutableMap.Builder<DyeColor, BlockPos> builder = new ImmutableMap.Builder<>();
-        this.relativeSpawnPositions().stream().forEach(spawn -> builder.put(dyeColourFromOrdinal(spawn.getLeft()), spawn.getRight()));
-        return builder.build();
+    public Set<SkywarsChest> getRelativeSkywarsChests() {
+        return this.lootChests.stream().map(chest -> chest.subtractPos(this.getSingleCentre())).collect(Collectors.toSet());
     }
 
-    public <V> ImmutableMap<BlockPos, V> getRelativeMap(Map<BlockPos, V> positionsMap) {
-        ImmutableMap.Builder<BlockPos, V> builder = new ImmutableMap.Builder<>();
-        positionsMap.entrySet().forEach(entry -> builder.put(entry.getKey().subtract(this.getSingleCentre()), entry.getValue()));
-        return builder.build();
+    public Set<SpawnPosition> getRelativeSpawnPositions() {
+        return this.spawnPositions.stream().filter(spawn -> spawn.colour() < 16).map(spawn -> spawn.subtractPos(this.getSingleCentre())).collect(Collectors.toSet());
     }
 
     /*

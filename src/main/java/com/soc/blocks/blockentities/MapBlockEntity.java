@@ -11,11 +11,10 @@ import com.soc.game.map.BedwarsGameMap;
 import com.soc.game.map.MapCheckResults;
 import com.soc.game.map.SkywarsGameMap;
 import com.soc.lib.InfoList;
+import com.soc.nbt.SkywarsChest;
+import com.soc.nbt.SpawnPosition;
 import com.soc.util.BlockTags;
-import net.minecraft.block.BedBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.BedPart;
 import net.minecraft.nbt.NbtCompound;
@@ -26,9 +25,9 @@ import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
 import net.minecraft.structure.StructureTemplate;
 import net.minecraft.text.Text;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.GameRules;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
@@ -36,6 +35,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import static com.soc.blocks.blockentities.ModBlockEntities.MAP_BLOCK_ENTITY;
 import static com.soc.blocks.util.ModBlocks.*;
@@ -74,7 +74,7 @@ public class MapBlockEntity extends BlockEntity {
 
     public void checkStructure() {
         //General
-        HashSet<Pair<Integer, BlockPos>> spawnPositions = new HashSet<>();
+        HashSet<SpawnPosition> spawnPositions = new HashSet<>();
         HashSet<BlockPos> centrePositions = new HashSet<>();
         HashSet<Direction> flaggedFaces = new HashSet<>();
 
@@ -85,7 +85,7 @@ public class MapBlockEntity extends BlockEntity {
         HashSet<BlockPos> bedPositions = new HashSet<>();
 
         //Skywars
-        HashMap<BlockPos, Integer> lootChests = new HashMap<>();
+        HashSet<SkywarsChest> lootChests = new HashSet<>();
 
         //region Main structure check
         final BlockPos minPos = this.getPos().add(0, 1, 0);
@@ -96,12 +96,15 @@ public class MapBlockEntity extends BlockEntity {
             if (!blockState.isIn(BlockTags.MAP_PLACEHOLDER)) return;
 
             final Block block = blockState.getBlock();
-            if (block == SPAWN_PLACEHOLDER) spawnPositions.add(Pair.of(blockState.get(ColourStateBlock.COLOUR), pos));
+            if (block == SPAWN_PLACEHOLDER) spawnPositions.add(new SpawnPosition(pos, blockState.get(ColourStateBlock.COLOUR)));
             else if (block == CENTRE_PLACEHOLDER) centrePositions.add(pos);
             else if (block == DIAMOND_GEN_PLACEHOLDER) diamondGens.add(pos);
             else if (block == EMERALD_GEN_PLACEHOLDER) emeraldGens.add(pos);
             else if (block == ISLAND_GEN_PLACEHOLDER) islandGens.add(pos);
-            else if (block == CHEST_PLACEHOLDER) lootChests.put(pos, world.getBlockState(pos).get(TierBlock.TIER));
+            else if (block == CHEST_PLACEHOLDER) {
+                final BlockState state = world.getBlockState(pos);
+                lootChests.add(new SkywarsChest(pos, state.get(TierBlock.TIER), state.get(HorizontalFacingBlock.FACING).getOpposite()));
+            }
             else {
                 if (blockState.getBlock() instanceof BedBlock && blockState.get(BedBlock.PART) == BedPart.HEAD) {
                     bedPositions.add(pos);
@@ -168,7 +171,6 @@ public class MapBlockEntity extends BlockEntity {
             }
         }
         //endregion
-
         this.mapCheckResults = new MapCheckResults(spawnPositions, centrePositions, flaggedFaces, diamondGens, emeraldGens, islandGens, bedPositions, lootChests);
         this.mapCheckInfo = mapCheckResults.generateInfo(this.mapType);
     }
@@ -184,13 +186,13 @@ public class MapBlockEntity extends BlockEntity {
         AbstractGameMap map = switch (this.mapType) {
             case SKYWARS -> new SkywarsGameMap(
                     structure,
-                    this.mapCheckResults.relativeSpawnPositionsAsMap(),
+                    this.mapCheckResults.getRelativeSpawnPositions(),
                     centrePos,
-                    this.mapCheckResults.getRelativeMap(this.mapCheckResults.lootChests())
+                    this.mapCheckResults.getRelativeSkywarsChests()
             );
             case BEDWARS -> new BedwarsGameMap(
                     structure,
-                    this.mapCheckResults.relativeSpawnPositionsAsMap(),
+                    this.mapCheckResults.getRelativeSpawnPositions(),
                     centrePos,
                     this.mapCheckResults.getRelative(this.mapCheckResults.diamondGens()),
                     this.mapCheckResults.getRelative(this.mapCheckResults.emeraldGens()),

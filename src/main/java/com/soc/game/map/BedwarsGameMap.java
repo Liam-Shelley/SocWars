@@ -2,7 +2,7 @@ package com.soc.game.map;
 
 import com.google.common.collect.*;
 import com.soc.SocWars;
-import com.soc.lib.SocWarsLib;
+import com.soc.nbt.SpawnPosition;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.*;
 import net.minecraft.server.world.ServerWorld;
@@ -38,14 +38,14 @@ public class BedwarsGameMap extends AbstractGameMap {
     public static final String ISLAND_GENS_KEY = "island_gens";
     public static final String BED_POSITIONS_KEY = "bed_positions";
 
-    private final ImmutableSet<ResourceGenerator> diamondGens;
-    private final ImmutableSet<ResourceGenerator> emeraldGens;
-    private final ImmutableMap<DyeColor, ResourceGenerator[]> islandGens;
-    private final ImmutableMap<DyeColor, BlockPos> bedPositions;
+    private final Set<ResourceGenerator> diamondGens;
+    private final Set<ResourceGenerator> emeraldGens;
+    private final Map<DyeColor, ResourceGenerator[]> islandGens;
+    private final Map<DyeColor, BlockPos> bedPositions;
 
     public BedwarsGameMap(
             StructureTemplate structure,
-            @NotNull ImmutableMap<DyeColor, BlockPos> spawnPositions,
+            @NotNull Set<SpawnPosition> spawnPositions,
             @NotNull BlockPos centrePos,
             @NotNull BlockPos absoluteCentrePos,
             @NotNull ServerWorld world,
@@ -57,14 +57,14 @@ public class BedwarsGameMap extends AbstractGameMap {
         super(structure, spawnPositions, centrePos, absoluteCentrePos, world);
         this.diamondGens = ResourceGenerator.resourceGenerators(Items.DIAMOND.getDefaultStack(), world, diamondGens.stream().map(super::pos).collect(Collectors.toSet()), 30 * 20);
         this.emeraldGens = ResourceGenerator.resourceGenerators(Items.EMERALD.getDefaultStack(), world, emeraldGens.stream().map(super::pos).collect(Collectors.toSet()), 30 * 20);
-        this.islandGens = this.makeIslandGenerators(world, islandGens.stream().map(super::pos).collect(Collectors.toSet()), spawnPositions.keySet()); //Double check that this works
-        this.bedPositions = mapFromCollections(spawnPositions.keySet(), bedPositions); //Double check that this works
+        this.islandGens = /*this.makeIslandGenerators(world, islandGens.stream().map(super::pos).collect(Collectors.toSet()), spawnPositions); //Double check that this works*/ null;
+        this.bedPositions = this.makeBedPositions(spawnPositions, bedPositions);
     }
 
     /// Constructor used only for saving the map to file
     public BedwarsGameMap(
             StructureTemplate structure,
-            @NotNull ImmutableMap<DyeColor, BlockPos> spawnPositions,
+            @NotNull Set<SpawnPosition> spawnPositions,
             @NotNull BlockPos centrePos,
             @NotNull Set<BlockPos> diamondGens,
             @NotNull Set<BlockPos> emeraldGens,
@@ -81,7 +81,11 @@ public class BedwarsGameMap extends AbstractGameMap {
         }
         this.islandGens = builder.build();
 
-        this.bedPositions = mapFromCollections(spawnPositions.keySet(), bedPositions); //Double check that this works
+        this.bedPositions = this.makeBedPositions(spawnPositions, bedPositions); //Double check that this works
+    }
+
+    private Map<DyeColor, BlockPos> makeBedPositions(Set<SpawnPosition> spawnPositions, Set<BlockPos> bedPositions) {
+        return null;
     }
 
     public static Optional<BedwarsGameMap> loadRandomMap(@NotNull ServerWorld world, @NotNull BlockPos centrePos) {
@@ -114,12 +118,11 @@ public class BedwarsGameMap extends AbstractGameMap {
             return Optional.empty();
         }
 
-        final Set<BlockPos> spawn_positions = getBlockPosSet(compound, SPAWN_POSITIONS_KEY).orElseGet(() -> { SocWars.LOGGER.error("Failed to load spawn position positions"); return Set.of(); });
-        final Set<DyeColor> spawn_teams = Arrays.stream(compound.getIntArray(SPAWN_TEAMS_KEY).orElse(new int[0])).mapToObj(SocWarsLib::dyeColourFromOrdinal).collect(Collectors.toSet());
+        final Set<SpawnPosition> spawns = compound.getListOrEmpty(SpawnPosition.LIST_KEY).stream().map(element -> new SpawnPosition(element.asCompound().orElseThrow())).collect(Collectors.toSet());
 
         return Optional.of(new BedwarsGameMap(
                 template,
-                mapFromCollections(spawn_teams, spawn_positions),
+                spawns,
                 BlockPos.fromLong(centrePosLong.get()),
                 centrePos,
                 world,
@@ -142,6 +145,7 @@ public class BedwarsGameMap extends AbstractGameMap {
         return compound;
     }
 
+    /*
     private ImmutableMap<DyeColor, ResourceGenerator[]> makeIslandGenerators(ServerWorld world, Set<BlockPos> islandGens, Set<DyeColor> teams) {
         final List<BlockPos> islandGenList = islandGens.stream().toList(); //Should probably revisit this whole function at some point
 
@@ -161,6 +165,7 @@ public class BedwarsGameMap extends AbstractGameMap {
 
         return builder.build();
     }
+     */
 
     @Override
     public void tick() {

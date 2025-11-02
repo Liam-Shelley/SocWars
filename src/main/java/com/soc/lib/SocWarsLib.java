@@ -65,6 +65,19 @@ public final class SocWarsLib {
         return builder.build();
     }
 
+    public static <T, U> Collection<Pair<T, U>> pairFromCollections(Collection<T> t1, Collection<U> t2) {
+        List<Pair<T, U>> list = new ArrayList<>();
+
+        Iterator<T> t1Iterator = t1.iterator();
+        Iterator<U> t2Iterator = t2.iterator();
+
+        while (t1Iterator.hasNext() && t2Iterator.hasNext()) {
+            list.add(Pair.of(t1Iterator.next(), t2Iterator.next()));
+        }
+
+        return list;
+    }
+
     public static <T, U> ImmutableMultimap<T, U> multimapFromCollections(Collection<T> t1, Collection<U> t2) {
         ImmutableMultimap.Builder<T, U> builder = ImmutableMultimap.builder();
 

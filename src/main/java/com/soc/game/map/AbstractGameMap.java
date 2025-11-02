@@ -1,15 +1,14 @@
 package com.soc.game.map;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import com.soc.SocWars;
-import com.soc.util.Random;
+import com.soc.nbt.SpawnPosition;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructurePlacementData;
@@ -28,33 +27,33 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 import static com.soc.lib.SocWarsLib.iterateInCube;
-import static com.soc.lib.SocWarsLib.putBlockPosCollection;
 
 public abstract class AbstractGameMap {
     public static final String STRUCTURE_KEY = "structure";
     public static final String CENTRE_POS_KEY = "centre_positions";
-    public static final String SPAWN_POSITIONS_KEY = "spawn_positions";
+    public static final String SPAWN_POSITION_KEY = "spawn_position";
     public static final String SPAWN_TEAMS_KEY = "spawn_teams";
 
     protected final StructureTemplate structure;
     protected final BlockPos centrePos;
     protected final BlockPos absoluteCentrePos;
-    protected final ImmutableMap<DyeColor, BlockPos> spawnPositions;
+    protected final Map<DyeColor, BlockPos> spawnPositions;
 
     protected final ServerWorld world;
     protected int tick;
 
     public AbstractGameMap(
             StructureTemplate structure,
-            @NotNull ImmutableMap<DyeColor, BlockPos> spawnPositions,
+            @NotNull Set<SpawnPosition> spawnPositions,
             @NotNull BlockPos centrePos,
-            @NotNull BlockPos absoluteCentrePos, //Not marked @NotNull since it can be null when saving the map to file
-            @NotNull ServerWorld world //Not marked @NotNull since it can be null when saving the map to file
+            BlockPos absoluteCentrePos,
+            ServerWorld world
     ) {
         this.structure = structure;
-        this.spawnPositions = ImmutableMap.copyOf(spawnPositions);
+        this.spawnPositions = spawnPositions.stream().collect(Collectors.toMap(SpawnPosition::dyeColour, SpawnPosition::pos));
         this.centrePos = centrePos.toImmutable();
         this.absoluteCentrePos = absoluteCentrePos;
         this.world = world;
@@ -63,14 +62,16 @@ public abstract class AbstractGameMap {
     /// Constructor used only for saving the map to file
     public AbstractGameMap(
             StructureTemplate structure,
-            @NotNull ImmutableMap<DyeColor, BlockPos> spawnPositions,
+            @NotNull Set<SpawnPosition> spawnPositions,
             @NotNull BlockPos centrePos
     ) {
-        this.structure = structure;
-        this.spawnPositions = ImmutableMap.copyOf(spawnPositions);
-        this.centrePos = centrePos.toImmutable();
-        this.absoluteCentrePos = null;
-        this.world = null;
+        this(
+                structure,
+                spawnPositions,
+                centrePos.toImmutable(),
+                null,
+                null
+        );
     }
 
     public abstract void tick();
@@ -90,11 +91,16 @@ public abstract class AbstractGameMap {
 
     public NbtCompound toNbt(NbtCompound compound) {
         compound.put(STRUCTURE_KEY, this.structure.writeNbt(new NbtCompound()));
-        putBlockPosCollection(compound, SPAWN_POSITIONS_KEY, this.spawnPositions.values());
-        compound.putIntArray(SPAWN_TEAMS_KEY, this.spawnPositions.keySet().stream().mapToInt(Enum::ordinal).toArray()); //I love how everything is pass by value god I love it so much
+        compound.put(SpawnPosition.LIST_KEY, getSpawnsAsNbt());
         compound.putLong(CENTRE_POS_KEY, this.centrePos.asLong());
 
         return compound;
+    }
+
+    private NbtList getSpawnsAsNbt() {
+        NbtList spawns = new NbtList();
+        this.spawnPositions.forEach((colour, pos) -> spawns.add(new SpawnPosition(pos, colour.getIndex()).toNbt()));
+        return spawns;
     }
 
     public static File getMapDirectory() {

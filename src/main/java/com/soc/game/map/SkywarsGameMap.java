@@ -1,21 +1,22 @@
 package com.soc.game.map;
 
-import com.google.common.collect.ImmutableMap;
 import com.soc.SocWars;
 import com.soc.lib.SocWarsLib;
+import com.soc.nbt.SkywarsChest;
+import com.soc.nbt.SpawnPosition;
 import com.soc.resourcedata.ResourceManager;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
+import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureTemplate;
 import net.minecraft.structure.StructureTemplateManager;
-import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.tuple.Pair;
@@ -26,22 +27,18 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.soc.lib.SocWarsLib.*;
-
 public class SkywarsGameMap extends AbstractGameMap {
     public static final String FILE_EXTENSION = "swmap";
-    public static final String LOOT_CHESTS_POS_KEY = "loot_chests_positions";
-    public static final String LOOT_CHESTS_TIER_KEY = "loot_chests_tiers";
 
-    private final ImmutableMap<BlockPos, Integer> lootChests;
+    private final Set<SkywarsChest> lootChests;
 
     public SkywarsGameMap(
             StructureTemplate structure,
-            @NotNull ImmutableMap<DyeColor, BlockPos> spawnPositions,
+            @NotNull Set<SpawnPosition> spawnPositions,
             @NotNull BlockPos centrePos,
             @NotNull BlockPos absoluteCentrePos,
             @NotNull ServerWorld world,
-            @NotNull ImmutableMap<BlockPos, Integer> lootChests
+            @NotNull Set<SkywarsChest> lootChests
     ) {
         super(structure, spawnPositions, centrePos, absoluteCentrePos, world);
         this.lootChests = lootChests;
@@ -50,21 +47,25 @@ public class SkywarsGameMap extends AbstractGameMap {
     /// Constructor used only for saving the map to file
     public SkywarsGameMap(
             StructureTemplate structure,
-            @NotNull ImmutableMap<DyeColor, BlockPos> spawnPositions,
+            @NotNull Set<SpawnPosition> spawnPositions,
             @NotNull BlockPos centrePos,
-            @NotNull ImmutableMap<BlockPos, Integer> lootChests
+            @NotNull Set<SkywarsChest> lootChests
     ) {
         super(structure, spawnPositions, centrePos);
         this.lootChests = lootChests;
     }
 
     public void placeLootChests() {
-        this.lootChests.forEach((pos, tier) -> {
-            final BlockPos chestPos = super.pos(pos).down();
-            this.world.setBlockState(chestPos, Blocks.CHEST.getDefaultState());
+        this.lootChests.forEach(chest -> {
+            final BlockPos chestPos = super.pos(chest.pos()).down();
+            this.world.setBlockState(chestPos, Blocks.CHEST.getDefaultState().with(HorizontalFacingBlock.FACING, chest.facing()));
 
             final Inventory inventory = ChestBlock.getInventory((ChestBlock) Blocks.CHEST, this.world.getBlockState(chestPos), this.world, chestPos, true);
-            if (inventory != null) this.populateInventory(inventory, tier);
+            if (inventory != null) {
+                this.populateInventory(inventory, chest.tier());
+            } else {
+                SocWars.LOGGER.warn("Failed to populate chest at {}", chest.pos());
+            }
         });
     }
 
@@ -72,8 +73,8 @@ public class SkywarsGameMap extends AbstractGameMap {
         inventory.clear();
         for (int i = 0; i < inventory.size(); i++) {
             final float random = this.world.random.nextFloat();
-            if (random > 0.45f + tier * 0.07f) {
-                final int pool = random < 0.7f + tier * 0.03f ? 0 : 1;
+            if (random > 0.42f + tier * 0.04f) {
+                final int pool = random < 0.73f + tier * 0.06f ? 0 : 1;
                 final Pair<Item, Integer> item = ResourceManager.ITEM_DATA.getSkywarsItemData().getRandomItem(pool, tier - 1, this.world.random);
                 inventory.setStack(i, new ItemStack(item.getLeft(), item.getRight()));
             }
@@ -110,19 +111,16 @@ public class SkywarsGameMap extends AbstractGameMap {
             return Optional.empty();
         }
 
-        final Set<BlockPos> spawn_positions = getBlockPosSet(compound, SPAWN_POSITIONS_KEY).orElseGet(() -> { SocWars.LOGGER.error("Failed to load spawn positions"); return Set.of(); });
-        final Set<DyeColor> spawn_teams = Arrays.stream(compound.getIntArray(SPAWN_TEAMS_KEY).orElse(new int[0])).mapToObj(SocWarsLib::dyeColourFromOrdinal).collect(Collectors.toSet());
-
-        final Set<BlockPos> chest_positions = getBlockPosSet(compound, LOOT_CHESTS_POS_KEY).orElseGet(() -> { SocWars.LOGGER.error("Failed to load chest positions"); return Set.of(); });
-        final List<Integer> chest_tiers = Arrays.stream(compound.getIntArray(LOOT_CHESTS_TIER_KEY).orElse(new int[0])).boxed().toList();
+        final Set<SpawnPosition> spawns = compound.getListOrEmpty(SpawnPosition.LIST_KEY).stream().map(element -> new SpawnPosition(element.asCompound().orElseThrow())).collect(Collectors.toSet());
+        final Set<SkywarsChest> chests = compound.getListOrEmpty(SkywarsChest.LIST_KEY).stream().map(element -> new SkywarsChest(element.asCompound().orElseThrow())).collect(Collectors.toSet());
 
         return Optional.of(new SkywarsGameMap(
                 template,
-                mapFromCollections(spawn_teams, spawn_positions),
+                spawns,
                 BlockPos.fromLong(centrePosLong.get()),
                 centrePos,
                 world,
-                mapFromCollections(chest_positions, chest_tiers)
+                chests
         ));
     }
 
@@ -130,10 +128,15 @@ public class SkywarsGameMap extends AbstractGameMap {
     public NbtCompound toNbt(NbtCompound compound) {
         super.toNbt(compound);
 
-        putBlockPosCollection(compound, LOOT_CHESTS_POS_KEY, this.lootChests.keySet().stream().toList());
-        compound.putIntArray(LOOT_CHESTS_TIER_KEY, this.lootChests.values().stream().mapToInt(tier -> tier).toArray());
+        compound.put(SkywarsChest.LIST_KEY, getChestsAsNbt());
 
         return compound;
+    }
+
+    private NbtList getChestsAsNbt() {
+        NbtList chests = new NbtList();
+        this.lootChests.forEach(chest -> chests.add(chest.toNbt()));
+        return chests;
     }
 
     @Override
