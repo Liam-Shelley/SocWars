@@ -26,13 +26,13 @@ public class CumulativeWeightList<V> {
         }
     }
 
-    public CumulativeWeightList(Map<V, SkywarsItemData> pool, int tier) {
+    public CumulativeWeightList(Map<?, SkywarsItemData> pool, int tier) {
         this();
-        for (Map.Entry<V, SkywarsItemData> entry : pool.entrySet()) {
+        for (Map.Entry<?, SkywarsItemData> entry : pool.entrySet()) {
             final float weight = entry.getValue().getWeight(tier);
-            if (weight > 0f) this.add(Pair.of(
+            if (weight > 0f) this.add((Pair<Float, V>) Pair.of(
                     weight + this.getLastWeight(),
-                    entry.getKey()
+                    Pair.of(entry.getKey(), entry.getValue().count())
             ));
         }
     }
