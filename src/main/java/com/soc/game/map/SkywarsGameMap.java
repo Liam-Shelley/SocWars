@@ -3,8 +3,10 @@ package com.soc.game.map;
 import com.google.common.collect.ImmutableMap;
 import com.soc.SocWars;
 import com.soc.lib.SocWarsLib;
+import com.soc.resourcedata.ResourceManager;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtIo;
@@ -18,10 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.soc.lib.SocWarsLib.*;
@@ -61,8 +60,17 @@ public class SkywarsGameMap extends AbstractGameMap {
             final BlockPos chestPos = super.pos(pos).down();
             this.world.setBlockState(chestPos, Blocks.CHEST.getDefaultState());
 
-            ChestBlock.getInventory((ChestBlock) Blocks.CHEST, this.world.getBlockState(chestPos), this.world, chestPos, true).setStack(0, Items.DIAMOND.getDefaultStack().copyWithCount(tier));
+            final Inventory inventory = ChestBlock.getInventory((ChestBlock) Blocks.CHEST, this.world.getBlockState(chestPos), this.world, chestPos, true);
+            try {
+                if (inventory != null) this.populateInventory(inventory, tier);
+            } catch (Exception ignored) {}
         });
+    }
+
+    private void populateInventory(Inventory inventory, int tier) {
+        for (int i = 0; i < inventory.size(); i++) {
+            inventory.setStack(i, ResourceManager.ITEM_DATA.getSkywarsItemData().getRandomItem(0, tier - 1, this.world.random).getDefaultStack());
+        }
     }
 
     public static Optional<SkywarsGameMap> loadRandomMap(@NotNull ServerWorld world, @NotNull BlockPos centrePos) {

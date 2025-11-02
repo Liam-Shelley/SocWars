@@ -11,4 +11,12 @@ public class SortedList<T extends Comparable<T>> extends ArrayList<T> {
 
         return true;
     }
+
+    /**
+     * @throws java.lang.IllegalStateException always
+     */
+    @Override
+    public void add(int index, T element) {
+        throw new IllegalStateException("Cannot insert with index as that may break ordering of the list");
+    }
 }

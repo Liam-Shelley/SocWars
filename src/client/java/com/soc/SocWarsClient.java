@@ -38,6 +38,7 @@ import net.minecraft.util.shape.VoxelShapes;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
+import java.util.Map;
 
 import static com.soc.blocks.blockentities.ModBlockEntities.COLLECTIBLE_BLOCK_ENTITY;
 import static com.soc.blocks.blockentities.ModBlockEntities.MAP_BLOCK_ENTITY;
@@ -72,8 +73,8 @@ public class SocWarsClient implements ClientModInitializer {
 				final ClientPlayerEntity player = client.player;
 				player.getStackInHand(Hand.MAIN_HAND).getComponents().forEach(component -> player.sendMessage(Text.literal(component.toString()), false));
 
-				final SkywarsItemData data = ResourceManager.ITEM_DATA.getSkywarsItemData().get(player.getStackInHand(Hand.MAIN_HAND).getItem());
-				if (data != null) player.sendMessage(Text.translatable("debug.skywars_item_weights", data.weightT1(), data.weightT2(), data.weightT3(), data.weightT4()), false);
+				final Map<Integer, SkywarsItemData> dataMap = ResourceManager.ITEM_DATA.getSkywarsItemData().getPoolsForKey(player.getStackInHand(Hand.MAIN_HAND).getItem());
+				dataMap.forEach((pool, data) -> player.sendMessage(Text.translatable("debug.skywars_item_weights", pool, data.weightT1(), data.weightT2(), data.weightT3(), data.weightT4()), false));
 			}
 		});
 
