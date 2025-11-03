@@ -38,7 +38,7 @@ public class ModBlocks {
     public static final Block SPAWN_PLACEHOLDER = ModBlocks.register("spawn_placeholder", ColourStateBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true);
     public static final Block CENTRE_PLACEHOLDER = ModBlocks.register("centre_placeholder", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true);
 
-    public static final Block CHEST_PLACEHOLDER = ModBlocks.register("chest_placeholder", settings -> new TierBlock(settings, 1), AbstractBlock.Settings.create().sounds(BlockSoundGroup.STONE).noCollision().nonOpaque(), false);
+    public static final Block CHEST_PLACEHOLDER = ModBlocks.register("chest_placeholder", settings -> new TierBlock(settings, 1), AbstractBlock.Settings.create().sounds(BlockSoundGroup.STONE).nonOpaque(), false);
 
     public static final Block DIAMOND_GEN_PLACEHOLDER = ModBlocks.register("diamond_gen_placeholder", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true);
     public static final Block EMERALD_GEN_PLACEHOLDER = ModBlocks.register("emerald_gen_placeholder", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true);

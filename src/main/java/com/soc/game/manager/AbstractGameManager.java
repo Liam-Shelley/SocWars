@@ -87,6 +87,7 @@ public abstract class AbstractGameManager {
         this.assignPlayersToTeams();
         this.setGameMode(GameMode.ADVENTURE);
         this.healPlayers();
+        this.clearPlayerInventories();
 
         PrescheduledEvents.playCountdown(() -> {
             map.spawnCages(false);
@@ -258,5 +259,9 @@ public abstract class AbstractGameManager {
 
     protected final void removePlayerVelocity() {
         this.getPlayers().forEach(player -> player.networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(player.getId(), Vec3d.ZERO)));
+    }
+
+    protected final void clearPlayerInventories() {
+        this.getPlayers().forEach(player -> player.getInventory().clear());
     }
 }

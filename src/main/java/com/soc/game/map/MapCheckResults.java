@@ -16,8 +16,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.soc.lib.SocWarsLib.collectionPairToLeftList;
-import static com.soc.lib.SocWarsLib.dyeColourFromOrdinal;
+import static com.soc.lib.SocWarsLib.*;
 
 public record MapCheckResults(Set<SpawnPosition> spawnPositions, Set<BlockPos> centrePositions, Set<Direction> flaggedFaces, Set<BlockPos> diamondGens, Set<BlockPos> emeraldGens, Set<BlockPos> islandGens, Set<BlockPos> bedPositions, Set<SkywarsChest> lootChests) {
     public InfoList generateWarnings(GameType mapType) {
@@ -100,9 +99,9 @@ public record MapCheckResults(Set<SpawnPosition> spawnPositions, Set<BlockPos> c
         InfoList results = new InfoList();
 
         results.add(
-                () -> centrePositions.size() == 1,
+                () -> this.centrePositions.size() == 1,
                 () -> {
-                    BlockPos centre = centrePositions.stream().findAny().get(); //This should never have issues
+                    BlockPos centre = this.centrePositions.stream().findAny().get(); //This should never have issues
                     return Text.translatable("map_block.results.centre", centre.getX(), centre.getY(), centre.getZ()).formatted(Formatting.GREEN);
                 },
                 () -> new Text[0],
@@ -110,15 +109,15 @@ public record MapCheckResults(Set<SpawnPosition> spawnPositions, Set<BlockPos> c
         );
         results.add(
                 () -> mapType != GameType.BEDWARS,
-                Text.translatable("map_block.results.spawn_positions", spawnPositions.size()).formatted(Formatting.GREEN),
-                new Text[0],
+                Text.translatable("map_block.results.spawn_positions", this.spawnPositions.size()).formatted(Formatting.GREEN),
+                this.spawnPositions.stream().filter(spawn -> spawn.colour() < 16).map(spawn -> Text.translatable("color.minecraft." + spawn.dyeColour().toString()).formatted(formattingColourFromDye(spawn.dyeColour()))).toArray(Text[]::new), //Sort radially?
                 InfoList.InfoType.INFO
         );
 
         switch (mapType) {
             case BEDWARS -> {
                 results.add(
-                        () -> spawnPositions.stream().filter(spawn -> spawn.colour() != 16).count() == this.islandGens.size(),
+                        () -> this.spawnPositions.stream().filter(spawn -> spawn.colour() != 16).count() == this.islandGens.size(),
                         () -> {
                             int islands = this.spawnPositions.size();
                             return Text.translatable("map_block.results.islands", islands).formatted(Arrays.stream(new int[]{2, 4, 8}).anyMatch(count -> count == islands) ? Formatting.DARK_GREEN : Formatting.GREEN);

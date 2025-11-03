@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.soc.lib.SocWarsLib.woolItemFromColour;
+
 public class SkywarsGameMap extends AbstractGameMap {
     public static final String FILE_EXTENSION = "swmap";
 
@@ -62,14 +64,14 @@ public class SkywarsGameMap extends AbstractGameMap {
 
             final Inventory inventory = ChestBlock.getInventory((ChestBlock) Blocks.CHEST, this.world.getBlockState(chestPos), this.world, chestPos, true);
             if (inventory != null) {
-                this.populateInventory(inventory, chest.tier());
+                this.populateInventory(inventory, chest.tier(), chest.pos());
             } else {
                 SocWars.LOGGER.warn("Failed to populate chest at {}", chest.pos());
             }
         });
     }
 
-    private void populateInventory(Inventory inventory, int tier) {
+    private void populateInventory(Inventory inventory, int tier, BlockPos pos) {
         inventory.clear();
         for (int i = 0; i < inventory.size(); i++) {
             final float random = this.world.random.nextFloat();
@@ -78,6 +80,20 @@ public class SkywarsGameMap extends AbstractGameMap {
                 final Pair<Item, Integer> item = ResourceManager.ITEM_DATA.getSkywarsItemData().getRandomItem(pool, tier - 1, this.world.random);
                 inventory.setStack(i, new ItemStack(item.getLeft(), item.getRight()));
             }
+        }
+
+        if (tier == 1) {
+            Optional<DyeColor> colour = this.spawnPositions.entrySet().stream().min(Map.Entry.comparingByValue((a, b) -> {
+                final double distA = a.getSquaredDistance(pos);
+                final double distB = b.getSquaredDistance(pos);
+                if (distA == distB) return 0;
+                return distA < distB ? -1 : 1;
+            })).map(Map.Entry::getKey);
+
+            colour.ifPresent(woolColour -> {
+                int slot = this.world.random.nextBetween(0, 26);
+                inventory.setStack(slot, new ItemStack(woolItemFromColour(woolColour), 16));
+            });
         }
     }
 

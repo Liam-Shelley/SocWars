@@ -54,10 +54,10 @@
   },
   {
     "id": "minecraft:enchanted_golden_apple",
-    "tier_1_weight": 4,
-    "tier_2_weight": 6,
-    "tier_3_weight": 6,
-    "tier_4_weight": 5,
+    "tier_1_weight": 3,
+    "tier_2_weight": 5,
+    "tier_3_weight": 5,
+    "tier_4_weight": 4,
     "pool": 1
   },
   {
