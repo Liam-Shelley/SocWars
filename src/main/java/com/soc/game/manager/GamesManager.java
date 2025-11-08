@@ -55,6 +55,9 @@ public class GamesManager {
         ModEvents.ON_PLAYER_DAMAGE_TAKEN.register((player, source, amount) ->
                 this.getGame(player).map(game -> game.onPlayerDamage(player, source, amount)).orElse(true)
         );
+        ModEvents.ON_CHEST_OPENED.register((player, pos) ->
+                this.getGame(player).ifPresent(game -> game.onChestOpened(player, pos))
+        );
     }
 
     public boolean startGame(AbstractGameManager game) {

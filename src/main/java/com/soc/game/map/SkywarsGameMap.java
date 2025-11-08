@@ -1,7 +1,6 @@
 package com.soc.game.map;
 
 import com.soc.SocWars;
-import com.soc.lib.SocWarsLib;
 import com.soc.nbt.SkywarsChest;
 import com.soc.nbt.SpawnPosition;
 import com.soc.resourcedata.ResourceManager;
@@ -32,7 +31,7 @@ import static com.soc.lib.SocWarsLib.woolItemFromColour;
 public class SkywarsGameMap extends AbstractGameMap {
     public static final String FILE_EXTENSION = "swmap";
 
-    private final Set<SkywarsChest> lootChests;
+    private final Map<BlockPos, IngameSkywarsChest> lootChests;
 
     public SkywarsGameMap(
             StructureTemplate structure,
@@ -43,7 +42,7 @@ public class SkywarsGameMap extends AbstractGameMap {
             @NotNull Set<SkywarsChest> lootChests
     ) {
         super(structure, spawnPositions, centrePos, absoluteCentrePos, world);
-        this.lootChests = lootChests;
+        this.lootChests = this.makeLootChests(lootChests);
     }
 
     /// Constructor used only for saving the map to file
@@ -54,19 +53,22 @@ public class SkywarsGameMap extends AbstractGameMap {
             @NotNull Set<SkywarsChest> lootChests
     ) {
         super(structure, spawnPositions, centrePos);
-        this.lootChests = lootChests;
+        this.lootChests = this.makeLootChests(lootChests);
+    }
+
+    public Map<BlockPos, IngameSkywarsChest> makeLootChests(Set<SkywarsChest> lootChests) {
+        return lootChests.stream().collect(Collectors.toMap(chest -> super.pos(chest.pos()).down(), IngameSkywarsChest::new));
     }
 
     public void placeLootChests() {
-        this.lootChests.forEach(chest -> {
-            final BlockPos chestPos = super.pos(chest.pos()).down();
-            this.world.setBlockState(chestPos, Blocks.CHEST.getDefaultState().with(HorizontalFacingBlock.FACING, chest.facing()));
+        this.lootChests.forEach((pos, chest) -> {
+            this.world.setBlockState(pos, Blocks.CHEST.getDefaultState().with(HorizontalFacingBlock.FACING, chest.getFacing()));
 
-            final Inventory inventory = ChestBlock.getInventory((ChestBlock) Blocks.CHEST, this.world.getBlockState(chestPos), this.world, chestPos, true);
+            final Inventory inventory = ChestBlock.getInventory((ChestBlock) Blocks.CHEST, this.world.getBlockState(pos), this.world, pos, true);
             if (inventory != null) {
-                this.populateInventory(inventory, chest.tier(), chest.pos());
+                this.populateInventory(inventory, chest.getTier(), pos);
             } else {
-                SocWars.LOGGER.warn("Failed to populate chest at {}", chest.pos());
+                SocWars.LOGGER.warn("Failed to populate chest at {}", pos);
             }
         });
     }
@@ -84,8 +86,8 @@ public class SkywarsGameMap extends AbstractGameMap {
 
         if (tier == 1) {
             final Optional<DyeColor> colour = this.spawnPositions.entrySet().stream().min(Map.Entry.comparingByValue((a, b) -> {
-                final double distA = a.getSquaredDistance(pos);
-                final double distB = b.getSquaredDistance(pos);
+                final double distA = super.pos(a).getSquaredDistance(pos);
+                final double distB = super.pos(b).getSquaredDistance(pos);
                 if (distA == distB) return 0;
                 return distA < distB ? -1 : 1;
             })).map(Map.Entry::getKey);
@@ -95,6 +97,10 @@ public class SkywarsGameMap extends AbstractGameMap {
                 inventory.setStack(slot, new ItemStack(woolItemFromColour(woolColour), 16));
             });
         }
+    }
+
+    public Optional<IngameSkywarsChest> getLootChest(BlockPos pos) {
+        return Optional.ofNullable(this.lootChests.get(pos));
     }
 
     public static Optional<SkywarsGameMap> loadRandomMap(@NotNull ServerWorld world, @NotNull BlockPos centrePos) {
@@ -151,7 +157,7 @@ public class SkywarsGameMap extends AbstractGameMap {
 
     private NbtList getChestsAsNbt() {
         final NbtList chests = new NbtList();
-        this.lootChests.forEach(chest -> chests.add(chest.toNbt()));
+        this.lootChests.forEach((pos, chest) -> chests.add(new SkywarsChest(pos, chest).toNbt()));
         return chests;
     }
 

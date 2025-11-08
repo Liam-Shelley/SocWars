@@ -1,5 +1,6 @@
 package com.soc.nbt;
 
+import com.soc.game.map.IngameSkywarsChest;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -16,6 +17,14 @@ public record SkywarsChest(BlockPos pos, int tier, Direction facing) implements 
                 BlockPos.fromLong(nbt.getLong(POSITION_KEY).orElseThrow()),
                 nbt.getInt(TIER_KEY, 1),
                 Direction.byIndex(nbt.getInt(DIRECTION_KEY, 0))
+        );
+    }
+
+    public SkywarsChest(BlockPos pos, IngameSkywarsChest chest) {
+        this(
+                pos,
+                chest.getTier(),
+                chest.getFacing()
         );
     }
 

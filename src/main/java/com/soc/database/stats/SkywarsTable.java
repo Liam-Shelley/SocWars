@@ -9,6 +9,16 @@ public class SkywarsTable extends CombatTable {
     public void openT2Chest() { this.t2chestsOpened++; }
     protected int t3chestsOpened = 0;
     public void openT3Chest() { this.t3chestsOpened++; }
+    protected int t4chestsOpened = 0;
+    public void openT4Chest() { this.t3chestsOpened++; }
+    public void openChest(int tier) {
+        switch (tier) {
+            case 1 -> this.openT1Chest();
+            case 2 -> this.openT2Chest();
+            case 3 -> this.openT3Chest();
+            case 4 -> this.openT4Chest();
+        }
+    }
 
     protected int voidDeaths = 0;
     public void fallInVoid() { this.voidDeaths++; }

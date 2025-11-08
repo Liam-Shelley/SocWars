@@ -16,6 +16,7 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -161,6 +162,15 @@ public class SkywarsGameManager extends AbstractGameManager {
         }
 
         return false;
+    }
+
+    @Override
+    public void onChestOpened(ServerPlayerEntity player, BlockPos pos) {
+        this.getMap().getLootChest(pos).ifPresent(chest -> {
+            if (chest.open()) {
+                ((SkywarsTable)this.dbTables.get(player)).openChest(chest.getTier());
+            }
+        });
     }
 
     private List<ServerPlayerEntity> getAlivePlayers() {

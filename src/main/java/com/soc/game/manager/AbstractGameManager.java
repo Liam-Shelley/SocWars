@@ -123,16 +123,20 @@ public abstract class AbstractGameManager {
         final BaseTable targetTable = this.dbTables.get(player);
         if (!(targetTable instanceof CombatTable)) return true;
 
-        ((CombatTable)targetTable).takeDamage((int)amount);
+        final int cappedDamage = (int)Math.min(player.getHealth(), amount);
+
+        ((CombatTable)targetTable).takeDamage(cappedDamage);
 
         final CombatTable attackerTable = ((CombatTable)this.dbTables.get(source.getAttacker())); //More Map#get abuse
         if (attackerTable != null) {
             player.sendMessage(Text.of(attackerTable.toString()), false);
-            attackerTable.dealDamage((int)Math.min(player.getHealth(), amount));
+            attackerTable.dealDamage(cappedDamage);
         }
 
         return true;
     }
+
+    public void onChestOpened(ServerPlayerEntity player, BlockPos pos) {}
 
     public void tick() {
         time++;
@@ -264,6 +268,8 @@ public abstract class AbstractGameManager {
 
         this.getPlayers().forEach(player -> player.requestTeleport(pos.x + this.world.random.nextFloat() * 3f, pos.y, pos.z + this.world.random.nextFloat() * 3f));
         this.setGameMode(GameMode.ADVENTURE);
+        this.healPlayers();
+        this.clearPlayerInventories();
     }
 
     protected final void healPlayers() {

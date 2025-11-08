@@ -15,4 +15,10 @@ public interface ModEvents {
 
         return allowEvent;
     });
+
+    Event<OnChestOpened> ON_CHEST_OPENED = EventFactory.createArrayBacked(OnChestOpened.class, listeners -> (player, chestPos) -> {
+        for (OnChestOpened listener : listeners) {
+            listener.onChestOpen(player, chestPos);
+        }
+    });
 }
