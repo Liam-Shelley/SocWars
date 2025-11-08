@@ -7,11 +7,14 @@ import com.google.common.collect.ImmutableSet;
 import com.soc.SocWars;
 import com.soc.database.Database;
 import com.soc.database.stats.BaseGameTable;
+import com.soc.database.stats.BaseTable;
 import com.soc.database.stats.CombatTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.SpreadRules;
 import com.soc.lib.SocWarsLib;
 import com.soc.mixin.MostRecentDamage;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.damage.DamageRecord;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
@@ -112,6 +115,21 @@ public abstract class AbstractGameManager {
         ((CombatTable)this.dbTables.get(player)).grantDeath();
 
         SocWarsLib.getPlayerAttacker(player).ifPresent(killer -> ((CombatTable)this.dbTables.get((ServerPlayerEntity)killer)).grantKill()); //This cast to CombatTable should be safe because this should either not be called in games that don't have combat, or they should just not call super
+
+        return true;
+    }
+
+    public boolean onPlayerDamage(ServerPlayerEntity player, DamageSource source, float amount) {
+        final BaseTable targetTable = this.dbTables.get(player);
+        if (!(targetTable instanceof CombatTable)) return true;
+
+        ((CombatTable)targetTable).takeDamage((int)amount);
+
+        final CombatTable attackerTable = ((CombatTable)this.dbTables.get(source.getAttacker())); //More Map#get abuse
+        if (attackerTable != null) {
+            player.sendMessage(Text.of(attackerTable.toString()), false);
+            attackerTable.dealDamage((int)Math.min(player.getHealth(), amount));
+        }
 
         return true;
     }

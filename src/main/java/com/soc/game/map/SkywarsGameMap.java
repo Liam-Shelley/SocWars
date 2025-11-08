@@ -83,7 +83,7 @@ public class SkywarsGameMap extends AbstractGameMap {
         }
 
         if (tier == 1) {
-            Optional<DyeColor> colour = this.spawnPositions.entrySet().stream().min(Map.Entry.comparingByValue((a, b) -> {
+            final Optional<DyeColor> colour = this.spawnPositions.entrySet().stream().min(Map.Entry.comparingByValue((a, b) -> {
                 final double distA = a.getSquaredDistance(pos);
                 final double distB = b.getSquaredDistance(pos);
                 if (distA == distB) return 0;
@@ -98,7 +98,7 @@ public class SkywarsGameMap extends AbstractGameMap {
     }
 
     public static Optional<SkywarsGameMap> loadRandomMap(@NotNull ServerWorld world, @NotNull BlockPos centrePos) {
-        Optional<File> file = AbstractGameMap.getRandomMap(FILE_EXTENSION, world, null);
+        final Optional<File> file = AbstractGameMap.getRandomMap(FILE_EXTENSION, world, null);
 
         return file.flatMap(optional -> loadFromFile(file.get(), world, centrePos));
     }
@@ -150,7 +150,7 @@ public class SkywarsGameMap extends AbstractGameMap {
     }
 
     private NbtList getChestsAsNbt() {
-        NbtList chests = new NbtList();
+        final NbtList chests = new NbtList();
         this.lootChests.forEach(chest -> chests.add(chest.toNbt()));
         return chests;
     }

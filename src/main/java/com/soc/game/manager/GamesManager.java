@@ -1,9 +1,9 @@
 package com.soc.game.manager;
 
 import com.soc.SocWars;
+import com.soc.events.ModEvents;
 import com.soc.game.map.SpreadRules;
 import com.soc.lib.SocWarsLib;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -12,7 +12,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
-import net.minecraft.world.dimension.DimensionTypes;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -52,6 +51,9 @@ public class GamesManager {
 
         ServerLivingEntityEvents.ALLOW_DEATH.register((entity, source, amount) ->
                 this.getGame(entity).map(game -> game.onPlayerDeath((ServerPlayerEntity) entity, source, amount)).orElse(true)
+        );
+        ModEvents.ON_PLAYER_DAMAGE_TAKEN.register((player, source, amount) ->
+                this.getGame(player).map(game -> game.onPlayerDamage(player, source, amount)).orElse(true)
         );
     }
 

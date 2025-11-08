@@ -4,11 +4,12 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "AbstractBlockBreak",
-    "DepositableChest",
-    "ChestDepositableProperty",
     "CancelSprintParticles",
+    "ChestDepositableProperty",
+    "DepositableChest",
     "DropItemEvent",
     "MostRecentDamage",
+    "OnDamageEventTrigger",
     "OnHitArmour",
     "UseDurationScale",
     "VelocityPacketUnlimit"
