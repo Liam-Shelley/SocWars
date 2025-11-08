@@ -112,9 +112,12 @@ public abstract class AbstractGameManager {
     }
 
     public boolean onPlayerDeath(ServerPlayerEntity player, DamageSource source, float amount) {
-        ((CombatTable)this.dbTables.get(player)).grantDeath();
+        final BaseTable targetTable = this.dbTables.get(player);
+        if (!(targetTable instanceof CombatTable)) return true;
 
-        SocWarsLib.getPlayerAttacker(player).ifPresent(killer -> ((CombatTable)this.dbTables.get((ServerPlayerEntity)killer)).grantKill()); //This cast to CombatTable should be safe because this should either not be called in games that don't have combat, or they should just not call super
+        ((CombatTable)targetTable).grantDeath();
+
+        SocWarsLib.getPlayerAttacker(player).ifPresent(killer -> ((CombatTable)this.dbTables.get(killer)).grantKill());
 
         return true;
     }
