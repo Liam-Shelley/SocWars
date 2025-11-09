@@ -58,6 +58,9 @@ public class GamesManager {
         ModEvents.ON_CHEST_OPENED.register((player, pos) ->
                 this.getGame(player).ifPresent(game -> game.onChestOpened(player, pos))
         );
+        ModEvents.ON_ITEM_PICKUP.register((player, stack) ->
+                this.getGame(player).ifPresent(game -> game.onItemPickup(player, stack))
+        );
     }
 
     public boolean startGame(AbstractGameManager game) {

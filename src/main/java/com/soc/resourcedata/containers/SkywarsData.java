@@ -21,7 +21,7 @@ public class SkywarsData extends ItemDataContainer<SkywarsItemData> {
 
     private CumulativeWeightList<Pair<Item, Integer>>[] getCumulativeWeightsForTiers(Integer poolKey) {
         List<Integer> tiers = List.of(0, 1, 2, 3);
-        return tiers.stream().map(tier -> getCumulativeWeightsForTier(poolKey, tier)).toArray(CumulativeWeightList[]::new);
+        return tiers.stream().map(tier -> this.getCumulativeWeightsForTier(poolKey, tier)).toArray(CumulativeWeightList[]::new);
     }
 
     private CumulativeWeightList<Pair<Item, Integer>> getCumulativeWeightsForTier(Integer poolKey, int tier) {

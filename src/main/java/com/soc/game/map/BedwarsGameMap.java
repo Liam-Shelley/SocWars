@@ -57,7 +57,7 @@ public class BedwarsGameMap extends AbstractGameMap {
         super(structure, spawnPositions, centrePos, absoluteCentrePos, world);
         this.diamondGens = ResourceGenerator.resourceGenerators(Items.DIAMOND.getDefaultStack(), world, diamondGens.stream().map(super::pos).collect(Collectors.toSet()), 30 * 20);
         this.emeraldGens = ResourceGenerator.resourceGenerators(Items.EMERALD.getDefaultStack(), world, emeraldGens.stream().map(super::pos).collect(Collectors.toSet()), 30 * 20);
-        this.islandGens = /*this.makeIslandGenerators(world, islandGens.stream().map(super::pos).collect(Collectors.toSet()), spawnPositions); //Double check that this works*/ null;
+        this.islandGens = this.makeIslandGenerators(world, islandGens.stream().map(super::pos).collect(Collectors.toSet()), spawnPositions.stream().map(SpawnPosition::dyeColour).collect(Collectors.toSet()));
         this.bedPositions = this.makeBedPositions(spawnPositions, bedPositions);
     }
 
@@ -77,7 +77,7 @@ public class BedwarsGameMap extends AbstractGameMap {
 
         ImmutableMap.Builder<DyeColor, ResourceGenerator[]> builder = new ImmutableMap.Builder<>();
         for (int i = 0; i < islandGens.size(); i++) {
-            builder.put(dyeColourFromOrdinal(i), new ResourceGenerator[]{new ResourceGenerator(null, null, islandGens.stream().toList().get(i), 30 * 20)});
+            builder.put(dyeColourFromOrdinal(i), new ResourceGenerator[]{new ResourceGenerator(Items.STONE.getDefaultStack(), null, islandGens.stream().toList().get(i), 30 * 20)});
         }
         this.islandGens = builder.build();
 
@@ -85,7 +85,11 @@ public class BedwarsGameMap extends AbstractGameMap {
     }
 
     private Map<DyeColor, BlockPos> makeBedPositions(Set<SpawnPosition> spawnPositions, Set<BlockPos> bedPositions) {
-        return null;
+        return spawnPositions.stream().collect(Collectors.toMap(SpawnPosition::dyeColour, spawn -> findNearestBlockPos(bedPositions, spawn.pos()).get()));
+    }
+
+    private static Optional<BlockPos> findNearestBlockPos(Collection<BlockPos> positions, BlockPos origin) {
+        return positions.stream().min(Comparator.comparing(pos -> pos.getSquaredDistance(origin)));
     }
 
     public static Optional<BedwarsGameMap> loadRandomMap(@NotNull ServerWorld world, @NotNull BlockPos centrePos) {
@@ -145,7 +149,7 @@ public class BedwarsGameMap extends AbstractGameMap {
         return compound;
     }
 
-    /*
+
     private ImmutableMap<DyeColor, ResourceGenerator[]> makeIslandGenerators(ServerWorld world, Set<BlockPos> islandGens, Set<DyeColor> teams) {
         final List<BlockPos> islandGenList = islandGens.stream().toList(); //Should probably revisit this whole function at some point
 
@@ -165,7 +169,7 @@ public class BedwarsGameMap extends AbstractGameMap {
 
         return builder.build();
     }
-     */
+
 
     @Override
     public void tick() {

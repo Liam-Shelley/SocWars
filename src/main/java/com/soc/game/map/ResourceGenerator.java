@@ -1,8 +1,10 @@
 package com.soc.game.map;
 
 import com.google.common.collect.ImmutableSet;
+import com.soc.items.components.ModComponents;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Unit;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -20,6 +22,7 @@ public class ResourceGenerator {
         this.world = world;
         this.pos = pos;
         this.item = item;
+        this.item.set(ModComponents.RESOURCE_COUNTED, Unit.INSTANCE);
 
         this.generationTime = generationTime;
         this.remainingTime = this.generationTime;
@@ -32,7 +35,7 @@ public class ResourceGenerator {
     }
 
     private void generate() {
-        final ItemEntity entity = new ItemEntity(this.world, this.pos.getX() + 0.5d, this.pos.getY() + 1, this.pos.getZ() + 0.5d, item);
+        final ItemEntity entity = new ItemEntity(this.world, this.pos.getX() + 0.5d, this.pos.getY() + 1, this.pos.getZ() + 0.5d, this.item);
         this.world.spawnEntity(entity);
         entity.setVelocity(Vec3d.ZERO);
     }
@@ -45,12 +48,12 @@ public class ResourceGenerator {
 
         this.remainingTime = this.generationTime;
 
-        if (generationTime > 0) this.generate(); //Makes sure that generationTime > 0 so that a gen with generationTime = 0 doesn't constantly spawn items
+        if (this.generationTime > 0) this.generate(); //Makes sure that generationTime > 0 so that a gen with generationTime = 0 doesn't constantly spawn items
     }
 
     public void setStats(GeneratorStats stats) {
         this.generationTime = stats.generationTime();
-        item.setCount(stats.count());
+        this.item.setCount(stats.count());
     }
 
     public BlockPos getPos() {

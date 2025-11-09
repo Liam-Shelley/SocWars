@@ -13,11 +13,13 @@ import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.SpreadRules;
 import com.soc.lib.SocWarsLib;
 import com.soc.mixin.MostRecentDamage;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.damage.DamageRecord;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.ClearTitleS2CPacket;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
@@ -131,18 +133,17 @@ public abstract class AbstractGameManager {
         ((CombatTable)targetTable).takeDamage(cappedDamage);
 
         final CombatTable attackerTable = ((CombatTable)this.dbTables.get(source.getAttacker())); //More Map#get abuse
-        if (attackerTable != null) {
-            player.sendMessage(Text.of(attackerTable.toString()), false);
-            attackerTable.dealDamage(cappedDamage);
-        }
+        if (attackerTable != null) attackerTable.dealDamage(cappedDamage);
 
         return true;
     }
 
     public void onChestOpened(ServerPlayerEntity player, BlockPos pos) {}
 
+    public void onItemPickup(ServerPlayerEntity player, ItemStack stack) {}
+
     public void tick() {
-        time++;
+        this.time++;
         this.map.tick();
         this.updateEventQueue();
     }

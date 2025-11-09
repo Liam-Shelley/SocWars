@@ -12,6 +12,7 @@
     "OnChestOpenedEventTrigger",
     "OnDamageEventTrigger",
     "OnHitArmour",
+    "OnPickUpItemEventTrigger",
     "UseDurationScale",
     "VelocityPacketUnlimit"
   ],

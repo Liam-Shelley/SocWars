@@ -8,9 +8,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public abstract class ItemDataContainer<T extends ItemDataAccess<T>> {
+public abstract class ItemDataContainer<T extends ItemDataAccess<T>> implements CachedData {
     protected HashMap<Integer, HashMap<Item, T>> itemDataPools = new HashMap<>();
 
+    @Override
     public void clear() {
         this.itemDataPools.clear();
     }
@@ -33,5 +34,6 @@ public abstract class ItemDataContainer<T extends ItemDataAccess<T>> {
         );
     }
 
+    @Override
     public void cache() {}
 }

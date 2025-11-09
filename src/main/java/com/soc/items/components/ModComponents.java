@@ -6,23 +6,29 @@ import net.minecraft.component.ComponentType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Unit;
 
-public class ModComponents {
-    public static final ComponentType<RingItemComponent> RING_ITEM_COMPONENT = Registry.register(
+public interface ModComponents {
+    ComponentType<RingItemComponent> RING_ITEM_COMPONENT = Registry.register(
             Registries.DATA_COMPONENT_TYPE,
-            Identifier.of(SocWars.MOD_ID, "ring_item_component"),
+            Identifier.of(SocWars.MOD_ID, "ring_item"),
             ComponentType.<RingItemComponent>builder().codec(RingItemComponent.CODEC).build()
     );
-    public static final ComponentType<Integer> TRAINING_WEIGHTS_COMPONENT = Registry.register(
+    ComponentType<Integer> TRAINING_WEIGHTS_COMPONENT = Registry.register(
             Registries.DATA_COMPONENT_TYPE,
-            Identifier.of(SocWars.MOD_ID, "training_weights_component"),
+            Identifier.of(SocWars.MOD_ID, "training_weights"),
             ComponentType.<Integer>builder().codec(Codec.INT).build()
     );
-    public static final ComponentType<ExponComponent> EXPON_COMPONENT = Registry.register(
+    ComponentType<ExponComponent> EXPON_COMPONENT = Registry.register(
             Registries.DATA_COMPONENT_TYPE,
-            Identifier.of(SocWars.MOD_ID, "expon_component"),
+            Identifier.of(SocWars.MOD_ID, "expon"),
             ComponentType.<ExponComponent>builder().codec(ExponComponent.CODEC).build()
     );
+    ComponentType<Unit> RESOURCE_COUNTED = Registry.register(
+            Registries.DATA_COMPONENT_TYPE,
+            Identifier.of(SocWars.MOD_ID, "resource_counted"),
+            ComponentType.<Unit>builder().codec(Codec.unit(Unit.INSTANCE)).build()
+    );
 
-    public static void initialise() {}
+    static void initialise() {}
 }

@@ -1,25 +1,48 @@
 package com.soc.game.manager;
 
 import com.google.common.collect.ImmutableMultimap;
-import com.soc.database.stats.BaseGameTable;
 import com.soc.database.stats.BedwarsTable;
 import com.soc.game.map.BedwarsGameMap;
 import com.soc.game.map.SpreadRules;
+import com.soc.items.components.ModComponents;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.soc.game.map.AbstractGameMap.getRandomPlayerStack;
 
 public class BedwarsGameManager extends AbstractGameManager {
+    private final Map<ServerPlayerEntity, IndividualPlayerStats> individualPlayerMap;
+
+    private class IndividualPlayerStats {
+        private int pickaxeTier;
+        private int axeTier;
+        private int shearsTier;
+        private int armourTier;
+
+        public IndividualPlayerStats() {}
+
+        public void onDeath() {
+            if (this.pickaxeTier > 0) this.pickaxeTier--;
+            if (this.axeTier > 0) this.axeTier--;
+            if (this.shearsTier > 0) this.shearsTier--;
+            if (this.armourTier > 0) this.armourTier--;
+        }
+    }
+
     protected BedwarsGameManager(ServerWorld world, Set<ServerPlayerEntity> players, @NotNull SpreadRules spreadRules, int gameId) {
         super(world, players, spreadRules, gameId);
+        this.individualPlayerMap = players.stream().collect(Collectors.toMap(key -> key, key -> new IndividualPlayerStats()));
     }
 
     @Override
@@ -68,6 +91,22 @@ public class BedwarsGameManager extends AbstractGameManager {
 
     @Override
     public boolean onPlayerDeath(ServerPlayerEntity player, DamageSource source, float amount) {
+
+        PrescheduledEvents.playCountdown(() -> this.respawnPlayer(player), this, 5, 20, SoundEvents.BLOCK_FUNGUS_STEP, player);
+
+
         return super.onPlayerDeath(player, source, amount);
+        //Drop resources and whatnot
+    }
+
+    protected void respawnPlayer(ServerPlayerEntity player) {
+
+    }
+
+    @Override
+    public void onItemPickup(ServerPlayerEntity player, ItemStack stack) {
+        if (stack.get(ModComponents.RESOURCE_COUNTED) == null) return;
+
+        player.sendMessage(Text.of(stack.toString()), false);
     }
 }
