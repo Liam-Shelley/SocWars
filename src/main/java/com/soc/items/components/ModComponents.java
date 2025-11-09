@@ -29,6 +29,11 @@ public interface ModComponents {
             Identifier.of(SocWars.MOD_ID, "resource_counted"),
             ComponentType.<Unit>builder().codec(Codec.unit(Unit.INSTANCE)).build()
     );
+    ComponentType<Unit> RESOURCE_SPLIT = Registry.register(
+            Registries.DATA_COMPONENT_TYPE,
+            Identifier.of(SocWars.MOD_ID, "resource_split"),
+            ComponentType.<Unit>builder().codec(Codec.unit(Unit.INSTANCE)).build()
+    );
 
     static void initialise() {}
 }

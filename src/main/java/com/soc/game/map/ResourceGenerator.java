@@ -18,18 +18,20 @@ public class ResourceGenerator {
     protected int generationTime;
     protected int remainingTime;
 
-    public ResourceGenerator(final ItemStack item, final World world, final BlockPos pos, final int generationTime) {
+    public ResourceGenerator(final ItemStack item, final World world, final BlockPos pos, final boolean splitsDrops, final int generationTime) {
         this.world = world;
         this.pos = pos;
         this.item = item.copy();
+
         this.item.set(ModComponents.RESOURCE_COUNTED, Unit.INSTANCE);
+        if (splitsDrops) this.item.set(ModComponents.RESOURCE_SPLIT, Unit.INSTANCE);
 
         this.generationTime = generationTime;
         this.remainingTime = this.generationTime;
     }
 
-    public static Set<ResourceGenerator> resourceGenerators(final ItemStack item, final World world, final Set<BlockPos> positions, final int generationTime) {
-        return positions.stream().map(pos -> new ResourceGenerator(item, world, pos, generationTime)).collect(ImmutableSet.toImmutableSet());
+    public static Set<ResourceGenerator> resourceGenerators(final ItemStack item, final World world, final Set<BlockPos> positions, final boolean splitsDrops, final int generationTime) {
+        return positions.stream().map(pos -> new ResourceGenerator(item, world, pos, splitsDrops, generationTime)).collect(ImmutableSet.toImmutableSet());
     }
 
     private void generate() {

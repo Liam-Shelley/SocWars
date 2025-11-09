@@ -55,8 +55,8 @@ public class BedwarsGameMap extends AbstractGameMap {
             @NotNull Set<BlockPos> bedPositions
     ) {
         super(structure, spawnPositions, centrePos, absoluteCentrePos, world);
-        this.diamondGens = ResourceGenerator.resourceGenerators(Items.DIAMOND.getDefaultStack(), world, diamondGens.stream().map(super::pos).collect(Collectors.toSet()), 30 * 20);
-        this.emeraldGens = ResourceGenerator.resourceGenerators(Items.EMERALD.getDefaultStack(), world, emeraldGens.stream().map(super::pos).collect(Collectors.toSet()), 30 * 20);
+        this.diamondGens = ResourceGenerator.resourceGenerators(Items.DIAMOND.getDefaultStack(), world, diamondGens.stream().map(super::pos).collect(Collectors.toSet()), false, 30 * 20);
+        this.emeraldGens = ResourceGenerator.resourceGenerators(Items.EMERALD.getDefaultStack(), world, emeraldGens.stream().map(super::pos).collect(Collectors.toSet()), false, 30 * 20);
         this.islandGens = this.makeIslandGenerators(world, islandGens.stream().map(super::pos).collect(Collectors.toSet()), spawnPositions.stream().map(spawnPosition -> spawnPosition.withPos(super.pos(spawnPosition.pos()))).collect(Collectors.toSet()));
         this.bedPositions = this.makeBedPositions(spawnPositions, bedPositions);
     }
@@ -72,8 +72,8 @@ public class BedwarsGameMap extends AbstractGameMap {
             @NotNull Set<BlockPos> bedPositions
     ) {
         super(structure, spawnPositions, centrePos);
-        this.diamondGens = ResourceGenerator.resourceGenerators(Items.DIAMOND.getDefaultStack(), super.world, diamondGens, 30 * 20);
-        this.emeraldGens = ResourceGenerator.resourceGenerators(Items.EMERALD.getDefaultStack(), super.world, emeraldGens, 30 * 20);
+        this.diamondGens = ResourceGenerator.resourceGenerators(Items.DIAMOND.getDefaultStack(), super.world, diamondGens, false, 30 * 20);
+        this.emeraldGens = ResourceGenerator.resourceGenerators(Items.EMERALD.getDefaultStack(), super.world, emeraldGens, false, 30 * 20);
         this.islandGens = this.makeIslandGenerators(super.world, islandGens, spawnPositions);
         this.bedPositions = this.makeBedPositions(spawnPositions, bedPositions);
     }

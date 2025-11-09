@@ -24,9 +24,9 @@ public class IslandGenerator {
         this.pos = pos;
 
         final IslandGeneratorUpgrade baseStats = GENERATOR_UPGRADES.getFirst();
-        this.ironGenerator = new ResourceGenerator(new ItemStack(Items.IRON_INGOT, baseStats.ironCount()), world, pos, baseStats.ironTime());
-        this.goldGenerator = new ResourceGenerator(new ItemStack(Items.GOLD_INGOT, baseStats.goldCount()), world, pos, baseStats.goldTime());
-        this.emeraldGenerator = new ResourceGenerator(new ItemStack(Items.EMERALD, baseStats.emeraldCount()), world, pos, baseStats.emeraldTime());
+        this.ironGenerator = new ResourceGenerator(new ItemStack(Items.IRON_INGOT, baseStats.ironCount()), world, pos, true, baseStats.ironTime());
+        this.goldGenerator = new ResourceGenerator(new ItemStack(Items.GOLD_INGOT, baseStats.goldCount()), world, pos, true, baseStats.goldTime());
+        this.emeraldGenerator = new ResourceGenerator(new ItemStack(Items.EMERALD, baseStats.emeraldCount()), world, pos, true, baseStats.emeraldTime());
     }
 
     public void tick() {
