@@ -40,7 +40,7 @@ public class BedwarsGameMap extends AbstractGameMap {
 
     private final Set<ResourceGenerator> diamondGens;
     private final Set<ResourceGenerator> emeraldGens;
-    private final Map<DyeColor, ResourceGenerator[]> islandGens;
+    private final Multimap<DyeColourWithEmpty, IslandGenerator> islandGens;
     private final Map<DyeColor, BlockPos> bedPositions;
 
     public BedwarsGameMap(
@@ -57,7 +57,7 @@ public class BedwarsGameMap extends AbstractGameMap {
         super(structure, spawnPositions, centrePos, absoluteCentrePos, world);
         this.diamondGens = ResourceGenerator.resourceGenerators(Items.DIAMOND.getDefaultStack(), world, diamondGens.stream().map(super::pos).collect(Collectors.toSet()), 30 * 20);
         this.emeraldGens = ResourceGenerator.resourceGenerators(Items.EMERALD.getDefaultStack(), world, emeraldGens.stream().map(super::pos).collect(Collectors.toSet()), 30 * 20);
-        this.islandGens = this.makeIslandGenerators(world, islandGens.stream().map(super::pos).collect(Collectors.toSet()), spawnPositions.stream().map(SpawnPosition::dyeColour).collect(Collectors.toSet()));
+        this.islandGens = this.makeIslandGenerators(world, islandGens.stream().map(super::pos).collect(Collectors.toSet()), spawnPositions.stream().map(spawnPosition -> spawnPosition.withPos(super.pos(spawnPosition.pos()))).collect(Collectors.toSet()));
         this.bedPositions = this.makeBedPositions(spawnPositions, bedPositions);
     }
 
@@ -72,16 +72,10 @@ public class BedwarsGameMap extends AbstractGameMap {
             @NotNull Set<BlockPos> bedPositions
     ) {
         super(structure, spawnPositions, centrePos);
-        this.diamondGens = ResourceGenerator.resourceGenerators(Items.DIAMOND.getDefaultStack(), world, diamondGens, 30 * 20);
-        this.emeraldGens = ResourceGenerator.resourceGenerators(Items.EMERALD.getDefaultStack(), world, emeraldGens, 30 * 20);
-
-        ImmutableMap.Builder<DyeColor, ResourceGenerator[]> builder = new ImmutableMap.Builder<>();
-        for (int i = 0; i < islandGens.size(); i++) {
-            builder.put(dyeColourFromOrdinal(i), new ResourceGenerator[]{new ResourceGenerator(Items.STONE.getDefaultStack(), null, islandGens.stream().toList().get(i), 30 * 20)});
-        }
-        this.islandGens = builder.build();
-
-        this.bedPositions = this.makeBedPositions(spawnPositions, bedPositions); //Double check that this works
+        this.diamondGens = ResourceGenerator.resourceGenerators(Items.DIAMOND.getDefaultStack(), super.world, diamondGens, 30 * 20);
+        this.emeraldGens = ResourceGenerator.resourceGenerators(Items.EMERALD.getDefaultStack(), super.world, emeraldGens, 30 * 20);
+        this.islandGens = this.makeIslandGenerators(super.world, islandGens, spawnPositions);
+        this.bedPositions = this.makeBedPositions(spawnPositions, bedPositions);
     }
 
     private Map<DyeColor, BlockPos> makeBedPositions(Set<SpawnPosition> spawnPositions, Set<BlockPos> bedPositions) {
@@ -143,37 +137,25 @@ public class BedwarsGameMap extends AbstractGameMap {
 
         putBlockPosCollection(compound, DIAMOND_GENS_KEY, this.diamondGens.stream().map(ResourceGenerator::getPos).toList());
         putBlockPosCollection(compound, EMERALD_GENS_KEY, this.emeraldGens.stream().map(ResourceGenerator::getPos).toList());
-        putBlockPosCollection(compound, ISLAND_GENS_KEY, this.islandGens.values().stream().map(gens -> gens[0].getPos()).toList());
+        putBlockPosCollection(compound, ISLAND_GENS_KEY, this.islandGens.values().stream().map(IslandGenerator::getPos).toList());
         putBlockPosCollection(compound, BED_POSITIONS_KEY, this.bedPositions.values());
 
         return compound;
     }
 
 
-    private ImmutableMap<DyeColor, ResourceGenerator[]> makeIslandGenerators(ServerWorld world, Set<BlockPos> islandGens, Set<DyeColor> teams) {
-        final List<BlockPos> islandGenList = islandGens.stream().toList(); //Should probably revisit this whole function at some point
-
-        final List<DyeColor> allTeams = new ArrayList<>(teams);
-        allTeams.addAll(Arrays.stream(new DyeColor[islandGens.size() - teams.size()]).toList());
-        final List<DyeColor> allTeamList = allTeams.stream().toList();
-
-        final ImmutableMap.Builder<DyeColor, ResourceGenerator[]> builder = ImmutableMap.builder();
-
-        for (int i = 0; i < islandGens.size(); i++) {
-            builder.put(allTeamList.get(i), new ResourceGenerator[]{
-                    new ResourceGenerator(Items.IRON_INGOT.getDefaultStack().copyWithCount(4), world, islandGenList.get(i), 2 * 20),
-                    new ResourceGenerator(Items.GOLD_INGOT.getDefaultStack(), world, islandGenList.get(i), 5 * 20),
-                    new ResourceGenerator(Items.EMERALD.getDefaultStack(), world, islandGenList.get(i), 0),
-            });
-        }
-
-        return builder.build();
+    private Multimap<DyeColourWithEmpty, IslandGenerator> makeIslandGenerators(ServerWorld world, Set<BlockPos> islandGens, Set<SpawnPosition> teams) {
+        return islandGens.stream().collect(Multimaps.toMultimap(
+                genPos -> teams.stream().filter(spawn -> genPos.getSquaredDistance(spawn.pos()) < 9).findAny().map(spawn -> DyeColourWithEmpty.fromDyeColour(spawn.dyeColour())).orElse(DyeColourWithEmpty.EMPTY),
+                genPos -> new IslandGenerator(world, genPos),
+                MultimapBuilder.treeKeys().arrayListValues()::build)
+        );
     }
 
 
     @Override
     public void tick() {
-        this.islandGens.forEach((team, gen) -> Arrays.stream(gen).iterator().forEachRemaining(ResourceGenerator::tick));
+        this.islandGens.values().forEach(IslandGenerator::tick);
         this.diamondGens.forEach(ResourceGenerator::tick);
         this.emeraldGens.forEach(ResourceGenerator::tick);
     }

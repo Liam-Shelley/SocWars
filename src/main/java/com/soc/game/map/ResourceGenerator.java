@@ -21,21 +21,19 @@ public class ResourceGenerator {
     public ResourceGenerator(final ItemStack item, final World world, final BlockPos pos, final int generationTime) {
         this.world = world;
         this.pos = pos;
-        this.item = item;
+        this.item = item.copy();
         this.item.set(ModComponents.RESOURCE_COUNTED, Unit.INSTANCE);
 
         this.generationTime = generationTime;
         this.remainingTime = this.generationTime;
     }
 
-    public static ImmutableSet<ResourceGenerator> resourceGenerators(final ItemStack item, final World world, final Set<BlockPos> positions, final int generationTime) {
-        final ImmutableSet.Builder<ResourceGenerator> builder = ImmutableSet.builder();
-        positions.forEach(pos -> builder.add(new ResourceGenerator(item, world, pos, generationTime)));
-        return builder.build();
+    public static Set<ResourceGenerator> resourceGenerators(final ItemStack item, final World world, final Set<BlockPos> positions, final int generationTime) {
+        return positions.stream().map(pos -> new ResourceGenerator(item, world, pos, generationTime)).collect(ImmutableSet.toImmutableSet());
     }
 
     private void generate() {
-        final ItemEntity entity = new ItemEntity(this.world, this.pos.getX() + 0.5d, this.pos.getY() + 1, this.pos.getZ() + 0.5d, this.item);
+        final ItemEntity entity = new ItemEntity(this.world, this.pos.getX() + 0.5d, this.pos.getY() + 1, this.pos.getZ() + 0.5d, this.item.copy());
         this.world.spawnEntity(entity);
         entity.setVelocity(Vec3d.ZERO);
     }
@@ -54,6 +52,11 @@ public class ResourceGenerator {
     public void setStats(GeneratorStats stats) {
         this.generationTime = stats.generationTime();
         this.item.setCount(stats.count());
+    }
+
+    public void setStats(int generationTime, int count) {
+        this.generationTime = generationTime;
+        this.item.setCount(count);
     }
 
     public BlockPos getPos() {

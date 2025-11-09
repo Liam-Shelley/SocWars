@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 
 import static com.soc.lib.JsonHelper.getDefaultedInt;
 
-public record IslandGeneratorUpgrade(int cost, int iron_time, int iron_count, int gold_time, int gold_count, int emerald_time, int emerald_count) {
+public record IslandGeneratorUpgrade(int cost, int ironTime, int ironCount, int goldTime, int goldCount, int emeraldTime, int emeraldCount) {
     public static final String COST_KEY = "cost";
     public static final String IRON_TIME_KEY = "iron_generation_time";
     public static final String IRON_COUNT_KEY = "iron_generation_count";

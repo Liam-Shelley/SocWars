@@ -69,7 +69,7 @@ public abstract class AbstractGameMap {
                 structure,
                 spawnPositions,
                 centrePos.toImmutable(),
-                null,
+                new BlockPos(0, 0, 0),
                 null
         );
     }
