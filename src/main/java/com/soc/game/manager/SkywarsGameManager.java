@@ -140,7 +140,6 @@ public class SkywarsGameManager extends AbstractGameManager {
     @Override
     public boolean onPlayerDeath(ServerPlayerEntity player, DamageSource source, float amount) {
         super.onPlayerDeath(player, source, amount);
-
         if (source.isOf(DamageTypes.OUT_OF_WORLD)) ((SkywarsTable)this.dbTables.get(player)).fallInVoid();
 
         final boolean canRespawn = this.playerMap.get(player).kill();

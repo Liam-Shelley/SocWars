@@ -84,7 +84,7 @@ public abstract class AbstractGameMap {
             } else {
                 final BlockPos pos = this.pos(rawPos);
 
-                player.requestTeleport(pos.getX() + 0.5d, pos.getY() + 0.5d, pos.getZ() + 0.5d);
+                player.requestTeleport(pos.getX() + 0.5d, pos.getY(), pos.getZ() + 0.5d);
             }
         });
     }

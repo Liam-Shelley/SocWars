@@ -16,10 +16,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class OnHitArmour {
 	@Shadow public abstract ItemStack getEquippedStack(EquipmentSlot slot);
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getDamageBlockedAmount(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/damage/DamageSource;F)F", ordinal = 0), method = "damage", cancellable = true)
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyDamage(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/damage/DamageSource;F)V", ordinal = 1), method = "damage", cancellable = true)
 	private void socwars_onHitArmour(ServerWorld world, DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
 		for (EquipmentSlot slot : new EquipmentSlot[] {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET}) {
-
 			final ItemStack stack = getEquippedStack(slot);
 			final Item item = stack.getItem();
 			if (item instanceof com.soc.items.util.OnHitArmour implementer) {

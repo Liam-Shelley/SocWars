@@ -68,5 +68,23 @@
     "tier_4_weight": 5,
     "count": 3,
     "pool": 1
+  },
+  {
+    "id": "minecraft:cooked_beef",
+    "tier_1_weight": 15,
+    "tier_2_weight": 10,
+    "tier_3_weight": 5,
+    "tier_4_weight": 3,
+    "count": 8,
+    "pool": 1
+  },
+  {
+    "id": "minecraft:golden_carrot",
+    "tier_1_weight": 8,
+    "tier_2_weight": 4,
+    "tier_3_weight": 6,
+    "tier_4_weight": 7,
+    "count": 4,
+    "pool": 1
   }
 ]

@@ -57,7 +57,11 @@ public class SkywarsGameMap extends AbstractGameMap {
     }
 
     public Map<BlockPos, IngameSkywarsChest> makeLootChests(Set<SkywarsChest> lootChests) {
-        return lootChests.stream().collect(Collectors.toMap(chest -> super.pos(chest.pos()).down(), IngameSkywarsChest::new));
+        return lootChests.stream().collect(Collectors.toMap(chest -> {
+            final BlockPos pos = super.pos(chest.pos());
+            SocWars.LOGGER.info(pos.toString());
+            return pos;
+        }, IngameSkywarsChest::new));
     }
 
     public void placeLootChests() {
@@ -77,8 +81,8 @@ public class SkywarsGameMap extends AbstractGameMap {
         inventory.clear();
         for (int i = 0; i < inventory.size(); i++) {
             final float random = this.world.random.nextFloat();
-            if (random > 0.42f + tier * 0.04f) {
-                final int pool = random < 0.73f + tier * 0.06f ? 0 : 1;
+            if (random > 0.5f + tier * 0.05f) {
+                final int pool = random < 0.6f + tier * 0.05f ? 0 : 1;
                 final Pair<Item, Integer> item = ResourceManager.ITEM_DATA.getSkywarsItemData().getRandomItem(pool, tier - 1, this.world.random);
                 inventory.setStack(i, new ItemStack(item.getLeft(), item.getRight()));
             }

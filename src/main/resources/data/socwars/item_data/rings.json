@@ -27,7 +27,7 @@
   },
   {
     "id": "socwars:inflatable_iron_ingot",
-    "tier_2_weight": 20,
-    "tier_3_weight": 20
+    "tier_2_weight": 8,
+    "tier_3_weight": 12
   }
 ]

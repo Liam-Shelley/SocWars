@@ -16,8 +16,10 @@ import com.soc.mixin.MostRecentDamage;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageRecord;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.ClearTitleS2CPacket;
@@ -48,9 +50,13 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.soc.lib.SocWarsLib.formattingColourFromDye;
+import static com.soc.lib.SocWarsLib.*;
 
 public abstract class AbstractGameManager {
+    public static final int KILLZONE_Y_OFFSET = -25;
+
+    private final int gameId;
+
     protected final AbstractGameMap map;
     protected final ServerWorld world;
     protected final ImmutableMultimap<DyeColor, ServerPlayerEntity> teams;
@@ -58,8 +64,7 @@ public abstract class AbstractGameManager {
     protected final @Nullable EventQueue eventQueue;
 
     protected final Map<ServerPlayerEntity, BaseGameTable> dbTables;
-
-    private final int gameId;
+    protected final int killHeight;
 
     protected int time;
 
@@ -72,6 +77,7 @@ public abstract class AbstractGameManager {
         this.eventQueue = this.buildEventQueue();
 
         this.dbTables = players.stream().collect(Collectors.toMap(key -> key, this.dbTableBuilder()));
+        this.killHeight = this.getMap().getCentrePos().getY() + KILLZONE_Y_OFFSET;
     }
 
     protected abstract AbstractGameMap getMap();
@@ -118,8 +124,11 @@ public abstract class AbstractGameManager {
         if (!(targetTable instanceof CombatTable)) return true;
 
         ((CombatTable)targetTable).grantDeath();
+        getPlayerAttacker(player).ifPresent(killer -> ((CombatTable)this.dbTables.get(killer)).grantKill());
 
-        SocWarsLib.getPlayerAttacker(player).ifPresent(killer -> ((CombatTable)this.dbTables.get(killer)).grantKill());
+        this.healPlayer(player);
+        player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.ENTITY_PLAYER_DEATH, SoundCategory.PLAYERS, 1, 1);
+        player.getWorld().playSound(null, BlockPos.ofFloored(this.getMap().getRespawnSpectatorPos()), SoundEvents.ENTITY_PLAYER_DEATH, SoundCategory.PLAYERS, 1, 1);
 
         return true;
     }
@@ -146,6 +155,7 @@ public abstract class AbstractGameManager {
         this.time++;
         this.map.tick();
         this.updateEventQueue();
+        this.tickKillzone();
     }
 
     public final void removeTeams() {
@@ -188,8 +198,8 @@ public abstract class AbstractGameManager {
         });
     }
 
-    public final Collection<Text> getUpcomingEvents() {
-        return this.eventQueue.peekEventsText(this.time);
+    public final @Nullable Collection<Text> getUpcomingEvents() {
+        return this.eventQueue == null ? null : this.eventQueue.peekEventsText(this.time);
     }
 
     public final int getGameId() {
@@ -214,6 +224,14 @@ public abstract class AbstractGameManager {
     }
 
     protected void broadcastDeath(ServerPlayerEntity player, DamageSource source, boolean isFinal) {
+        final MutableText message = (source.getAttacker() != null ?
+                Text.translatable("game.player.kill", player.getDisplayName(), source.getAttacker().getDisplayName()) :
+                switch (source.getType()) {
+                    default -> player.getDamageTracker().getDeathMessage().copy();
+                }
+        );
+
+
         final MutableText text = source.getAttacker() == null ?
                 player.getDamageTracker().getDeathMessage().copy() :
                 Text.translatable("game.player.kill", player.getDisplayName(), source.getAttacker().getDisplayName()
@@ -277,12 +295,14 @@ public abstract class AbstractGameManager {
     }
 
     protected final void healPlayers() {
-        this.getPlayers().forEach(player -> {
-            player.clearStatusEffects();
-            player.getHungerManager().setFoodLevel(16);
-            player.getHungerManager().setSaturationLevel(8);
-            player.setHealth(player.getMaxHealth());
-        });
+        this.getPlayers().forEach(this::healPlayer);
+    }
+
+    protected final void healPlayer(ServerPlayerEntity player) {
+        player.clearStatusEffects();
+        player.getHungerManager().setFoodLevel(16);
+        player.getHungerManager().setSaturationLevel(8);
+        player.setHealth(player.getMaxHealth());
     }
 
     protected final void removePlayerVelocity() {
@@ -291,5 +311,12 @@ public abstract class AbstractGameManager {
 
     protected final void clearPlayerInventories() {
         this.getPlayers().forEach(player -> player.getInventory().clear());
+    }
+
+    protected void tickKillzone() {
+        this.getPlayers().forEach(player -> {
+            @Nullable final PlayerEntity attacker = getPlayerAttacker(player).orElse(null);
+            if (player.getY() < this.killHeight) this.onPlayerDeath(player, damageSource(world, DamageTypes.OUT_OF_WORLD, attacker), 100000f);
+        });
     }
 }

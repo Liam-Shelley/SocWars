@@ -140,6 +140,7 @@ public class UseFunctionWeapon extends Item {
     );
     public static final Item GRAVITY_ORB = ModItems.register("gravity_orb", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 user.addStatusEffect(new StatusEffectInstance(ModEffects.ANTI_GRAVITY, (int) 7.5 * 20, 2, false, false));
+                user.getStackInHand(hand).decrementUnlessCreative(1, user);
 
                 return ActionResult.SUCCESS;
             }), new Settings()
@@ -160,10 +161,10 @@ public class UseFunctionWeapon extends Item {
                 final BlockHitResult hit = world.raycast(new RaycastContext(user.getEyePos(), user.getEyePos().add(user.getRotationVector().multiply(25f)), RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.ANY, user));
 
                 if (hit != null && !world.isAir(hit.getBlockPos())) {
-                    iterateInSphere(hit.getBlockPos(), 5.5f, 0f, pos -> {
+                    iterateInSphere(hit.getBlockPos(), 4.5f, 0f, pos -> {
                         if (world.isAir(pos)) world.setBlockState(pos, Blocks.WATER.getDefaultState().with(Properties.LEVEL_15, 7));
                     });
-                    world.setBlockState(hit.getBlockPos().add(0,5,0), Blocks.WATER.getDefaultState());
+                    world.setBlockState(hit.getBlockPos().add(0,4,0), Blocks.WATER.getDefaultState());
                 }
 
                 user.getStackInHand(hand).decrementUnlessCreative(1, user);
@@ -177,7 +178,7 @@ public class UseFunctionWeapon extends Item {
                 final BlockHitResult hit = world.raycast(new RaycastContext(user.getEyePos(), user.getEyePos().add(user.getRotationVector().multiply(25f)), RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.ANY, user));
 
                 if (hit != null && !world.isAir(hit.getBlockPos())) {
-                    iterateInSphere(hit.getBlockPos(), 5.5f, 0f, pos -> {
+                    iterateInSphere(hit.getBlockPos(), 4.5f, 0f, pos -> {
                         if (world.isAir(pos)) world.setBlockState(pos, Blocks.LAVA.getDefaultState());
                     });
                 }
@@ -192,7 +193,7 @@ public class UseFunctionWeapon extends Item {
     public static final Item C_U_E_B = ModItems.register("c_u_e_b", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 final BlockPos centre = BlockPos.ofFloored(user.getEyePos().add(user.getRotationVector().multiply(20f)));
 
-                iterateInCube(centre, 7, pos -> {
+                iterateInCube(centre, 5, pos -> {
                     if (world.isAir(pos)) world.setBlockState(pos, Blocks.IRON_BLOCK.getDefaultState());
                 });
 
@@ -262,7 +263,7 @@ public class UseFunctionWeapon extends Item {
                     }
                 }
 
-                user.getStackInHand(hand).decrementUnlessCreative(5, user);
+                user.getStackInHand(hand).damage(5, user, hand);
 
                 return ActionResult.SUCCESS;
             }), new Settings()

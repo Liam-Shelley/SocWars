@@ -102,7 +102,7 @@ public class AttackFunctionWeapon extends Item {
                 int bonusHealth = attacker.getWorld().random.nextBetween(-1, 2);
 
                 if (bonusHealth >= 0) {
-                    attacker.setHealth(Math.min(attacker.getMaxHealth(), attacker.getHealth() + bonusHealth));
+                    attacker.heal(bonusHealth);
                 } else {
                     World world = attacker.getWorld();
                     if (attacker instanceof LivingEntity && world instanceof ServerWorld serverWorld) {
@@ -190,7 +190,7 @@ public class AttackFunctionWeapon extends Item {
             .maxDamage(500)
     );
     public static final Item DETONATOR = ModItems.register("detonator", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
-                SphereExplosion.explode(target.getWorld(), target.getPos(), 5f, 1.2f, 0.7f);
+                SphereExplosion.explode(target.getWorld(), target.getPos(), 5f, 0.35f, 1.25f);
             }), new Settings()
             .rarity(Rarity.RARE)
             .sword(ToolMaterials.BASE, 4.5f, -2.2f)

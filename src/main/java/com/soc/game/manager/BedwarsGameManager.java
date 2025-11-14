@@ -2,16 +2,19 @@ package com.soc.game.manager;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.soc.database.stats.BedwarsTable;
+import com.soc.database.stats.SkywarsTable;
 import com.soc.game.map.BedwarsGameMap;
 import com.soc.game.map.SpreadRules;
 import com.soc.items.components.ModComponents;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,8 +25,6 @@ import java.util.stream.Collectors;
 import static com.soc.game.map.AbstractGameMap.getRandomPlayerStack;
 
 public class BedwarsGameManager extends AbstractGameManager {
-    private final Map<ServerPlayerEntity, IndividualPlayerStats> individualPlayerMap;
-
     private class IndividualPlayerStats {
         private int pickaxeTier;
         private int axeTier;
@@ -40,9 +41,17 @@ public class BedwarsGameManager extends AbstractGameManager {
         }
     }
 
+    private final Map<ServerPlayerEntity, IndividualPlayerStats> individualPlayerMap;
+    private final Map<Identifier, List<BedwarsShopItem>> shopContents;
+
     protected BedwarsGameManager(ServerWorld world, Set<ServerPlayerEntity> players, @NotNull SpreadRules spreadRules, int gameId) {
         super(world, players, spreadRules, gameId);
         this.individualPlayerMap = players.stream().collect(Collectors.toMap(key -> key, key -> new IndividualPlayerStats()));
+        this.shopContents = this.makeShopContents();
+    }
+
+    protected Map<Identifier, List<BedwarsShopItem>> makeShopContents() {
+        return Map.of();
     }
 
     @Override
@@ -57,6 +66,8 @@ public class BedwarsGameManager extends AbstractGameManager {
 
     @Override
     public ImmutableMultimap<DyeColor, ServerPlayerEntity> buildTeams(Set<ServerPlayerEntity> players, SpreadRules spreadRules) {
+        //Probably rewrite this at some point it's a bit gross
+
         final Stack<ServerPlayerEntity> playerStack = getRandomPlayerStack(players);
 
         final Set<DyeColor> teamColours = this.getMap().getTeamColours();
@@ -91,12 +102,13 @@ public class BedwarsGameManager extends AbstractGameManager {
 
     @Override
     public boolean onPlayerDeath(ServerPlayerEntity player, DamageSource source, float amount) {
+        super.onPlayerDeath(player, source, amount);
+        if (source.isOf(DamageTypes.OUT_OF_WORLD)) ((SkywarsTable)this.dbTables.get(player)).fallInVoid();
 
         PrescheduledEvents.playCountdown(() -> this.respawnPlayer(player), this, 5, 20, SoundEvents.BLOCK_FUNGUS_STEP, player);
 
-
-        return super.onPlayerDeath(player, source, amount);
         //Drop resources and whatnot
+        return true;
     }
 
     protected void respawnPlayer(ServerPlayerEntity player) {

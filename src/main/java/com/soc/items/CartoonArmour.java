@@ -59,7 +59,7 @@ public class CartoonArmour extends ArmourItem implements OnHitArmour {
 
     public static final Item CARTOON_HELMET = ModItems.register("cartoon_helmet", settings -> new CartoonArmour(settings, EquipmentSlot.HEAD, 4, (stack, wearer, world) -> {
             if (world.isClient) return true;
-            final int random = world.random.nextBetween(1, 5);
+            final int random = world.random.nextBetween(1, 8);
             switch (random) {
                 case 1 -> wearer.requestTeleport(wearer.getX(), wearer.getY() + 3d, wearer.getZ());
                 case 2 -> wearer.addStatusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, -1, 0, false, false));
@@ -78,7 +78,7 @@ public class CartoonArmour extends ArmourItem implements OnHitArmour {
     }), new Settings().maxDamage(325).rarity(Rarity.RARE));
     public static final Item CARTOON_CHESTPLATE = ModItems.register("cartoon_chestplate", settings -> new CartoonArmour(settings, EquipmentSlot.CHEST, 8, (stack, wearer, world) -> {
             if (world.isClient) return true;
-            final int random = world.random.nextBetween(1, 5);
+            final int random = world.random.nextBetween(1, 8);
             switch (random) {
                 case 1 -> { return false; }
                 case 2 -> SphereExplosion.explode(world, wearer.getPos().subtract(0d, -0.5d, 0d), 4.5f, 1.75f, 3f);
@@ -93,7 +93,7 @@ public class CartoonArmour extends ArmourItem implements OnHitArmour {
     }), new Settings().maxDamage(400).rarity(Rarity.RARE));
     public static final Item CARTOON_LEGGINGS = ModItems.register("cartoon_leggings", settings -> new CartoonArmour(settings, EquipmentSlot.LEGS, 6, (stack, wearer, world) -> {
             if (world.isClient) return true;
-            final int random = world.random.nextBetween(1, 5);
+            final int random = world.random.nextBetween(1, 8);
             switch (random) {
                 case 1 -> {
                     for (Hand hand : Hand.values()) {
@@ -118,19 +118,20 @@ public class CartoonArmour extends ArmourItem implements OnHitArmour {
     }), new Settings().maxDamage(375).rarity(Rarity.RARE));
     public static final Item CARTOON_BOOTS = ModItems.register("cartoon_boots", settings -> new CartoonArmour(settings, EquipmentSlot.FEET, 4, (stack, wearer, world) -> {
             if (world.isClient) return true;
-            final int random = world.random.nextBetween(1, 5);
+            final int random = world.random.nextBetween(1, 8);
             switch (random) {
                 case 1 -> {
                     final RavagerEntity ravager = new RavagerEntity(EntityType.RAVAGER, world);
                     findRandomOpenPos(world, wearer.getPos(), 50, 20, 5f).ifPresentOrElse(ravager::setPosition, () -> ravager.setPosition(wearer.getPos()));
+                    copyTeam(world, ravager, wearer);
                     world.spawnEntity(ravager);
                 }
-                case 2 -> wearer.setStackInHand(Hand.MAIN_HAND, Items.PIGLIN_HEAD.getDefaultStack());
+                case 2 -> wearer.giveOrDropStack(Items.PIGLIN_HEAD.getDefaultStack());
                 case 3 -> {
                     final BlockPos centre = wearer.getBlockPos();
-                    iterateInSphere(centre, 10f, 0f, pos -> {
-                        if (centre.isWithinDistance(pos, 8f) || world.getBlockState(pos).isIn(BlockTags.IMMUNE)) return;
-                        world.setBlockState(pos, Blocks.STICKY_PISTON.getDefaultState().with(Properties.FACING, Direction.byIndex(world.random.nextBetween(1, 6))));
+                    iterateInSphere(centre, 6f, 0f, pos -> {
+                        if (centre.isWithinDistance(pos, 5f) || world.getBlockState(pos).isIn(BlockTags.IMMUNE)) return;
+                        world.setBlockState(pos, Blocks.RESIN_BLOCK.getDefaultState());
                     });
                 }
                 case 4 -> {

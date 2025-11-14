@@ -1,7 +1,7 @@
 [
   {
     "id": "socwars:throwable_tnt",
-    "tier_2_weight": 15
+    "tier_2_weight": 25
   },
   {
     "id": "socwars:fireball",
@@ -18,8 +18,8 @@
   },
   {
     "id": "socwars:the_line",
-    "tier_3_weight": 10,
-    "tier_4_weight": 15
+    "tier_3_weight": 7,
+    "tier_4_weight": 10
   },
   {
     "id": "socwars:snail_fireball",
