@@ -38,8 +38,8 @@ public class BigTntEntity extends Entity implements Ownable {
     }
 
     public enum BigTntType {
-        NUCLEAR(14f, 10 * 20),
-        HYDROGEN(24f, 15 * 20);
+        NUCLEAR(14f, 6 * 20),
+        HYDROGEN(24f, 9 * 20);
 
         public float explosionRadius;
         public final int fuse;

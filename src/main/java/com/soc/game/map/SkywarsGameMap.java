@@ -42,7 +42,7 @@ public class SkywarsGameMap extends AbstractGameMap {
             @NotNull Set<SkywarsChest> lootChests
     ) {
         super(structure, spawnPositions, centrePos, absoluteCentrePos, world);
-        this.lootChests = this.makeLootChests(lootChests);
+        this.lootChests = lootChests.stream().collect(Collectors.toMap(chest -> super.pos(chest.pos()), IngameSkywarsChest::new));
     }
 
     /// Constructor used only for saving the map to file
@@ -53,15 +53,7 @@ public class SkywarsGameMap extends AbstractGameMap {
             @NotNull Set<SkywarsChest> lootChests
     ) {
         super(structure, spawnPositions, centrePos);
-        this.lootChests = this.makeLootChests(lootChests);
-    }
-
-    public Map<BlockPos, IngameSkywarsChest> makeLootChests(Set<SkywarsChest> lootChests) {
-        return lootChests.stream().collect(Collectors.toMap(chest -> {
-            final BlockPos pos = super.pos(chest.pos());
-            SocWars.LOGGER.info(pos.toString());
-            return pos;
-        }, IngameSkywarsChest::new));
+        this.lootChests = lootChests.stream().collect(Collectors.toMap(chest -> super.pos(chest.pos()).down(), IngameSkywarsChest::new));
     }
 
     public void placeLootChests() {
@@ -81,8 +73,8 @@ public class SkywarsGameMap extends AbstractGameMap {
         inventory.clear();
         for (int i = 0; i < inventory.size(); i++) {
             final float random = this.world.random.nextFloat();
-            if (random > 0.5f + tier * 0.05f) {
-                final int pool = random < 0.6f + tier * 0.05f ? 0 : 1;
+            if (random > 0.55f + tier * 0.05f) {
+                final int pool = random < 0.82f + tier * 0.09f ? 0 : 1;
                 final Pair<Item, Integer> item = ResourceManager.ITEM_DATA.getSkywarsItemData().getRandomItem(pool, tier - 1, this.world.random);
                 inventory.setStack(i, new ItemStack(item.getLeft(), item.getRight()));
             }
