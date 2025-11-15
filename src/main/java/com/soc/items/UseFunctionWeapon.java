@@ -159,35 +159,41 @@ public class UseFunctionWeapon extends Item {
     );
     public static final Item SCROLL_OF_EAU = ModItems.register("scroll_of_eau", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 final BlockHitResult hit = world.raycast(new RaycastContext(user.getEyePos(), user.getEyePos().add(user.getRotationVector().multiply(25f)), RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.ANY, user));
+                final ItemStack stack = user.getStackInHand(hand);
 
                 if (hit != null && !world.isAir(hit.getBlockPos())) {
                     iterateInSphere(hit.getBlockPos(), 4.5f, 0f, pos -> {
                         if (world.isAir(pos)) world.setBlockState(pos, Blocks.WATER.getDefaultState().with(Properties.LEVEL_15, 7));
                     });
                     world.setBlockState(hit.getBlockPos().add(0,4,0), Blocks.WATER.getDefaultState());
+                    stack.damage(3, user, hand);
                 }
 
-                user.getStackInHand(hand).decrementUnlessCreative(1, user);
+                stack.damage(1, user, hand);
 
                 return ActionResult.SUCCESS;
             }), new Settings()
             .useCooldown(1f)
+            .maxDamage(3)
             .rarity(Rarity.UNCOMMON)
     );
     public static final Item SCROLL_OF_HELLFIRE = ModItems.register("scroll_of_hellfire", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 final BlockHitResult hit = world.raycast(new RaycastContext(user.getEyePos(), user.getEyePos().add(user.getRotationVector().multiply(25f)), RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.ANY, user));
+                final ItemStack stack = user.getStackInHand(hand);
 
                 if (hit != null && !world.isAir(hit.getBlockPos())) {
                     iterateInSphere(hit.getBlockPos(), 4.5f, 0f, pos -> {
                         if (world.isAir(pos)) world.setBlockState(pos, Blocks.LAVA.getDefaultState());
                     });
+                    stack.damage(3, user, hand);
                 }
 
-                user.getStackInHand(hand).decrementUnlessCreative(1, user);
+                stack.damage(1, user, hand);
 
                 return ActionResult.SUCCESS;
             }), new Settings()
             .useCooldown(1f)
+            .maxDamage(3)
             .rarity(Rarity.UNCOMMON)
     );
     public static final Item C_U_E_B = ModItems.register("c_u_e_b", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {

@@ -19,6 +19,7 @@ import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.*;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -40,6 +41,7 @@ import net.minecraft.util.Unit;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
@@ -266,7 +268,12 @@ public class AttackFunctionWeapon extends Item {
     );
     public static final Item FULL_METAL_SWORD = ModItems.register("full_metal_sword", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
                 attacker.getWorld().playSound(null, attacker.getBlockPos(), Sounds.GET_SOME, SoundCategory.PLAYERS, 1f, 1f);
-            }), new Settings()
+            }) {
+                @Override
+                public DamageSource getDamageSource(LivingEntity user) {
+                    return damageSource(user.getWorld(), DamageTypes.FULL_METAL_SWORD, user);
+                }
+            }, new Settings()
             .sword(ToolMaterials.BASE, 4.5f, -2.3f)
             .maxDamage(500)
     );

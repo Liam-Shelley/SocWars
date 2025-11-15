@@ -2,6 +2,7 @@ package com.soc;
 
 import com.soc.blocks.blockentities.ModBlockEntities;
 import com.soc.blocks.util.ModBlocks;
+import com.soc.commands.ModCommands;
 import com.soc.database.Database;
 import com.soc.effects.util.ModEffects;
 import com.soc.entities.util.ModEntities;
@@ -54,6 +55,7 @@ public class SocWars implements ModInitializer {
 		Events.initialise();
 		ModEvents.initialise();
 		ResourceManager.initialise();
+		ModCommands.initialise();
 
 		Database.initialise();
 	}

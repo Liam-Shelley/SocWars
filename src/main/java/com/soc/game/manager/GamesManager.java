@@ -1,5 +1,7 @@
 package com.soc.game.manager;
 
+import com.mojang.brigadier.context.StringRange;
+import com.mojang.brigadier.suggestion.Suggestion;
 import com.soc.SocWars;
 import com.soc.events.ModEvents;
 import com.soc.game.map.SpreadRules;
@@ -8,6 +10,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -16,6 +19,8 @@ import net.minecraft.text.Text;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+
+import static java.util.stream.IntStream.range;
 
 public class GamesManager {
     private static final GamesManager INSTANCE = new GamesManager();
@@ -50,7 +55,7 @@ public class GamesManager {
         ServerTickEvents.START_SERVER_TICK.register(this::tick);
 
         ServerLivingEntityEvents.ALLOW_DEATH.register((entity, source, amount) ->
-                this.getGame(entity).map(game -> game.onPlayerDeath((ServerPlayerEntity) entity, source, amount)).orElse(true)
+            this.getGame(entity).map(game -> game.onPlayerDeath((ServerPlayerEntity) entity, source, amount)).orElse(true)
         );
         ModEvents.ON_PLAYER_DAMAGE_TAKEN.register((player, source, amount) ->
                 this.getGame(player).map(game -> game.onPlayerDamage(player, source, amount)).orElse(true)
@@ -80,6 +85,8 @@ public class GamesManager {
         return true;
     }
 
+    /** This should only ever be called by an ending {@link com.soc.game.manager.AbstractGameManager}
+    */
     public void endGame(int gameId) {
         this.playerGameLookup.forEach((player, id) -> {
             if (id == gameId) this.playerGameLookup.remove(player);
@@ -90,6 +97,22 @@ public class GamesManager {
     public Optional<AbstractGameManager> getGame(LivingEntity entity) {
         final Integer id = this.playerGameLookup.get(entity); //Hilarious abuse of Map#Get
         return Optional.ofNullable(id).map(this.games::get);
+    }
+
+    public Optional<AbstractGameManager> getGame(int gameId) {
+        if (gameId < 0 || gameId >= this.games.size()) return Optional.empty();
+        return Optional.ofNullable(this.games.get(gameId));
+    }
+
+    public List<Integer> getActiveGameIds() {
+        return range(0, this.games.size()).asLongStream().filter(id -> this.games.get((int)id) != null).mapToObj(id -> (int)id).toList();
+    }
+
+    public Collection<Suggestion> getGameIdSuggestions(int cursor) {
+        return range(0, this.games.size()).asLongStream().filter(id -> this.games.get((int)id) != null).mapToObj(id -> {
+            final String suggestion = String.valueOf(id);
+            return new Suggestion(new StringRange(cursor, cursor + suggestion.length()), suggestion);
+        }).toList();
     }
 
     private int getNewGameId() {
