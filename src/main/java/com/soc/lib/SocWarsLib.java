@@ -1,6 +1,5 @@
 package com.soc.lib;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 import com.soc.SocWars;
 import com.soc.mixin.MostRecentDamage;
@@ -10,8 +9,8 @@ import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -26,21 +25,18 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.mixin.Unique;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -50,35 +46,8 @@ import java.util.stream.Collectors;
 
 public final class SocWarsLib {
     public static final Identifier SCALE_MODIFIER_ID = Identifier.of(SocWars.MOD_ID, "scale");
-    public static final float SQRT2 = (float)Math.sqrt(2d);
+    public static final float SQRT2 = 1.4142135f;
     public static final float MAX_SCALE_FACTOR = 4f;
-    public static final byte BLOCKPOS_NBT_TYPE = 101;
-
-    public static <T, U> ImmutableMap<T, U> mapFromCollections(Collection<T> t1, Collection<U> t2) {
-        ImmutableMap.Builder<T, U> builder = ImmutableMap.builder();
-
-        Iterator<T> t1Iterator = t1.iterator();
-        Iterator<U> t2Iterator = t2.iterator();
-
-        while (t1Iterator.hasNext() && t2Iterator.hasNext()) {
-            builder.put(t1Iterator.next(), t2Iterator.next());
-        }
-
-        return builder.build();
-    }
-
-    public static <T, U> Collection<Pair<T, U>> pairFromCollections(Collection<T> t1, Collection<U> t2) {
-        List<Pair<T, U>> list = new ArrayList<>();
-
-        Iterator<T> t1Iterator = t1.iterator();
-        Iterator<U> t2Iterator = t2.iterator();
-
-        while (t1Iterator.hasNext() && t2Iterator.hasNext()) {
-            list.add(Pair.of(t1Iterator.next(), t2Iterator.next()));
-        }
-
-        return list;
-    }
 
     public static <T, U> ImmutableMultimap<T, U> multimapFromCollections(Collection<T> t1, Collection<U> t2) {
         ImmutableMultimap.Builder<T, U> builder = ImmutableMultimap.builder();
@@ -143,31 +112,26 @@ public final class SocWarsLib {
         };
     }
 
-    public static DyeColor dyeColourFromOrdinal(int ordinal) {
-        final DyeColor[] values = DyeColor.values();
-        return values[ordinal < values.length ? ordinal : 0];
-    }
-
-    public static <T, U> List<T> collectionPairToLeftList(Collection<Pair<T, U>> collection) {
-        return collection.stream().map(Pair::getLeft).toList();
-    }
-
-    public static <T, U> List<U> collectionPairToRightList(Collection<Pair<T, U>> collection) {
-        return collection.stream().map(Pair::getRight).toList();
-    }
-
     public static void scaleEntity(LivingEntity entity, float scale) {
-        final EntityAttributeInstance scaleInstance = entity.getAttributeInstance(EntityAttributes.SCALE);
+        multiplyAttributeModifier(entity, EntityAttributes.SCALE, SCALE_MODIFIER_ID, scale, MAX_SCALE_FACTOR);
+        multiplyAttributeModifier(entity, EntityAttributes.ENTITY_INTERACTION_RANGE, SCALE_MODIFIER_ID, scale, MAX_SCALE_FACTOR);
+        multiplyAttributeModifier(entity, EntityAttributes.BLOCK_INTERACTION_RANGE, SCALE_MODIFIER_ID, scale, MAX_SCALE_FACTOR);
+    }
 
-        final double rawScale = scaleInstance.getModifier(SCALE_MODIFIER_ID) == null ? scale - 1f : (scaleInstance.getModifier(SCALE_MODIFIER_ID).value() + (scale - 1f) / scale);
+    public static void multiplyAttributeModifier(LivingEntity entity, RegistryEntry<EntityAttribute> attribute, Identifier modifierId, float multiplier, float maxMultiplier) {
+        final EntityAttributeInstance instance = entity.getAttributeInstance(attribute);
+        if (instance == null) return;
 
-        scaleInstance.overwritePersistentModifier(new EntityAttributeModifier(
-                SCALE_MODIFIER_ID,
-                Math.clamp(rawScale, (1 - MAX_SCALE_FACTOR) / MAX_SCALE_FACTOR, MAX_SCALE_FACTOR - 1) * scale,
+        final double unclampedModifier = instance.getModifier(modifierId) == null ? multiplier - 1f : ((instance.getModifier(modifierId).value() + 1f) * multiplier - 1f);
+        final double finalModifier = Math.clamp(unclampedModifier, (1 - maxMultiplier) / maxMultiplier, maxMultiplier - 1);
+
+        instance.overwritePersistentModifier(new EntityAttributeModifier(
+                modifierId,
+                finalModifier,
                 EntityAttributeModifier.Operation.ADD_VALUE)
         );
 
-        if (Math.abs(scaleInstance.getModifier(SCALE_MODIFIER_ID).value()) < 1e-5) scaleInstance.removeModifier(SCALE_MODIFIER_ID);
+        if (Math.abs(instance.getModifier(modifierId).value()) < 1e-5) instance.removeModifier(modifierId);
     }
 
     public static BlockPos[] findAdjacentBlocksFromViewAngle(BlockPos pos, double angle) {
@@ -362,24 +326,8 @@ public final class SocWarsLib {
         }
     }
 
-    public static Optional<Hand> handFromEquipmentSlot(@Nullable EquipmentSlot slot) {
-        return switch (slot) {
-            case MAINHAND -> Optional.of(Hand.MAIN_HAND);
-            case OFFHAND -> Optional.of(Hand.OFF_HAND);
-            case null, default -> Optional.empty();
-        };
-    }
-
-    public static boolean EquipmentSlotIsHand(@Nullable EquipmentSlot slot) {
-        return slot == EquipmentSlot.MAINHAND || slot == EquipmentSlot.OFFHAND;
-    }
-
-    public static <T> T getIndexWithFallback(T[] colours, int index, T fallback) {
-        return colours.length > index ? colours[index] : fallback;
-    }
-
-    public static int colourFromList(Integer[] colours, int index) {
-        return getIndexWithFallback(colours, index, 0xffffffff);
+    public static <T> T getIndexWithFallback(T[] array, int index, T fallback) {
+        return array.length > index ? array[index] : fallback;
     }
 
     @SafeVarargs

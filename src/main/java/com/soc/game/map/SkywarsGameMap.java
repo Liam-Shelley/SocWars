@@ -72,9 +72,10 @@ public class SkywarsGameMap extends AbstractGameMap {
     private void populateInventory(Inventory inventory, int tier, BlockPos pos) {
         inventory.clear();
         for (int i = 0; i < inventory.size(); i++) {
-            final float random = this.world.random.nextFloat();
+            final float random = this.world.random.nextFloat(); //Redo all of this code because it's awful; probably take from data
             if (random > 0.55f + tier * 0.05f) {
-                final int pool = random < 0.82f + tier * 0.09f ? 0 : 1;
+                final float random2 = this.world.random.nextFloat();
+                final int pool = random2 < 0.6f + tier * 0.05f ? 0 : 1;
                 final Pair<Item, Integer> item = ResourceManager.ITEM_DATA.getSkywarsItemData().getRandomItem(pool, tier - 1, this.world.random);
                 inventory.setStack(i, new ItemStack(item.getLeft(), item.getRight()));
             }

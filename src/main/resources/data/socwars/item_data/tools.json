@@ -90,8 +90,8 @@
   },
   {
     "id": "socwars:c_u_e_b",
-    "tier_3_weight": 4,
-    "tier_4_weight": 13
+    "tier_3_weight": 3,
+    "tier_4_weight": 9
   },
   {
     "id": "minecraft:lava_bucket",

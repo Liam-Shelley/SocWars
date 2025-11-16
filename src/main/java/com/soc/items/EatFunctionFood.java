@@ -29,7 +29,7 @@ public class EatFunctionFood extends Item { //rewrite all of this as consumable 
         this.finishUsingFunction = finishUsingFunction;
     }
     public EatFunctionFood(final Item.Settings settings, final FinishUsingFunction finishUsingFunction) {
-        this(settings, finishUsingFunction, new FoodComponent(0, 1, false));
+        this(settings, finishUsingFunction, new FoodComponent(0, 1, true));
     }
 
     public static void initialise() {
