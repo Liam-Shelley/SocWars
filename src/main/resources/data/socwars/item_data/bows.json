@@ -11,8 +11,8 @@
   },
   {
     "id": "socwars:falcon_bow",
-    "tier_3_weight": 8,
-    "tier_4_weight": 12
+    "tier_3_weight": 5,
+    "tier_4_weight": 9
   },
   {
     "id": "socwars:catastrophe_bow",

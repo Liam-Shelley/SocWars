@@ -99,6 +99,7 @@ public abstract class AbstractGameManager {
         this.setGameMode(GameMode.ADVENTURE);
         this.healPlayers();
         this.clearPlayerInventories();
+        this.removePlayersAttributes();
 
         PrescheduledEvents.playCountdown(() -> {
             map.spawnCages(false);
@@ -127,6 +128,8 @@ public abstract class AbstractGameManager {
         getPlayerAttacker(player).ifPresent(killer -> ((CombatTable)this.dbTables.get(killer)).grantKill());
 
         this.healPlayer(player);
+        resetScale(player);
+
         player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.ENTITY_PLAYER_DEATH, SoundCategory.PLAYERS, 1, 1);
         player.getWorld().playSound(null, BlockPos.ofFloored(this.getMap().getRespawnSpectatorPos()), SoundEvents.ENTITY_PLAYER_DEATH, SoundCategory.PLAYERS, 1, 1);
 
@@ -311,6 +314,14 @@ public abstract class AbstractGameManager {
 
     protected final void clearPlayerInventories() {
         this.getPlayers().forEach(player -> player.getInventory().clear());
+    }
+
+    protected final void removePlayersAttributes() {
+        this.getPlayers().forEach(this::removePlayerAttributes);
+    }
+
+    protected final void removePlayerAttributes(ServerPlayerEntity player) {
+        player.getAttributes().getAttributesToSend().forEach(instance -> instance.getModifiers().forEach(instance::removeModifier));
     }
 
     protected void tickKillzone() {

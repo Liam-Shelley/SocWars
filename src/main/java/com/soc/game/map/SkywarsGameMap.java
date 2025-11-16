@@ -7,12 +7,15 @@ import com.soc.resourcedata.ResourceManager;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.HorizontalFacingBlock;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.registry.RegistryEntryLookup;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureTemplate;
 import net.minecraft.structure.StructureTemplateManager;
@@ -73,11 +76,15 @@ public class SkywarsGameMap extends AbstractGameMap {
         inventory.clear();
         for (int i = 0; i < inventory.size(); i++) {
             final float random = this.world.random.nextFloat(); //Redo all of this code because it's awful; probably take from data
-            if (random > 0.55f + tier * 0.05f) {
+            if (random > 0.5f + tier * 0.04f) {
                 final float random2 = this.world.random.nextFloat();
-                final int pool = random2 < 0.6f + tier * 0.05f ? 0 : 1;
+                final int pool = random2 < 0.55f + tier * 0.04f ? 0 : 1;
+
                 final Pair<Item, Integer> item = ResourceManager.ITEM_DATA.getSkywarsItemData().getRandomItem(pool, tier - 1, this.world.random);
-                inventory.setStack(i, new ItemStack(item.getLeft(), item.getRight()));
+                final ItemStack stack = new ItemStack(item.getLeft(), item.getRight());
+
+                if (stack.isIn(ItemTags.BOW_ENCHANTABLE)) stack.addEnchantment(this.world.getRegistryManager().getEntryOrThrow(Enchantments.INFINITY), 1);
+                inventory.setStack(i, stack);
             }
         }
 

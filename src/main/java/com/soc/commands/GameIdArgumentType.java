@@ -20,7 +20,7 @@ import java.util.concurrent.CompletableFuture;
 public class GameIdArgumentType implements ArgumentType<Integer> {
     public static void initialise() {
         ArgumentTypeRegistry.registerArgumentType(
-                Identifier.of(SocWars.MOD_ID, "gameId"),
+                Identifier.of(SocWars.MOD_ID, "game_id"),
                 GameIdArgumentType.class, ConstantArgumentSerializer.of(GameIdArgumentType::new)
         );
     }

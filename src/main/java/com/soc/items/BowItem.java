@@ -1,5 +1,6 @@
 package com.soc.items;
 
+import com.soc.SocWars;
 import com.soc.items.util.ArrowFactory;
 import com.soc.items.util.ModItems;
 import com.soc.items.util.ScaledUseDuration;
@@ -37,8 +38,6 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
     private final ArrowFactory<? extends ArrowEntity> arrowFactory;
     private final Function<ItemStack, Float> drawTime;
     private final Function<ItemStack, Float> speed;
-
-    private static final int MAX_USE_TICKS = 72000;
 
     public BowItem(Settings settings, ArrowFactory<? extends ArrowEntity> arrowFactory, Function<ItemStack, Float> drawTime, Function<ItemStack, Float> speed) {
         super(settings);
@@ -134,7 +133,7 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
                     super.onBlockHit(blockHitResult);
                     randomTeleport(world, this, 2, 15, 2f);
                 }
-            }, stack -> 0.4f, stack -> 3.5f), new Settings()
+            }, stack -> 0.65f, stack -> 3.5f), new Settings()
             .rarity(Rarity.RARE)
             .maxDamage(350)
     );
@@ -150,7 +149,7 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
             }, stack -> 3f, stack -> 6f) {
                 @Override
                 public void usageTick(World world, LivingEntity user, ItemStack stack, int remainingUseTicks) {
-                    if (rawDrawProgress(remainingUseTicks) > 7.5f) {
+                    if (super.rawDrawProgress(stack, remainingUseTicks) > 7.5f) {
                         SphereExplosion.explode(world, user.getPos(), 5f, 2.5f, 1.75f);
                     }
                 }
@@ -182,7 +181,7 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
         if (user instanceof PlayerEntity player && player.getGameMode() == GameMode.SPECTATOR) return false;
 
         final float drawProgress = this.drawProgress(stack, remainingUseTicks);
-        if (drawProgress < 0.2f && rawDrawProgress(remainingUseTicks) < 0.2f) return false;
+        if (drawProgress < 0.3f && this.rawDrawProgress(stack, remainingUseTicks) < 0.2f) return false;
 
         final float speed = drawProgress * this.speed.apply(stack);
 
@@ -229,18 +228,18 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
 
     @Override
     public int getMaxUseTime(ItemStack stack, LivingEntity user) {
-        return MAX_USE_TICKS;
+        return 72000;
     }
 
     private float drawProgress(ItemStack stack, int remainingUseTicks) {
-        final float getHeldAmount = rawDrawProgress(remainingUseTicks);
+        final float getHeldAmount = this.rawDrawProgress(stack, remainingUseTicks);
         final float drawTime = this.drawTime.apply(stack);
 
         return Math.min(1f, getHeldAmount / drawTime);
     }
 
-    private static float rawDrawProgress(int remainingUseTicks) {
-        return (MAX_USE_TICKS - remainingUseTicks) / 20f;
+    private float rawDrawProgress(ItemStack stack, int remainingUseTicks) {
+        return (this.getMaxUseTime(stack, null) - remainingUseTicks + this.useTimeOffset(stack)) / 20f;
     }
 
     @Override

@@ -134,6 +134,12 @@ public final class SocWarsLib {
         if (Math.abs(instance.getModifier(modifierId).value()) < 1e-5) instance.removeModifier(modifierId);
     }
 
+    public static void resetScale(LivingEntity entity) {
+        entity.getAttributeInstance(EntityAttributes.SCALE).removeModifier(SCALE_MODIFIER_ID);
+        entity.getAttributeInstance(EntityAttributes.ENTITY_INTERACTION_RANGE).removeModifier(SCALE_MODIFIER_ID);
+        entity.getAttributeInstance(EntityAttributes.BLOCK_INTERACTION_RANGE).removeModifier(SCALE_MODIFIER_ID);
+    }
+
     public static BlockPos[] findAdjacentBlocksFromViewAngle(BlockPos pos, double angle) {
         return Arrays.stream(new double[] {-Math.PI / 4d, 0, Math.PI / 4d}).mapToObj(offset -> {
             final double a = offset + ((Math.PI / 4d) * Math.round(angle * 4d / Math.PI));

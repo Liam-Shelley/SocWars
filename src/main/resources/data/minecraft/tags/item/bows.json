@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "socwars:alpha_bow",
+    "socwars:boom_bow",
+    "socwars:megaboom_bow",
+    "socwars:falcon_bow",
+    "socwars:heater_bow",
+    "socwars:chorus_bow",
+    "socwars:catastrophe_bow"
+  ]
+}
