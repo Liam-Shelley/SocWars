@@ -90,11 +90,13 @@ public abstract class AbstractGameManager {
     protected abstract Function<ServerPlayerEntity, ? extends BaseGameTable> dbTableBuilder();
 
     public void startGame() {
+        this.removePlayerVelocity();
+
         final AbstractGameMap map = this.getMap();
         map.placeMap();
-        this.removePlayerVelocity();
         map.spawnCages(true);
         map.spreadPlayers(this.teams);
+
         this.assignPlayersToTeams();
         this.setGameMode(GameMode.ADVENTURE);
         this.healPlayers();
@@ -159,19 +161,21 @@ public abstract class AbstractGameManager {
         this.map.tick();
         this.updateEventQueue();
         this.tickKillzone();
+
+        this.fillPlayerHunger();
     }
 
     public final void removeTeams() {
         final Scoreboard scoreboard = world.getScoreboard();
-        scoreboardTeams.values().forEach(scoreboard::removeTeam);
+        this.scoreboardTeams.values().forEach(scoreboard::removeTeam);
     }
 
     public final ImmutableCollection<ServerPlayerEntity> getPlayers() {
         return teams.values();
     }
 
-    public final Team addTeamFromColour(DyeColor colour) {
-        final Team team = this.world.getScoreboard().addTeam(this.gameId + "_" + colour.toString());
+    protected final Team addTeamFromColour(DyeColor colour) {
+        final Team team = this.world.getScoreboard().addTeam(this.getTeamName(colour));
         team.setColor(formattingColourFromDye(colour));
         team.setDisplayName(Text.of(StringUtils.capitalize(colour.toString())));
         team.setFriendlyFireAllowed(false);
@@ -180,8 +184,12 @@ public abstract class AbstractGameManager {
         return team;
     }
 
-    public final boolean teamAlreadyExists(DyeColor colour) {
-        return this.world.getScoreboard().getTeam(this.gameId + "_" + colour.toString()) != null;
+    protected final boolean teamAlreadyExists(DyeColor colour) {
+        return this.world.getScoreboard().getTeam(this.getTeamName(colour)) != null;
+    }
+
+    protected final String getTeamName(DyeColor colour) {
+        return String.format("%s_%s", this.gameId, colour.toString());
     }
 
     public final List<Team> addTeamsFromColours(Set<DyeColor> colours) {
@@ -303,9 +311,14 @@ public abstract class AbstractGameManager {
 
     protected final void healPlayer(ServerPlayerEntity player) {
         player.clearStatusEffects();
-        player.getHungerManager().setFoodLevel(16);
-        player.getHungerManager().setSaturationLevel(8);
         player.setHealth(player.getMaxHealth());
+    }
+
+    protected final void fillPlayerHunger() {
+        this.getPlayers().forEach(player -> {
+            player.getHungerManager().setFoodLevel(20);
+            player.getHungerManager().setSaturationLevel(20);
+        });
     }
 
     protected final void removePlayerVelocity() {

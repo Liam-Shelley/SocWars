@@ -1,16 +1,18 @@
 [
   {
     "id": "socwars:steadfast_helmet",
-    "tier_3_weight": 20,
-    "tier_4_weight": 15
+    "tier_3_weight": 23,
+    "tier_4_weight": 16
   },
   {
     "id": "socwars:steadfast_chestplate",
-    "tier_4_weight": 15
+    "tier_3_weight": 6,
+    "tier_4_weight": 17
   },
   {
     "id": "socwars:steadfast_leggings",
-    "tier_4_weight": 15
+    "tier_3_weight": 6,
+    "tier_4_weight": 17
   },
   {
     "id": "socwars:steadfast_boots",
@@ -19,20 +21,22 @@
   },
   {
     "id": "socwars:gambler_helmet",
-    "tier_3_weight": 15,
-    "tier_4_weight": 12
+    "tier_3_weight": 18,
+    "tier_4_weight": 13
   },
   {
     "id": "socwars:gambler_chestplate",
-    "tier_4_weight": 12
+    "tier_3_weight": 5,
+    "tier_4_weight": 13
   },
   {
     "id": "socwars:gambler_leggings",
-    "tier_4_weight": 12
+    "tier_3_weight": 5,
+    "tier_4_weight": 13
   },
   {
     "id": "socwars:gambler_boots",
-    "tier_3_weight": 15,
+    "tier_3_weight": 18,
     "tier_4_weight": 12
   },
   {
@@ -43,12 +47,13 @@
   },
   {
     "id": "socwars:cartoon_chestplate",
+    "tier_3_weight": 4,
     "tier_4_weight": 10
   },
   {
     "id": "socwars:cartoon_leggings",
-    "tier_3_weight": 2,
-    "tier_4_weight": 1
+    "tier_3_weight": 6,
+    "tier_4_weight": 8
   },
   {
     "id": "socwars:cartoon_boots",
@@ -58,12 +63,12 @@
   },
   {
     "id": "socwars:training_weights",
-    "tier_1_weight": 15,
-    "tier_2_weight": 15
+    "tier_1_weight": 13,
+    "tier_2_weight": 10
   },
   {
     "id": "socwars:summoners_garb",
-    "tier_4_weight": 15
+    "tier_4_weight": 12
   },
   {
     "id": "minecraft:iron_helmet",
@@ -75,18 +80,18 @@
   },
   {
     "id": "minecraft:iron_chestplate",
-    "tier_1_weight": 6,
-    "tier_2_weight": 5,
-    "tier_3_weight": 4,
-    "tier_4_weight": 2,
+    "tier_1_weight": 10,
+    "tier_2_weight": 8,
+    "tier_3_weight": 6,
+    "tier_4_weight": 4,
     "pool": 1
   },
   {
     "id": "minecraft:iron_leggings",
-    "tier_1_weight": 6,
-    "tier_2_weight": 5,
-    "tier_3_weight": 4,
-    "tier_4_weight": 2,
+    "tier_1_weight": 10,
+    "tier_2_weight": 8,
+    "tier_3_weight": 6,
+    "tier_4_weight": 4,
     "pool": 1
   },
   {
@@ -107,10 +112,10 @@
   },
   {
     "id": "minecraft:golden_chestplate",
-    "tier_1_weight": 7,
-    "tier_2_weight": 2,
-    "tier_3_weight": 3,
-    "tier_4_weight": 5,
+    "tier_1_weight": 10,
+    "tier_2_weight": 8,
+    "tier_3_weight": 6,
+    "tier_4_weight": 4,
     "pool": 1
   },
   {
@@ -139,18 +144,18 @@
   },
   {
     "id": "minecraft:diamond_chestplate",
-    "tier_1_weight": 4,
-    "tier_2_weight": 4,
-    "tier_3_weight": 3,
-    "tier_4_weight": 5,
+    "tier_1_weight": 5,
+    "tier_2_weight": 6,
+    "tier_3_weight": 4,
+    "tier_4_weight": 6,
     "pool": 1
   },
   {
     "id": "minecraft:diamond_leggings",
-    "tier_1_weight": 4,
-    "tier_2_weight": 4,
-    "tier_3_weight": 3,
-    "tier_4_weight": 5,
+    "tier_1_weight": 5,
+    "tier_2_weight": 6,
+    "tier_3_weight": 4,
+    "tier_4_weight": 6,
     "pool": 1
   },
   {
@@ -164,40 +169,40 @@
   {
     "id": "minecraft:netherite_helmet",
     "tier_1_weight": 1,
-    "tier_2_weight": 1.5,
-    "tier_3_weight": 2,
-    "tier_4_weight": 3,
+    "tier_2_weight": 2,
+    "tier_3_weight": 3,
+    "tier_4_weight": 4,
     "pool": 1
   },
   {
     "id": "minecraft:netherite_chestplate",
     "tier_1_weight": 1,
-    "tier_2_weight": 1.5,
-    "tier_3_weight": 2,
-    "tier_4_weight": 3,
+    "tier_2_weight": 2,
+    "tier_3_weight": 3,
+    "tier_4_weight": 4,
     "pool": 1
   },
   {
     "id": "minecraft:netherite_leggings",
-    "tier_1_weight": 1,
-    "tier_2_weight": 1.5,
-    "tier_3_weight": 2,
-    "tier_4_weight": 3,
+    "tier_1_weight": 2,
+    "tier_2_weight": 3,
+    "tier_3_weight": 3,
+    "tier_4_weight": 4,
     "pool": 1
   },
   {
     "id": "minecraft:netherite_boots",
     "tier_1_weight": 1,
-    "tier_2_weight": 1.5,
-    "tier_3_weight": 2,
-    "tier_4_weight": 3,
+    "tier_2_weight": 2,
+    "tier_3_weight": 3,
+    "tier_4_weight": 4,
     "pool": 1
   },
   {
     "id": "minecraft:turtle_helmet",
-    "tier_1_weight": 2,
+    "tier_1_weight": 1,
     "tier_2_weight": 2,
-    "tier_3_weight": 2,
+    "tier_3_weight": 3,
     "tier_4_weight": 3,
     "pool": 1
   }
