@@ -251,5 +251,6 @@
   "database.status.op_message": "Database status: %s",
   "database.status.connected": "Connected",
   "database.status.disconnected": "Not Connected",
-  "debug.skywars_item_weights": "Pool: %s: T1: %s, T2: %s, T3: %s, T4: %s"
+  "debug.skywars_item_weights": "Pool: %s: T1: %s, T2: %s, T3: %s, T4: %s",
+  "shop.title.pages": "Page"
 }

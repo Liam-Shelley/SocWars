@@ -1,6 +1,7 @@
 package com.soc.game.manager;
 
 import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
 import com.soc.database.stats.BedwarsTable;
 import com.soc.database.stats.SkywarsTable;
 import com.soc.game.map.BedwarsGameMap;
@@ -65,7 +66,7 @@ public class BedwarsGameManager extends AbstractGameManager {
     }
 
     @Override
-    public ImmutableMultimap<DyeColor, ServerPlayerEntity> buildTeams(Set<ServerPlayerEntity> players, SpreadRules spreadRules) {
+    public Multimap<DyeColor, ServerPlayerEntity> buildTeams(Set<ServerPlayerEntity> players, SpreadRules spreadRules) {
         //Probably rewrite this at some point it's a bit gross
 
         final Stack<ServerPlayerEntity> playerStack = getRandomPlayerStack(players);

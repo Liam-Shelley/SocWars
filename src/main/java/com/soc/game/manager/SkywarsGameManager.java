@@ -1,6 +1,6 @@
 package com.soc.game.manager;
 
-import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
 import com.soc.database.stats.SkywarsTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.SkywarsGameMap;
@@ -118,7 +118,7 @@ public class SkywarsGameManager extends AbstractGameManager {
     }
 
     @Override
-    public ImmutableMultimap<DyeColor, ServerPlayerEntity> buildTeams(Set<ServerPlayerEntity> players, @Nullable SpreadRules spreadRules) {
+    public Multimap<DyeColor, ServerPlayerEntity> buildTeams(Set<ServerPlayerEntity> players, @Nullable SpreadRules spreadRules) {
         final Stack<ServerPlayerEntity> playerStack = getRandomPlayerStack(players);
 
         final List<DyeColor> teamColoursList = new ArrayList<>(this.getMap().getTeamColours());

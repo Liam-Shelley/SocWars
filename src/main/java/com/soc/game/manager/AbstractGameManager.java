@@ -1,9 +1,6 @@
 package com.soc.game.manager;
 
-import com.google.common.collect.ImmutableCollection;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.*;
 import com.soc.SocWars;
 import com.soc.database.Database;
 import com.soc.database.stats.BaseGameTable;
@@ -11,13 +8,6 @@ import com.soc.database.stats.BaseTable;
 import com.soc.database.stats.CombatTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.SpreadRules;
-import com.soc.lib.SocWarsLib;
-import com.soc.mixin.MostRecentDamage;
-import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageRecord;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
@@ -43,8 +33,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -59,8 +47,8 @@ public abstract class AbstractGameManager {
 
     protected final AbstractGameMap map;
     protected final ServerWorld world;
-    protected final ImmutableMultimap<DyeColor, ServerPlayerEntity> teams;
-    protected final ImmutableMap<DyeColor, Team> scoreboardTeams;
+    protected final Multimap<DyeColor, ServerPlayerEntity> teams;
+    protected final Map<DyeColor, Team> scoreboardTeams;
     protected final @Nullable EventQueue eventQueue;
 
     protected final Map<ServerPlayerEntity, BaseGameTable> dbTables;
@@ -82,9 +70,9 @@ public abstract class AbstractGameManager {
 
     protected abstract AbstractGameMap getMap();
     protected abstract AbstractGameMap buildMap();
-    public abstract ImmutableMultimap<DyeColor, ServerPlayerEntity> buildTeams(Set<ServerPlayerEntity> players, SpreadRules spreadRules);
-    public final ImmutableMap<DyeColor, Team> buildScoreboardTeams() {
-        return ImmutableMap.copyOf(this.teams.entries().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> this.addTeamFromColour(entry.getKey()))));
+    public abstract Multimap<DyeColor, ServerPlayerEntity> buildTeams(Set<ServerPlayerEntity> players, SpreadRules spreadRules);
+    public final Map<DyeColor, Team> buildScoreboardTeams() {
+        return this.teams.entries().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> this.addTeamFromColour(entry.getKey())));
     }
     protected abstract @Nullable EventQueue buildEventQueue();
     protected abstract Function<ServerPlayerEntity, ? extends BaseGameTable> dbTableBuilder();
@@ -170,7 +158,7 @@ public abstract class AbstractGameManager {
         this.scoreboardTeams.values().forEach(scoreboard::removeTeam);
     }
 
-    public final ImmutableCollection<ServerPlayerEntity> getPlayers() {
+    public final Collection<ServerPlayerEntity> getPlayers() {
         return teams.values();
     }
 
@@ -223,7 +211,7 @@ public abstract class AbstractGameManager {
     }
 
     public final DyeColor getTeam(ServerPlayerEntity player) {
-        return this.teams.inverse().get(player).stream().findFirst().orElse(null);
+        return this.teams.entries().stream().filter(entry -> entry.getValue() == player).findFirst().map(Map.Entry::getKey).orElse(null);
     }
 
     public final BlockPos getSpawnPosition(ServerPlayerEntity player) {

@@ -1,6 +1,7 @@
 package com.soc.lib;
 
 import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
 import com.soc.SocWars;
 import com.soc.mixin.MostRecentDamage;
 import com.soc.util.Random;
@@ -49,7 +50,7 @@ public final class SocWarsLib {
     public static final float SQRT2 = 1.4142135f;
     public static final float MAX_SCALE_FACTOR = 4f;
 
-    public static <T, U> ImmutableMultimap<T, U> multimapFromCollections(Collection<T> t1, Collection<U> t2) {
+    public static <T, U> Multimap<T, U> multimapFromCollections(Collection<T> t1, Collection<U> t2) {
         ImmutableMultimap.Builder<T, U> builder = ImmutableMultimap.builder();
 
         Iterator<T> t1Iterator = t1.iterator();

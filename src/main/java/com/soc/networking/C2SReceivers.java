@@ -1,6 +1,5 @@
 package com.soc.networking;
 
-import com.soc.SocWars;
 import com.soc.blocks.blockentities.MapBlockEntity;
 import com.soc.game.manager.GameType;
 import com.soc.networking.c2s.MapBlockSaveMapPayload;

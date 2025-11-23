@@ -2,6 +2,7 @@ package com.soc;
 
 import com.soc.blocks.util.ModBlocks;
 import com.soc.entities.util.ModEntities;
+import com.soc.gui.screen.HandledScreens;
 import com.soc.items.FeatherBlockItem;
 import com.soc.networking.S2CReceivers;
 import com.soc.renderer.BWFireballEntityRenderer;
@@ -60,6 +61,7 @@ public class SocWarsClient implements ClientModInitializer {
 		BlockRenderLayerMap.putBlock(ModBlocks.ITSEVOCAT_SKULL, BlockRenderLayer.TRANSLUCENT);
 
 		S2CReceivers.initialise();
+		HandledScreens.initialise();
 
 		KEY_BINDING = KeyBindingHelper.registerKeyBinding(new KeyBinding(
 				"key.socwars.print_held_components",

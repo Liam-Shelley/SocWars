@@ -14,7 +14,8 @@
     "OnHitArmour",
     "OnPickUpItemEventTrigger",
     "UseDurationScale",
-    "VelocityPacketUnlimit"
+    "VelocityPacketUnlimit",
+    "VillagerInteractCancel"
   ],
   "injectors": {
     "defaultRequire": 1
