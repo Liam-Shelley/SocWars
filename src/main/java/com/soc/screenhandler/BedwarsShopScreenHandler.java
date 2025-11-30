@@ -1,10 +1,10 @@
 package com.soc.screenhandler;
 
-import com.soc.SocWars;
 import com.soc.game.manager.BedwarsGameManager;
 import com.soc.game.manager.BedwarsShopCategory;
 import com.soc.game.manager.BedwarsShopContents;
 import com.soc.game.manager.bedwarsshopitem.BaseShopItem;
+import com.soc.networking.s2c.ShopDataPayload;
 import com.soc.screenhandler.slots.CategorySlot;
 import com.soc.screenhandler.slots.StockSlot;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,8 +15,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
@@ -32,7 +30,7 @@ public class BedwarsShopScreenHandler extends ScreenHandler {
     private final Inventory categories;
 
     private final BedwarsGameManager manager;
-    private final BedwarsShopContents shopContents;
+    private BedwarsShopContents shopContents;
     private BedwarsShopCategory currentCategory;
 
     public BedwarsShopScreenHandler(int syncId, PlayerInventory playerInventory) {
@@ -47,8 +45,8 @@ public class BedwarsShopScreenHandler extends ScreenHandler {
         this.categories = new SimpleInventory(CATEGORIES_WIDTH * CATEGORIES_HEIGHT);
 
         this.manager = BedwarsGameManager.getBedwarsGameManager(player);
-        this.shopContents = this.manager == null ? new BedwarsShopContents() : this.manager.getShopContents();
-        this.currentCategory = this.shopContents.getFirstCategory();
+        this.shopContents = this.manager == null ? null : this.manager.getShopContents();
+        this.currentCategory = this.shopContents == null ? null : this.shopContents.getFirstCategory();
 
         this.makeSlots();
     }
@@ -68,13 +66,8 @@ public class BedwarsShopScreenHandler extends ScreenHandler {
 
         this.addPlayerSlots(this.playerInventory, 48, 104);
 
-        for (int i = 0; i < this.stock.size(); i++) {
-            this.stock.setStack(i, this.getShopItem(i).getIcon());
-        }
-
-        for (int i = 0; i < this.categories.size(); i++) {
-            this.categories.setStack(i, this.getCategoryIcon(i));
-        }
+        this.refreshItems();
+        this.refreshCategories();
     }
 
     @Override
@@ -84,7 +77,7 @@ public class BedwarsShopScreenHandler extends ScreenHandler {
 
     @Override
     public boolean canUse(PlayerEntity player) {
-        return this.manager != null || true;
+        return this.manager != null || player.getWorld().isClient || true ;
     }
 
     public final BedwarsGameManager getManager() {
@@ -105,13 +98,19 @@ public class BedwarsShopScreenHandler extends ScreenHandler {
         if (slot < 0 || slot >= this.shopContents.getNumCategories()) return;
         this.currentCategory = this.shopContents.getCategory(slot);
 
+        this.refreshItems();
+    }
+
+    private void refreshItems() {
         for (int i = 0; i < this.stock.size(); i++) {
             this.stock.setStack(i, this.getShopItem(i).getIcon());
         }
     }
 
-    public BedwarsShopCategory getCurrentCategory() {
-        return this.currentCategory;
+    private void refreshCategories() {
+        for (int i = 0; i < this.categories.size(); i++) {
+            this.categories.setStack(i, this.getCategoryIcon(i));
+        }
     }
 
     public BaseShopItem getShopItem(Slot slot) {
@@ -119,11 +118,11 @@ public class BedwarsShopScreenHandler extends ScreenHandler {
     }
 
     public BaseShopItem getShopItem(int slot) {
-        return this.currentCategory.getShopItem(slot);
+        return this.currentCategory == null ? BaseShopItem.EMPTY : this.currentCategory.getShopItem(slot);
     }
 
     public ItemStack getCategoryIcon(int slot) {
-        if (slot < 0 || slot >= this.shopContents.getNumCategories()) return Items.AIR.getDefaultStack();
+        if (this.shopContents == null || slot < 0 || slot >= this.shopContents.getNumCategories()) return ItemStack.EMPTY;
         return this.shopContents.getCategoryIcons().get(slot);
     }
 
@@ -141,5 +140,11 @@ public class BedwarsShopScreenHandler extends ScreenHandler {
 
     public boolean isCategory(Slot slot) {
         return slot.inventory == this.categories;
+    }
+
+    public void setShopContents(ShopDataPayload payload) {
+        this.shopContents = payload.shopContents();
+        this.refreshItems();
+        this.refreshCategories();
     }
 }

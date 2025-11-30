@@ -11,5 +11,6 @@ public class S2CPayloads {
         PayloadTypeRegistry.playS2C().register(AddVelocityPayload.ID, AddVelocityPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(StartGamePayload.ID, StartGamePayload.CODEC);
         PayloadTypeRegistry.playS2C().register(EndGamePayload.ID, EndGamePayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(ShopDataPayload.ID, ShopDataPayload.CODEC);
     }
 }

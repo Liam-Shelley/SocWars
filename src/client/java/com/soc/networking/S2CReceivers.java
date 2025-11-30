@@ -1,11 +1,10 @@
 package com.soc.networking;
 
-import com.soc.networking.s2c.AddVelocityPayload;
-import com.soc.networking.s2c.JoinQueuePayload;
-import com.soc.networking.s2c.LeaveQueuePayload;
-import com.soc.networking.s2c.PlayerDataPayload;
+import com.soc.networking.s2c.*;
 import com.soc.player.PlayerDataManager;
+import com.soc.screenhandler.BedwarsShopScreenHandler;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
 
 public class S2CReceivers {
@@ -21,6 +20,14 @@ public class S2CReceivers {
         });
         ClientPlayNetworking.registerGlobalReceiver(AddVelocityPayload.ID, (payload, context) -> {
                 context.player().addVelocity(payload.velocity());
+        });
+
+
+        ClientPlayNetworking.registerGlobalReceiver(ShopDataPayload.ID, (payload, context) -> {
+            final ScreenHandler screenHandler = context.player().currentScreenHandler;
+            if (screenHandler.syncId != payload.syncId() || !(screenHandler instanceof BedwarsShopScreenHandler)) return;
+
+            ((BedwarsShopScreenHandler) screenHandler).setShopContents(payload);
         });
     }
 }

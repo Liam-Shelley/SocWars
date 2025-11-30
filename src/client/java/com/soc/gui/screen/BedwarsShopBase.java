@@ -6,7 +6,6 @@ import com.soc.game.manager.BedwarsShopCategory;
 import com.soc.game.manager.BedwarsShopContents;
 import com.soc.game.manager.bedwarsshopitem.BaseShopItem;
 import com.soc.gui.ShopResourceDisplay;
-import com.soc.items.components.ModComponents;
 import com.soc.screenhandler.BedwarsShopScreenHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
@@ -23,7 +22,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.List;

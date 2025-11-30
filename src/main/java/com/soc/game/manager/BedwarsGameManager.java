@@ -4,10 +4,11 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import com.soc.database.stats.BedwarsTable;
 import com.soc.database.stats.SkywarsTable;
-import com.soc.game.manager.bedwarsshopitem.BaseShopItem;
 import com.soc.game.map.BedwarsGameMap;
 import com.soc.game.map.SpreadRules;
 import com.soc.items.components.ModComponents;
+import com.soc.networking.s2c.ShopDataPayload;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
@@ -17,7 +18,6 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
-import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -57,10 +57,6 @@ public class BedwarsGameManager extends AbstractGameManager {
         this.playerStatsMap = players.stream().collect(Collectors.toMap(key -> key, key -> new PlayerStats()));
         this.teamStatsMap = super.teams.keySet().stream().collect(Collectors.toMap(key -> key, key -> new TeamStats()));
         this.shopContents = new BedwarsShopContents();
-    }
-
-    protected Map<Identifier, List<BaseShopItem>> makeShopContents() {
-        return Map.of();
     }
 
     @Override
@@ -138,5 +134,14 @@ public class BedwarsGameManager extends AbstractGameManager {
     @Nullable
     public static BedwarsGameManager getBedwarsGameManager(PlayerEntity player) {
         return GamesManager.getInstance().getGame(player).map(a -> a instanceof BedwarsGameManager bedwarsGameManager ? bedwarsGameManager : null).orElse(null);
+    }
+
+    public static boolean sendShopData(PlayerEntity player, OptionalInt syncId) {
+        final BedwarsGameManager manager = getBedwarsGameManager(player);
+
+        if (syncId.isEmpty() || !(player instanceof ServerPlayerEntity) || manager == null) return false;
+
+        ServerPlayNetworking.send((ServerPlayerEntity)player, new ShopDataPayload(manager.getShopContents(), syncId.getAsInt()));
+        return true;
     }
 }

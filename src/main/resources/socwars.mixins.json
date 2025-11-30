@@ -15,7 +15,7 @@
     "OnPickUpItemEventTrigger",
     "UseDurationScale",
     "VelocityPacketUnlimit",
-    "VillagerInteractCancel"
+    "BedwarsShopOpen"
   ],
   "injectors": {
     "defaultRequire": 1

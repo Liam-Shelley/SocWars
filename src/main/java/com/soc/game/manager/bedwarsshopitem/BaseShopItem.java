@@ -6,14 +6,28 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.OptionalInt;
+import java.util.*;
 
 public abstract class BaseShopItem {
+    public static final PacketCodec<RegistryByteBuf, BaseShopItem> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.collection(ArrayList::new, PacketCodecs.INTEGER), BaseShopItem::getCosts, ItemStack.PACKET_CODEC, BaseShopItem::getIcon, ClientDisplayShopItem::new);
+
+    private static class ClientDisplayShopItem extends BaseShopItem {
+        protected ClientDisplayShopItem(List<Integer> costs, ItemStack icon) {
+            super(costs.get(0), costs.get(1), costs.get(2), costs.get(3), icon);
+        }
+
+        @Override
+        public boolean buy(PlayerEntity player) {
+            return false;
+        }
+    }
+
     public static final BaseShopItem EMPTY = new BaseShopItem(1, 1, 1, 1, Items.AIR.getDefaultStack()) {
         @Override
         public boolean buy(PlayerEntity player) {
@@ -64,5 +78,9 @@ public abstract class BaseShopItem {
 
     public final ItemStack getIcon() {
         return this.icon;
+    }
+
+    private List<Integer> getCosts() {
+        return List.copyOf(this.costMap.values());
     }
 }
