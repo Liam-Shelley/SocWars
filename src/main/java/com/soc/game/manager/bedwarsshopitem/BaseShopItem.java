@@ -44,7 +44,7 @@ public abstract class BaseShopItem {
         return Text.literal(icon.getCount() + "x ").formatted(Formatting.DARK_PURPLE).append(icon.getItemName().copy().formatted(icon.getRarity().getFormatting()));
     }
 
-    protected final OptionalInt canAfford(PlayerEntity player) {
+    public final OptionalInt canAfford(PlayerEntity player) {
         final PlayerInventory playerInventory = player.getInventory();
 
         final boolean canAfford = this.costMap.entrySet().stream().map(entry -> playerInventory.count(entry.getKey()) >= entry.getValue()).reduce(true, Boolean::logicalAnd);

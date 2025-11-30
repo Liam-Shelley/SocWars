@@ -18,6 +18,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
@@ -90,8 +91,15 @@ public class BedwarsShopBase extends HandledScreen<BedwarsShopScreenHandler> {
 
     private void drawCostTooltip(DrawContext context, int x, int y, BaseShopItem item) {
         final ItemStack icon = item.getIcon();
-        TooltipBackgroundRenderer.render(context, x + 12, y - 12, 80, 30, icon.get(DataComponentTypes.TOOLTIP_STYLE));
-        context.drawText(super.textRenderer, item.getTooltipName(), x + 12, y - 12, 0xffffffff, true);
+        {
+            final MutableText name = item.getTooltipName().copy();
+            if (item.canAfford(this.playerInventory.player).isPresent()) name.append(Text.literal(" ✔").formatted(Formatting.GREEN));
+            int nameWidth = super.textRenderer.getWidth(name);
+
+            TooltipBackgroundRenderer.render(context, x + 12, y - 12, nameWidth, 30, icon.get(DataComponentTypes.TOOLTIP_STYLE));
+
+            context.drawText(super.textRenderer, name, x + 12, y - 12, 0xffffffff, true);
+        }
 
         context.getMatrices().pushMatrix();
         context.getMatrices().scaleAround(0.8f, x, y);
