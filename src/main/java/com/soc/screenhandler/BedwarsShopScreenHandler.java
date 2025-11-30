@@ -1,23 +1,24 @@
 package com.soc.screenhandler;
 
-import com.soc.items.components.ModComponents;
-import com.soc.items.components.ShopCostComponent;
-import com.soc.screenhandler.slots.PageSlot;
+import com.soc.SocWars;
+import com.soc.game.manager.BedwarsGameManager;
+import com.soc.game.manager.BedwarsShopCategory;
+import com.soc.game.manager.BedwarsShopContents;
+import com.soc.game.manager.bedwarsshopitem.BaseShopItem;
+import com.soc.screenhandler.slots.CategorySlot;
 import com.soc.screenhandler.slots.StockSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.ScreenHandler;
-import org.apache.commons.lang3.tuple.Pair;
+import net.minecraft.screen.slot.Slot;
+import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-import java.util.OptionalInt;
-import java.util.stream.Stream;
+import java.util.function.Consumer;
 
 public class BedwarsShopScreenHandler extends ScreenHandler {
     private static final int STOCK_WIDTH = 9;
@@ -30,6 +31,10 @@ public class BedwarsShopScreenHandler extends ScreenHandler {
     private final Inventory stock;
     private final Inventory categories;
 
+    private final BedwarsGameManager manager;
+    private final BedwarsShopContents shopContents;
+    private BedwarsShopCategory currentCategory;
+
     public BedwarsShopScreenHandler(int syncId, PlayerInventory playerInventory) {
         this(syncId, playerInventory, playerInventory.player);
     }
@@ -40,6 +45,10 @@ public class BedwarsShopScreenHandler extends ScreenHandler {
         this.playerInventory = playerInventory;
         this.stock = new SimpleInventory(STOCK_WIDTH * STOCK_HEIGHT);
         this.categories = new SimpleInventory(CATEGORIES_WIDTH * CATEGORIES_HEIGHT);
+
+        this.manager = BedwarsGameManager.getBedwarsGameManager(player);
+        this.shopContents = this.manager == null ? new BedwarsShopContents() : this.manager.getShopContents();
+        this.currentCategory = this.shopContents.getFirstCategory();
 
         this.makeSlots();
     }
@@ -53,40 +62,19 @@ public class BedwarsShopScreenHandler extends ScreenHandler {
 
         for (int x = 0; x < CATEGORIES_WIDTH; x++) {
             for (int y = 0; y < CATEGORIES_HEIGHT; y++) {
-                this.addSlot(new PageSlot(this.categories, x + CATEGORIES_WIDTH * y, x * 18 + 8, y * 18 + 18, this.player, this));
+                this.addSlot(new CategorySlot(this.categories, x + CATEGORIES_WIDTH * y, x * 18 + 8, y * 18 + 18, this.player, this));
             }
         }
 
         this.addPlayerSlots(this.playerInventory, 48, 104);
 
         for (int i = 0; i < this.stock.size(); i++) {
-            final ItemStack stack = new ItemStack(Items.WHITE_WOOL, i + 1);
-            stack.set(ModComponents.SHOP_COST_COMPONENT, new ShopCostComponent(1, 1, 1, 1));
-            this.stock.setStack(i, stack);
+            this.stock.setStack(i, this.getShopItem(i).getIcon());
         }
 
-        for (int i = 0; i < this.categories.size();) {
-            this.categories.setStack(i, new ItemStack(Items.EMERALD, ++i));
+        for (int i = 0; i < this.categories.size(); i++) {
+            this.categories.setStack(i, this.getCategoryIcon(i));
         }
-    }
-
-    public boolean buyItem(ItemStack stack) {
-        final ShopCostComponent costComponent = stack.get(ModComponents.SHOP_COST_COMPONENT);
-        if (costComponent == null) return false;
-
-        final OptionalInt slot = this.canAffordItem(costComponent);
-        if (slot.isEmpty()) return false;
-
-        costComponent.getCosts().forEach(pair -> Inventories.remove(BedwarsShopScreenHandler.this.playerInventory, predStack -> predStack.isOf(pair.getLeft()), pair.getRight(), false));
-        this.player.giveItemStack(stack.copy());
-        return true;
-    }
-
-    private OptionalInt canAffordItem(ShopCostComponent costComponent) {
-        final boolean canAfford = costComponent.getCosts().stream().map(pair -> BedwarsShopScreenHandler.this.playerInventory.count(pair.getLeft()) >= pair.getRight()).reduce(true, (a, b) -> a && b);
-        final int emptySlot = this.playerInventory.getEmptySlot();
-
-        return canAfford && emptySlot >= 0 ? OptionalInt.of(emptySlot) : OptionalInt.empty();
     }
 
     @Override
@@ -96,6 +84,62 @@ public class BedwarsShopScreenHandler extends ScreenHandler {
 
     @Override
     public boolean canUse(PlayerEntity player) {
+        return this.manager != null || true;
+    }
+
+    public final BedwarsGameManager getManager() {
+        return this.manager;
+    }
+
+    public final BedwarsShopContents getShopContents() {
+        return this.shopContents;
+    }
+
+    public boolean runInManager(Consumer<BedwarsGameManager> consumer) {
+        if (this.manager == null) return false;
+        consumer.accept(this.manager);
         return true;
+    }
+
+    public void setCurrentCategory(int slot) {
+        if (slot < 0 || slot >= this.shopContents.getNumCategories()) return;
+        this.currentCategory = this.shopContents.getCategory(slot);
+
+        for (int i = 0; i < this.stock.size(); i++) {
+            this.stock.setStack(i, this.getShopItem(i).getIcon());
+        }
+    }
+
+    public BedwarsShopCategory getCurrentCategory() {
+        return this.currentCategory;
+    }
+
+    public BaseShopItem getShopItem(Slot slot) {
+        return this.getShopItem(slot.getIndex());
+    }
+
+    public BaseShopItem getShopItem(int slot) {
+        return this.currentCategory.getShopItem(slot);
+    }
+
+    public ItemStack getCategoryIcon(int slot) {
+        if (slot < 0 || slot >= this.shopContents.getNumCategories()) return Items.AIR.getDefaultStack();
+        return this.shopContents.getCategoryIcons().get(slot);
+    }
+
+    public BedwarsShopCategory getShopCategory(Slot slot) {
+        return this.getShopCategory(slot.getIndex());
+    }
+
+    public BedwarsShopCategory getShopCategory(int slot) {
+        return this.shopContents.getCategory(slot);
+    }
+
+    public boolean isStock(Slot slot) {
+        return slot.inventory == this.stock;
+    }
+
+    public boolean isCategory(Slot slot) {
+        return slot.inventory == this.categories;
     }
 }

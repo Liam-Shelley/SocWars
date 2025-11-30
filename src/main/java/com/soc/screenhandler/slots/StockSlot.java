@@ -12,13 +12,13 @@ public class StockSlot extends ShopSlot {
     private static final SoundEvent BUY_SUCCESS = SoundEvents.BLOCK_NOTE_BLOCK_XYLOPHONE.value();
     private static final SoundEvent BUY_FAIL = SoundEvents.BLOCK_ANVIL_FALL;
 
-    public StockSlot(Inventory inventory, int index, int x, int y, PlayerEntity player, ScreenHandler context) {
+    public StockSlot(Inventory inventory, int index, int x, int y, PlayerEntity player, BedwarsShopScreenHandler context) {
         super(inventory, index, x, y, player, context);
     }
 
     @Override
     public ItemStack takeStack(int amount) {
-        final boolean success = ((BedwarsShopScreenHandler)context).buyItem(super.getStack());
+        final boolean success = super.context.getShopItem(this).buy(super.player);
 
         super.player.playSound(success ? BUY_SUCCESS : BUY_FAIL);
 

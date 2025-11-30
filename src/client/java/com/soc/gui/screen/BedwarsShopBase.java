@@ -1,15 +1,17 @@
 package com.soc.gui.screen;
 
 import com.soc.SocWars;
+import com.soc.game.manager.BedwarsGameManager;
+import com.soc.game.manager.BedwarsShopCategory;
+import com.soc.game.manager.BedwarsShopContents;
+import com.soc.game.manager.bedwarsshopitem.BaseShopItem;
 import com.soc.gui.ShopResourceDisplay;
 import com.soc.items.components.ModComponents;
-import com.soc.items.components.ShopCostComponent;
 import com.soc.screenhandler.BedwarsShopScreenHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.gui.tooltip.HoveredTooltipPositioner;
 import net.minecraft.client.gui.tooltip.TooltipBackgroundRenderer;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.player.PlayerInventory;
@@ -21,10 +23,10 @@ import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.tuple.Pair;
-import org.joml.Vector2ic;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class BedwarsShopBase extends HandledScreen<BedwarsShopScreenHandler> {
     private static final Identifier TEXTURE = Identifier.of(SocWars.MOD_ID, "textures/gui/container/bedwars_shop_base.png");
@@ -34,6 +36,8 @@ public class BedwarsShopBase extends HandledScreen<BedwarsShopScreenHandler> {
     private static final Item[] RESOURCE_DISPLAY_ITEMS = new Item[] {Items.IRON_INGOT, Items.GOLD_INGOT, Items.DIAMOND, Items.EMERALD};
 
     private final PlayerInventory playerInventory;
+    private final BedwarsGameManager manager;
+    private final BedwarsShopContents shopContents;
     private final List<ShopResourceDisplay> resourceDisplays = new ArrayList<>(RESOURCE_DISPLAY_ITEMS.length);
 
     public BedwarsShopBase(BedwarsShopScreenHandler handler, PlayerInventory inventory, Text title) {
@@ -48,6 +52,8 @@ public class BedwarsShopBase extends HandledScreen<BedwarsShopScreenHandler> {
         super.playerInventoryTitleY = 92;
 
         this.playerInventory = inventory;
+        this.manager = handler.getManager();
+        this.shopContents = handler.getShopContents();
 
         for (int i = 0; i < RESOURCE_DISPLAY_ITEMS.length; i++) {
             this.resourceDisplays.add(new ShopResourceDisplay(RESOURCE_DISPLAY_ITEMS[i], 8, i * 18 + 104));
@@ -66,12 +72,15 @@ public class BedwarsShopBase extends HandledScreen<BedwarsShopScreenHandler> {
 
     @Override
     protected void drawMouseoverTooltip(DrawContext context, int x, int y) {
-        if (this.focusedSlot != null && this.focusedSlot.hasStack()) {
-            final ItemStack stack = this.focusedSlot.getStack();
+        if (super.focusedSlot != null && super.focusedSlot.hasStack()) {
 
-            final ShopCostComponent costComponent = stack.get(ModComponents.SHOP_COST_COMPONENT);
-            if (costComponent != null) {
-                this.drawCostComponentTooltip(context, x, y, stack, costComponent);
+            if (this.handler.isStock(super.focusedSlot)) {
+                this.drawCostTooltip(context, x, y, this.handler.getShopItem(super.focusedSlot));
+                return;
+            }
+
+            if (this.handler.isCategory(super.focusedSlot)) {
+                this.drawCategoryTooltip(context, x, y, this.handler.getShopCategory(super.focusedSlot));
                 return;
             }
 
@@ -79,23 +88,41 @@ public class BedwarsShopBase extends HandledScreen<BedwarsShopScreenHandler> {
         }
     }
 
-    private void drawCostComponentTooltip(DrawContext context, int x, int y, ItemStack stack, ShopCostComponent costComponent) {
-        TooltipBackgroundRenderer.render(context, x + 12, y - 12, 80, 30, stack.get(DataComponentTypes.TOOLTIP_STYLE));
-        context.drawText(super.textRenderer, this.getItemNameText(stack), x + 12, y - 12, 0xffffffff, true);
+    private void drawCostTooltip(DrawContext context, int x, int y, BaseShopItem item) {
+        final ItemStack icon = item.getIcon();
+        TooltipBackgroundRenderer.render(context, x + 12, y - 12, 80, 30, icon.get(DataComponentTypes.TOOLTIP_STYLE));
+        context.drawText(super.textRenderer, item.getTooltipName(), x + 12, y - 12, 0xffffffff, true);
 
         context.getMatrices().pushMatrix();
         context.getMatrices().scaleAround(0.8f, x, y);
 
-        final List<Pair<Item, Integer>> costs = costComponent.getCosts();
-        for (int i = 0; i < costs.size(); i++) {
-            final Pair<Item, Integer> cost = costs.get(i);
-            context.drawItem(cost.getLeft().getDefaultStack(), x + 16 + i * 18, y + 2);
+        final Map<Item, Integer> costMap = item.getCostMap();
+        int i = 0;
+        for (Map.Entry<Item, Integer> cost : costMap.entrySet()) {
+            final boolean canAfford = this.playerInventory.count(cost.getKey()) >= cost.getValue();
+            {
+                final int xStart = x + i * 20 + 16;
+                final int yStart = y + 2;
+
+                context.drawItem(cost.getKey().getDefaultStack(), xStart, yStart);
+
+                if (!canAfford) {
+                    context.fill(xStart, yStart, xStart + 16, yStart + 16, 0xaa000000);
+                }
+            }
+            {
+                String costString = String.valueOf(cost.getValue());
+                context.drawText(super.textRenderer, costString, x + i * 20 + 34 - costString.length() * 6, y + 16, canAfford ? 0xefffffff : 0xefdf1020, true);
+            }
+            i++;
         }
+
         context.getMatrices().popMatrix();
     }
 
-    private Text getItemNameText(ItemStack stack) {
-        return Text.literal(stack.getCount() + "x ").formatted(Formatting.DARK_PURPLE).append(stack.getItemName().copy().formatted(stack.getRarity().getFormatting()));
+    private void drawCategoryTooltip(DrawContext context, int x, int y, BedwarsShopCategory category) {
+        TooltipBackgroundRenderer.render(context, x + 12, y - 12, 60, 8, null);
+        context.drawText(super.textRenderer, category.getName(), x + 12, y - 12, 0xffffffff, true);
     }
 
     @Override

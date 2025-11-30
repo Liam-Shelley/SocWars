@@ -252,5 +252,7 @@
   "database.status.connected": "Connected",
   "database.status.disconnected": "Not Connected",
   "debug.skywars_item_weights": "Pool: %s: T1: %s, T2: %s, T3: %s, T4: %s",
-  "shop.title.pages": "Page"
+  "shop.title.pages": "Page",
+  "shop.category.quick_buy": "Quick Buy",
+  "shop.category.blocks": "Blocks"
 }

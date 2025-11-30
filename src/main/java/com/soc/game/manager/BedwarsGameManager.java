@@ -4,11 +4,13 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import com.soc.database.stats.BedwarsTable;
 import com.soc.database.stats.SkywarsTable;
+import com.soc.game.manager.bedwarsshopitem.BaseShopItem;
 import com.soc.game.map.BedwarsGameMap;
 import com.soc.game.map.SpreadRules;
 import com.soc.items.components.ModComponents;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -26,13 +28,13 @@ import java.util.stream.Collectors;
 import static com.soc.game.map.AbstractGameMap.getRandomPlayerStack;
 
 public class BedwarsGameManager extends AbstractGameManager {
-    private class IndividualPlayerStats {
+    private class PlayerStats {
         private int pickaxeTier;
         private int axeTier;
         private int shearsTier;
         private int armourTier;
 
-        public IndividualPlayerStats() {}
+        public PlayerStats() {}
 
         public void onDeath() {
             if (this.pickaxeTier > 0) this.pickaxeTier--;
@@ -42,16 +44,22 @@ public class BedwarsGameManager extends AbstractGameManager {
         }
     }
 
-    private final Map<ServerPlayerEntity, IndividualPlayerStats> individualPlayerMap;
-    private final Map<Identifier, List<BedwarsShopItem>> shopContents;
+    private class TeamStats {
+
+    }
+
+    private final Map<ServerPlayerEntity, PlayerStats> playerStatsMap;
+    private final Map<DyeColor, TeamStats> teamStatsMap;
+    private final BedwarsShopContents shopContents;
 
     protected BedwarsGameManager(ServerWorld world, Set<ServerPlayerEntity> players, @NotNull SpreadRules spreadRules, int gameId) {
         super(world, players, spreadRules, gameId);
-        this.individualPlayerMap = players.stream().collect(Collectors.toMap(key -> key, key -> new IndividualPlayerStats()));
-        this.shopContents = this.makeShopContents();
+        this.playerStatsMap = players.stream().collect(Collectors.toMap(key -> key, key -> new PlayerStats()));
+        this.teamStatsMap = super.teams.keySet().stream().collect(Collectors.toMap(key -> key, key -> new TeamStats()));
+        this.shopContents = new BedwarsShopContents();
     }
 
-    protected Map<Identifier, List<BedwarsShopItem>> makeShopContents() {
+    protected Map<Identifier, List<BaseShopItem>> makeShopContents() {
         return Map.of();
     }
 
@@ -121,5 +129,14 @@ public class BedwarsGameManager extends AbstractGameManager {
         if (stack.get(ModComponents.RESOURCE_COUNTED) == null) return;
 
         player.sendMessage(Text.of(stack.toString()), false);
+    }
+
+    public BedwarsShopContents getShopContents() {
+        return this.shopContents;
+    }
+
+    @Nullable
+    public static BedwarsGameManager getBedwarsGameManager(PlayerEntity player) {
+        return GamesManager.getInstance().getGame(player).map(a -> a instanceof BedwarsGameManager bedwarsGameManager ? bedwarsGameManager : null).orElse(null);
     }
 }

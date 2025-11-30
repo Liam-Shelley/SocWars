@@ -34,11 +34,6 @@ public interface ModComponents {
             Identifier.of(SocWars.MOD_ID, "resource_split"),
             ComponentType.<Unit>builder().codec(Codec.unit(Unit.INSTANCE)).build()
     );
-    ComponentType<ShopCostComponent> SHOP_COST_COMPONENT = Registry.register(
-            Registries.DATA_COMPONENT_TYPE,
-            Identifier.of(SocWars.MOD_ID, "shop_cost"),
-            ComponentType.<ShopCostComponent>builder().codec(ShopCostComponent.CODEC).build()
-    );
 
     static void initialise() {}
 }
