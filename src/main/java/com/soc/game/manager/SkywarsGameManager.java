@@ -75,9 +75,9 @@ public class SkywarsGameManager extends AbstractGameManager {
 
     @Override
     protected AbstractGameMap buildMap() {
-        Optional<SkywarsGameMap> map = SkywarsGameMap.loadRandomMap(super.world, super.generateCentrePosition());
+        Optional<SkywarsGameMap> map = AbstractGameMap.loadRandomMap(super.world, super.generateCentrePosition(), SkywarsGameMap::fromNbt, SkywarsGameMap.FILE_EXTENSION);
 
-        if (map.isEmpty()) throw new IllegalStateException("No SkyWars map found");
+        if (map.isEmpty()) throw new IllegalStateException("No Skywars map found");
         return map.get();
     }
 

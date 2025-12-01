@@ -5,6 +5,7 @@ import com.soc.SocWars;
 import com.soc.nbt.SpawnPosition;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.*;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureTemplate;
 import net.minecraft.structure.StructureTemplateManager;
@@ -37,6 +38,8 @@ public class BedwarsGameMap extends AbstractGameMap {
     public static final String EMERALD_GENS_KEY = "emerald_gens";
     public static final String ISLAND_GENS_KEY = "island_gens";
     public static final String BED_POSITIONS_KEY = "bed_positions";
+
+    public static final float SPLIT_RANGE = 3f;
 
     private final Set<ResourceGenerator> diamondGens;
     private final Set<ResourceGenerator> emeraldGens;
@@ -86,26 +89,11 @@ public class BedwarsGameMap extends AbstractGameMap {
         return positions.stream().min(Comparator.comparing(pos -> pos.getSquaredDistance(origin)));
     }
 
-    public static Optional<BedwarsGameMap> loadRandomMap(@NotNull ServerWorld world, @NotNull BlockPos centrePos) {
-        Optional<File> file = AbstractGameMap.getRandomMap(FILE_EXTENSION, world, null);
-
-        return file.flatMap(optional -> loadFromFile(file.get(), world, centrePos));
+    public boolean isWithinSplitRange(ServerPlayerEntity player) {
+        return this.islandGens.values().stream().map(IslandGenerator::getPos).anyMatch(pos -> pos.isWithinDistance(player.getPos(), SPLIT_RANGE));
     }
 
-    public static Optional<BedwarsGameMap> loadFromFile(File file, @NotNull ServerWorld world, @NotNull BlockPos centrePos) {
-        NbtCompound compound = null;
-        try {
-            compound = NbtIo.read(file.toPath());
-        } catch (IOException e) {
-            SocWars.LOGGER.error("Could not read compound at {}", file.getAbsolutePath());
-        }
-
-        if (compound == null) return Optional.empty();
-
-        return fromNbt(compound, world, centrePos);
-    }
-
-    private static Optional<BedwarsGameMap> fromNbt(@NotNull NbtCompound compound, @NotNull ServerWorld world, @NotNull BlockPos centrePos) {
+    public static Optional<BedwarsGameMap> fromNbt(@NotNull NbtCompound compound, @NotNull ServerWorld world, @NotNull BlockPos centrePos) {
         final StructureTemplateManager templateManager = world.getStructureTemplateManager();
         final Optional<NbtCompound> structureCompound = compound.getCompound(STRUCTURE_KEY);
         final StructureTemplate template = structureCompound.map(templateManager::createTemplate).orElse(null);
@@ -143,7 +131,6 @@ public class BedwarsGameMap extends AbstractGameMap {
         return compound;
     }
 
-
     private Multimap<DyeColourWithEmpty, IslandGenerator> makeIslandGenerators(ServerWorld world, Set<BlockPos> islandGens, Set<SpawnPosition> teams) {
         return islandGens.stream().collect(Multimaps.toMultimap(
                 genPos -> teams.stream().filter(spawn -> genPos.getSquaredDistance(spawn.pos()) < 9).findAny().map(spawn -> DyeColourWithEmpty.fromDyeColour(spawn.dyeColour())).orElse(DyeColourWithEmpty.EMPTY),
@@ -151,7 +138,6 @@ public class BedwarsGameMap extends AbstractGameMap {
                 MultimapBuilder.treeKeys().arrayListValues()::build)
         );
     }
-
 
     @Override
     public void tick() {

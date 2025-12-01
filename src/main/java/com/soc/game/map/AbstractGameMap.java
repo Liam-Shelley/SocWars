@@ -8,6 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -24,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -128,6 +130,22 @@ public abstract class AbstractGameMap {
         if (maps.length == 0) return Optional.empty();
 
         return Optional.of(maps[world.random.nextBetween(0, maps.length - 1)]);
+    }
+
+    public static <T extends AbstractGameMap> Optional<T> loadRandomMap(@NotNull ServerWorld world, @NotNull BlockPos centrePos, FromNbtFunction<T> fromNbtFunction, @NotNull String fileExtension) {
+        final Optional<File> file = AbstractGameMap.getRandomMap(fileExtension, world, null);
+
+        return file.flatMap(optional -> loadFromFile(file.get(), world, centrePos, fromNbtFunction));
+    }
+
+    public static <T extends AbstractGameMap> Optional<T> loadFromFile(File file, @NotNull ServerWorld world, @NotNull BlockPos centrePos, FromNbtFunction<T> fromNbtFunction) {
+        try {
+            final NbtCompound compound = NbtIo.read(file.toPath());
+            return compound == null ? Optional.empty() : fromNbtFunction.fromNbt(compound, world, centrePos);
+        } catch (IOException e) {
+            SocWars.LOGGER.error("Could not read compound at {}", file.getAbsolutePath());
+            return Optional.empty();
+        }
     }
 
     public static Stack<ServerPlayerEntity> getRandomPlayerStack(Collection<ServerPlayerEntity> players) {

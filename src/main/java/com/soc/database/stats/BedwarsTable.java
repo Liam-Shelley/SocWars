@@ -1,5 +1,7 @@
 package com.soc.database.stats;
 
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 public class BedwarsTable extends CombatTable {
@@ -21,6 +23,12 @@ public class BedwarsTable extends CombatTable {
     public void collectDiamonds(int count) { this.diamonds += count; }
     protected int emeralds = 0;
     public void collectEmeralds(int count) { this.emeralds += count; }
+    public void collectItem(ItemStack stack) {
+        if (stack.isOf(Items.IRON_INGOT)) this.collectIron(stack.getCount());
+        if (stack.isOf(Items.GOLD_INGOT)) this.collectGold(stack.getCount());
+        if (stack.isOf(Items.DIAMOND)) this.collectDiamonds(stack.getCount());
+        if (stack.isOf(Items.EMERALD)) this.collectEmeralds(stack.getCount());
+    }
 
     protected int ironSpent = 0;
     public void spendIron(int count) { this.ironSpent += count; }

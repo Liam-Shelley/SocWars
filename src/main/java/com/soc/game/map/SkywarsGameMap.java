@@ -107,26 +107,7 @@ public class SkywarsGameMap extends AbstractGameMap {
         return Optional.ofNullable(this.lootChests.get(pos));
     }
 
-    public static Optional<SkywarsGameMap> loadRandomMap(@NotNull ServerWorld world, @NotNull BlockPos centrePos) {
-        final Optional<File> file = AbstractGameMap.getRandomMap(FILE_EXTENSION, world, null);
-
-        return file.flatMap(optional -> loadFromFile(file.get(), world, centrePos));
-    }
-
-    public static Optional<SkywarsGameMap> loadFromFile(File file, @NotNull ServerWorld world, @NotNull BlockPos centrePos) {
-        NbtCompound compound = null;
-        try {
-            compound = NbtIo.read(file.toPath());
-        } catch (IOException e) {
-            SocWars.LOGGER.error("Could not read compound at {}", file.getAbsolutePath());
-        }
-
-        if (compound == null) return Optional.empty();
-
-        return fromNbt(compound, world, centrePos);
-    }
-
-    private static Optional<SkywarsGameMap> fromNbt(@NotNull NbtCompound compound, @NotNull ServerWorld world, @NotNull BlockPos centrePos) {
+    public static Optional<SkywarsGameMap> fromNbt(@NotNull NbtCompound compound, @NotNull ServerWorld world, @NotNull BlockPos centrePos) {
         final StructureTemplateManager templateManager = world.getStructureTemplateManager();
         final Optional<NbtCompound> structureCompound = compound.getCompound(STRUCTURE_KEY);
         final StructureTemplate template = structureCompound.map(templateManager::createTemplate).orElse(null);

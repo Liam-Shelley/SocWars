@@ -4,7 +4,6 @@ import com.soc.resourcedata.IslandGeneratorUpgrade;
 import com.soc.resourcedata.ResourceManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 

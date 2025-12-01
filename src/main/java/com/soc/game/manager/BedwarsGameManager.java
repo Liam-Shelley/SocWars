@@ -4,7 +4,9 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import com.soc.database.stats.BedwarsTable;
 import com.soc.database.stats.SkywarsTable;
+import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.BedwarsGameMap;
+import com.soc.game.map.SkywarsGameMap;
 import com.soc.game.map.SpreadRules;
 import com.soc.items.components.ModComponents;
 import com.soc.networking.s2c.ShopDataPayload;
@@ -65,8 +67,11 @@ public class BedwarsGameManager extends AbstractGameManager {
     }
 
     @Override
-    protected BedwarsGameMap buildMap() {
-        return BedwarsGameMap.loadRandomMap(super.world, super.generateCentrePosition()).get();
+    protected AbstractGameMap buildMap() {
+        Optional<BedwarsGameMap> map = AbstractGameMap.loadRandomMap(super.world, super.generateCentrePosition(), BedwarsGameMap::fromNbt, BedwarsGameMap.FILE_EXTENSION);
+
+        if (map.isEmpty()) throw new IllegalStateException("No Bedwars map found");
+        return map.get();
     }
 
     @Override
@@ -122,9 +127,15 @@ public class BedwarsGameManager extends AbstractGameManager {
 
     @Override
     public void onItemPickup(ServerPlayerEntity player, ItemStack stack) {
-        if (stack.get(ModComponents.RESOURCE_COUNTED) == null) return;
-
-        player.sendMessage(Text.of(stack.toString()), false);
+        if (stack.get(ModComponents.RESOURCE_COUNTED) != null) {
+            stack.remove(ModComponents.RESOURCE_COUNTED);
+            ((BedwarsTable)this.dbTables.get(player)).collectItem(stack);
+        }
+        final BedwarsGameMap map = this.getMap();
+        if (stack.get(ModComponents.RESOURCE_SPLIT) != null && map.isWithinSplitRange(player)) {
+            stack.remove(ModComponents.RESOURCE_SPLIT);
+            this.getPlayers().stream().filter(map::isWithinSplitRange).filter(player::isTeammate).forEach(otherPlayer -> otherPlayer.giveOrDropStack(stack));
+        }
     }
 
     public BedwarsShopContents getShopContents() {
