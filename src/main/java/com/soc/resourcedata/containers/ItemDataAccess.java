@@ -1,4 +1,4 @@
-package com.soc.resourcedata;
+package com.soc.resourcedata.containers;
 
 import net.minecraft.item.Item;
 

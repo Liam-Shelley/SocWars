@@ -145,4 +145,12 @@ public class BedwarsGameMap extends AbstractGameMap {
         this.diamondGens.forEach(ResourceGenerator::tick);
         this.emeraldGens.forEach(ResourceGenerator::tick);
     }
+
+    public void upgradeDiamondGens(GeneratorStats stats) {
+        this.diamondGens.forEach(gen -> gen.setStats(stats));
+    }
+
+    public void upgradeEmeraldGens(GeneratorStats stats) {
+        this.emeraldGens.forEach(gen -> gen.setStats(stats));
+    }
 }

@@ -1,14 +1,14 @@
-package com.soc.resourcedata;
+package com.soc.resourcedata.deserialisation;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.soc.resourcedata.containers.ItemDataAccess;
 import net.minecraft.item.Item;
 
 import java.util.HashMap;
 import java.util.function.Consumer;
 
-import static com.soc.lib.JsonHelper.getDefaultedFloat;
-import static com.soc.lib.JsonHelper.getDefaultedInt;
+import static com.soc.lib.json.JsonHelper.getDefaultedFloat;
+import static com.soc.lib.json.JsonHelper.getDefaultedInt;
 
 public record SkywarsItemData(float weightT1, float weightT2, float weightT3, float weightT4, int count) implements ItemDataAccess<SkywarsItemData> {
     public static final String WEIGHT_T1_KEY = "tier_1_weight";
@@ -34,7 +34,7 @@ public record SkywarsItemData(float weightT1, float weightT2, float weightT3, fl
             case 1 -> this.weightT2;
             case 2 -> this.weightT3;
             case 3 -> this.weightT4;
-            default -> throw new IllegalStateException("Unexpected value: " + tier);
+            default -> throw new IllegalArgumentException("Unexpected value: " + tier);
         };
     }
 

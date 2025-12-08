@@ -1,7 +1,7 @@
 package com.soc.game.manager;
 
-import com.soc.game.manager.bedwarsshopitem.BaseShopItem;
-import com.soc.game.manager.bedwarsshopitem.SimpleShopItem;
+import com.soc.game.manager.bedwars.BaseShopItem;
+import com.soc.game.manager.bedwars.SimpleShopItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;

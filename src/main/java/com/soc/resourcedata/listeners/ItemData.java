@@ -1,8 +1,9 @@
-package com.soc.resourcedata;
+package com.soc.resourcedata.listeners;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.soc.SocWars;
+import com.soc.resourcedata.deserialisation.SkywarsItemData;
 import com.soc.resourcedata.containers.SkywarsData;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.item.Item;
@@ -14,13 +15,17 @@ import net.minecraft.util.JsonHelper;
 
 import java.io.BufferedReader;
 
-import static com.soc.resourcedata.SkywarsItemData.POOL_KEY;
+import static com.soc.resourcedata.deserialisation.SkywarsItemData.POOL_KEY;
 
 public class ItemData implements SimpleSynchronousResourceReloadListener {
+    public static final ItemData INSTANCE = new ItemData();
+
     public static final String ITEM_ID_KEY = "id";
 
     private final SkywarsData skywarsItemDataContainer = new SkywarsData();
     public SkywarsData getSkywarsItemData() { return this.skywarsItemDataContainer; }
+
+    private ItemData() {}
 
     @Override
     public Identifier getFabricId() {

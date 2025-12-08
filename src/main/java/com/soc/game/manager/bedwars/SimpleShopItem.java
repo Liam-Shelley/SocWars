@@ -1,4 +1,4 @@
-package com.soc.game.manager.bedwarsshopitem;
+package com.soc.game.manager.bedwars;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;

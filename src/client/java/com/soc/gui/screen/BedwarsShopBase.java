@@ -4,7 +4,7 @@ import com.soc.SocWars;
 import com.soc.game.manager.BedwarsGameManager;
 import com.soc.game.manager.BedwarsShopCategory;
 import com.soc.game.manager.BedwarsShopContents;
-import com.soc.game.manager.bedwarsshopitem.BaseShopItem;
+import com.soc.game.manager.bedwars.BaseShopItem;
 import com.soc.gui.ShopResourceDisplay;
 import com.soc.screenhandler.BedwarsShopScreenHandler;
 import net.minecraft.client.MinecraftClient;

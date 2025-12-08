@@ -1,6 +1,6 @@
 package com.soc.lib;
 
-import com.soc.resourcedata.SkywarsItemData;
+import com.soc.resourcedata.deserialisation.SkywarsItemData;
 import net.minecraft.util.math.random.Random;
 import org.apache.commons.lang3.tuple.Pair;
 

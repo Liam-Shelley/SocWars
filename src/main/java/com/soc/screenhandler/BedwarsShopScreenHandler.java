@@ -3,7 +3,7 @@ package com.soc.screenhandler;
 import com.soc.game.manager.BedwarsGameManager;
 import com.soc.game.manager.BedwarsShopCategory;
 import com.soc.game.manager.BedwarsShopContents;
-import com.soc.game.manager.bedwarsshopitem.BaseShopItem;
+import com.soc.game.manager.bedwars.BaseShopItem;
 import com.soc.networking.s2c.ShopDataPayload;
 import com.soc.screenhandler.slots.CategorySlot;
 import com.soc.screenhandler.slots.StockSlot;
@@ -12,7 +12,6 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 

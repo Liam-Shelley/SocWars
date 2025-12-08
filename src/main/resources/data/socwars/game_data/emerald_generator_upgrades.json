@@ -1,0 +1,30 @@
+[
+  {
+    "time": {
+      "minutes": 5
+    },
+    "generation_time": 30,
+    "generation_count": 4
+  },
+  {
+    "time": {
+      "minutes": 10
+    },
+    "generation_time": 30,
+    "generation_count": 4
+  },
+  {
+    "time": {
+      "minutes": 16
+    },
+    "generation_time": 30,
+    "generation_count": 4
+  },
+  {
+    "time": {
+      "minutes": 25
+    },
+    "generation_time": 30,
+    "generation_count": 4
+  }
+]

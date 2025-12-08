@@ -1,8 +1,8 @@
-package com.soc.resourcedata;
+package com.soc.resourcedata.deserialisation;
 
 import com.google.gson.JsonObject;
 
-import static com.soc.lib.JsonHelper.getDefaultedInt;
+import static com.soc.lib.json.JsonHelper.getDefaultedInt;
 
 public record IslandGeneratorUpgrade(int cost, int ironTime, int ironCount, int goldTime, int goldCount, int emeraldTime, int emeraldCount) {
     public static final String COST_KEY = "cost";

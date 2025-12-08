@@ -4,9 +4,11 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import com.soc.database.stats.BedwarsTable;
 import com.soc.database.stats.SkywarsTable;
+import com.soc.game.manager.bedwars.PlayerStats;
+import com.soc.game.manager.bedwars.TeamStats;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.BedwarsGameMap;
-import com.soc.game.map.SkywarsGameMap;
+import com.soc.game.map.GeneratorStats;
 import com.soc.game.map.SpreadRules;
 import com.soc.items.components.ModComponents;
 import com.soc.networking.s2c.ShopDataPayload;
@@ -14,12 +16,14 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.Unit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,27 +32,10 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.soc.game.map.AbstractGameMap.getRandomPlayerStack;
+import static com.soc.lib.SocWarsLib.getPlayerAttacker;
 
 public class BedwarsGameManager extends AbstractGameManager {
-    private class PlayerStats {
-        private int pickaxeTier;
-        private int axeTier;
-        private int shearsTier;
-        private int armourTier;
-
-        public PlayerStats() {}
-
-        public void onDeath() {
-            if (this.pickaxeTier > 0) this.pickaxeTier--;
-            if (this.axeTier > 0) this.axeTier--;
-            if (this.shearsTier > 0) this.shearsTier--;
-            if (this.armourTier > 0) this.armourTier--;
-        }
-    }
-
-    private class TeamStats {
-
-    }
+    protected static final Item[] RESOURCES = { Items.IRON_INGOT, Items.GOLD_INGOT, Items.DIAMOND, Items.EMERALD };
 
     private final Map<ServerPlayerEntity, PlayerStats> playerStatsMap;
     private final Map<DyeColor, TeamStats> teamStatsMap;
@@ -56,8 +43,8 @@ public class BedwarsGameManager extends AbstractGameManager {
 
     protected BedwarsGameManager(ServerWorld world, Set<ServerPlayerEntity> players, @NotNull SpreadRules spreadRules, int gameId) {
         super(world, players, spreadRules, gameId);
-        this.playerStatsMap = players.stream().collect(Collectors.toMap(key -> key, key -> new PlayerStats()));
-        this.teamStatsMap = super.teams.keySet().stream().collect(Collectors.toMap(key -> key, key -> new TeamStats()));
+        this.playerStatsMap = players.stream().collect(Collectors.toMap(Function.identity(), PlayerStats::new));
+        this.teamStatsMap = super.teams.keySet().stream().collect(Collectors.toMap(Function.identity(), key -> new TeamStats()));
         this.shopContents = new BedwarsShopContents();
     }
 
@@ -97,8 +84,8 @@ public class BedwarsGameManager extends AbstractGameManager {
     }
 
     @Override
-    protected @Nullable EventQueue buildEventQueue() {
-        final EventQueue queue = new EventQueue();
+    protected @Nullable EventQueue<BedwarsGameManager> buildEventQueue() {
+        final EventQueue<BedwarsGameManager> queue = new EventQueue<>();
 
         queue.addEventMinutesSeconds(3, 30, (manager) -> {}, "events.bedwars.diamond2");
 
@@ -115,14 +102,43 @@ public class BedwarsGameManager extends AbstractGameManager {
         super.onPlayerDeath(player, source, amount);
         if (source.isOf(DamageTypes.OUT_OF_WORLD)) ((SkywarsTable)this.dbTables.get(player)).fallInVoid();
 
-        PrescheduledEvents.playCountdown(() -> this.respawnPlayer(player), this, 5, 20, SoundEvents.BLOCK_FUNGUS_STEP, player);
+        PrescheduledEvents.playCountdown(() -> super.respawnPlayer(player), this, 5, 20, SoundEvents.BLOCK_FUNGUS_STEP, player);
 
-        //Drop resources and whatnot
+        this.playerStatsMap.get(player).onDeath();
+        getPlayerAttacker(player).ifPresentOrElse(attacker -> giveResourcesToPlayer(player, (ServerPlayerEntity) attacker), () -> dropResources(player));
+
         return true;
     }
 
-    protected void respawnPlayer(ServerPlayerEntity player) {
+    protected static void giveResourcesToPlayer(ServerPlayerEntity giver, ServerPlayerEntity receiver) {
+        for (Item resource : RESOURCES) {
+            //final ItemStack stack = new ItemStack(resource, count);
+            //stack.set(ModComponents.RESOURCE_COUNTED, Unit.INSTANCE);
+            //receiver.giveItemStack(stack);
 
+
+            final int count = giver.getInventory().count(resource);
+            int stacks = count >> 6;
+            int remainder = count % 64;
+
+            do {
+                final ItemStack stack = new ItemStack(resource, remainder);
+                stack.set(ModComponents.RESOURCE_COUNTED, Unit.INSTANCE);
+                receiver.giveItemStack(stack);
+
+                remainder = 64;
+            } while (stacks-- > 0);
+
+        }
+        //Inventories.remove(giver.getInventory(), predStack -> Arrays.asList(RESOURCES).contains(predStack.getItem()), 40 * 64, false);
+    }
+
+    protected static void dropResources(ServerPlayerEntity player) {
+        for (Item resource : RESOURCES) {
+            player.getInventory().forEach(stack -> {
+                if (stack.isOf(resource)) player.dropStack(player.getWorld(), stack);
+            });
+        }
     }
 
     @Override
@@ -154,5 +170,13 @@ public class BedwarsGameManager extends AbstractGameManager {
 
         ServerPlayNetworking.send((ServerPlayerEntity)player, new ShopDataPayload(manager.getShopContents(), syncId.getAsInt()));
         return true;
+    }
+
+    public void upgradeDiamondGens(GeneratorStats stats) {
+        this.getMap().upgradeDiamondGens(stats);
+    }
+
+    public void upgradeEmeraldGens(GeneratorStats stats) {
+
     }
 }

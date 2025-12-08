@@ -48,6 +48,7 @@ public abstract class AbstractGameManager {
     protected final AbstractGameMap map;
     protected final ServerWorld world;
     protected final Multimap<DyeColor, ServerPlayerEntity> teams;
+    protected final List<ServerPlayerEntity> spectators;
     protected final Map<DyeColor, Team> scoreboardTeams;
     protected final @Nullable EventQueue eventQueue;
 
@@ -59,6 +60,7 @@ public abstract class AbstractGameManager {
     protected AbstractGameManager(ServerWorld world, Set<ServerPlayerEntity> players, SpreadRules spreadRules, int gameId) {
         this.gameId = gameId;
         this.world = world;
+        this.spectators = new ArrayList<>();
         this.map = this.buildMap();
         this.teams = this.buildTeams(players, spreadRules);
         this.scoreboardTeams = this.buildScoreboardTeams();
@@ -78,7 +80,7 @@ public abstract class AbstractGameManager {
     protected abstract Function<ServerPlayerEntity, ? extends BaseGameTable> dbTableBuilder();
 
     public void startGame() {
-        this.removePlayerVelocity();
+        this.removePlayersVelocity();
 
         final AbstractGameMap map = this.getMap();
         map.placeMap();
@@ -309,8 +311,12 @@ public abstract class AbstractGameManager {
         });
     }
 
-    protected final void removePlayerVelocity() {
-        this.getPlayers().forEach(player -> player.networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(player.getId(), Vec3d.ZERO)));
+    protected static void removePlayerVelocity(ServerPlayerEntity player) {
+        player.networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(player.getId(), Vec3d.ZERO));
+    }
+
+    protected final void removePlayersVelocity() {
+        this.getPlayers().forEach(AbstractGameManager::removePlayerVelocity);
     }
 
     protected final void clearPlayerInventories() {
@@ -331,4 +337,15 @@ public abstract class AbstractGameManager {
             if (player.getY() < this.killHeight) this.onPlayerDeath(player, damageSource(world, DamageTypes.OUT_OF_WORLD, attacker), 100000f);
         });
     }
+
+    public void joinAsSpectator(ServerPlayerEntity player) {
+        this.spectators.add(player);
+
+        final Vec3d pos = this.getMap().getRespawnSpectatorPos();
+        player.requestTeleport(pos.x, pos.y, pos.z);
+
+
+    }
+
+    public void
 }

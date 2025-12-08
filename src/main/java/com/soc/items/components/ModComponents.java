@@ -34,6 +34,11 @@ public interface ModComponents {
             Identifier.of(SocWars.MOD_ID, "resource_split"),
             ComponentType.<Unit>builder().codec(Codec.unit(Unit.INSTANCE)).build()
     );
+    ComponentType<Integer> GAME_TOOL = Registry.register(
+            Registries.DATA_COMPONENT_TYPE,
+            Identifier.of(SocWars.MOD_ID, "game_tool"),
+            ComponentType.<Integer>builder().codec(Codec.INT).build()
+    );
 
     static void initialise() {}
 }

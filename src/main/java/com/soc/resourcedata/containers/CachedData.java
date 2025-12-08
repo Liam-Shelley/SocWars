@@ -1,4 +1,4 @@
-package com.soc.resourcedata;
+package com.soc.resourcedata.containers;
 
 public interface CachedData {
     void cache();

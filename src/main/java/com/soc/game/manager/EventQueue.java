@@ -7,27 +7,27 @@ import org.apache.commons.lang3.tuple.Triple;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class EventQueue {
-    private final SortedSet<Triple<Integer, Consumer<AbstractGameManager>, String>> events;
+public class EventQueue<T extends AbstractGameManager> {
+    private final SortedSet<Triple<Integer, Consumer<T>, String>> events;
 
     public EventQueue() {
         this.events = new TreeSet<>();
     }
 
-    public EventQueue(Set<Triple<Integer, Consumer<AbstractGameManager>, String>> events) {
+    public EventQueue(Set<Triple<Integer, Consumer<T>, String>> events) {
         this();
         this.events.addAll(events);
     }
 
-    public void addEvent(int time, Consumer<AbstractGameManager> event, String name) {
+    public void addEvent(int time, Consumer<T> event, String name) {
         events.add(Triple.of(time, event, name));
     }
 
-    public void addEventSeconds(int time, Consumer<AbstractGameManager> event, String name) {
+    public void addEventSeconds(int time, Consumer<T> event, String name) {
         events.add(Triple.of(time * 20, event, name));
     }
 
-    public void addEventMinutesSeconds(int minutes, int seconds, Consumer<AbstractGameManager> event, String name) {
+    public void addEventMinutesSeconds(int minutes, int seconds, Consumer<T> event, String name) {
         events.add(Triple.of(minutes * 1200 + seconds * 20, event, name));
     }
 
@@ -35,7 +35,7 @@ public class EventQueue {
         return this.events.getFirst().getLeft();
     }
 
-    public Consumer<AbstractGameManager> peekEvent() {
+    public Consumer<T> peekEvent() {
         return this.events.getFirst().getMiddle();
     }
 
@@ -43,7 +43,7 @@ public class EventQueue {
         final ArrayList<Pair<Integer, String>> events = new ArrayList<>();
 
         while (time >= this.events.getFirst().getLeft()) {
-            Triple<Integer, Consumer<AbstractGameManager>, String> event = this.events.getFirst();
+            Triple<Integer, Consumer<T>, String> event = this.events.getFirst();
             events.add(Pair.of(event.getLeft(), event.getRight()));
         }
 
@@ -54,7 +54,7 @@ public class EventQueue {
         final ArrayList<Text> events = new ArrayList<>();
 
         while (time >= this.events.getFirst().getLeft()) {
-            Triple<Integer, Consumer<AbstractGameManager>, String> event = this.events.getFirst();
+            Triple<Integer, Consumer<T>, String> event = this.events.getFirst();
             //This also needs fixing because currently it uses the event id as a translation key which is really not good
             events.add(Text.translatable(event.getRight(), timeToText(event.getLeft())));
         }
@@ -67,11 +67,11 @@ public class EventQueue {
         return Text.translatable("time.seconds", time / 20);
     }
 
-    public Collection<Pair<Consumer<AbstractGameManager>, String>> tryPopEvents(int time) {
-        final ArrayList<Pair<Consumer<AbstractGameManager>, String>> events = new ArrayList<>();
+    public Collection<Pair<Consumer<T>, String>> tryPopEvents(int time) {
+        final ArrayList<Pair<Consumer<T>, String>> events = new ArrayList<>();
 
         while (!this.events.isEmpty() && time >= this.events.getFirst().getLeft()) {
-            Triple<Integer, Consumer<AbstractGameManager>, String> event = this.events.removeFirst();
+            Triple<Integer, Consumer<T>, String> event = this.events.removeFirst();
             events.add(Pair.of(event.getMiddle(), event.getRight()));
         }
 

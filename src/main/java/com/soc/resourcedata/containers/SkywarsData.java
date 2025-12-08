@@ -1,8 +1,7 @@
 package com.soc.resourcedata.containers;
 
 import com.soc.lib.CumulativeWeightList;
-import com.soc.resourcedata.ItemDataContainer;
-import com.soc.resourcedata.SkywarsItemData;
+import com.soc.resourcedata.deserialisation.SkywarsItemData;
 import net.minecraft.item.Item;
 import net.minecraft.util.math.random.Random;
 import org.apache.commons.lang3.tuple.Pair;
@@ -19,6 +18,7 @@ public class SkywarsData extends ItemDataContainer<SkywarsItemData> {
         return super.itemDataPools.keySet().stream().collect(Collectors.toMap(key -> key, this::getCumulativeWeightsForTiers));
     }
 
+    @SuppressWarnings("unchecked")
     private CumulativeWeightList<Pair<Item, Integer>>[] getCumulativeWeightsForTiers(Integer poolKey) {
         List<Integer> tiers = List.of(0, 1, 2, 3);
         return tiers.stream().map(tier -> this.getCumulativeWeightsForTier(poolKey, tier)).toArray(CumulativeWeightList[]::new);

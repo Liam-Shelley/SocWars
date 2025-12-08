@@ -128,7 +128,7 @@ public class SkywarsGameManager extends AbstractGameManager {
     }
 
     @Override
-    protected @Nullable EventQueue buildEventQueue() {
+    protected @Nullable EventQueue<SkywarsGameManager> buildEventQueue() {
         return null;
     }
 
