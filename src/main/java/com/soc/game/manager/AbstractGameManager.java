@@ -263,7 +263,7 @@ public abstract class AbstractGameManager {
         player.getAbilities().allowFlying = allow;
     }
 
-    protected void allowFlight(boolean allow) {
+    protected void allowFlight(final boolean allow) {
         this.getPlayers().forEach(player -> player.getAbilities().allowFlying = allow);
     }
 
@@ -287,19 +287,24 @@ public abstract class AbstractGameManager {
     }
 
     protected final void sendPlayersToLobby() {
+        this.getPlayers().forEach(this::sendPlayerToLobby);
+        this.spectators.forEach(this::sendPlayerToLobby);
+    }
+
+    protected final void sendPlayerToLobby(ServerPlayerEntity player) {
         final Vec3d pos = this.world.getSpawnPos().toCenterPos();
 
-        this.getPlayers().forEach(player -> player.requestTeleport(pos.x + this.world.random.nextFloat() * 3f, pos.y, pos.z + this.world.random.nextFloat() * 3f));
-        this.setGameMode(GameMode.ADVENTURE);
-        this.healPlayers();
-        this.clearPlayerInventories();
+        player.requestTeleport(pos.x + this.world.random.nextFloat() * 3f, pos.y, pos.z + this.world.random.nextFloat() * 3f);
+        player.changeGameMode(GameMode.ADVENTURE);
+        healPlayer(player);
+        player.getInventory().clear();
     }
 
     protected final void healPlayers() {
-        this.getPlayers().forEach(this::healPlayer);
+        this.getPlayers().forEach(AbstractGameManager::healPlayer);
     }
 
-    protected final void healPlayer(ServerPlayerEntity player) {
+    protected static void healPlayer(ServerPlayerEntity player) {
         player.clearStatusEffects();
         player.setHealth(player.getMaxHealth());
     }
@@ -324,10 +329,10 @@ public abstract class AbstractGameManager {
     }
 
     protected final void removePlayersAttributes() {
-        this.getPlayers().forEach(this::removePlayerAttributes);
+        this.getPlayers().forEach(AbstractGameManager::removePlayerAttributes);
     }
 
-    protected final void removePlayerAttributes(ServerPlayerEntity player) {
+    protected static void removePlayerAttributes(ServerPlayerEntity player) {
         player.getAttributes().getAttributesToSend().forEach(instance -> instance.getModifiers().forEach(instance::removeModifier));
     }
 
@@ -344,8 +349,9 @@ public abstract class AbstractGameManager {
         final Vec3d pos = this.getMap().getRespawnSpectatorPos();
         player.requestTeleport(pos.x, pos.y, pos.z);
 
-
+        player.changeGameMode(GameMode.SPECTATOR);
+        healPlayer(player);
+        player.getInventory().clear();
+        removePlayerAttributes(player);
     }
-
-    public void
 }
