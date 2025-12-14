@@ -119,7 +119,7 @@ public abstract class AbstractGameManager {
         ((CombatTable)targetTable).grantDeath();
         getPlayerAttacker(player).ifPresent(killer -> ((CombatTable)this.dbTables.get(killer)).grantKill());
 
-        this.healPlayer(player);
+        healPlayer(player);
         resetScale(player);
 
         player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.ENTITY_PLAYER_DEATH, SoundCategory.PLAYERS, 1, 1);
@@ -200,7 +200,7 @@ public abstract class AbstractGameManager {
     }
 
     public final @Nullable Collection<Text> getUpcomingEvents() {
-        return this.eventQueue == null ? null : this.eventQueue.peekEventsText(this.time);
+        return this.eventQueue == null ? null : this.eventQueue.peekEventsNames(this.time);
     }
 
     public final int getGameId() {
@@ -293,8 +293,8 @@ public abstract class AbstractGameManager {
 
     protected final void sendPlayerToLobby(ServerPlayerEntity player) {
         final Vec3d pos = this.world.getSpawnPos().toCenterPos();
-
         player.requestTeleport(pos.x + this.world.random.nextFloat() * 3f, pos.y, pos.z + this.world.random.nextFloat() * 3f);
+
         player.changeGameMode(GameMode.ADVENTURE);
         healPlayer(player);
         player.getInventory().clear();
@@ -353,5 +353,9 @@ public abstract class AbstractGameManager {
         healPlayer(player);
         player.getInventory().clear();
         removePlayerAttributes(player);
+    }
+
+    public void leaveAsSpectator(ServerPlayerEntity player) {
+        this.sendPlayerToLobby(player);
     }
 }

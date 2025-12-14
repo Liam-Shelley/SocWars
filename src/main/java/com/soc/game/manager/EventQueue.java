@@ -1,5 +1,7 @@
 package com.soc.game.manager;
 
+import com.soc.lib.SocWarsLib;
+import com.soc.lib.json.Time;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -8,71 +10,61 @@ import java.util.*;
 import java.util.function.Consumer;
 
 public class EventQueue<T extends AbstractGameManager> {
-    private final SortedSet<Triple<Integer, Consumer<T>, String>> events;
+    private final SortedSet<Event<T>> events;
 
     public EventQueue() {
         this.events = new TreeSet<>();
     }
 
-    public EventQueue(Set<Triple<Integer, Consumer<T>, String>> events) {
+    public EventQueue(Set<Event<T>> events) {
         this();
         this.events.addAll(events);
     }
 
-    public void addEvent(int time, Consumer<T> event, String name) {
-        events.add(Triple.of(time, event, name));
+    public void addEvent(int time, Consumer<T> event, Text name) {
+        events.add(new Event<>(time, event, name));
     }
 
-    public void addEventSeconds(int time, Consumer<T> event, String name) {
-        events.add(Triple.of(time * 20, event, name));
-    }
-
-    public void addEventMinutesSeconds(int minutes, int seconds, Consumer<T> event, String name) {
-        events.add(Triple.of(minutes * 1200 + seconds * 20, event, name));
+    public void addEvent(Time time, Consumer<T> event, Text name) {
+        events.add(new Event<>(time.ticks(), event, name));
     }
 
     public int peekTime() {
-        return this.events.getFirst().getLeft();
+        return this.events.getFirst().time();
     }
 
     public Consumer<T> peekEvent() {
-        return this.events.getFirst().getMiddle();
+        return this.events.getFirst().callback();
     }
 
-    public Collection<Pair<Integer, String>> peekEvents(int time) {
-        final ArrayList<Pair<Integer, String>> events = new ArrayList<>();
+    public Collection<Pair<Integer, Text>> peekEvents(int time) {
+        final ArrayList<Pair<Integer, Text>> events = new ArrayList<>();
 
-        while (time >= this.events.getFirst().getLeft()) {
-            Triple<Integer, Consumer<T>, String> event = this.events.getFirst();
-            events.add(Pair.of(event.getLeft(), event.getRight()));
+        while (time >= this.events.getFirst().time()) {
+            Event<T> event = this.events.getFirst();
+            events.add(Pair.of(event.time(), event.name()));
         }
 
         return events;
     }
 
-    public Collection<Text> peekEventsText(int time) {
+    public Collection<Text> peekEventsNames(int time) {
         final ArrayList<Text> events = new ArrayList<>();
 
-        while (time >= this.events.getFirst().getLeft()) {
-            Triple<Integer, Consumer<T>, String> event = this.events.getFirst();
-            //This also needs fixing because currently it uses the event id as a translation key which is really not good
-            events.add(Text.translatable(event.getRight(), timeToText(event.getLeft())));
+        while (time >= this.events.getFirst().time()) {
+            Event<T> event = this.events.getFirst();
+            events.add(Text.translatable("event.name_and_time", event.name(), SocWarsLib.getTimeFromTicks(event.time(), false)));
         }
 
         return events;
     }
 
-    private static Text timeToText(int time) {
-        //Really should write a proper thing here to convert to an actually nice looking time
-        return Text.translatable("time.seconds", time / 20);
-    }
+    public Collection<Pair<Consumer<T>, Text>> tryPopEvents(int time) {
+        final ArrayList<Pair<Consumer<T>, Text>> events = new ArrayList<>();
 
-    public Collection<Pair<Consumer<T>, String>> tryPopEvents(int time) {
-        final ArrayList<Pair<Consumer<T>, String>> events = new ArrayList<>();
-
-        while (!this.events.isEmpty() && time >= this.events.getFirst().getLeft()) {
-            Triple<Integer, Consumer<T>, String> event = this.events.removeFirst();
-            events.add(Pair.of(event.getMiddle(), event.getRight()));
+        while (!this.events.isEmpty() && time >= this.events.getFirst().time()) {
+            Event<T> event = this.events.removeFirst();
+            events.add(Pair.of(event.callback(), event.name()));
         }
 
         return events;

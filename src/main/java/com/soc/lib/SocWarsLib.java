@@ -367,4 +367,21 @@ public final class SocWarsLib {
         }
         return Optional.empty();
     }
+
+    public static String romanNumerals(int input) {
+        //Rewrite this in a procedural and not stupid way
+        return switch(input) {
+            case 1 -> "I";
+            case 2 -> "II";
+            case 3 -> "III";
+            case 4 -> "IV";
+            case 5 -> "V";
+            case 6 -> "VI";
+            case 7 -> "VII";
+            case 8 -> "VIII";
+            case 9 -> "IX";
+            case 10 -> "X";
+            default -> "";
+        };
+    }
 }

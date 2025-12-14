@@ -6,12 +6,12 @@ import com.soc.database.stats.BedwarsTable;
 import com.soc.database.stats.SkywarsTable;
 import com.soc.game.manager.bedwars.PlayerStats;
 import com.soc.game.manager.bedwars.TeamStats;
-import com.soc.game.map.AbstractGameMap;
-import com.soc.game.map.BedwarsGameMap;
-import com.soc.game.map.GeneratorStats;
-import com.soc.game.map.SpreadRules;
+import com.soc.game.map.*;
 import com.soc.items.components.ModComponents;
 import com.soc.networking.s2c.ShopDataPayload;
+import com.soc.resourcedata.containers.BedwarsData;
+import com.soc.resourcedata.deserialisation.ResourceGeneratorUpgrade;
+import com.soc.resourcedata.listeners.GameData;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
@@ -22,6 +22,7 @@ import net.minecraft.item.Items;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Unit;
 import org.jetbrains.annotations.NotNull;
@@ -33,6 +34,7 @@ import java.util.stream.Collectors;
 
 import static com.soc.game.map.AbstractGameMap.getRandomPlayerStack;
 import static com.soc.lib.SocWarsLib.getPlayerAttacker;
+import static com.soc.lib.SocWarsLib.romanNumerals;
 
 public class BedwarsGameManager extends AbstractGameManager {
     protected static final Item[] RESOURCES = { Items.IRON_INGOT, Items.GOLD_INGOT, Items.DIAMOND, Items.EMERALD };
@@ -87,7 +89,17 @@ public class BedwarsGameManager extends AbstractGameManager {
     protected @Nullable EventQueue<BedwarsGameManager> buildEventQueue() {
         final EventQueue<BedwarsGameManager> queue = new EventQueue<>();
 
-        queue.addEventMinutesSeconds(3, 30, (manager) -> {}, "events.bedwars.diamond2");
+        {
+            final BedwarsData bedwarsData = GameData.INSTANCE.getBedwarsData();
+            for (int i = 0; i < bedwarsData.getDiamondGeneratorUpgrades().size(); i++) {
+                final ResourceGeneratorUpgrade upgrade = bedwarsData.getDiamondGeneratorUpgrades().get(i);
+                queue.addEvent(upgrade.time(), manager -> manager.upgradeDiamondGens(upgrade.getStats()), Text.translatable("events.bedwars.diamond.tier", romanNumerals(i)));
+            }
+            for (int i = 0; i < bedwarsData.getEmeraldGeneratorUpgrades().size(); i++) {
+                final ResourceGeneratorUpgrade upgrade = bedwarsData.getEmeraldGeneratorUpgrades().get(i);
+                queue.addEvent(upgrade.time(), manager -> manager.upgradeEmeraldGens(upgrade.getStats()), Text.translatable("events.bedwars.emerald.tier", romanNumerals(i)));
+            }
+        }
 
         return queue;
     }
