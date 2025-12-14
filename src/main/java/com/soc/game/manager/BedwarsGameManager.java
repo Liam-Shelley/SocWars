@@ -19,12 +19,14 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Unit;
+import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -190,5 +192,16 @@ public class BedwarsGameManager extends AbstractGameManager {
 
     public void upgradeEmeraldGens(GeneratorStats stats) {
 
+    }
+
+    @MustBeInvokedByOverriders
+    @Override
+    public void tick() {
+        super.tick();
+        this.getMap().getBedPositions().forEach((team, pos) -> {
+            if (super.world.getBlockState(pos).isIn(BlockTags.BEDS) && this.teamStatsMap.get(team).hasBed()) {
+                this.teamStatsMap.get(team).breakBed();
+            }
+        });
     }
 }

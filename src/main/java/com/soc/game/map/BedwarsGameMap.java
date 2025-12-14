@@ -153,4 +153,8 @@ public class BedwarsGameMap extends AbstractGameMap {
     public void upgradeEmeraldGens(GeneratorStats stats) {
         this.emeraldGens.forEach(gen -> gen.setStats(stats));
     }
+
+    public Map<DyeColor, BlockPos> getBedPositions() {
+        return this.bedPositions;
+    }
 }

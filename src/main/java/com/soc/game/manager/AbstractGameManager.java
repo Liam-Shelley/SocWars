@@ -31,6 +31,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -146,6 +147,7 @@ public abstract class AbstractGameManager {
 
     public void onItemPickup(ServerPlayerEntity player, ItemStack stack) {}
 
+    @MustBeInvokedByOverriders
     public void tick() {
         this.time++;
         this.map.tick();
