@@ -1,4 +1,4 @@
-package com.soc.game.manager;
+package com.soc.game.manager.bedwars;
 
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;

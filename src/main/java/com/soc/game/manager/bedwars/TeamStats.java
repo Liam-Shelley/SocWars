@@ -1,7 +1,7 @@
 package com.soc.game.manager.bedwars;
 
 public class TeamStats {
-    private boolean hasBed;
+    private boolean hasBed = true;
 
     public boolean hasBed() {
         return this.hasBed;

@@ -256,5 +256,7 @@
   "shop.category.quick_buy": "Quick Buy",
   "shop.category.blocks": "Blocks",
   "events.bedwars.diamond.tier": "Diamond %s",
-  "events.bedwars.emerald.tier": "Emerald %s"
+  "events.bedwars.emerald.tier": "Emerald %s",
+  "game.bedwars.bed_broken.title": "Bed Broken!",
+  "game.bedwars.bed_broken.chat": "%s bed has been broken!"
 }

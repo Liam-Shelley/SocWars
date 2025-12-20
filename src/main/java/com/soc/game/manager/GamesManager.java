@@ -9,8 +9,9 @@ import com.soc.lib.SocWarsLib;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -55,7 +56,7 @@ public class GamesManager {
         ServerTickEvents.START_SERVER_TICK.register(this::tick);
 
         ServerLivingEntityEvents.ALLOW_DEATH.register((entity, source, amount) ->
-            this.getGame(entity).map(game -> game.onPlayerDeath((ServerPlayerEntity) entity, source, amount)).orElse(true)
+                this.getGame(entity).map(game -> game.onPlayerDeath((ServerPlayerEntity) entity, source, amount)).orElse(true)
         );
         ModEvents.ON_PLAYER_DAMAGE_TAKEN.register((player, source, amount) ->
                 this.getGame(player).map(game -> game.onPlayerDamage(player, source, amount)).orElse(true)
@@ -65,6 +66,12 @@ public class GamesManager {
         );
         ModEvents.ON_ITEM_PICKUP.register((player, stack) ->
                 this.getGame(player).ifPresent(game -> game.onItemPickup(player, stack))
+        );
+        //ModEvents.ON_BED_BROKEN.register((player, pos) ->
+        //        this.getGame(player).map(game -> game.onBedBroken(player, pos)).orElse(true)
+        //);
+        PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) ->
+                state.isIn(BlockTags.BEDS) ? this.getGame(player).map(game -> game.onBedBroken((ServerPlayerEntity) player, pos)).orElse(true) : true
         );
     }
 

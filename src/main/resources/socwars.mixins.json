@@ -4,18 +4,19 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "AbstractBlockBreak",
+    "BedwarsShopOpen",
     "CancelSprintParticles",
     "ChestDepositableProperty",
     "DepositableChest",
     "DropItemEvent",
     "MostRecentDamage",
+    "OnBedBrokenEventTrigger",
     "OnChestOpenedEventTrigger",
     "OnDamageEventTrigger",
     "OnHitArmour",
     "OnPickUpItemEventTrigger",
     "UseDurationScale",
-    "VelocityPacketUnlimit",
-    "BedwarsShopOpen"
+    "VelocityPacketUnlimit"
   ],
   "injectors": {
     "defaultRequire": 1

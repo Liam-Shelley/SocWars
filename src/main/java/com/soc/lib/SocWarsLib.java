@@ -92,6 +92,10 @@ public final class SocWarsLib {
         };
     }
 
+    public static Text colouredTextFromColour(DyeColor colour) {
+        return Text.translatable("color.minecraft." + colour.asString()).formatted(formattingColourFromDye(colour));
+    }
+
     public static Item woolItemFromColour(DyeColor colour) {
         return switch (colour) {
             case WHITE -> Items.WHITE_WOOL;

@@ -1,9 +1,9 @@
 [
   {
     "cost": 4,
-    "iron_generation_time": 30,
+    "iron_generation_time": 50,
     "iron_generation_count": 4,
-    "gold_generation_time": 80,
+    "gold_generation_time": 100,
     "gold_generation_count": 1
   },
   {

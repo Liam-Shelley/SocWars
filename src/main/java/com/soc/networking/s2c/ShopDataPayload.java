@@ -1,7 +1,7 @@
 package com.soc.networking.s2c;
 
 import com.soc.SocWars;
-import com.soc.game.manager.BedwarsShopContents;
+import com.soc.game.manager.bedwars.BedwarsShopContents;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;

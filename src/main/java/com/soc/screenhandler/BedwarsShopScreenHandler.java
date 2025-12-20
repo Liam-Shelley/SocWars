@@ -1,8 +1,8 @@
 package com.soc.screenhandler;
 
 import com.soc.game.manager.BedwarsGameManager;
-import com.soc.game.manager.BedwarsShopCategory;
-import com.soc.game.manager.BedwarsShopContents;
+import com.soc.game.manager.bedwars.BedwarsShopCategory;
+import com.soc.game.manager.bedwars.BedwarsShopContents;
 import com.soc.game.manager.bedwars.BaseShopItem;
 import com.soc.networking.s2c.ShopDataPayload;
 import com.soc.screenhandler.slots.CategorySlot;

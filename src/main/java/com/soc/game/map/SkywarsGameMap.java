@@ -4,6 +4,7 @@ import com.soc.SocWars;
 import com.soc.nbt.SkywarsChest;
 import com.soc.nbt.SpawnPosition;
 import com.soc.resourcedata.ResourceManager;
+import com.soc.resourcedata.listeners.ItemData;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.HorizontalFacingBlock;
@@ -80,7 +81,7 @@ public class SkywarsGameMap extends AbstractGameMap {
                 final float random2 = this.world.random.nextFloat();
                 final int pool = random2 < 0.55f + tier * 0.04f ? 0 : 1;
 
-                final Pair<Item, Integer> item = ResourceManager.ITEM_DATA.getSkywarsItemData().getRandomItem(pool, tier - 1, this.world.random);
+                final Pair<Item, Integer> item = ItemData.INSTANCE.getSkywarsItemData().getRandomItem(pool, tier - 1, this.world.random);
                 final ItemStack stack = new ItemStack(item.getLeft(), item.getRight());
 
                 if (stack.isIn(ItemTags.BOW_ENCHANTABLE)) stack.addEnchantment(this.world.getRegistryManager().getEntryOrThrow(Enchantments.INFINITY), 1);

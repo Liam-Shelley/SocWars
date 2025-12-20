@@ -147,6 +147,10 @@ public abstract class AbstractGameManager {
 
     public void onItemPickup(ServerPlayerEntity player, ItemStack stack) {}
 
+    public boolean onBedBroken(ServerPlayerEntity player, BlockPos pos) {
+        return true;
+    }
+
     @MustBeInvokedByOverriders
     public void tick() {
         this.time++;
@@ -222,8 +226,12 @@ public abstract class AbstractGameManager {
         return this.getMap().getSpawnPosition(this.getTeam(player));
     }
 
-    protected void broadcast(Text text, boolean overlay) {
+    protected void broadcast(Text text, final boolean overlay) {
         this.getPlayers().forEach(player -> player.sendMessage(text, overlay));
+    }
+
+    protected void broadcast(DyeColor team, Text text, final boolean overlay) {
+        this.teams.get(team).forEach(player -> player.sendMessage(text, overlay));
     }
 
     protected void broadcastDeath(ServerPlayerEntity player, DamageSource source, boolean isFinal) {
@@ -249,12 +257,20 @@ public abstract class AbstractGameManager {
         this.getPlayers().forEach(player -> player.networkHandler.sendPacket(new TitleS2CPacket(text)));
     }
 
+    protected void broadcastTitle(DyeColor team, Text text) {
+        this.teams.get(team).forEach(player -> player.networkHandler.sendPacket(new TitleS2CPacket(text)));
+    }
+
     protected void clearTitle() {
         this.getPlayers().forEach(player -> player.networkHandler.sendPacket(new ClearTitleS2CPacket(false)));
     }
 
     protected void broadcastSound(SoundEvent sound) {
         this.getPlayers().forEach(player -> player.playSoundToPlayer(sound, SoundCategory.PLAYERS, 1f, 1f));
+    }
+
+    protected void broadcastSound(DyeColor team, SoundEvent sound) {
+        this.teams.get(team).forEach(player -> player.playSoundToPlayer(sound, SoundCategory.PLAYERS, 1f, 1f));
     }
 
     protected void setGameMode(GameMode gameMode) {

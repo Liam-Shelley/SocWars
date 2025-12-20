@@ -3,7 +3,7 @@ package com.soc.game.manager;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import com.soc.database.stats.BedwarsTable;
-import com.soc.database.stats.SkywarsTable;
+import com.soc.game.manager.bedwars.BedwarsShopContents;
 import com.soc.game.manager.bedwars.PlayerStats;
 import com.soc.game.manager.bedwars.TeamStats;
 import com.soc.game.map.*;
@@ -12,6 +12,8 @@ import com.soc.networking.s2c.ShopDataPayload;
 import com.soc.resourcedata.containers.BedwarsData;
 import com.soc.resourcedata.deserialisation.ResourceGeneratorUpgrade;
 import com.soc.resourcedata.listeners.GameData;
+import com.soc.util.Sounds;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
@@ -19,14 +21,15 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Unit;
-import org.jetbrains.annotations.MustBeInvokedByOverriders;
+import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,8 +38,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.soc.game.map.AbstractGameMap.getRandomPlayerStack;
-import static com.soc.lib.SocWarsLib.getPlayerAttacker;
-import static com.soc.lib.SocWarsLib.romanNumerals;
+import static com.soc.lib.SocWarsLib.*;
 
 public class BedwarsGameManager extends AbstractGameManager {
     protected static final Item[] RESOURCES = { Items.IRON_INGOT, Items.GOLD_INGOT, Items.DIAMOND, Items.EMERALD };
@@ -50,6 +52,11 @@ public class BedwarsGameManager extends AbstractGameManager {
         this.playerStatsMap = players.stream().collect(Collectors.toMap(Function.identity(), PlayerStats::new));
         this.teamStatsMap = super.teams.keySet().stream().collect(Collectors.toMap(Function.identity(), key -> new TeamStats()));
         this.shopContents = new BedwarsShopContents();
+
+
+        this.getMap().getBedPositions().forEach((team, pos) -> {
+            if (!this.teams.containsKey(team)) world.breakBlock(this.getMap().pos(pos), false);
+        });
     }
 
     @Override
@@ -59,9 +66,10 @@ public class BedwarsGameManager extends AbstractGameManager {
 
     @Override
     protected AbstractGameMap buildMap() {
-        Optional<BedwarsGameMap> map = AbstractGameMap.loadRandomMap(super.world, super.generateCentrePosition(), BedwarsGameMap::fromNbt, BedwarsGameMap.FILE_EXTENSION);
+        final Optional<BedwarsGameMap> map = AbstractGameMap.loadRandomMap(super.world, super.generateCentrePosition(), BedwarsGameMap::fromNbt, BedwarsGameMap.FILE_EXTENSION);
 
         if (map.isEmpty()) throw new IllegalStateException("No Bedwars map found");
+
         return map.get();
     }
 
@@ -113,13 +121,18 @@ public class BedwarsGameManager extends AbstractGameManager {
 
     @Override
     public boolean onPlayerDeath(ServerPlayerEntity player, DamageSource source, float amount) {
-        super.onPlayerDeath(player, source, amount);
-        if (source.isOf(DamageTypes.OUT_OF_WORLD)) ((SkywarsTable)this.dbTables.get(player)).fallInVoid();
+        getPlayerAttacker(player).ifPresentOrElse(attacker -> giveResourcesToPlayer(player, (ServerPlayerEntity) attacker), () -> dropResources(player));
 
-        PrescheduledEvents.playCountdown(() -> super.respawnPlayer(player), this, 5, 20, SoundEvents.BLOCK_FUNGUS_STEP, player);
+        super.onPlayerDeath(player, source, amount);
+        if (source.isOf(DamageTypes.OUT_OF_WORLD)) ((BedwarsTable)this.dbTables.get(player)).fallInVoid();
+
+        if (this.teamStatsMap.get(this.getTeam(player)).hasBed()) {
+            PrescheduledEvents.playCountdown(() -> super.respawnPlayer(player), this, 5, 20, SoundEvents.BLOCK_FUNGUS_STEP, player);
+        } else {
+            super.makePlayerSpectator(player);
+        }
 
         this.playerStatsMap.get(player).onDeath();
-        getPlayerAttacker(player).ifPresentOrElse(attacker -> giveResourcesToPlayer(player, (ServerPlayerEntity) attacker), () -> dropResources(player));
 
         return true;
     }
@@ -164,8 +177,27 @@ public class BedwarsGameManager extends AbstractGameManager {
         final BedwarsGameMap map = this.getMap();
         if (stack.get(ModComponents.RESOURCE_SPLIT) != null && map.isWithinSplitRange(player)) {
             stack.remove(ModComponents.RESOURCE_SPLIT);
-            this.getPlayers().stream().filter(map::isWithinSplitRange).filter(player::isTeammate).forEach(otherPlayer -> otherPlayer.giveOrDropStack(stack));
+            this.getPlayers().stream().filter(map::isWithinSplitRange).filter(player::isTeammate).filter(pickUpPlayer -> pickUpPlayer != player).forEach(otherPlayer -> otherPlayer.giveOrDropStack(stack));
         }
+    }
+
+    @Override
+    public boolean onBedBroken(ServerPlayerEntity player, BlockPos pos) {
+        final Optional<DyeColor> bedTeamOptional = this.getMap().getBedPositions().entrySet().stream().filter(entry -> this.getMap().pos(entry.getValue()).isWithinDistance(pos, 2d)).findFirst().map(Map.Entry::getKey);
+
+        return bedTeamOptional.map(bedTeam -> {
+            if (bedTeam == this.getTeam(player)) return false;
+
+            final boolean brokeBed = this.teamStatsMap.get(bedTeam).breakBed();
+            if (brokeBed) {
+                super.broadcast(Text.translatable("game.bedwars.bed_broken.chat", colouredTextFromColour(bedTeam)), false);
+                super.broadcastTitle(bedTeam, Text.translatable("game.bedwars.bed_broken.title").formatted(Formatting.DARK_RED));
+                super.broadcastSound(bedTeam, SoundEvents.ENTITY_WITHER_SPAWN);
+                player.playSoundToPlayer(Sounds.AIR_HORN, SoundCategory.PLAYERS, 1, 1);
+            }
+
+            return true;
+        }).orElse(true);
     }
 
     public BedwarsShopContents getShopContents() {
@@ -191,17 +223,6 @@ public class BedwarsGameManager extends AbstractGameManager {
     }
 
     public void upgradeEmeraldGens(GeneratorStats stats) {
-
-    }
-
-    @MustBeInvokedByOverriders
-    @Override
-    public void tick() {
-        super.tick();
-        this.getMap().getBedPositions().forEach((team, pos) -> {
-            if (super.world.getBlockState(pos).isIn(BlockTags.BEDS) && this.teamStatsMap.get(team).hasBed()) {
-                this.teamStatsMap.get(team).breakBed();
-            }
-        });
+        this.getMap().upgradeEmeraldGens(stats);
     }
 }

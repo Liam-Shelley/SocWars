@@ -3,6 +3,8 @@ package com.soc.events;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
+import java.util.Arrays;
+
 public interface ModEvents {
     static void initialise() {}
 
@@ -26,5 +28,15 @@ public interface ModEvents {
         for (OnItemPickup listener : listeners) {
             listener.onItemPickup(player, itemStack);
         }
+    });
+
+    Event<OnBedBroken> ON_BED_BROKEN = EventFactory.createArrayBacked(OnBedBroken.class, listeners -> (player, pos) -> {
+        boolean allowEvent = true;
+
+        for (OnBedBroken listener : listeners) {
+            allowEvent &= listener.onBedBreak(player, pos);
+        }
+
+        return allowEvent;
     });
 }
