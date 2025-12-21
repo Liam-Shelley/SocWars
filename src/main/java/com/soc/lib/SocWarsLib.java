@@ -358,6 +358,7 @@ public final class SocWarsLib {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static Text getTimeFromTicks(float time, boolean includeTicks, int... colours) {
         return getTimeFromTicksDynColours(time, includeTicks, Arrays.stream(colours).mapToObj(colour -> (UnaryOperator<Integer>)(a -> colour)).toArray(UnaryOperator[]::new));
     }

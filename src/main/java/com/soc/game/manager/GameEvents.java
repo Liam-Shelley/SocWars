@@ -11,9 +11,9 @@ public interface GameEvents {
         BedwarsGameEvents.initialise();
     }
 
-    Map<String, Consumer<? extends AbstractGameManager>> EVENT_REGISTRY = new HashMap<>();
+    Map<String, Consumer<? extends AbstractGameManager<?, ?, ?>>> EVENT_REGISTRY = new HashMap<>();
 
-    static <T extends AbstractGameManager> void registerEvent(String id, Consumer<T> function) {
+    static <T extends AbstractGameManager<?, ?, ?>> void registerEvent(String id, Consumer<T> function) {
         EVENT_REGISTRY.put(id, function);
     }
 }

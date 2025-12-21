@@ -8,17 +8,13 @@ import org.apache.commons.lang3.tuple.Triple;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
-public class EventQueue<T extends AbstractGameManager> {
+public class EventQueue<T extends AbstractGameManager<?, ?, ?>> {
     private final SortedSet<Event<T>> events;
 
     public EventQueue() {
         this.events = new TreeSet<>();
-    }
-
-    public EventQueue(Set<Event<T>> events) {
-        this();
-        this.events.addAll(events);
     }
 
     public void addEvent(int time, Consumer<T> event, Text name) {
@@ -31,21 +27,6 @@ public class EventQueue<T extends AbstractGameManager> {
 
     public int peekTime() {
         return this.events.getFirst().time();
-    }
-
-    public Consumer<T> peekEvent() {
-        return this.events.getFirst().callback();
-    }
-
-    public Collection<Pair<Integer, Text>> peekEvents(int time) {
-        final ArrayList<Pair<Integer, Text>> events = new ArrayList<>();
-
-        while (time >= this.events.getFirst().time()) {
-            Event<T> event = this.events.getFirst();
-            events.add(Pair.of(event.time(), event.name()));
-        }
-
-        return events;
     }
 
     public Collection<Text> peekEventsNames(int time) {
@@ -68,5 +49,16 @@ public class EventQueue<T extends AbstractGameManager> {
         }
 
         return events;
+    }
+
+    public Collection<Text> tryPopAndRunEvents(int time, T context) {
+        return this.tryPopEvents(time).stream().map(event -> {
+            event.getLeft().accept(context);
+            return event.getRight();
+        }).toList();
+    }
+
+    public void cancelEvents() {
+        this.events.clear();
     }
 }

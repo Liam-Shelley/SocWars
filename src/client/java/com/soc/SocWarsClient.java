@@ -2,6 +2,7 @@ package com.soc;
 
 import com.soc.blocks.util.ModBlocks;
 import com.soc.entities.util.ModEntities;
+import com.soc.game.BedwarsTeamsHUD;
 import com.soc.gui.screen.HandledScreens;
 import com.soc.items.FeatherBlockItem;
 import com.soc.networking.S2CReceivers;
@@ -139,5 +140,7 @@ public class SocWarsClient implements ClientModInitializer {
 			} catch (Exception ignored) {}
 
 		});
+
+		BedwarsTeamsHUD.initialise();
 	}
 }

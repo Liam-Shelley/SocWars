@@ -47,7 +47,7 @@ public interface EndGame {
                 return 0;
             }
 
-            final Optional<AbstractGameManager> playerGame = GamesManager.getInstance().getGame((PlayerEntity)source);
+            final Optional<AbstractGameManager<?, ?, ?>> playerGame = GamesManager.getInstance().getGame((PlayerEntity)source);
             if (playerGame.isEmpty()) {
                 context.getSource().sendMessage(Text.translatable("command.fail.end_game.not_in_game"));
                 return 0;

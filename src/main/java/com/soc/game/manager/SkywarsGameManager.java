@@ -1,8 +1,7 @@
 package com.soc.game.manager;
 
 import com.google.common.collect.Multimap;
-import com.soc.database.stats.BaseTable;
-import com.soc.database.stats.CombatTable;
+import com.soc.database.stats.BedwarsTable;
 import com.soc.database.stats.SkywarsTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.SkywarsGameMap;
@@ -19,7 +18,6 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -30,7 +28,7 @@ import static com.soc.game.map.AbstractGameMap.getRandomPlayerStack;
 import static com.soc.lib.SocWarsLib.getPlayerAttacker;
 import static com.soc.lib.SocWarsLib.multimapFromCollections;
 
-public class SkywarsGameManager extends AbstractGameManager {
+public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, SkywarsTable, SkywarsGameManager> {
     private final Settings settings;
     private final Map<ServerPlayerEntity, PlayerStats> playerMap;
 
@@ -73,12 +71,7 @@ public class SkywarsGameManager extends AbstractGameManager {
     }
 
     @Override
-    protected SkywarsGameMap getMap() {
-        return (SkywarsGameMap) super.map;
-    }
-
-    @Override
-    protected AbstractGameMap buildMap() {
+    protected SkywarsGameMap buildMap() {
         Optional<SkywarsGameMap> map = AbstractGameMap.loadRandomMap(super.world, super.generateCentrePosition(), SkywarsGameMap::fromNbt, SkywarsGameMap.FILE_EXTENSION);
 
         if (map.isEmpty()) throw new IllegalStateException("No Skywars map found");
@@ -88,7 +81,7 @@ public class SkywarsGameManager extends AbstractGameManager {
     @Override
     public void startGame() {
         super.startGame();
-        this.getMap().placeLootChests();
+        super.map.placeLootChests();
     }
 
     @Override
@@ -96,7 +89,7 @@ public class SkywarsGameManager extends AbstractGameManager {
         this.playerMap.forEach((player, stats) -> {
             final Text message;
             final SoundEvent sound;
-            final SkywarsTable dbTable = (SkywarsTable)this.dbTables.get(player);
+            final SkywarsTable dbTable = this.dbTables.get(player);
             if (stats.isAlive()) {
                 message = Text.translatable("game.skywars.win");
                 sound = SoundEvents.ENTITY_PLAYER_LEVELUP;
@@ -125,7 +118,7 @@ public class SkywarsGameManager extends AbstractGameManager {
     public Multimap<DyeColor, ServerPlayerEntity> buildTeams(Set<ServerPlayerEntity> players, @Nullable SpreadRules spreadRules) {
         final Stack<ServerPlayerEntity> playerStack = getRandomPlayerStack(players);
 
-        final List<DyeColor> teamColoursList = new ArrayList<>(this.getMap().getTeamColours());
+        final List<DyeColor> teamColoursList = new ArrayList<>(super.map.getTeamColours());
         Collections.shuffle(teamColoursList);
 
         return multimapFromCollections(teamColoursList, playerStack);
@@ -170,21 +163,24 @@ public class SkywarsGameManager extends AbstractGameManager {
     }
 
     @Override
+    @SuppressWarnings("SuspiciousMethodCalls")
     protected void trackDeathStats(ServerPlayerEntity player, DamageSource source) {
-        if (source.isOf(DamageTypes.OUT_OF_WORLD)) ((SkywarsTable)this.dbTables.get(player)).fallInVoid();
+        if (source.isOf(DamageTypes.OUT_OF_WORLD)) (this.dbTables.get(player)).fallInVoid();
 
-        final BaseTable targetTable = this.dbTables.get(player);
-        if (!(targetTable instanceof CombatTable)) return;
+        final SkywarsTable targetTable = this.dbTables.get(player);
 
-        ((CombatTable)targetTable).grantDeath();
-        getPlayerAttacker(player).ifPresent(killer -> ((CombatTable)this.dbTables.get(killer)).grantKill());
+        targetTable.grantDeath();
+        getPlayerAttacker(player).ifPresent(killer -> {
+            final SkywarsTable killerTable = this.dbTables.get(killer);
+            if (killerTable != null) killerTable.grantKill();
+        });
     }
 
     @Override
     public void onChestOpened(ServerPlayerEntity player, BlockPos pos) {
-        this.getMap().getLootChest(pos).ifPresent(chest -> {
+        super.map.getLootChest(pos).ifPresent(chest -> {
             if (chest.open()) {
-                ((SkywarsTable)this.dbTables.get(player)).openChest(chest.getTier());
+                this.dbTables.get(player).openChest(chest.getTier());
             }
         });
     }

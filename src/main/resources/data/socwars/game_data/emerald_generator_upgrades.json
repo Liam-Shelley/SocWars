@@ -1,30 +1,44 @@
 [
   {
+    "generation_time": {
+      "seconds": 30
+    },
+    "generation_count": 1
+  },
+  {
     "time": {
       "minutes": 5
     },
-    "generation_time": 30,
+    "generation_time": {
+      "seconds": 45
+    },
     "generation_count": 1
   },
   {
     "time": {
       "minutes": 10
     },
-    "generation_time": 30,
+    "generation_time": {
+      "seconds": 30
+    },
     "generation_count": 1
   },
   {
     "time": {
       "minutes": 16
     },
-    "generation_time": 30,
+    "generation_time": {
+      "seconds": 15
+    },
     "generation_count": 1
   },
   {
     "time": {
       "minutes": 25
     },
-    "generation_time": 30,
+    "generation_time": {
+      "seconds": 10
+    },
     "generation_count": 1
   }
 ]

@@ -39,7 +39,7 @@ public class BedwarsGameMap extends AbstractGameMap {
     public static final String ISLAND_GENS_KEY = "island_gens";
     public static final String BED_POSITIONS_KEY = "bed_positions";
 
-    public static final float SPLIT_RANGE = 3f;
+    public static final float SPLIT_RANGE = 4f;
 
     private final Set<ResourceGenerator> diamondGens;
     private final Set<ResourceGenerator> emeraldGens;

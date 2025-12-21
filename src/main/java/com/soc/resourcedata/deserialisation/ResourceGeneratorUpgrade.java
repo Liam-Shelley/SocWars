@@ -6,6 +6,7 @@ import com.soc.lib.json.Time;
 import org.jetbrains.annotations.NotNull;
 
 import static com.soc.lib.json.JsonHelper.getDefaultedInt;
+import static com.soc.lib.json.JsonHelper.getDefaultedObject;
 
 public record ResourceGeneratorUpgrade(int time, int generationTime, int generationCount) implements Comparable<ResourceGeneratorUpgrade> {
     public static final String TIME_KEY = "time";
@@ -14,8 +15,8 @@ public record ResourceGeneratorUpgrade(int time, int generationTime, int generat
 
     public ResourceGeneratorUpgrade(JsonObject json) {
         this(
-                new Time(json.getAsJsonObject(TIME_KEY)).ticks(),
-                getDefaultedInt(json, GENERATION_TIME_KEY),
+                getDefaultedObject(json, TIME_KEY, Time::new, new Time(0)).ticks(),
+                getDefaultedObject(json, GENERATION_TIME_KEY, Time::new, new Time(0)).ticks(),
                 getDefaultedInt(json, COUNT_KEY)
         );
     }

@@ -1,9 +1,17 @@
 [
   {
+    "generation_time": {
+      "seconds": 30
+    },
+    "generation_count": 1
+  },
+  {
     "time": {
       "minutes": 2
     },
-    "generation_time": 30,
+    "generation_time": {
+      "seconds": 30
+    },
     "generation_count": 1
   },
   {
@@ -11,21 +19,29 @@
       "minutes": 7,
       "seconds": 30
     },
-    "generation_time": 30,
+    "generation_time": {
+      "seconds": 20
+    },
     "generation_count": 1
   },
   {
     "time": {
       "minutes": 13
     },
-    "generation_time": 30,
+    "generation_time": {
+      "seconds": 12,
+      "ticks": 10
+    },
     "generation_count": 1
   },
   {
     "time": {
       "minutes": 20
     },
-    "generation_time": 30,
+    "generation_time": {
+      "seconds": 7,
+      "ticks": 10
+    },
     "generation_count": 1
   }
 ]

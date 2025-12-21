@@ -1,6 +1,5 @@
 package com.soc.game.map;
 
-import com.soc.game.manager.GameType;
 import net.minecraft.util.DyeColor;
 
 public enum DyeColourWithEmpty {

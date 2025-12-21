@@ -31,7 +31,7 @@ public class GamesManager {
 
     private ServerWorld world;
 
-    private final ArrayList<AbstractGameManager> games = new ArrayList<>();
+    private final ArrayList<AbstractGameManager<?, ?, ?>> games = new ArrayList<>();
     private final ConcurrentHashMap<ServerPlayerEntity, Integer> playerGameLookup = new ConcurrentHashMap<>();
 
     private final MatchmakingQueue<GameType> queue = new MatchmakingQueue<>();
@@ -75,7 +75,7 @@ public class GamesManager {
         );
     }
 
-    public boolean startGame(AbstractGameManager game) {
+    public boolean startGame(AbstractGameManager<?, ?, ?> game) {
         if (game == null) return false;
 
         if (this.games.size() > game.getGameId()) {
@@ -101,12 +101,13 @@ public class GamesManager {
         this.games.set(gameId, null);
     }
 
-    public Optional<AbstractGameManager> getGame(LivingEntity entity) {
+    @SuppressWarnings("SuspiciousMethodCalls")
+    public Optional<AbstractGameManager<?, ?, ?>> getGame(LivingEntity entity) {
         final Integer id = this.playerGameLookup.get(entity); //Hilarious abuse of Map#Get
         return Optional.ofNullable(id).map(this.games::get);
     }
 
-    public Optional<AbstractGameManager> getGame(int gameId) {
+    public Optional<AbstractGameManager<?, ?, ?>> getGame(int gameId) {
         if (gameId < 0 || gameId >= this.games.size()) return Optional.empty();
         return Optional.ofNullable(this.games.get(gameId));
     }
@@ -123,7 +124,7 @@ public class GamesManager {
     }
 
     private int getNewGameId() {
-        final Iterator<? extends AbstractGameManager> games = this.games.iterator();
+        final Iterator<? extends AbstractGameManager<?, ?, ?>> games = this.games.iterator();
 
         int i = 0;
         while (games.hasNext() && games.next() != null) {
@@ -166,7 +167,7 @@ public class GamesManager {
 
         final int gameId = this.getNewGameId();
 
-        final AbstractGameManager game = switch (queue) {
+        final AbstractGameManager<?, ?, ?> game = switch (queue) {
             case SKYWARS -> new SkywarsGameManager(this.world, players, null, gameId, SkywarsGameManager.Settings.DEFAULT);
             case BEDWARS -> new BedwarsGameManager(this.world, players, new SpreadRules(4), gameId);
             case PROP_HUNT -> null; //Maybe get around to writing some of the game logic for prop hunt

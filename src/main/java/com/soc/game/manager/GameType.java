@@ -1,5 +1,8 @@
 package com.soc.game.manager;
 
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.text.Text;
 import net.minecraft.util.StringIdentifiable;
 import org.apache.commons.lang3.StringUtils;
@@ -9,6 +12,7 @@ public enum GameType implements QueueProgress, StringIdentifiable {
     BEDWARS(1, 16, "bedwars"),
     PROP_HUNT(2, 8, "prop_hunt");
 
+    public static final PacketCodec<RegistryByteBuf, GameType> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.INTEGER, GameType::ordinal, GameType::fromOrdinal);
     private final int minPlayers;
     private final int maxPlayers;
     private final String name;

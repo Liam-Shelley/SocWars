@@ -3,7 +3,6 @@ package com.soc.game.manager;
 import com.google.common.collect.*;
 import com.soc.SocWars;
 import com.soc.database.Database;
-import com.soc.database.stats.BaseGameTable;
 import com.soc.database.stats.BaseTable;
 import com.soc.database.stats.CombatTable;
 import com.soc.game.map.AbstractGameMap;
@@ -30,30 +29,28 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.soc.lib.SocWarsLib.*;
 
-public abstract class AbstractGameManager {
+public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE extends BaseTable, EVENT extends AbstractGameManager<?, ?, ?>> {
     public static final int KILLZONE_Y_OFFSET = -25;
 
     private final int gameId;
 
-    protected final AbstractGameMap map;
+    protected final MAP map;
     protected final ServerWorld world;
     protected final Multimap<DyeColor, ServerPlayerEntity> teams;
     protected final List<ServerPlayerEntity> spectators;
     protected final Map<DyeColor, Team> scoreboardTeams;
-    protected final @Nullable EventQueue eventQueue;
+    protected final @Nullable EventQueue<EVENT> eventQueue;
 
-    protected final Map<ServerPlayerEntity, BaseGameTable> dbTables;
+    protected final Map<ServerPlayerEntity, TABLE> dbTables;
     protected final int killHeight;
 
     protected int time;
@@ -68,20 +65,19 @@ public abstract class AbstractGameManager {
         this.eventQueue = this.buildEventQueue();
 
         this.dbTables = players.stream().collect(Collectors.toMap(key -> key, this.dbTableBuilder()));
-        this.killHeight = this.getMap().getCentrePos().getY() + KILLZONE_Y_OFFSET;
+        this.killHeight = this.map.getCentrePos().getY() + KILLZONE_Y_OFFSET;
     }
 
-    protected abstract AbstractGameMap getMap();
-    protected abstract AbstractGameMap buildMap();
-    public abstract Multimap<DyeColor, ServerPlayerEntity> buildTeams(Set<ServerPlayerEntity> players, SpreadRules spreadRules);
-    public final Map<DyeColor, Team> buildScoreboardTeams() {
-        return this.teams.entries().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> this.addTeamFromColour(entry.getKey())));
+    protected abstract MAP buildMap();
+    protected abstract Multimap<DyeColor, ServerPlayerEntity> buildTeams(Set<ServerPlayerEntity> players, SpreadRules spreadRules);
+    private Map<DyeColor, Team> buildScoreboardTeams() {
+        return this.teams.keySet().stream().collect(Collectors.toMap(Function.identity(), this::addTeamFromColour));
     }
-    protected abstract @Nullable EventQueue<? extends AbstractGameManager> buildEventQueue();
-    protected abstract Function<ServerPlayerEntity, ? extends BaseGameTable> dbTableBuilder();
+    protected abstract @Nullable EventQueue<EVENT> buildEventQueue();
+    protected abstract Function<ServerPlayerEntity, TABLE> dbTableBuilder();
 
     public void startGame() {
-        final AbstractGameMap map = this.getMap();
+        final AbstractGameMap map = this.map;
         map.placeMap();
         map.spawnCages(true);
         map.spreadPlayers(this.teams);
@@ -102,7 +98,7 @@ public abstract class AbstractGameManager {
 
     public void endGame(boolean immediate) {
         this.removeTeams();
-        this.getMap().destroyMap();
+        this.map.destroyMap();
         this.sendPlayersToLobby();
 
         Database.getStatement().ifPresent(statement -> this.dbTables.values().forEach(table -> {
@@ -122,7 +118,7 @@ public abstract class AbstractGameManager {
         this.makePlayerSpectator(player);
 
         player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.ENTITY_PLAYER_DEATH, SoundCategory.PLAYERS, 1, 1);
-        player.getWorld().playSound(null, BlockPos.ofFloored(this.getMap().getRespawnSpectatorPos()), SoundEvents.ENTITY_PLAYER_DEATH, SoundCategory.PLAYERS, 1, 1);
+        player.getWorld().playSound(null, BlockPos.ofFloored(this.map.getRespawnSpectatorPos()), SoundEvents.ENTITY_PLAYER_DEATH, SoundCategory.PLAYERS, 1, 1);
 
         return true;
     }
@@ -131,6 +127,8 @@ public abstract class AbstractGameManager {
 
     protected abstract void trackDeathStats(ServerPlayerEntity player, DamageSource source);
 
+
+    @SuppressWarnings("SuspiciousMethodCalls")
     public boolean onPlayerDamage(ServerPlayerEntity player, DamageSource source, float amount) {
         final BaseTable targetTable = this.dbTables.get(player);
         if (!(targetTable instanceof CombatTable)) return true;
@@ -198,13 +196,11 @@ public abstract class AbstractGameManager {
         this.teams.forEach((team, player) -> world.getScoreboard().addScoreHolderToTeam(player.getNameForScoreboard(), this.scoreboardTeams.get(team)));
     }
 
+    @SuppressWarnings("unchecked")
     private void updateEventQueue() {
         if (this.eventQueue == null) return;
 
-        final Collection<Pair<Consumer<AbstractGameManager>, String>> events = this.eventQueue.tryPopEvents(this.time);
-        events.forEach(event -> {
-            event.getLeft().accept(this);
-        });
+        this.eventQueue.tryPopAndRunEvents(time, (EVENT) this);
     }
 
     public final @Nullable Collection<Text> getUpcomingEvents() {
@@ -225,7 +221,7 @@ public abstract class AbstractGameManager {
     }
 
     public final BlockPos getSpawnPosition(ServerPlayerEntity player) {
-        return this.getMap().getSpawnPosition(this.getTeam(player));
+        return this.map.getSpawnPosition(this.getTeam(player));
     }
 
     protected void broadcast(Text text, final boolean overlay) {
@@ -288,7 +284,7 @@ public abstract class AbstractGameManager {
     }
 
     protected void makePlayerSpectator(ServerPlayerEntity player) {
-        final Vec3d pos = this.getMap().getRespawnSpectatorPos();
+        final Vec3d pos = this.map.getRespawnSpectatorPos();
         player.requestTeleport(pos.x, pos.y, pos.z);
         player.networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(player.getId(), Vec3d.ZERO));
 
@@ -366,7 +362,7 @@ public abstract class AbstractGameManager {
     public void joinAsSpectator(ServerPlayerEntity player) {
         this.spectators.add(player);
 
-        final Vec3d pos = this.getMap().getRespawnSpectatorPos();
+        final Vec3d pos = this.map.getRespawnSpectatorPos();
         player.requestTeleport(pos.x, pos.y, pos.z);
 
         player.changeGameMode(GameMode.SPECTATOR);

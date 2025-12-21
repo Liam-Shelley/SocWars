@@ -31,7 +31,6 @@ public class PlayerStats {
     public void onDeath(boolean canRespawn) {
         if (!canRespawn) {
             this.isAlive = false;
-            return;
         }
 
         if (this.pickaxeTier > 0) this.pickaxeTier--;

@@ -15,5 +15,5 @@ public record JoinQueuePayload(String queue) implements CustomPayload {
     @Override
     public Id<? extends CustomPayload> getId() {
         return ID;
-    } 
+    }
 }

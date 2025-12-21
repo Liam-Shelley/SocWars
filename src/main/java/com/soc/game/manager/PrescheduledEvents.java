@@ -10,7 +10,7 @@ import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
 public interface PrescheduledEvents {
-    static void playCountdown(Runnable endCallback, AbstractGameManager context, int count, int interval, int startDelay, @Nullable SoundEvent sound, @Nullable ServerPlayerEntity player) {
+    static void playCountdown(Runnable endCallback, AbstractGameManager<?, ?, ?> context, int count, int interval, int startDelay, @Nullable SoundEvent sound, @Nullable ServerPlayerEntity player) {
         final Events events = Events.getInstance();
 
         for (int i = 0; i < count; i++) {
@@ -40,11 +40,11 @@ public interface PrescheduledEvents {
         }, context, (long) count * interval + startDelay);
     }
 
-    static void playCountdown(Runnable endCallback, AbstractGameManager context, int count, int interval, @Nullable SoundEvent sound, @Nullable ServerPlayerEntity player) {
+    static void playCountdown(Runnable endCallback, AbstractGameManager<?, ?, ?> context, int count, int interval, @Nullable SoundEvent sound, @Nullable ServerPlayerEntity player) {
         playCountdown(endCallback, context, count, interval, 0, sound, player);
     }
 
-    static void playCountdown(Runnable endCallback, AbstractGameManager context, int count, int interval, @Nullable ServerPlayerEntity player) {
+    static void playCountdown(Runnable endCallback, AbstractGameManager<?, ?, ?> context, int count, int interval, @Nullable ServerPlayerEntity player) {
         playCountdown(endCallback, context, count, interval, 0, null, player);
     }
 }

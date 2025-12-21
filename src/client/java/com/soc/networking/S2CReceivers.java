@@ -21,8 +21,12 @@ public class S2CReceivers {
         ClientPlayNetworking.registerGlobalReceiver(AddVelocityPayload.ID, (payload, context) -> {
                 context.player().addVelocity(payload.velocity());
         });
+        ClientPlayNetworking.registerGlobalReceiver(StartGamePayload.ID, (payload, context) -> {
 
+        });
+        ClientPlayNetworking.registerGlobalReceiver(EndGamePayload.ID, (payload, context) -> {
 
+        });
         ClientPlayNetworking.registerGlobalReceiver(ShopDataPayload.ID, (payload, context) -> {
             final ScreenHandler screenHandler = context.player().currentScreenHandler;
             if (screenHandler.syncId != payload.syncId() || !(screenHandler instanceof BedwarsShopScreenHandler)) return;

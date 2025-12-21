@@ -2,10 +2,7 @@ package com.soc.game.manager;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import com.soc.database.stats.BaseTable;
 import com.soc.database.stats.BedwarsTable;
-import com.soc.database.stats.CombatTable;
-import com.soc.database.stats.SkywarsTable;
 import com.soc.game.manager.bedwars.BedwarsShopContents;
 import com.soc.game.manager.bedwars.PlayerStats;
 import com.soc.game.manager.bedwars.TeamStats;
@@ -46,7 +43,7 @@ import java.util.stream.Collectors;
 import static com.soc.game.map.AbstractGameMap.getRandomPlayerStack;
 import static com.soc.lib.SocWarsLib.*;
 
-public class BedwarsGameManager extends AbstractGameManager {
+public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, BedwarsTable, BedwarsGameManager> {
     protected static final Item[] RESOURCES = { Items.IRON_INGOT, Items.GOLD_INGOT, Items.DIAMOND, Items.EMERALD };
 
     private final Map<ServerPlayerEntity, PlayerStats> playerStatsMap;
@@ -61,12 +58,7 @@ public class BedwarsGameManager extends AbstractGameManager {
     }
 
     @Override
-    protected BedwarsGameMap getMap() {
-        return (BedwarsGameMap) super.map;
-    }
-
-    @Override
-    protected AbstractGameMap buildMap() {
+    protected BedwarsGameMap buildMap() {
         final Optional<BedwarsGameMap> map = AbstractGameMap.loadRandomMap(super.world, super.generateCentrePosition(), BedwarsGameMap::fromNbt, BedwarsGameMap.FILE_EXTENSION);
 
         if (map.isEmpty()) throw new IllegalStateException("No Bedwars map found");
@@ -78,26 +70,27 @@ public class BedwarsGameManager extends AbstractGameManager {
     public void startGame() {
         super.startGame();
 
-        this.getMap().getBedPositions().forEach((team, pos) -> {
+        super.map.getBedPositions().forEach((team, pos) -> {
             if (!super.teams.containsKey(team)) {
-                super.world.breakBlock(this.getMap().pos(pos).down(), false);
+                super.world.breakBlock(super.map.pos(pos).down(), false);
             }
         });
     }
 
     @Override
     public void endGame(boolean immediate) {
-        /*
-        this.playerMap.forEach((player, stats) -> {
+        this.eventQueue.cancelEvents();
+
+        this.playerStatsMap.forEach((player, stats) -> {
             final Text message;
             final SoundEvent sound;
-            final SkywarsTable dbTable = (SkywarsTable)this.dbTables.get(player);
-            if (stats.isAlive()) {
-                message = Text.translatable("game.skywars.win");
+            final BedwarsTable dbTable = this.dbTables.get(player);
+            if (this.teamStatsMap.get(super.getTeam(player)).isAlive()) {
+                message = Text.translatable("game.bedwars.win");
                 sound = SoundEvents.ENTITY_PLAYER_LEVELUP;
                 dbTable.win();
             } else {
-                message = Text.translatable("game.skywars.lose");
+                message = Text.translatable("game.bedwars.lose");
                 sound = SoundEvents.BLOCK_BELL_USE;
                 dbTable.lose();
             }
@@ -108,7 +101,6 @@ public class BedwarsGameManager extends AbstractGameManager {
                 player.playSoundToPlayer(sound, SoundCategory.PLAYERS, 1, 1);
             }, 10);
         });
-        */
 
         if (immediate) {
             super.endGame(true);
@@ -123,7 +115,7 @@ public class BedwarsGameManager extends AbstractGameManager {
 
         final Stack<ServerPlayerEntity> playerStack = getRandomPlayerStack(players);
 
-        final Set<DyeColor> teamColours = this.getMap().getTeamColours();
+        final Set<DyeColor> teamColours = super.map.getTeamColours();
         final int numTeams = Math.min(spreadRules.numTeams(), teamColours.size());
 
         final ImmutableMultimap.Builder<DyeColor, ServerPlayerEntity> builder = ImmutableMultimap.builder();
@@ -137,10 +129,20 @@ public class BedwarsGameManager extends AbstractGameManager {
         }
 
         return builder.build();
+
+
+//        final ImmutableMultimap.Builder<DyeColor, ServerPlayerEntity> builder2 = ImmutableMultimap.builder();
+//
+//        final DyeColor firstTeam = teamColours.stream().findFirst().get();
+//
+//        players.forEach(player -> builder2.put(firstTeam, player));
+//
+//        return builder2.build();
+
     }
 
     @Override
-    protected @Nullable EventQueue<BedwarsGameManager> buildEventQueue() {
+    protected EventQueue<BedwarsGameManager> buildEventQueue() {
         final EventQueue<BedwarsGameManager> queue = new EventQueue<>();
 
         {
@@ -174,7 +176,8 @@ public class BedwarsGameManager extends AbstractGameManager {
 
         super.onPlayerDeath(player, source, amount);
 
-        if (this.getAliveTeams().size() < (super.teams.keys().size() > 1 ? 2 : 1)) {
+        //super.broadcast(Text.of("Teams alive: " + this.getAliveTeams() + " Teams in game: " + super.teams.keySet()), false);
+        if (this.getAliveTeams().size() < (super.teams.keySet().size() > 1 ? 2 : 1)) {
             this.endGame(false);
             return false;
         }
@@ -190,7 +193,7 @@ public class BedwarsGameManager extends AbstractGameManager {
 
     @Override
     protected boolean canRespawn(ServerPlayerEntity player) {
-        return this.teamStatsMap.get(this.getTeam(player)).hasBed();
+        return this.teamStatsMap.get(super.getTeam(player)).hasBed();
     }
 
     protected Set<ServerPlayerEntity> getAlivePlayers() {
@@ -202,14 +205,17 @@ public class BedwarsGameManager extends AbstractGameManager {
     }
 
     @Override
+    @SuppressWarnings("SuspiciousMethodCalls")
     protected void trackDeathStats(ServerPlayerEntity player, DamageSource source) {
-        if (source.isOf(DamageTypes.OUT_OF_WORLD)) ((BedwarsTable)this.dbTables.get(player)).fallInVoid();
+        if (source.isOf(DamageTypes.OUT_OF_WORLD)) this.dbTables.get(player).fallInVoid();
 
-        final BaseTable targetTable = this.dbTables.get(player);
-        if (!(targetTable instanceof CombatTable)) return;
+        final BedwarsTable targetTable = this.dbTables.get(player);
 
-        ((CombatTable)targetTable).grantDeath();
-        getPlayerAttacker(player).ifPresent(killer -> ((CombatTable)this.dbTables.get(killer)).grantKill());
+        targetTable.grantDeath();
+        getPlayerAttacker(player).ifPresent(killer -> {
+            final BedwarsTable killerTable = this.dbTables.get(killer);
+            if (killerTable != null) killerTable.grantKill();
+        });
     }
 
     protected static void giveResourcesToPlayer(ServerPlayerEntity giver, ServerPlayerEntity receiver) {
@@ -232,7 +238,7 @@ public class BedwarsGameManager extends AbstractGameManager {
             } while (stacks-- > 0);
 
         }
-        Inventories.remove(giver.getInventory(), predStack -> Arrays.asList(RESOURCES).contains(predStack.getItem()), 40 * 64, false);
+        giver.getInventory().clear();
     }
 
     protected static void dropResources(ServerPlayerEntity player) {
@@ -247,9 +253,9 @@ public class BedwarsGameManager extends AbstractGameManager {
     public void onItemPickup(ServerPlayerEntity player, ItemStack stack) {
         if (stack.get(ModComponents.RESOURCE_COUNTED) != null) {
             stack.remove(ModComponents.RESOURCE_COUNTED);
-            ((BedwarsTable)this.dbTables.get(player)).collectItem(stack);
+            this.dbTables.get(player).collectItem(stack);
         }
-        final BedwarsGameMap map = this.getMap();
+        final BedwarsGameMap map = super.map;
         if (stack.get(ModComponents.RESOURCE_SPLIT) != null && map.isWithinSplitRange(player)) {
             stack.remove(ModComponents.RESOURCE_SPLIT);
             this.getPlayers().stream().filter(map::isWithinSplitRange).filter(player::isTeammate).filter(pickUpPlayer -> pickUpPlayer != player).forEach(otherPlayer -> otherPlayer.giveOrDropStack(stack));
@@ -258,10 +264,10 @@ public class BedwarsGameManager extends AbstractGameManager {
 
     @Override
     public boolean onBedBroken(ServerPlayerEntity player, BlockPos pos) {
-        final Optional<DyeColor> bedTeamOptional = this.getMap().getBedPositions().entrySet().stream().filter(entry -> this.getMap().pos(entry.getValue()).isWithinDistance(pos, 2d)).findFirst().map(Map.Entry::getKey);
+        final Optional<DyeColor> bedTeamOptional = super.map.getBedPositions().entrySet().stream().filter(entry -> super.map.pos(entry.getValue()).isWithinDistance(pos, 2d)).findFirst().map(Map.Entry::getKey);
 
         return bedTeamOptional.map(bedTeam -> {
-            //if (bedTeam == this.getTeam(player)) return false;
+            //if (bedTeam == super.getTeam(player)) return false;
 
             final boolean brokeBed = this.teamStatsMap.get(bedTeam).breakBed();
             if (brokeBed) {
@@ -269,6 +275,9 @@ public class BedwarsGameManager extends AbstractGameManager {
                 super.broadcastTitle(bedTeam, Text.translatable("game.bedwars.bed_broken.title").formatted(Formatting.DARK_RED));
                 super.broadcastSound(bedTeam, SoundEvents.ENTITY_WITHER_SPAWN);
                 player.playSoundToPlayer(Sounds.AIR_HORN, SoundCategory.PLAYERS, 1, 1);
+
+                super.dbTables.get(player).grantBedBreak();
+                super.teams.get(bedTeam).stream().map(super.dbTables::get).forEach(BedwarsTable::loseBed);
             }
 
             return true;
@@ -281,7 +290,7 @@ public class BedwarsGameManager extends AbstractGameManager {
 
     @Nullable
     public static BedwarsGameManager getBedwarsGameManager(PlayerEntity player) {
-        return GamesManager.getInstance().getGame(player).map(a -> a instanceof BedwarsGameManager bedwarsGameManager ? bedwarsGameManager : null).orElse(null);
+        return GamesManager.getInstance().getGame(player).map(manager -> manager instanceof BedwarsGameManager bedwarsGameManager ? bedwarsGameManager : null).orElse(null);
     }
 
     public static boolean sendShopData(PlayerEntity player, OptionalInt syncId) {
@@ -294,10 +303,11 @@ public class BedwarsGameManager extends AbstractGameManager {
     }
 
     public void upgradeDiamondGens(GeneratorStats stats) {
-        this.getMap().upgradeDiamondGens(stats);
+        super.map.upgradeDiamondGens(stats);
+        super.broadcast(Text.of(stats.toString()), false);
     }
 
     public void upgradeEmeraldGens(GeneratorStats stats) {
-        this.getMap().upgradeEmeraldGens(stats);
+        super.map.upgradeEmeraldGens(stats);
     }
 }
