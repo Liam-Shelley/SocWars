@@ -26,6 +26,7 @@ public record ResourceGeneratorUpgrade(int time, int generationTime, int generat
 
     @Override
     public int compareTo(@NotNull ResourceGeneratorUpgrade o) {
-        return Integer.compare(this.time, o.time);
+        final int timeCompare = Integer.compare(this.time, o.time);
+        return timeCompare == 0 ? -Integer.compare(this.generationTime, o.generationTime) : timeCompare;
     }
 }

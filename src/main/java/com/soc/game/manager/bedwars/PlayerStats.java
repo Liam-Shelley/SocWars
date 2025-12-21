@@ -15,7 +15,7 @@ public class PlayerStats {
     public static final Collector<PlayerStats, ?, Map<ServerPlayerEntity, PlayerStats>> MAP_COLLECTOR = Collectors.toMap(PlayerStats::getPlayer, Function.identity());
 
     private final ServerPlayerEntity player;
-    private boolean isAlive;
+    private boolean isAlive = true;
 
     private int pickaxeTier;
     private int axeTier;

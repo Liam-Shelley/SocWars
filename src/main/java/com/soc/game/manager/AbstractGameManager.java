@@ -77,16 +77,16 @@ public abstract class AbstractGameManager {
     public final Map<DyeColor, Team> buildScoreboardTeams() {
         return this.teams.entries().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> this.addTeamFromColour(entry.getKey())));
     }
-    protected abstract @Nullable EventQueue buildEventQueue();
+    protected abstract @Nullable EventQueue<? extends AbstractGameManager> buildEventQueue();
     protected abstract Function<ServerPlayerEntity, ? extends BaseGameTable> dbTableBuilder();
 
     public void startGame() {
-        this.removePlayersVelocity();
-
         final AbstractGameMap map = this.getMap();
         map.placeMap();
         map.spawnCages(true);
         map.spreadPlayers(this.teams);
+
+        this.removePlayersVelocity();
 
         this.assignPlayersToTeams();
         this.setGameMode(GameMode.ADVENTURE);
@@ -120,7 +120,6 @@ public abstract class AbstractGameManager {
         resetScale(player);
 
         this.makePlayerSpectator(player);
-        this.broadcastDeath(player, source, this.canRespawn(player));
 
         player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.ENTITY_PLAYER_DEATH, SoundCategory.PLAYERS, 1, 1);
         player.getWorld().playSound(null, BlockPos.ofFloored(this.getMap().getRespawnSpectatorPos()), SoundEvents.ENTITY_PLAYER_DEATH, SoundCategory.PLAYERS, 1, 1);

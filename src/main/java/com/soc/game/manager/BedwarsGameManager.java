@@ -11,6 +11,7 @@ import com.soc.game.manager.bedwars.PlayerStats;
 import com.soc.game.manager.bedwars.TeamStats;
 import com.soc.game.map.*;
 import com.soc.items.components.ModComponents;
+import com.soc.lib.Events;
 import com.soc.networking.s2c.ShopDataPayload;
 import com.soc.resourcedata.containers.BedwarsData;
 import com.soc.resourcedata.deserialisation.ResourceGeneratorUpgrade;
@@ -20,6 +21,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.Inventories;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -27,6 +29,7 @@ import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
@@ -55,10 +58,6 @@ public class BedwarsGameManager extends AbstractGameManager {
         this.playerStatsMap = players.stream().collect(Collectors.toMap(Function.identity(), PlayerStats::new));
         this.teamStatsMap = super.teams.keySet().stream().collect(Collectors.toMap(Function.identity(), team -> new TeamStats(team, super.teams.get(team).stream().map(this.playerStatsMap::get).collect(Collectors.toSet()))));
         this.shopContents = new BedwarsShopContents();
-
-        this.getMap().getBedPositions().forEach((team, pos) -> {
-            if (!super.teams.containsKey(team)) super.world.breakBlock(this.getMap().pos(pos), false);
-        });
     }
 
     @Override
@@ -73,6 +72,49 @@ public class BedwarsGameManager extends AbstractGameManager {
         if (map.isEmpty()) throw new IllegalStateException("No Bedwars map found");
 
         return map.get();
+    }
+
+    @Override
+    public void startGame() {
+        super.startGame();
+
+        this.getMap().getBedPositions().forEach((team, pos) -> {
+            if (!super.teams.containsKey(team)) {
+                super.world.breakBlock(this.getMap().pos(pos).down(), false);
+            }
+        });
+    }
+
+    @Override
+    public void endGame(boolean immediate) {
+        /*
+        this.playerMap.forEach((player, stats) -> {
+            final Text message;
+            final SoundEvent sound;
+            final SkywarsTable dbTable = (SkywarsTable)this.dbTables.get(player);
+            if (stats.isAlive()) {
+                message = Text.translatable("game.skywars.win");
+                sound = SoundEvents.ENTITY_PLAYER_LEVELUP;
+                dbTable.win();
+            } else {
+                message = Text.translatable("game.skywars.lose");
+                sound = SoundEvents.BLOCK_BELL_USE;
+                dbTable.lose();
+            }
+
+            Events.getInstance().scheduleEvent(() -> {
+                player.networkHandler.sendPacket(new TitleS2CPacket(message));
+
+                player.playSoundToPlayer(sound, SoundCategory.PLAYERS, 1, 1);
+            }, 10);
+        });
+        */
+
+        if (immediate) {
+            super.endGame(true);
+        } else {
+            Events.getInstance().scheduleEvent(() -> super.endGame(false), 5 * 20);
+        }
     }
 
     @Override
@@ -125,6 +167,11 @@ public class BedwarsGameManager extends AbstractGameManager {
     public boolean onPlayerDeath(ServerPlayerEntity player, DamageSource source, float amount) {
         getPlayerAttacker(player).ifPresentOrElse(attacker -> giveResourcesToPlayer(player, (ServerPlayerEntity) attacker), () -> dropResources(player));
 
+        final boolean canRespawn = this.canRespawn(player);
+        this.playerStatsMap.get(player).onDeath(canRespawn);
+
+        this.broadcastDeath(player, source, !canRespawn);
+
         super.onPlayerDeath(player, source, amount);
 
         if (this.getAliveTeams().size() < (super.teams.keys().size() > 1 ? 2 : 1)) {
@@ -132,17 +179,13 @@ public class BedwarsGameManager extends AbstractGameManager {
             return false;
         }
 
-        final boolean canRespawn = this.canRespawn(player);
-
         if (canRespawn) {
             PrescheduledEvents.playCountdown(() -> super.respawnPlayer(player), this, 5, 20, SoundEvents.BLOCK_FUNGUS_STEP, player);
         } else {
             player.networkHandler.sendPacket(new TitleS2CPacket(Text.translatable("game.bedwars.eliminate")));
         }
 
-        this.playerStatsMap.get(player).onDeath(canRespawn);
-
-        return true;
+        return false;
     }
 
     @Override
@@ -160,7 +203,7 @@ public class BedwarsGameManager extends AbstractGameManager {
 
     @Override
     protected void trackDeathStats(ServerPlayerEntity player, DamageSource source) {
-        if (source.isOf(DamageTypes.OUT_OF_WORLD)) ((SkywarsTable)this.dbTables.get(player)).fallInVoid();
+        if (source.isOf(DamageTypes.OUT_OF_WORLD)) ((BedwarsTable)this.dbTables.get(player)).fallInVoid();
 
         final BaseTable targetTable = this.dbTables.get(player);
         if (!(targetTable instanceof CombatTable)) return;
@@ -189,7 +232,7 @@ public class BedwarsGameManager extends AbstractGameManager {
             } while (stacks-- > 0);
 
         }
-        //Inventories.remove(giver.getInventory(), predStack -> Arrays.asList(RESOURCES).contains(predStack.getItem()), 40 * 64, false);
+        Inventories.remove(giver.getInventory(), predStack -> Arrays.asList(RESOURCES).contains(predStack.getItem()), 40 * 64, false);
     }
 
     protected static void dropResources(ServerPlayerEntity player) {
@@ -218,11 +261,11 @@ public class BedwarsGameManager extends AbstractGameManager {
         final Optional<DyeColor> bedTeamOptional = this.getMap().getBedPositions().entrySet().stream().filter(entry -> this.getMap().pos(entry.getValue()).isWithinDistance(pos, 2d)).findFirst().map(Map.Entry::getKey);
 
         return bedTeamOptional.map(bedTeam -> {
-            if (bedTeam == this.getTeam(player)) return false;
+            //if (bedTeam == this.getTeam(player)) return false;
 
             final boolean brokeBed = this.teamStatsMap.get(bedTeam).breakBed();
             if (brokeBed) {
-                super.broadcast(Text.translatable("game.bedwars.bed_broken.chat", colouredTextFromColour(bedTeam)), false);
+                super.broadcast(Text.translatable("game.bedwars.bed_broken.chat", colouredTextFromColour(bedTeam), player.getStyledDisplayName()), false);
                 super.broadcastTitle(bedTeam, Text.translatable("game.bedwars.bed_broken.title").formatted(Formatting.DARK_RED));
                 super.broadcastSound(bedTeam, SoundEvents.ENTITY_WITHER_SPAWN);
                 player.playSoundToPlayer(Sounds.AIR_HORN, SoundCategory.PLAYERS, 1, 1);

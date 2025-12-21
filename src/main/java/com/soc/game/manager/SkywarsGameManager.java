@@ -147,12 +147,15 @@ public class SkywarsGameManager extends AbstractGameManager {
 
         this.playerMap.get(player).kill();
 
+        final boolean canRespawn = this.canRespawn(player);
+        this.broadcastDeath(player, source, !canRespawn);
+
         if (this.getAlivePlayers().size() < (super.getPlayers().size() > 1 ? 2 : 1)) {
             this.endGame(false);
             return false;
         }
 
-        if (this.canRespawn(player)) {
+        if (canRespawn) {
             PrescheduledEvents.playCountdown(() -> super.respawnPlayer(player), this, 3, 20, SoundEvents.BLOCK_NOTE_BLOCK_GUITAR.value(), player);
         } else {
             player.networkHandler.sendPacket(new TitleS2CPacket(Text.translatable("game.skywars.eliminate")));
