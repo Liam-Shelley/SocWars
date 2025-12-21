@@ -258,5 +258,9 @@
   "events.bedwars.diamond.tier": "Diamond %s",
   "events.bedwars.emerald.tier": "Emerald %s",
   "game.bedwars.bed_broken.title": "Bed Broken!",
-  "game.bedwars.bed_broken.chat": "%1$s bed was broken by %2$s"
+  "game.bedwars.bed_broken.chat": "%1$s bed was broken by %2$s",
+  "hud.bedwars.has_bed": "  ||  Bed: ",
+  "hud.bedwars.team": "%s Team",
+  "hud.tick": "✔",
+  "hud.cross": "✘"
 }
