@@ -20,10 +20,10 @@ public record SkywarsItemData(float weightT1, float weightT2, float weightT3, fl
 
     public SkywarsItemData(JsonObject json) {
         this(
-                getDefaultedFloat(json, WEIGHT_T1_KEY, 0f),
-                getDefaultedFloat(json, WEIGHT_T2_KEY, 0f),
-                getDefaultedFloat(json, WEIGHT_T3_KEY, 0f),
-                getDefaultedFloat(json, WEIGHT_T4_KEY, 0f),
+                getDefaultedFloat(json, WEIGHT_T1_KEY),
+                getDefaultedFloat(json, WEIGHT_T2_KEY),
+                getDefaultedFloat(json, WEIGHT_T3_KEY),
+                getDefaultedFloat(json, WEIGHT_T4_KEY),
                 getDefaultedInt(json, COUNT_KEY, 1)
         );
     }

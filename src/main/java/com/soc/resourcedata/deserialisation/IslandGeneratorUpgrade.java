@@ -1,10 +1,11 @@
 package com.soc.resourcedata.deserialisation;
 
 import com.google.gson.JsonObject;
+import org.jetbrains.annotations.NotNull;
 
 import static com.soc.lib.json.JsonHelper.getDefaultedInt;
 
-public record IslandGeneratorUpgrade(int cost, int ironTime, int ironCount, int goldTime, int goldCount, int emeraldTime, int emeraldCount) {
+public record IslandGeneratorUpgrade(int cost, int ironTime, int ironCount, int goldTime, int goldCount, int emeraldTime, int emeraldCount) implements Comparable<IslandGeneratorUpgrade> {
     public static final String COST_KEY = "cost";
     public static final String IRON_TIME_KEY = "iron_generation_time";
     public static final String IRON_COUNT_KEY = "iron_generation_count";
@@ -15,13 +16,18 @@ public record IslandGeneratorUpgrade(int cost, int ironTime, int ironCount, int 
 
     public IslandGeneratorUpgrade(JsonObject json) {
         this(
-                getDefaultedInt(json, COST_KEY, 1),
-                getDefaultedInt(json, IRON_TIME_KEY, 0),
-                getDefaultedInt(json, IRON_COUNT_KEY, 0),
-                getDefaultedInt(json, GOLD_TIME_KEY, 0),
-                getDefaultedInt(json, GOLD_COUNT_KEY, 0),
-                getDefaultedInt(json, EMERALD_TIME_KEY, 0),
-                getDefaultedInt(json, EMERALD_COUNT_KEY, 0)
+                getDefaultedInt(json, COST_KEY),
+                getDefaultedInt(json, IRON_TIME_KEY),
+                getDefaultedInt(json, IRON_COUNT_KEY),
+                getDefaultedInt(json, GOLD_TIME_KEY),
+                getDefaultedInt(json, GOLD_COUNT_KEY),
+                getDefaultedInt(json, EMERALD_TIME_KEY),
+                getDefaultedInt(json, EMERALD_COUNT_KEY)
         );
+    }
+
+    @Override
+    public int compareTo(@NotNull IslandGeneratorUpgrade o) {
+        return Integer.compare(this.cost, o.cost);
     }
 }

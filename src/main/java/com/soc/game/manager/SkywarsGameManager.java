@@ -1,6 +1,8 @@
 package com.soc.game.manager;
 
 import com.google.common.collect.Multimap;
+import com.soc.database.stats.BaseTable;
+import com.soc.database.stats.CombatTable;
 import com.soc.database.stats.SkywarsTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.SkywarsGameMap;
@@ -17,6 +19,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -24,6 +27,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.soc.game.map.AbstractGameMap.getRandomPlayerStack;
+import static com.soc.lib.SocWarsLib.getPlayerAttacker;
 import static com.soc.lib.SocWarsLib.multimapFromCollections;
 
 public class SkywarsGameManager extends AbstractGameManager {
@@ -140,27 +144,37 @@ public class SkywarsGameManager extends AbstractGameManager {
     @Override
     public boolean onPlayerDeath(ServerPlayerEntity player, DamageSource source, float amount) {
         super.onPlayerDeath(player, source, amount);
-        if (source.isOf(DamageTypes.OUT_OF_WORLD)) ((SkywarsTable)this.dbTables.get(player)).fallInVoid();
 
-        final boolean canRespawn = this.playerMap.get(player).kill();
+        this.playerMap.get(player).kill();
 
-        player.setHealth(player.getMaxHealth());
-        super.makePlayerSpectator(player);
-
-        super.broadcastDeath(player, source, !canRespawn);
-
-        if (this.getAlivePlayers().size() < (this.getPlayers().size() > 1 ? 2 : 1)) {
+        if (this.getAlivePlayers().size() < (super.getPlayers().size() > 1 ? 2 : 1)) {
             this.endGame(false);
             return false;
         }
 
-        if (canRespawn) {
+        if (this.canRespawn(player)) {
             PrescheduledEvents.playCountdown(() -> super.respawnPlayer(player), this, 3, 20, SoundEvents.BLOCK_NOTE_BLOCK_GUITAR.value(), player);
         } else {
             player.networkHandler.sendPacket(new TitleS2CPacket(Text.translatable("game.skywars.eliminate")));
         }
 
         return false;
+    }
+
+    @Override
+    protected boolean canRespawn(ServerPlayerEntity player) {
+        return this.playerMap.get(player).isAlive();
+    }
+
+    @Override
+    protected void trackDeathStats(ServerPlayerEntity player, DamageSource source) {
+        if (source.isOf(DamageTypes.OUT_OF_WORLD)) ((SkywarsTable)this.dbTables.get(player)).fallInVoid();
+
+        final BaseTable targetTable = this.dbTables.get(player);
+        if (!(targetTable instanceof CombatTable)) return;
+
+        ((CombatTable)targetTable).grantDeath();
+        getPlayerAttacker(player).ifPresent(killer -> ((CombatTable)this.dbTables.get(killer)).grantKill());
     }
 
     @Override

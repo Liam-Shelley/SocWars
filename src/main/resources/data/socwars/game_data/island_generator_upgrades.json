@@ -1,9 +1,15 @@
 [
   {
-    "cost": 4,
     "iron_generation_time": 50,
     "iron_generation_count": 4,
     "gold_generation_time": 100,
+    "gold_generation_count": 1
+  },
+  {
+    "cost": 4,
+    "iron_generation_time": 30,
+    "iron_generation_count": 4,
+    "gold_generation_time": 60,
     "gold_generation_count": 1
   },
   {
@@ -28,7 +34,7 @@
     "iron_generation_count": 8,
     "gold_generation_time": 24,
     "gold_generation_count": 2,
-    "emerald_generation_time": 75,
+    "emerald_generation_time": 100,
     "emerald_generation_count": 1
   }
 ]

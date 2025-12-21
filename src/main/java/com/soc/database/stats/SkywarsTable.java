@@ -20,6 +20,9 @@ public class SkywarsTable extends CombatTable {
         }
     }
 
+    protected int eliminations = 0;
+    public void eliminatePlayer() { this.eliminations++; }
+
     protected int voidDeaths = 0;
     public void fallInVoid() { this.voidDeaths++; }
 

@@ -1,15 +1,15 @@
 package com.soc.resourcedata.containers;
 
+import com.soc.lib.SortedList;
 import com.soc.resourcedata.deserialisation.IslandGeneratorUpgrade;
 import com.soc.resourcedata.deserialisation.ResourceGeneratorUpgrade;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class BedwarsData implements CachedData {
-    private final List<IslandGeneratorUpgrade> islandGeneratorUpgrades = new ArrayList<>();
-    private final List<ResourceGeneratorUpgrade> diamondGeneratorUpgrades = new ArrayList<>();
-    private final List<ResourceGeneratorUpgrade> emeraldGeneratorUpgrades = new ArrayList<>();
+    private final SortedList<IslandGeneratorUpgrade> islandGeneratorUpgrades = new SortedList<>();
+    private final SortedList<ResourceGeneratorUpgrade> diamondGeneratorUpgrades = new SortedList<>();
+    private final SortedList<ResourceGeneratorUpgrade> emeraldGeneratorUpgrades = new SortedList<>();
 
     public void addIslandGeneratorUpgrade(IslandGeneratorUpgrade upgrade) {
         this.islandGeneratorUpgrades.add(upgrade);

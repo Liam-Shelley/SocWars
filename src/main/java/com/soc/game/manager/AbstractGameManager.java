@@ -114,20 +114,23 @@ public abstract class AbstractGameManager {
     }
 
     public boolean onPlayerDeath(ServerPlayerEntity player, DamageSource source, float amount) {
-        final BaseTable targetTable = this.dbTables.get(player);
-        if (!(targetTable instanceof CombatTable)) return true;
-
-        ((CombatTable)targetTable).grantDeath();
-        getPlayerAttacker(player).ifPresent(killer -> ((CombatTable)this.dbTables.get(killer)).grantKill());
+        this.trackDeathStats(player, source);
 
         healPlayer(player);
         resetScale(player);
+
+        this.makePlayerSpectator(player);
+        this.broadcastDeath(player, source, this.canRespawn(player));
 
         player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.ENTITY_PLAYER_DEATH, SoundCategory.PLAYERS, 1, 1);
         player.getWorld().playSound(null, BlockPos.ofFloored(this.getMap().getRespawnSpectatorPos()), SoundEvents.ENTITY_PLAYER_DEATH, SoundCategory.PLAYERS, 1, 1);
 
         return true;
     }
+
+    protected abstract boolean canRespawn(ServerPlayerEntity player);
+
+    protected abstract void trackDeathStats(ServerPlayerEntity player, DamageSource source);
 
     public boolean onPlayerDamage(ServerPlayerEntity player, DamageSource source, float amount) {
         final BaseTable targetTable = this.dbTables.get(player);
@@ -167,7 +170,7 @@ public abstract class AbstractGameManager {
     }
 
     public final Collection<ServerPlayerEntity> getPlayers() {
-        return teams.values();
+        return this.teams.values();
     }
 
     protected final Team addTeamFromColour(DyeColor colour) {

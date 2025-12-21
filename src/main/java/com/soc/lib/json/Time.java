@@ -17,13 +17,13 @@ public record Time(int ticks) {
 
     public Time(JsonObject object) {
         this(
-                getDefaultedInt(object, HOURS_KEY, 0) * TICKS_PER_HOUR +
-                getDefaultedInt(object, MINUTES_KEY, 0) * TICKS_PER_MINUTE +
-                getDefaultedInt(object, SECONDS_KEY, 0) * TICKS_PER_SECOND +
-                getDefaultedInt(object, TICKS_KEY, 0)
+                getDefaultedInt(object, HOURS_KEY) * TICKS_PER_HOUR +
+                getDefaultedInt(object, MINUTES_KEY) * TICKS_PER_MINUTE +
+                getDefaultedInt(object, SECONDS_KEY) * TICKS_PER_SECOND +
+                getDefaultedInt(object, TICKS_KEY)
         );
 
-        if (this.ticks <= 0) SocWars.LOGGER.info("Read \"Time\" record from NBT with non-positive time");
+        if (this.ticks <= 0) SocWars.LOGGER.info("Read \"Time\" record from NBT with non-positive time. This may be intentional, but I thought it was worth putting in a warning");
     }
 
     public int seconds() {

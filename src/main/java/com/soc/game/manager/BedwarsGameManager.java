@@ -2,7 +2,10 @@ package com.soc.game.manager;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import com.soc.database.stats.BaseTable;
 import com.soc.database.stats.BedwarsTable;
+import com.soc.database.stats.CombatTable;
+import com.soc.database.stats.SkywarsTable;
 import com.soc.game.manager.bedwars.BedwarsShopContents;
 import com.soc.game.manager.bedwars.PlayerStats;
 import com.soc.game.manager.bedwars.TeamStats;
@@ -13,7 +16,6 @@ import com.soc.resourcedata.containers.BedwarsData;
 import com.soc.resourcedata.deserialisation.ResourceGeneratorUpgrade;
 import com.soc.resourcedata.listeners.GameData;
 import com.soc.util.Sounds;
-import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
@@ -21,6 +23,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -50,12 +53,11 @@ public class BedwarsGameManager extends AbstractGameManager {
     protected BedwarsGameManager(ServerWorld world, Set<ServerPlayerEntity> players, @NotNull SpreadRules spreadRules, int gameId) {
         super(world, players, spreadRules, gameId);
         this.playerStatsMap = players.stream().collect(Collectors.toMap(Function.identity(), PlayerStats::new));
-        this.teamStatsMap = super.teams.keySet().stream().collect(Collectors.toMap(Function.identity(), key -> new TeamStats()));
+        this.teamStatsMap = super.teams.keySet().stream().collect(Collectors.toMap(Function.identity(), team -> new TeamStats(team, super.teams.get(team).stream().map(this.playerStatsMap::get).collect(Collectors.toSet()))));
         this.shopContents = new BedwarsShopContents();
 
-
         this.getMap().getBedPositions().forEach((team, pos) -> {
-            if (!this.teams.containsKey(team)) world.breakBlock(this.getMap().pos(pos), false);
+            if (!super.teams.containsKey(team)) super.world.breakBlock(this.getMap().pos(pos), false);
         });
     }
 
@@ -124,17 +126,47 @@ public class BedwarsGameManager extends AbstractGameManager {
         getPlayerAttacker(player).ifPresentOrElse(attacker -> giveResourcesToPlayer(player, (ServerPlayerEntity) attacker), () -> dropResources(player));
 
         super.onPlayerDeath(player, source, amount);
-        if (source.isOf(DamageTypes.OUT_OF_WORLD)) ((BedwarsTable)this.dbTables.get(player)).fallInVoid();
 
-        if (this.teamStatsMap.get(this.getTeam(player)).hasBed()) {
-            PrescheduledEvents.playCountdown(() -> super.respawnPlayer(player), this, 5, 20, SoundEvents.BLOCK_FUNGUS_STEP, player);
-        } else {
-            super.makePlayerSpectator(player);
+        if (this.getAliveTeams().size() < (super.teams.keys().size() > 1 ? 2 : 1)) {
+            this.endGame(false);
+            return false;
         }
 
-        this.playerStatsMap.get(player).onDeath();
+        final boolean canRespawn = this.canRespawn(player);
+
+        if (canRespawn) {
+            PrescheduledEvents.playCountdown(() -> super.respawnPlayer(player), this, 5, 20, SoundEvents.BLOCK_FUNGUS_STEP, player);
+        } else {
+            player.networkHandler.sendPacket(new TitleS2CPacket(Text.translatable("game.bedwars.eliminate")));
+        }
+
+        this.playerStatsMap.get(player).onDeath(canRespawn);
 
         return true;
+    }
+
+    @Override
+    protected boolean canRespawn(ServerPlayerEntity player) {
+        return this.teamStatsMap.get(this.getTeam(player)).hasBed();
+    }
+
+    protected Set<ServerPlayerEntity> getAlivePlayers() {
+        return this.playerStatsMap.values().stream().filter(PlayerStats::isAlive).map(PlayerStats::getPlayer).collect(Collectors.toSet());
+    }
+
+    protected Set<DyeColor> getAliveTeams() {
+        return this.teamStatsMap.values().stream().filter(TeamStats::isAlive).map(TeamStats::getTeam).collect(Collectors.toSet());
+    }
+
+    @Override
+    protected void trackDeathStats(ServerPlayerEntity player, DamageSource source) {
+        if (source.isOf(DamageTypes.OUT_OF_WORLD)) ((SkywarsTable)this.dbTables.get(player)).fallInVoid();
+
+        final BaseTable targetTable = this.dbTables.get(player);
+        if (!(targetTable instanceof CombatTable)) return;
+
+        ((CombatTable)targetTable).grantDeath();
+        getPlayerAttacker(player).ifPresent(killer -> ((CombatTable)this.dbTables.get(killer)).grantKill());
     }
 
     protected static void giveResourcesToPlayer(ServerPlayerEntity giver, ServerPlayerEntity receiver) {

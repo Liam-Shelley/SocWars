@@ -18,6 +18,10 @@ public class JsonHelper {
         }
     }
 
+    public static float getDefaultedFloat(JsonObject json, String key) {
+        return getDefaultedFloat(json, key, 0f);
+    }
+
     public static int getDefaultedInt(JsonObject json, String key, int def) {
         final JsonElement a = json.get(key);
         try {
@@ -25,6 +29,10 @@ public class JsonHelper {
         } catch(Exception e) {
             return def;
         }
+    }
+
+    public static int getDefaultedInt(JsonObject json, String key) {
+        return getDefaultedInt(json, key, 0);
     }
 
     public static void runFunctionOverArray(Reader reader, Consumer<JsonObject> function) {
