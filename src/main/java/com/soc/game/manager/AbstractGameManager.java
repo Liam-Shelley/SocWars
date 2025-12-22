@@ -381,8 +381,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         healPlayer(player);
         player.getInventory().clear();
         removePlayerAttributes(player);
-
-
+        
         this.sendJoinGamePayload(player);
     }
 
