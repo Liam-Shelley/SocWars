@@ -1,14 +1,14 @@
 package com.soc.game.manager.bedwars;
 
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.DyeColor;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.UUID;
 
 public class TeamStats {
     private final DyeColor team;
-    private final Map<ServerPlayerEntity, PlayerStats> playerStatsMap;
+    private final Map<UUID, PlayerStats> playerStatsMap;
 
     private boolean hasBed = true;
 

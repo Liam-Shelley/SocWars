@@ -191,7 +191,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         getPlayerAttacker(player).ifPresentOrElse(attacker -> giveResourcesToPlayer(player, (ServerPlayerEntity) attacker), () -> dropResources(player));
 
         final boolean canRespawn = this.canRespawn(player);
-        this.getPlayerStats(player).onDeath(canRespawn);
+        this.getPlayerStats(player).onDeath(canRespawn, super.world);
 
         this.broadcastDeath(player, source, !canRespawn);
 
@@ -218,7 +218,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
     }
 
     protected Set<ServerPlayerEntity> getAlivePlayers() {
-        return this.playerStatsMap.values().stream().filter(PlayerStats::isAlive).map(PlayerStats::getPlayer).collect(Collectors.toSet());
+        return this.playerStatsMap.values().stream().filter(PlayerStats::isAlive).map(playerStats -> (ServerPlayerEntity)this.world.getPlayerByUuid(playerStats.getPlayer())).collect(Collectors.toSet());
     }
 
     protected Set<DyeColor> getAliveTeams() {
@@ -296,8 +296,8 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
                 super.broadcastSound(bedTeam, SoundEvents.ENTITY_WITHER_SPAWN);
                 player.playSoundToPlayer(Sounds.AIR_HORN, SoundCategory.PLAYERS, 1, 1);
 
-                super.dbTables.get(player).grantBedBreak();
-                super.teams.get(bedTeam).stream().map(super.dbTables::get).forEach(BedwarsTable::loseBed);
+                super.getDbTable(player).grantBedBreak();
+                super.getPlayers(bedTeam).stream().map(super::getDbTable).forEach(BedwarsTable::loseBed);
             }
 
             return true;
