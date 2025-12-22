@@ -7,6 +7,7 @@ import com.soc.events.ModEvents;
 import com.soc.game.map.SpreadRules;
 import com.soc.lib.SocWarsLib;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
@@ -72,6 +73,9 @@ public class GamesManager {
         //);
         PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) ->
                 state.isIn(BlockTags.BEDS) ? this.getGame(player).map(game -> game.onBedBroken((ServerPlayerEntity) player, pos)).orElse(true) : true
+        );
+        ServerPlayerEvents.JOIN.register(player ->
+                this.getGame(player).ifPresent(game -> game.onPlayerJoin(player))
         );
     }
 

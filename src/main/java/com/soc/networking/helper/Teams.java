@@ -16,6 +16,10 @@ import java.util.List;
 public record Teams(List<TeamPlayerPair> teams) {
     public static final PacketCodec<RegistryByteBuf, Teams> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.collection(ArrayList::new, TeamPlayerPair.PACKET_CODEC), Teams::teams, Teams::new);
 
+    public Teams(Multimap<DyeColor, ? extends PlayerEntity> teams) {
+        this(teams.entries().stream().map(TeamPlayerPair::new).toList());
+    }
+
     public Multimap<DyeColor, PlayerEntity> getTeams(World world) {
         return teams.stream().collect(Multimaps.toMultimap(TeamPlayerPair::team, pair -> world.getPlayerByUuid(pair.player()), HashMultimap::create));
     }

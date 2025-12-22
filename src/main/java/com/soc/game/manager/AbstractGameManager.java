@@ -75,7 +75,10 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     }
     protected abstract @Nullable EventQueue<EVENT> buildEventQueue();
     protected abstract Function<ServerPlayerEntity, TABLE> dbTableBuilder();
+    protected abstract void sendJoinGamePayload(ServerPlayerEntity player);
+    protected abstract void sendLeaveGamePayload(ServerPlayerEntity player);
 
+    @MustBeInvokedByOverriders
     public void startGame() {
         final AbstractGameMap map = this.map;
         map.placeMap();
@@ -94,8 +97,11 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
             map.spawnCages(false);
             this.setGameMode(GameMode.SURVIVAL);
         }, this, 5, 20, 50, SoundEvents.BLOCK_NOTE_BLOCK_GUITAR.value(), null);
+
+        this.getPlayers().forEach(this::sendJoinGamePayload);
     }
 
+    @MustBeInvokedByOverriders
     public void endGame(boolean immediate) {
         this.removeTeams();
         this.map.destroyMap();
@@ -107,6 +113,8 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         }));
 
         GamesManager.getInstance().endGame(this.gameId);
+
+        this.getPlayers().forEach(this::sendLeaveGamePayload);
     }
 
     public boolean onPlayerDeath(ServerPlayerEntity player, DamageSource source, float amount) {
@@ -149,6 +157,10 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
 
     public boolean onBedBroken(ServerPlayerEntity player, BlockPos pos) {
         return true;
+    }
+
+    public void onPlayerJoin(ServerPlayerEntity player) {
+        this.sendJoinGamePayload(player);
     }
 
     @MustBeInvokedByOverriders
@@ -373,5 +385,6 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
 
     public void leaveAsSpectator(ServerPlayerEntity player) {
         this.sendPlayerToLobby(player);
+        this.sendLeaveGamePayload(player);
     }
 }

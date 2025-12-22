@@ -9,7 +9,10 @@ import com.soc.game.manager.bedwars.TeamStats;
 import com.soc.game.map.*;
 import com.soc.items.components.ModComponents;
 import com.soc.lib.Events;
+import com.soc.networking.helper.Teams;
 import com.soc.networking.s2c.ShopDataPayload;
+import com.soc.networking.s2c.joingame.JoinBedwarsPayload;
+import com.soc.networking.s2c.leavegame.LeaveBedwarsPayload;
 import com.soc.resourcedata.containers.BedwarsData;
 import com.soc.resourcedata.deserialisation.ResourceGeneratorUpgrade;
 import com.soc.resourcedata.listeners.GameData;
@@ -18,7 +21,6 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventories;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -166,6 +168,16 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
     }
 
     @Override
+    protected void sendJoinGamePayload(ServerPlayerEntity player) {
+        ServerPlayNetworking.send(player, new JoinBedwarsPayload(super.getGameId(), new Teams(super.teams)));
+    }
+
+    @Override
+    protected void sendLeaveGamePayload(ServerPlayerEntity player) {
+        ServerPlayNetworking.send(player, new LeaveBedwarsPayload());
+    }
+
+    @Override
     public boolean onPlayerDeath(ServerPlayerEntity player, DamageSource source, float amount) {
         getPlayerAttacker(player).ifPresentOrElse(attacker -> giveResourcesToPlayer(player, (ServerPlayerEntity) attacker), () -> dropResources(player));
 
@@ -304,7 +316,6 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
     public void upgradeDiamondGens(GeneratorStats stats) {
         super.map.upgradeDiamondGens(stats);
-        super.broadcast(Text.of(stats.toString()), false);
     }
 
     public void upgradeEmeraldGens(GeneratorStats stats) {

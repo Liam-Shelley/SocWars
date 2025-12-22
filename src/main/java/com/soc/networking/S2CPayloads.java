@@ -1,6 +1,8 @@
 package com.soc.networking;
 
 import com.soc.networking.s2c.*;
+import com.soc.networking.s2c.joingame.JoinBedwarsPayload;
+import com.soc.networking.s2c.leavegame.LeaveBedwarsPayload;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 
 public class S2CPayloads {
@@ -9,8 +11,8 @@ public class S2CPayloads {
         PayloadTypeRegistry.playS2C().register(LeaveQueuePayload.ID, LeaveQueuePayload.CODEC);
         PayloadTypeRegistry.playS2C().register(PlayerDataPayload.ID, PlayerDataPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(AddVelocityPayload.ID, AddVelocityPayload.CODEC);
-        PayloadTypeRegistry.playS2C().register(StartGamePayload.ID, StartGamePayload.CODEC);
-        PayloadTypeRegistry.playS2C().register(EndGamePayload.ID, EndGamePayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(JoinBedwarsPayload.ID, JoinBedwarsPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(LeaveBedwarsPayload.ID, LeaveBedwarsPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(ShopDataPayload.ID, ShopDataPayload.CODEC);
     }
 }

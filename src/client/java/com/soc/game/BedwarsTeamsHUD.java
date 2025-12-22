@@ -2,21 +2,15 @@ package com.soc.game;
 
 import com.google.common.collect.Multimap;
 import com.soc.SocWars;
-import com.soc.networking.helper.TeamPlayerPair;
 import com.soc.networking.helper.Teams;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.PlayerSkinDrawer;
-import net.minecraft.client.gui.hud.PlayerListHud;
-import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.client.render.entity.PlayerEntityRenderer;
-import net.minecraft.client.texture.AbstractTexture;
-import net.minecraft.client.util.SkinTextures;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
@@ -28,6 +22,7 @@ import java.util.*;
 public class BedwarsTeamsHUD {
     public static void initialise() {
         HudElementRegistry.addFirst(Identifier.of(SocWars.MOD_ID, ""), BedwarsTeamsHUD::render);
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> INSTANCE = null);
     }
 
     @Nullable
@@ -37,9 +32,11 @@ public class BedwarsTeamsHUD {
     }
 
     private final Multimap<DyeColor, PlayerEntity> teams;
+    private final DyeColor ownTeam;
 
     private BedwarsTeamsHUD(Teams teams) {
         this.teams = teams.getTeams(MinecraftClient.getInstance().world);
+        this.ownTeam = this.teams.entries().stream().filter(entry -> entry.getValue() == MinecraftClient.getInstance().player).findFirst().map(Map.Entry::getKey).orElse(null);
     }
 
     public static void joinGame(Teams teams) {
@@ -51,7 +48,7 @@ public class BedwarsTeamsHUD {
     }
 
     public static void render(DrawContext drawContext, RenderTickCounter renderTickCounter) {
-        INSTANCE = new BedwarsTeamsHUD(new Teams(List.of(new TeamPlayerPair(DyeColor.PURPLE, UUID.fromString("86a8a785-8209-42c1-9c30-d219fb019db2")))));
+        //INSTANCE = new BedwarsTeamsHUD(new Teams(List.of(new TeamPlayerPair(DyeColor.PURPLE, UUID.fromString("86a8a785-8209-42c1-9c30-d219fb019db2")))));
 
         if (getInstance().isEmpty()) return;
         final BedwarsTeamsHUD instance = getInstance().get();
@@ -87,7 +84,7 @@ public class BedwarsTeamsHUD {
     }
 
     private static void drawTeamHeads(DrawContext drawContext, DyeColor team, BedwarsTeamsHUD instance, int width, int heightStart) {
-        final List<PlayerEntity> players = List.copyOf(instance.teams.get(team));
+        final List<PlayerEntity> players = List. copyOf(instance.teams.get(team));
         for (int j = 0; j < players.size(); j++) {
             if (players.get(j) instanceof ClientPlayerEntity clientPlayer) {
                 PlayerSkinDrawer.draw(drawContext, clientPlayer.getSkinTextures(), width - 120 + j * 24, heightStart + 16, 20);

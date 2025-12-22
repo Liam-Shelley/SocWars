@@ -1,7 +1,6 @@
 package com.soc.game.manager;
 
 import com.google.common.collect.Multimap;
-import com.soc.database.stats.BedwarsTable;
 import com.soc.database.stats.SkywarsTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.SkywarsGameMap;
@@ -132,6 +131,16 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
     @Override
     protected Function<ServerPlayerEntity, SkywarsTable> dbTableBuilder() {
         return SkywarsTable::new;
+    }
+
+    @Override
+    protected void sendJoinGamePayload(ServerPlayerEntity player) {
+
+    }
+
+    @Override
+    protected void sendLeaveGamePayload(ServerPlayerEntity player) {
+
     }
 
     @Override

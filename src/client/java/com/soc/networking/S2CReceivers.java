@@ -1,6 +1,9 @@
 package com.soc.networking;
 
+import com.soc.game.BedwarsTeamsHUD;
 import com.soc.networking.s2c.*;
+import com.soc.networking.s2c.joingame.JoinBedwarsPayload;
+import com.soc.networking.s2c.leavegame.LeaveBedwarsPayload;
 import com.soc.player.PlayerDataManager;
 import com.soc.screenhandler.BedwarsShopScreenHandler;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -21,11 +24,11 @@ public class S2CReceivers {
         ClientPlayNetworking.registerGlobalReceiver(AddVelocityPayload.ID, (payload, context) -> {
                 context.player().addVelocity(payload.velocity());
         });
-        ClientPlayNetworking.registerGlobalReceiver(StartGamePayload.ID, (payload, context) -> {
-
+        ClientPlayNetworking.registerGlobalReceiver(JoinBedwarsPayload.ID, (payload, context) -> {
+            BedwarsTeamsHUD.joinGame(payload.teams());
         });
-        ClientPlayNetworking.registerGlobalReceiver(EndGamePayload.ID, (payload, context) -> {
-
+        ClientPlayNetworking.registerGlobalReceiver(LeaveBedwarsPayload.ID, (payload, context) -> {
+            BedwarsTeamsHUD.leaveGame();
         });
         ClientPlayNetworking.registerGlobalReceiver(ShopDataPayload.ID, (payload, context) -> {
             final ScreenHandler screenHandler = context.player().currentScreenHandler;
