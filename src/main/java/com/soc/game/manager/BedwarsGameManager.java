@@ -35,6 +35,7 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Unit;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.GameMode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -287,7 +288,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         final Optional<DyeColor> bedTeamOptional = super.map.getBedPositions().entrySet().stream().filter(entry -> super.map.pos(entry.getValue()).isWithinDistance(pos, 2d)).findFirst().map(Map.Entry::getKey);
 
         return bedTeamOptional.map(bedTeam -> {
-            //if (bedTeam == super.getTeam(player)) return false;
+            if (bedTeam == super.getTeam(player) && player.getGameMode() == GameMode.SURVIVAL) return false;
 
             final boolean brokeBed = this.teamStatsMap.get(bedTeam).breakBed();
             if (brokeBed) {
