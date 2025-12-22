@@ -39,6 +39,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -48,13 +49,13 @@ import static com.soc.lib.SocWarsLib.*;
 public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, BedwarsTable, BedwarsGameManager> {
     protected static final Item[] RESOURCES = { Items.IRON_INGOT, Items.GOLD_INGOT, Items.DIAMOND, Items.EMERALD };
 
-    private final Map<ServerPlayerEntity, PlayerStats> playerStatsMap;
+    private final Map<UUID, PlayerStats> playerStatsMap;
     private final Map<DyeColor, TeamStats> teamStatsMap;
     private final BedwarsShopContents shopContents;
 
     protected BedwarsGameManager(ServerWorld world, Set<ServerPlayerEntity> players, @NotNull SpreadRules spreadRules, int gameId) {
         super(world, players, spreadRules, gameId);
-        this.playerStatsMap = players.stream().collect(Collectors.toMap(Function.identity(), PlayerStats::new));
+        this.playerStatsMap = players.stream().collect(Collectors.toMap(ServerPlayerEntity::getUuid, PlayerStats::new));
         this.teamStatsMap = super.teams.keySet().stream().collect(Collectors.toMap(Function.identity(), team -> new TeamStats(team, super.teams.get(team).stream().map(this.playerStatsMap::get).collect(Collectors.toSet()))));
         this.shopContents = new BedwarsShopContents();
     }
@@ -83,10 +84,10 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
     public void endGame(boolean immediate) {
         this.eventQueue.cancelEvents();
 
-        this.playerStatsMap.forEach((player, stats) -> {
+        this.playerStatsForEach((player, stats) -> {
             final Text message;
             final SoundEvent sound;
-            final BedwarsTable dbTable = this.dbTables.get(player);
+            final BedwarsTable dbTable = this.getDbTable(player);
             if (this.teamStatsMap.get(super.getTeam(player)).isAlive()) {
                 message = Text.translatable("game.bedwars.win");
                 sound = SoundEvents.ENTITY_PLAYER_LEVELUP;
@@ -111,16 +112,24 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         }
     }
 
+    protected final PlayerStats getPlayerStats(ServerPlayerEntity player) {
+        return this.playerStatsMap.get(player.getUuid());
+    }
+
+    protected final void playerStatsForEach(BiConsumer<ServerPlayerEntity, PlayerStats> biConsumer) {
+        this.playerStatsMap.forEach((uuid, stats) -> biConsumer.accept((ServerPlayerEntity)super.world.getPlayerByUuid(uuid), stats));
+    }
+
     @Override
-    public Multimap<DyeColor, ServerPlayerEntity> buildTeams(Set<ServerPlayerEntity> players, SpreadRules spreadRules) {
+    public Multimap<DyeColor, UUID> buildTeams(Set<ServerPlayerEntity> players, SpreadRules spreadRules) {
         //Probably rewrite this at some point it's a bit gross
 
-        final Stack<ServerPlayerEntity> playerStack = getRandomPlayerStack(players);
+        final Stack<UUID> playerStack = getRandomPlayerStack(players.stream().map(ServerPlayerEntity::getUuid).toList());
 
         final Set<DyeColor> teamColours = super.map.getTeamColours();
         final int numTeams = Math.min(spreadRules.numTeams(), teamColours.size());
 
-        final ImmutableMultimap.Builder<DyeColor, ServerPlayerEntity> builder = ImmutableMultimap.builder();
+        final ImmutableMultimap.Builder<DyeColor, UUID> builder = ImmutableMultimap.builder();
 
         final ArrayList<DyeColor> teamsUnlimited = new ArrayList<>(teamColours);
         Collections.shuffle(teamsUnlimited);
@@ -182,7 +191,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         getPlayerAttacker(player).ifPresentOrElse(attacker -> giveResourcesToPlayer(player, (ServerPlayerEntity) attacker), () -> dropResources(player));
 
         final boolean canRespawn = this.canRespawn(player);
-        this.playerStatsMap.get(player).onDeath(canRespawn);
+        this.getPlayerStats(player).onDeath(canRespawn);
 
         this.broadcastDeath(player, source, !canRespawn);
 
@@ -217,15 +226,14 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
     }
 
     @Override
-    @SuppressWarnings("SuspiciousMethodCalls")
     protected void trackDeathStats(ServerPlayerEntity player, DamageSource source) {
-        if (source.isOf(DamageTypes.OUT_OF_WORLD)) this.dbTables.get(player).fallInVoid();
+        if (source.isOf(DamageTypes.OUT_OF_WORLD)) this.getDbTable(player).fallInVoid();
 
-        final BedwarsTable targetTable = this.dbTables.get(player);
+        final BedwarsTable targetTable = this.getDbTable(player);
 
         targetTable.grantDeath();
         getPlayerAttacker(player).ifPresent(killer -> {
-            final BedwarsTable killerTable = this.dbTables.get(killer);
+            final BedwarsTable killerTable = this.getDbTable(killer);
             if (killerTable != null) killerTable.grantKill();
         });
     }
@@ -265,7 +273,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
     public void onItemPickup(ServerPlayerEntity player, ItemStack stack) {
         if (stack.get(ModComponents.RESOURCE_COUNTED) != null) {
             stack.remove(ModComponents.RESOURCE_COUNTED);
-            this.dbTables.get(player).collectItem(stack);
+            this.getDbTable(player).collectItem(stack);
         }
         final BedwarsGameMap map = super.map;
         if (stack.get(ModComponents.RESOURCE_SPLIT) != null && map.isWithinSplitRange(player)) {

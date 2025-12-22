@@ -88,7 +88,7 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
         this.playerMap.forEach((player, stats) -> {
             final Text message;
             final SoundEvent sound;
-            final SkywarsTable dbTable = this.dbTables.get(player);
+            final SkywarsTable dbTable = this.getDbTable(player);
             if (stats.isAlive()) {
                 message = Text.translatable("game.skywars.win");
                 sound = SoundEvents.ENTITY_PLAYER_LEVELUP;
@@ -114,8 +114,8 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
     }
 
     @Override
-    public Multimap<DyeColor, ServerPlayerEntity> buildTeams(Set<ServerPlayerEntity> players, @Nullable SpreadRules spreadRules) {
-        final Stack<ServerPlayerEntity> playerStack = getRandomPlayerStack(players);
+    public Multimap<DyeColor, UUID> buildTeams(Set<ServerPlayerEntity> players, @Nullable SpreadRules spreadRules) {
+        final Stack<UUID> playerStack = getRandomPlayerStack(players.stream().map(ServerPlayerEntity::getUuid).toList());
 
         final List<DyeColor> teamColoursList = new ArrayList<>(super.map.getTeamColours());
         Collections.shuffle(teamColoursList);
@@ -172,15 +172,14 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
     }
 
     @Override
-    @SuppressWarnings("SuspiciousMethodCalls")
     protected void trackDeathStats(ServerPlayerEntity player, DamageSource source) {
-        if (source.isOf(DamageTypes.OUT_OF_WORLD)) (this.dbTables.get(player)).fallInVoid();
+        if (source.isOf(DamageTypes.OUT_OF_WORLD)) (this.getDbTable(player)).fallInVoid();
 
-        final SkywarsTable targetTable = this.dbTables.get(player);
+        final SkywarsTable targetTable = this.getDbTable(player);
 
         targetTable.grantDeath();
         getPlayerAttacker(player).ifPresent(killer -> {
-            final SkywarsTable killerTable = this.dbTables.get(killer);
+            final SkywarsTable killerTable = this.getDbTable(killer);
             if (killerTable != null) killerTable.grantKill();
         });
     }
@@ -189,7 +188,7 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
     public void onChestOpened(ServerPlayerEntity player, BlockPos pos) {
         super.map.getLootChest(pos).ifPresent(chest -> {
             if (chest.open()) {
-                this.dbTables.get(player).openChest(chest.getTier());
+                this.getDbTable(player).openChest(chest.getTier());
             }
         });
     }

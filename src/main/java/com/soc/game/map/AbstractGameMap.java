@@ -78,8 +78,9 @@ public abstract class AbstractGameMap {
 
     public abstract void tick();
 
-    public final void spreadPlayers(Multimap<DyeColor, ServerPlayerEntity> teams) {
-        teams.forEach((team, player) -> {
+    public final void spreadPlayers(Multimap<DyeColor, UUID> teams) {
+        teams.forEach((team, uuid) -> {
+            final ServerPlayerEntity player = (ServerPlayerEntity)this.world.getPlayerByUuid(uuid);
             final BlockPos rawPos = this.spawnPositions.get(team);
             if (rawPos == null) {
                 player.sendMessage(Text.literal("Go yell at Liam for screwing up the spreadPlayers() method"));
@@ -148,8 +149,8 @@ public abstract class AbstractGameMap {
         }
     }
 
-    public static Stack<ServerPlayerEntity> getRandomPlayerStack(Collection<ServerPlayerEntity> players) {
-        final Stack<ServerPlayerEntity> playerStack = new Stack<>();
+    public static Stack<UUID> getRandomPlayerStack(Collection<UUID> players) {
+        final Stack<UUID> playerStack = new Stack<>();
         Collections.shuffle((ArrayList<?>) new ArrayList<>(players).clone());
         playerStack.addAll(players);
 

@@ -12,11 +12,12 @@ import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public record Teams(List<TeamPlayerPair> teams) {
     public static final PacketCodec<RegistryByteBuf, Teams> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.collection(ArrayList::new, TeamPlayerPair.PACKET_CODEC), Teams::teams, Teams::new);
 
-    public Teams(Multimap<DyeColor, ? extends PlayerEntity> teams) {
+    public Teams(Multimap<DyeColor, UUID> teams) {
         this(teams.entries().stream().map(TeamPlayerPair::new).toList());
     }
 

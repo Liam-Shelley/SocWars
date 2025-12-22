@@ -33,7 +33,7 @@ public class GamesManager {
     private ServerWorld world;
 
     private final ArrayList<AbstractGameManager<?, ?, ?>> games = new ArrayList<>();
-    private final ConcurrentHashMap<ServerPlayerEntity, Integer> playerGameLookup = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<UUID, Integer> playerGameLookup = new ConcurrentHashMap<>();
 
     private final MatchmakingQueue<GameType> queue = new MatchmakingQueue<>();
     private final HashMap<GameType, Float> queueProgress = new HashMap<>();
@@ -91,7 +91,7 @@ public class GamesManager {
         this.queue.unqueuePlayers(game.getPlayers());
 
         game.startGame();
-        game.getPlayers().forEach(player -> this.playerGameLookup.put(player, game.getGameId())); //Bit of gross bookkeeping
+        game.getPlayers().forEach(player -> this.playerGameLookup.put(player.getUuid(), game.getGameId())); //Bit of gross bookkeeping
 
         return true;
     }
@@ -105,9 +105,8 @@ public class GamesManager {
         this.games.set(gameId, null);
     }
 
-    @SuppressWarnings("SuspiciousMethodCalls")
     public Optional<AbstractGameManager<?, ?, ?>> getGame(LivingEntity entity) {
-        final Integer id = this.playerGameLookup.get(entity); //Hilarious abuse of Map#Get
+        final Integer id = this.playerGameLookup.get(entity.getUuid());
         return Optional.ofNullable(id).map(this.games::get);
     }
 

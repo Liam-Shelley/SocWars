@@ -7,6 +7,7 @@ import com.soc.database.stats.BaseTable;
 import com.soc.database.stats.CombatTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.SpreadRules;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
@@ -33,6 +34,7 @@ import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -45,12 +47,12 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
 
     protected final MAP map;
     protected final ServerWorld world;
-    protected final Multimap<DyeColor, ServerPlayerEntity> teams;
-    protected final List<ServerPlayerEntity> spectators;
+    protected final Multimap<DyeColor, UUID> teams;
+    protected final List<UUID> spectators;
     protected final Map<DyeColor, Team> scoreboardTeams;
     protected final @Nullable EventQueue<EVENT> eventQueue;
 
-    protected final Map<ServerPlayerEntity, TABLE> dbTables;
+    protected final Map<UUID, TABLE> dbTables;
     protected final int killHeight;
 
     protected int time;
@@ -64,17 +66,22 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         this.scoreboardTeams = this.buildScoreboardTeams();
         this.eventQueue = this.buildEventQueue();
 
-        this.dbTables = players.stream().collect(Collectors.toMap(key -> key, this.dbTableBuilder()));
+        this.dbTables = players.stream().collect(Collectors.toMap(ServerPlayerEntity::getUuid, this.dbTableBuilder()));
         this.killHeight = this.map.getCentrePos().getY() + KILLZONE_Y_OFFSET;
     }
 
     protected abstract MAP buildMap();
-    protected abstract Multimap<DyeColor, ServerPlayerEntity> buildTeams(Set<ServerPlayerEntity> players, SpreadRules spreadRules);
+    protected abstract Multimap<DyeColor, UUID> buildTeams(Set<ServerPlayerEntity> players, SpreadRules spreadRules);
     private Map<DyeColor, Team> buildScoreboardTeams() {
         return this.teams.keySet().stream().collect(Collectors.toMap(Function.identity(), this::addTeamFromColour));
     }
     protected abstract @Nullable EventQueue<EVENT> buildEventQueue();
+
     protected abstract Function<ServerPlayerEntity, TABLE> dbTableBuilder();
+    protected final TABLE getDbTable(Entity player) {
+        return player == null ? null : this.dbTables.get(player.getUuid());
+    }
+
     protected abstract void sendJoinGamePayload(ServerPlayerEntity player);
     protected abstract void sendLeaveGamePayload(ServerPlayerEntity player);
 
@@ -135,17 +142,15 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
 
     protected abstract void trackDeathStats(ServerPlayerEntity player, DamageSource source);
 
-
-    @SuppressWarnings("SuspiciousMethodCalls")
     public boolean onPlayerDamage(ServerPlayerEntity player, DamageSource source, float amount) {
-        final BaseTable targetTable = this.dbTables.get(player);
+        final BaseTable targetTable = this.getDbTable(player);
         if (!(targetTable instanceof CombatTable)) return true;
 
         final int cappedDamage = (int)Math.min(player.getHealth(), amount);
 
         ((CombatTable)targetTable).takeDamage(cappedDamage);
 
-        final CombatTable attackerTable = ((CombatTable)this.dbTables.get(source.getAttacker())); //More Map#get abuse
+        final CombatTable attackerTable = ((CombatTable)this.getDbTable(source.getAttacker())); //More Map#get abuse
         if (attackerTable != null) attackerTable.dealDamage(cappedDamage);
 
         return true;
@@ -179,7 +184,23 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     }
 
     public final Collection<ServerPlayerEntity> getPlayers() {
-        return this.teams.values();
+        return this.mapUuidsToPlayers(this.teams.values());
+    }
+
+    public final Collection<ServerPlayerEntity> getPlayers(DyeColor team) {
+        return this.mapUuidsToPlayers(this.teams.get(team));
+    }
+
+    public final Collection<ServerPlayerEntity> getSpectators() {
+        return this.mapUuidsToPlayers(this.spectators);
+    }
+
+    protected final void playersForEach(BiConsumer<DyeColor, ServerPlayerEntity> biConsumer) {
+        this.teams.forEach((team, uuid) -> biConsumer.accept(team, (ServerPlayerEntity)this.world.getPlayerByUuid(uuid)));
+    }
+
+    protected final Collection<ServerPlayerEntity> mapUuidsToPlayers(Collection<UUID> players) {
+        return players.stream().map(player -> (ServerPlayerEntity)this.world.getPlayerByUuid(player)).filter(Objects::nonNull).toList();
     }
 
     protected final Team addTeamFromColour(DyeColor colour) {
@@ -205,7 +226,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     }
 
     private void assignPlayersToTeams() {
-        this.teams.forEach((team, player) -> world.getScoreboard().addScoreHolderToTeam(player.getNameForScoreboard(), this.scoreboardTeams.get(team)));
+        this.playersForEach((team, player) -> world.getScoreboard().addScoreHolderToTeam(player.getNameForScoreboard(), this.scoreboardTeams.get(team)));
     }
 
     @SuppressWarnings("unchecked")
@@ -229,7 +250,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     }
 
     public final DyeColor getTeam(ServerPlayerEntity player) {
-        return this.teams.entries().stream().filter(entry -> entry.getValue() == player).findFirst().map(Map.Entry::getKey).orElse(null);
+        return this.teams.entries().stream().filter(entry -> entry.getValue() == player.getUuid()).findFirst().map(Map.Entry::getKey).orElse(null);
     }
 
     public final BlockPos getSpawnPosition(ServerPlayerEntity player) {
@@ -241,7 +262,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     }
 
     protected void broadcast(DyeColor team, Text text, final boolean overlay) {
-        this.teams.get(team).forEach(player -> player.sendMessage(text, overlay));
+        this.getPlayers(team).forEach(player -> player.sendMessage(text, overlay));
     }
 
     protected void broadcastDeath(ServerPlayerEntity player, DamageSource source, boolean isFinal) {
@@ -268,7 +289,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     }
 
     protected void broadcastTitle(DyeColor team, Text text) {
-        this.teams.get(team).forEach(player -> player.networkHandler.sendPacket(new TitleS2CPacket(text)));
+        this.getPlayers(team).forEach(player -> player.networkHandler.sendPacket(new TitleS2CPacket(text)));
     }
 
     protected void clearTitle() {
@@ -280,7 +301,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     }
 
     protected void broadcastSound(DyeColor team, SoundEvent sound) {
-        this.teams.get(team).forEach(player -> player.playSoundToPlayer(sound, SoundCategory.PLAYERS, 1f, 1f));
+        this.getPlayers(team).forEach(player -> player.playSoundToPlayer(sound, SoundCategory.PLAYERS, 1f, 1f));
     }
 
     protected void setGameMode(GameMode gameMode) {
@@ -316,7 +337,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
 
     protected final void sendPlayersToLobby() {
         this.getPlayers().forEach(this::sendPlayerToLobby);
-        this.spectators.forEach(this::sendPlayerToLobby);
+        this.getSpectators().forEach(this::sendPlayerToLobby);
     }
 
     protected final void sendPlayerToLobby(ServerPlayerEntity player) {
@@ -372,7 +393,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     }
 
     public void joinAsSpectator(ServerPlayerEntity player) {
-        this.spectators.add(player);
+        this.spectators.add(player.getUuid());
 
         final Vec3d pos = this.map.getRespawnSpectatorPos();
         player.requestTeleport(pos.x, pos.y, pos.z);
@@ -381,7 +402,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         healPlayer(player);
         player.getInventory().clear();
         removePlayerAttributes(player);
-        
+
         this.sendJoinGamePayload(player);
     }
 
