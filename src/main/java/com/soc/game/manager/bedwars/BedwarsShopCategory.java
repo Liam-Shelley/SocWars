@@ -19,7 +19,7 @@ public class BedwarsShopCategory {
     private final Text name;
 
     public BedwarsShopCategory(ItemStack icon, Text name) {
-        this(List.of(new SimpleShopItem(1, 11, 21, 101, new ItemStack(icon.getItem(), 3))), icon, name);
+        this(List.of(new SimpleShopItem(8, 1, 0, 0, new ItemStack(icon.getItem(), 3))), icon, name);
     }
 
     public BedwarsShopCategory(List<BaseShopItem> items, ItemStack icon, Text name) {

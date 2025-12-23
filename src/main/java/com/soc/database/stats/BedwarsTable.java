@@ -2,7 +2,8 @@ package com.soc.database.stats;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.server.network.ServerPlayerEntity;
+
+import java.util.UUID;
 
 public class BedwarsTable extends CombatTable {
     protected int finalKills = 0;
@@ -42,7 +43,7 @@ public class BedwarsTable extends CombatTable {
     protected int voidDeaths = 0;
     public void fallInVoid() { this.voidDeaths++; }
 
-    public BedwarsTable(ServerPlayerEntity player) {
+    public BedwarsTable(UUID player) {
         super(player);
     }
 

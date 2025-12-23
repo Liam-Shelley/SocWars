@@ -2,17 +2,17 @@ package com.soc.database.stats;
 
 import com.soc.SocWars;
 import com.soc.database.SqlHelper;
-import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.sql.Statement;
 import java.util.Iterator;
+import java.util.UUID;
 
 import static com.soc.database.SqlHelper.*;
 
 public abstract class BaseTable implements GetFields, TableName {
-    protected final ServerPlayerEntity player;
+    protected final UUID player;
 
-    protected BaseTable(ServerPlayerEntity player) {
+    protected BaseTable(UUID player) {
         this.player = player;
     }
 

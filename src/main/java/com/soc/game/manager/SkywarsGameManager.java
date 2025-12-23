@@ -129,7 +129,7 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
     }
 
     @Override
-    protected Function<ServerPlayerEntity, SkywarsTable> dbTableBuilder() {
+    protected Function<UUID, SkywarsTable> dbTableBuilder() {
         return SkywarsTable::new;
     }
 

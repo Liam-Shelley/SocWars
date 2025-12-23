@@ -1,6 +1,6 @@
 package com.soc.database.stats;
 
-import net.minecraft.server.network.ServerPlayerEntity;
+import java.util.UUID;
 
 public class SkywarsTable extends CombatTable {
     protected int t1chestsOpened = 0;
@@ -26,7 +26,7 @@ public class SkywarsTable extends CombatTable {
     protected int voidDeaths = 0;
     public void fallInVoid() { this.voidDeaths++; }
 
-    public SkywarsTable(ServerPlayerEntity player) {
+    public SkywarsTable(UUID player) {
         super(player);
     }
 

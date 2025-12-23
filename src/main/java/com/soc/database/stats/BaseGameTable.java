@@ -1,6 +1,6 @@
 package com.soc.database.stats;
 
-import net.minecraft.server.network.ServerPlayerEntity;
+import java.util.UUID;
 
 public abstract class BaseGameTable extends BaseTable {
     protected int wins = 0;
@@ -10,7 +10,7 @@ public abstract class BaseGameTable extends BaseTable {
     protected long xp = 0;
     public void addXp(long xp) { this.xp += xp; }
 
-    protected BaseGameTable(ServerPlayerEntity player) {
+    protected BaseGameTable(UUID player) {
         super(player);
     }
 }

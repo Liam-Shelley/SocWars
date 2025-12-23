@@ -1,6 +1,6 @@
 package com.soc.database.stats;
 
-import net.minecraft.server.network.ServerPlayerEntity;
+import java.util.UUID;
 
 public abstract class CombatTable extends BaseGameTable {
     protected int kills = 0;
@@ -21,7 +21,7 @@ public abstract class CombatTable extends BaseGameTable {
     protected int fireballsShot = 0;
     public void shootFireball() { this.fireballsShot++; }
 
-    protected CombatTable(ServerPlayerEntity player) {
+    protected CombatTable(UUID player) {
         super(player);
     }
 }

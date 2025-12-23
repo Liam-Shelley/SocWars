@@ -37,7 +37,7 @@ public class SqlHelper {
                 case "long" -> Optional.of(String.valueOf(field.getLong(obj)));
                 case "short" -> Optional.of(String.valueOf(field.getShort(obj)));
                 case "java.lang.String" -> Optional.of((String)field.get(obj));
-                case "net.minecraft.server.network.ServerPlayerEntity", "net.minecraft.class_3222" -> Optional.of(sqlUUID((ServerPlayerEntity)field.get(obj)));
+                case "java.util.UUID" -> Optional.of(sqlUUID((UUID)field.get(obj)));
                 default -> Optional.empty();
             };
         } catch (IllegalAccessException e) {
@@ -59,8 +59,7 @@ public class SqlHelper {
         return builder.toString();
     }
 
-    public static String sqlUUID(ServerPlayerEntity player) {
-        final UUID uuid = player.getUuid();
+    public static String sqlUUID(UUID uuid) {
         return String.format("'%s'", uuid.toString().replace("-", ""));
     }
 

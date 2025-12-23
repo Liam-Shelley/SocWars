@@ -66,7 +66,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         this.scoreboardTeams = this.buildScoreboardTeams();
         this.eventQueue = this.buildEventQueue();
 
-        this.dbTables = players.stream().collect(Collectors.toMap(ServerPlayerEntity::getUuid, this.dbTableBuilder()));
+        this.dbTables = players.stream().map(ServerPlayerEntity::getUuid).collect(Collectors.toMap(Function.identity(), this.dbTableBuilder()));
         this.killHeight = this.map.getCentrePos().getY() + KILLZONE_Y_OFFSET;
     }
 
@@ -77,7 +77,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     }
     protected abstract @Nullable EventQueue<EVENT> buildEventQueue();
 
-    protected abstract Function<ServerPlayerEntity, TABLE> dbTableBuilder();
+    protected abstract Function<UUID, TABLE> dbTableBuilder();
     protected final TABLE getDbTable(Entity player) {
         return player == null ? null : this.dbTables.get(player.getUuid());
     }
@@ -250,7 +250,10 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     }
 
     public final DyeColor getTeam(ServerPlayerEntity player) {
-        return this.teams.entries().stream().filter(entry -> entry.getValue() == player.getUuid()).findFirst().map(Map.Entry::getKey).orElse(null);
+        if (player == null) {
+            Thread.dumpStack();
+        }
+        return this.teams.entries().stream().filter(entry -> entry.getValue().equals(player.getUuid())).findAny().map(Map.Entry::getKey).orElse(null);
     }
 
     public final BlockPos getSpawnPosition(ServerPlayerEntity player) {

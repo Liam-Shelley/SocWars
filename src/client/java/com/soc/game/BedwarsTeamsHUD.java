@@ -61,7 +61,7 @@ public class BedwarsTeamsHUD {
 
         int i = 0;
         for (DyeColor team : instance.teams.keySet()) {
-            final int heightStart = height / 2 - 60 + 20 * i;
+            final int heightStart = height / 2 - 60 + 40 * i;
             i++;
 
             drawContext.fill(width - 130, heightStart, width, heightStart + 40, team.getSignColor() & 0x00ffffff | 0x99000000);

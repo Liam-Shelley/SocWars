@@ -173,7 +173,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
     }
 
     @Override
-    protected Function<ServerPlayerEntity, BedwarsTable> dbTableBuilder() {
+    protected Function<UUID, BedwarsTable> dbTableBuilder() {
         return BedwarsTable::new;
     }
 
