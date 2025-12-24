@@ -57,9 +57,9 @@ public final class Database {
                     player.sendMessage(Text.translatable("database.status.op_message", status).formatted(Formatting.GOLD), false);
                 }
 
-                new LobbyTable(player).blankInsert(STATEMENT);
-                new SkywarsTable(player).blankInsert(STATEMENT);
-                new BedwarsTable(player).blankInsert(STATEMENT);
+                new LobbyTable(player.getUuid()).blankInsert(STATEMENT);
+                new SkywarsTable(player.getUuid()).blankInsert(STATEMENT);
+                new BedwarsTable(player.getUuid()).blankInsert(STATEMENT);
         });
     }
 }

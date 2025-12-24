@@ -1,7 +1,8 @@
 package com.soc.database.stats;
 
 import com.soc.SocWars;
-import net.minecraft.server.network.ServerPlayerEntity;
+
+import java.util.UUID;
 
 public class LobbyTable extends BaseTable {
     protected boolean[] collectibles = new boolean[0];
@@ -11,7 +12,7 @@ public class LobbyTable extends BaseTable {
     protected long timeSpent = 0;
     public void spendTime(long time) { this.timeSpent += time; }
 
-    public LobbyTable(ServerPlayerEntity player) {
+    public LobbyTable(UUID player) {
         super(player);
     }
 
