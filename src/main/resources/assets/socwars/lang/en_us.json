@@ -257,6 +257,8 @@
   "shop.category.blocks": "Blocks",
   "events.bedwars.diamond.tier": "Diamond %s",
   "events.bedwars.emerald.tier": "Emerald %s",
+  "game.bedwars.win": "Winner winner chicken dinner",
+  "game.bedwars.lose": "GG EZ rekt lmao",
   "game.bedwars.bed_broken.title": "Bed Broken!",
   "game.bedwars.bed_broken.chat": "%1$s bed was broken by %2$s",
   "hud.bedwars.has_bed": "  ||  Bed: ",
