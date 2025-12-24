@@ -232,10 +232,23 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
         final BedwarsTable targetTable = this.getDbTable(player);
 
-        targetTable.grantDeath();
+        final boolean isFinal = !this.canRespawn(player);
+
+        if (isFinal) {
+            targetTable.grantFinalDeath();
+        } else {
+            targetTable.grantDeath();
+        }
+
         getPlayerAttacker(player).ifPresent(killer -> {
             final BedwarsTable killerTable = this.getDbTable(killer);
-            if (killerTable != null) killerTable.grantKill();
+            if (killerTable == null) return;
+
+            if (isFinal) {
+                targetTable.grantFinalKill();
+            } else {
+                targetTable.grantKill();
+            }
         });
     }
 
