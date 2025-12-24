@@ -11,8 +11,9 @@ import com.soc.items.components.ModComponents;
 import com.soc.lib.Events;
 import com.soc.networking.helper.Teams;
 import com.soc.networking.s2c.ShopDataPayload;
-import com.soc.networking.s2c.joingame.JoinBedwarsPayload;
-import com.soc.networking.s2c.leavegame.LeaveBedwarsPayload;
+import com.soc.networking.s2c.bedwars.JoinBedwarsPayload;
+import com.soc.networking.s2c.bedwars.LeaveBedwarsPayload;
+import com.soc.networking.s2c.bedwars.BedBreakPayload;
 import com.soc.resourcedata.containers.BedwarsData;
 import com.soc.resourcedata.deserialisation.ResourceGeneratorUpgrade;
 import com.soc.resourcedata.listeners.GameData;
@@ -179,7 +180,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
     @Override
     protected void sendJoinGamePayload(ServerPlayerEntity player) {
-        ServerPlayNetworking.send(player, new JoinBedwarsPayload(super.getGameId(), new Teams(super.teams)));
+        ServerPlayNetworking.send(player, new JoinBedwarsPayload(super.getGameId(), new Teams(super.teams, this.teamStatsMap)));
     }
 
     @Override
@@ -312,6 +313,8 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
                 super.getDbTable(player).grantBedBreak();
                 super.getPlayers(bedTeam).stream().map(super::getDbTable).forEach(BedwarsTable::loseBed);
+
+                super.sendPayloadToPlayers(new BedBreakPayload(bedTeam));
             }
 
             return true;

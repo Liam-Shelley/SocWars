@@ -7,11 +7,13 @@ import com.soc.database.stats.BaseTable;
 import com.soc.database.stats.CombatTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.SpreadRules;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.s2c.play.ClearTitleS2CPacket;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
@@ -84,6 +86,14 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
 
     protected abstract void sendJoinGamePayload(ServerPlayerEntity player);
     protected abstract void sendLeaveGamePayload(ServerPlayerEntity player);
+
+    protected void sendPayloadToPlayers(CustomPayload payload) {
+        this.getPlayers().forEach(player -> ServerPlayNetworking.send(player, payload));
+    }
+
+    protected void sendPayloadToPlayers(DyeColor team, CustomPayload payload) {
+        this.getPlayers(team).forEach(player -> ServerPlayNetworking.send(player, payload));
+    }
 
     @MustBeInvokedByOverriders
     public void startGame() {

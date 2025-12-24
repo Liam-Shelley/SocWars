@@ -9,7 +9,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.PlayerSkinDrawer;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DyeColor;
@@ -31,12 +30,23 @@ public class BedwarsTeamsHUD {
         return Optional.ofNullable(INSTANCE);
     }
 
-    private final Multimap<DyeColor, PlayerEntity> teams;
+    private final Multimap<DyeColor, UUID> teams;
+    private final Map<DyeColor, Boolean> bedMap = new HashMap<>();
+    private final Map<UUID, Identifier> skinTextures = new HashMap<>();
     private final DyeColor ownTeam;
 
     private BedwarsTeamsHUD(Teams teams) {
-        this.teams = teams.getTeams(MinecraftClient.getInstance().world);
-        this.ownTeam = this.teams.entries().stream().filter(entry -> entry.getValue() == MinecraftClient.getInstance().player).findFirst().map(Map.Entry::getKey).orElse(null);
+        this.teams = teams.getTeams();
+        this.ownTeam = this.teams.entries().stream().filter(entry -> entry.getValue() == MinecraftClient.getInstance().player.getUuid()).findFirst().map(Map.Entry::getKey).orElse(null);
+        this.teams.forEach((team, uuid) -> {
+                this.bedMap.put(team, teams.hasBed(team));
+
+                final PlayerEntity player = MinecraftClient.getInstance().world.getPlayerByUuid(uuid);
+                if (player == null) return;
+                MinecraftClient.getInstance().getSkinProvider().fetchSkinTextures(player.getGameProfile()).whenCompleteAsync((optionalTextures, throwable) ->
+                        optionalTextures.ifPresent(textures -> this.skinTextures.put(uuid, textures.texture()))
+                );
+        });
     }
 
     public static void joinGame(Teams teams) {
@@ -45,6 +55,14 @@ public class BedwarsTeamsHUD {
 
     public static void leaveGame() {
         INSTANCE = null;
+    }
+
+    public static void breakBed(DyeColor team) {
+        getInstance().ifPresent(instance -> instance.bedMap.put(team, false));
+    }
+
+    public Optional<Identifier> getSkinTexture(UUID uuid) {
+        return Optional.ofNullable(this.skinTextures.get(uuid));
     }
 
     public static void render(DrawContext drawContext, RenderTickCounter renderTickCounter) {
@@ -57,7 +75,7 @@ public class BedwarsTeamsHUD {
         final int width = drawContext.getScaledWindowWidth();
         final int height = drawContext.getScaledWindowHeight();
 
-        drawContext.fill(width - 130, height / 2 - 100, width, height / 2 + 100, 0x44000000);
+        drawContext.fill(width - 130, height / 2 - 100, width, height / 2 + 100, 0x38000000);
 
         int i = 0;
         for (DyeColor team : instance.teams.keySet()) {
@@ -66,13 +84,14 @@ public class BedwarsTeamsHUD {
 
             drawContext.fill(width - 130, heightStart, width, heightStart + 40, team.getSignColor() & 0x00ffffff | 0x99000000);
 
-            drawTeamText(drawContext, team, textRenderer, width, heightStart);
+            drawTeamText(instance, drawContext, team, textRenderer, width, heightStart);
             drawTeamHeads(drawContext, team, instance, width, heightStart);
         }
     }
 
-    private static void drawTeamText(DrawContext drawContext, DyeColor team, TextRenderer textRenderer, int width, int heightStart) {
-        final boolean hasBed = true;
+    private static void drawTeamText(BedwarsTeamsHUD instance, DrawContext drawContext, DyeColor team, TextRenderer textRenderer, int width, int heightStart) {
+        final Boolean hasBedBoxed = instance.bedMap.get(team);
+        final boolean hasBed = hasBedBoxed != null && hasBedBoxed;
 
         final String teamBaseString = String.format(Language.getInstance().get("hud.bedwars.team"), Language.getInstance().get("color.minecraft." + team.asString()));
         drawContext.drawText(textRenderer, teamBaseString, width - 120, heightStart + 4, 0xffffffff, true);
@@ -84,11 +103,17 @@ public class BedwarsTeamsHUD {
     }
 
     private static void drawTeamHeads(DrawContext drawContext, DyeColor team, BedwarsTeamsHUD instance, int width, int heightStart) {
-        final List<PlayerEntity> players = List. copyOf(instance.teams.get(team));
-        for (int j = 0; j < players.size(); j++) {
-            if (players.get(j) instanceof ClientPlayerEntity clientPlayer) {
-                PlayerSkinDrawer.draw(drawContext, clientPlayer.getSkinTextures(), width - 120 + j * 24, heightStart + 16, 20);
-            }
+        final Collection<UUID> players = instance.teams.get(team);
+
+        int i = 0;
+        for (UUID uuid : players) {
+            final int x = width - 120 + i * 24;
+            final int y = heightStart + 16;
+            instance.getSkinTexture(uuid).ifPresentOrElse(
+                    texture -> PlayerSkinDrawer.draw(drawContext, texture, x, y, 20, true, false, 0xffffffff),
+                    () -> drawContext.fill(x, y, x + 20, y + 20, 0xffff0000)
+            );
+            i++;
         }
     }
 }
