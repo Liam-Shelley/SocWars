@@ -3,6 +3,9 @@ package com.soc.game.manager.bedwars;
 import com.google.gson.JsonObject;
 import com.soc.resourcedata.deserialisation.Cost;
 import com.soc.screenhandler.BedwarsShopScreenHandler;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.EquippableComponent;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
@@ -11,22 +14,23 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.OptionalInt;
 
-import static com.soc.lib.json.JsonHelper.*;
+import static com.soc.lib.json.JsonHelper.getDefaultedItem;
+import static com.soc.lib.json.JsonHelper.getDefaultedObject;
 
-public class SimpleShopItem extends BaseShopItem {
+public class UpgradeableShopItem extends BaseShopItem {
     private final ItemStack stack;
 
-    public SimpleShopItem(int iron, int gold, int diamonds, int emeralds, ItemStack stack) {
+    public UpgradeableShopItem(int iron, int gold, int diamonds, int emeralds, ItemStack stack) {
         super(iron, gold, diamonds, emeralds, stack);
         this.stack = stack;
     }
 
-    public SimpleShopItem(Cost cost, ItemStack stack) {
+    public UpgradeableShopItem(Cost cost, ItemStack stack) {
         super(cost, stack);
         this.stack = stack;
     }
 
-    public SimpleShopItem(JsonObject object) {
+    public UpgradeableShopItem(JsonObject object) {
         this(
                 getDefaultedObject(object, Cost.KEY, Cost::new, Cost.ERROR_SIGNAL),
                 getDefaultedItem(object)
@@ -39,8 +43,18 @@ public class SimpleShopItem extends BaseShopItem {
         if (!canAfford.getLeft()) return false;
 
         super.costMap.forEach((item, count) -> Inventories.remove(player.getInventory(), predStack -> predStack.isOf(item), count, false));
-        player.giveItemStack(this.stack.copy());
-        return true;
+
+        final EquippableComponent equippableComponent = this.stack.get(DataComponentTypes.EQUIPPABLE);
+
+        if (equippableComponent != null && equippableComponent.slot().isArmorSlot()) {
+            player.equipStack(equippableComponent.slot(), this.stack.copy());
+            return true;
+        } else {
+            final boolean openSlot = canAfford.getRight().isPresent();
+
+            if (openSlot) player.giveItemStack(this.stack.copy());
+            return openSlot;
+        }
     }
 
     @Override

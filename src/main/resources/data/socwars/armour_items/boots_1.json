@@ -1,0 +1,29 @@
+{
+  "downgrades_on_death": false,
+  "tiers": [
+    {
+      "cost": {
+        "iron": 20
+      },
+      "item": "socwars:gambler_boots"
+    },
+    {
+      "cost": {
+        "iron": 10
+      },
+      "item": "minecraft:iron_pickaxe"
+    },
+    {
+      "cost": {
+        "gold": 3
+      },
+      "item": "minecraft:golden_pickaxe"
+    },
+    {
+      "cost": {
+        "gold": 6
+      },
+      "item": "minecraft:netherite_pickaxe"
+    }
+  ]
+}

@@ -4,7 +4,7 @@ import com.soc.game.manager.BedwarsGameManager;
 import com.soc.game.manager.bedwars.BedwarsShopCategory;
 import com.soc.game.manager.bedwars.BedwarsShopContents;
 import com.soc.game.manager.bedwars.BaseShopItem;
-import com.soc.networking.s2c.ShopDataPayload;
+import com.soc.networking.s2c.bedwars.ShopDataPayload;
 import com.soc.screenhandler.slots.CategorySlot;
 import com.soc.screenhandler.slots.StockSlot;
 import net.minecraft.entity.player.PlayerEntity;

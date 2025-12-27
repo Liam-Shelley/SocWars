@@ -91,7 +91,7 @@ public class BedwarsShopBase extends HandledScreen<BedwarsShopScreenHandler> {
         final ItemStack icon = item.getIcon();
         {
             final MutableText name = item.getTooltipName().copy();
-            if (item.canAfford(this.playerInventory.player).isPresent()) name.append(Text.literal(" ✔").formatted(Formatting.GREEN));
+            if (item.canAfford(this.playerInventory.player).getLeft()) name.append(Text.literal(" ✔").formatted(Formatting.GREEN));
             int nameWidth = super.textRenderer.getWidth(name);
 
             TooltipBackgroundRenderer.render(context, x + 12, y - 12, nameWidth, 30, icon.get(DataComponentTypes.TOOLTIP_STYLE));

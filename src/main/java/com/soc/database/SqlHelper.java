@@ -1,7 +1,5 @@
 package com.soc.database;
 
-import net.minecraft.server.network.ServerPlayerEntity;
-
 import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.Optional;

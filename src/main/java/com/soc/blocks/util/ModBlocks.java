@@ -26,7 +26,7 @@ public class ModBlocks {
 
     public static final Block PLASTIC_BLOCK = ModBlocks.register("plastic_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(2f, 2), true);
     public static final Block RUBBER_BLOCK = ModBlocks.register("rubber_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(4f, 3), true);
-    public static final Block PERSPEX_BLOCK = ModBlocks.register("perspex_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(2f, 1200f), true);
+    public static final Block PERSPEX_BLOCK = ModBlocks.register("perspex_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(3f, 1200f), true);
     public static final Block HARDENED_LAVA_BLOCK = ModBlocks.register("hardened_lava_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(30f, 1200f), settings -> settings.rarity(Rarity.RARE));
     public static final Block UNOBTANIUM_BLOCK = ModBlocks.register("unobtanium_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(60f, 1200f), settings -> settings.rarity(Rarity.RARE));
     public static final Block NEAR_INFINITE_DENSITY_BLOCK = ModBlocks.register("near_infinite_density_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(100f, 1200f), settings -> settings.rarity(Rarity.EPIC));

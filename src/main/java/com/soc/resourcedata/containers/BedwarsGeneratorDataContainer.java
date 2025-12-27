@@ -1,12 +1,17 @@
 package com.soc.resourcedata.containers;
 
+import com.google.gson.JsonObject;
 import com.soc.lib.SortedList;
 import com.soc.resourcedata.deserialisation.IslandGeneratorUpgrade;
 import com.soc.resourcedata.deserialisation.ResourceGeneratorUpgrade;
 
 import java.util.List;
 
-public class BedwarsData implements CachedData {
+public class BedwarsGeneratorDataContainer implements CachedData {
+    private BedwarsGeneratorDataContainer() {}
+
+    public static final BedwarsGeneratorDataContainer INSTANCE = new BedwarsGeneratorDataContainer();
+
     private final SortedList<IslandGeneratorUpgrade> islandGeneratorUpgrades = new SortedList<>();
     private final SortedList<ResourceGeneratorUpgrade> diamondGeneratorUpgrades = new SortedList<>();
     private final SortedList<ResourceGeneratorUpgrade> emeraldGeneratorUpgrades = new SortedList<>();
@@ -21,6 +26,18 @@ public class BedwarsData implements CachedData {
 
     public void addEmeraldGeneratorUpgrade(ResourceGeneratorUpgrade upgrade) {
         this.emeraldGeneratorUpgrades.add(upgrade);
+    }
+
+    public void addIslandGeneratorUpgrade(JsonObject object) {
+        this.addIslandGeneratorUpgrade(new IslandGeneratorUpgrade(object));
+    }
+
+    public void addDiamondGeneratorUpgrade(JsonObject object) {
+        this.addDiamondGeneratorUpgrade(new ResourceGeneratorUpgrade(object));
+    }
+
+    public void addEmeraldGeneratorUpgrade(JsonObject object) {
+        this.addEmeraldGeneratorUpgrade(new ResourceGeneratorUpgrade(object));
     }
 
     public List<IslandGeneratorUpgrade> getIslandGeneratorUpgrades() {

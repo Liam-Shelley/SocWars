@@ -1,4 +1,4 @@
-package com.soc.networking.s2c;
+package com.soc.networking.s2c.bedwars;
 
 import com.soc.SocWars;
 import com.soc.game.manager.bedwars.BedwarsShopContents;

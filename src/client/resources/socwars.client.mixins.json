@@ -3,7 +3,8 @@
   "package": "com.soc.mixin.client",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "CancelSneaking",
+    "KeyboardInputModifier",
+    "MouseInputModifier",
     "OpenMapBlockScreen"
   ],
   "injectors": {

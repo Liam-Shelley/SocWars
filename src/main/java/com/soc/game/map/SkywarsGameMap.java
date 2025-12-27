@@ -3,8 +3,7 @@ package com.soc.game.map;
 import com.soc.SocWars;
 import com.soc.nbt.SkywarsChest;
 import com.soc.nbt.SpawnPosition;
-import com.soc.resourcedata.ResourceManager;
-import com.soc.resourcedata.listeners.ItemData;
+import com.soc.resourcedata.listeners.SkywarsLootData;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.HorizontalFacingBlock;
@@ -13,9 +12,7 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtList;
-import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureTemplate;
@@ -25,8 +22,6 @@ import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -81,7 +76,7 @@ public class SkywarsGameMap extends AbstractGameMap {
                 final float random2 = this.world.random.nextFloat();
                 final int pool = random2 < 0.55f + tier * 0.04f ? 0 : 1;
 
-                final Pair<Item, Integer> item = ItemData.INSTANCE.getSkywarsItemData().getRandomItem(pool, tier - 1, this.world.random);
+                final Pair<Item, Integer> item = SkywarsLootData.INSTANCE.getSkywarsItemData().getRandomItem(pool, tier - 1, this.world.random);
                 final ItemStack stack = new ItemStack(item.getLeft(), item.getRight());
 
                 if (stack.isIn(ItemTags.BOW_ENCHANTABLE)) stack.addEnchantment(this.world.getRegistryManager().getEntryOrThrow(Enchantments.INFINITY), 1);

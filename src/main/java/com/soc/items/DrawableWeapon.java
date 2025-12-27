@@ -54,7 +54,7 @@ public class DrawableWeapon extends Item {
                 stack.damage(1, user, user.getActiveHand());
                 return false;
             }), new Settings()
-            .maxDamage(8)
+            .maxDamage(6)
             .rarity(Rarity.UNCOMMON)
             .useCooldown(0.5f)
     );

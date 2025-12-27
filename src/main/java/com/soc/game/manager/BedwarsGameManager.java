@@ -10,13 +10,12 @@ import com.soc.game.map.*;
 import com.soc.items.components.ModComponents;
 import com.soc.lib.Events;
 import com.soc.networking.helper.Teams;
-import com.soc.networking.s2c.ShopDataPayload;
+import com.soc.networking.s2c.bedwars.ShopDataPayload;
 import com.soc.networking.s2c.bedwars.JoinBedwarsPayload;
 import com.soc.networking.s2c.bedwars.LeaveBedwarsPayload;
 import com.soc.networking.s2c.bedwars.BedBreakPayload;
-import com.soc.resourcedata.containers.BedwarsData;
+import com.soc.resourcedata.containers.BedwarsGeneratorDataContainer;
 import com.soc.resourcedata.deserialisation.ResourceGeneratorUpgrade;
-import com.soc.resourcedata.listeners.GameData;
 import com.soc.util.Sounds;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.damage.DamageSource;
@@ -159,13 +158,13 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         final EventQueue<BedwarsGameManager> queue = new EventQueue<>();
 
         {
-            final BedwarsData bedwarsData = GameData.INSTANCE.getBedwarsData();
-            for (int i = 0; i < bedwarsData.getDiamondGeneratorUpgrades().size(); i++) {
-                final ResourceGeneratorUpgrade upgrade = bedwarsData.getDiamondGeneratorUpgrades().get(i);
+            final BedwarsGeneratorDataContainer bedwarsGeneratorDataContainer = BedwarsGeneratorDataContainer.INSTANCE;
+            for (int i = 0; i < bedwarsGeneratorDataContainer.getDiamondGeneratorUpgrades().size(); i++) {
+                final ResourceGeneratorUpgrade upgrade = bedwarsGeneratorDataContainer.getDiamondGeneratorUpgrades().get(i);
                 queue.addEvent(upgrade.time(), manager -> manager.upgradeDiamondGens(upgrade.getStats()), Text.translatable("events.bedwars.diamond.tier", romanNumerals(i)));
             }
-            for (int i = 0; i < bedwarsData.getEmeraldGeneratorUpgrades().size(); i++) {
-                final ResourceGeneratorUpgrade upgrade = bedwarsData.getEmeraldGeneratorUpgrades().get(i);
+            for (int i = 0; i < bedwarsGeneratorDataContainer.getEmeraldGeneratorUpgrades().size(); i++) {
+                final ResourceGeneratorUpgrade upgrade = bedwarsGeneratorDataContainer.getEmeraldGeneratorUpgrades().get(i);
                 queue.addEvent(upgrade.time(), manager -> manager.upgradeEmeraldGens(upgrade.getStats()), Text.translatable("events.bedwars.emerald.tier", romanNumerals(i)));
             }
         }
@@ -199,7 +198,6 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
         super.onPlayerDeath(player, source, amount);
 
-        //super.broadcast(Text.of("Teams alive: " + this.getAliveTeams() + " Teams in game: " + super.teams.keySet()), false);
         if (this.getAliveTeams().size() < (super.teams.keySet().size() > 1 ? 2 : 1)) {
             this.endGame(false);
             return false;

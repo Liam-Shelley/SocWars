@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(KeyboardInput.class)
-public abstract class CancelSneaking extends Input {
+public abstract class KeyboardInputModifier extends Input {
     @Shadow
     private static float getMovementMultiplier(boolean positive, boolean negative) {
         return 0f;
@@ -23,17 +23,18 @@ public abstract class CancelSneaking extends Input {
 	@Inject(at = @At("HEAD"), method = "tick", cancellable = true)
 	private void socwars_cancelSneaking(CallbackInfo ci) {
         final MinecraftClient client = MinecraftClient.getInstance();
-        if(!client.player.hasStatusEffect(ModEffects.ARTHRODESIS)) return;
+        boolean tonyaed = client.player.hasStatusEffect(ModEffects.ARTHRODESIS);
+        boolean perplexed = client.player.hasStatusEffect(ModEffects.PERPLEXITY);
 
         final GameOptions settings = client.options;
 
         super.playerInput = new PlayerInput(
-                settings.forwardKey.isPressed(),
-                settings.backKey.isPressed(),
-                settings.leftKey.isPressed(),
-                settings.rightKey.isPressed(),
+                perplexed ? settings.backKey.isPressed() : settings.forwardKey.isPressed(),
+                perplexed ? settings.forwardKey.isPressed() : settings.backKey.isPressed(),
+                perplexed ? settings.rightKey.isPressed() : settings.leftKey.isPressed(),
+                perplexed ? settings.leftKey.isPressed() : settings.rightKey.isPressed(),
                 settings.jumpKey.isPressed(),
-                false,
+                settings.sneakKey.isPressed() && !tonyaed,
                 settings.sprintKey.isPressed()
         );
         float vertical = getMovementMultiplier(super.playerInput.forward(), super.playerInput.backward());

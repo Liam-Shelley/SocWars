@@ -5,6 +5,7 @@ import com.soc.networking.s2c.*;
 import com.soc.networking.s2c.bedwars.BedBreakPayload;
 import com.soc.networking.s2c.bedwars.JoinBedwarsPayload;
 import com.soc.networking.s2c.bedwars.LeaveBedwarsPayload;
+import com.soc.networking.s2c.bedwars.ShopDataPayload;
 import com.soc.player.PlayerDataManager;
 import com.soc.screenhandler.BedwarsShopScreenHandler;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;

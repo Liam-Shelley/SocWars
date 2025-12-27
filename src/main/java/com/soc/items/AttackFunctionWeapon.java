@@ -121,7 +121,7 @@ public class AttackFunctionWeapon extends Item {
                 target.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 3 * 20, 2));
             }), new Settings()
             .rarity(Rarity.EPIC)
-            .sword(ToolMaterials.DEVASTATOR, 2f, -3.7f)
+            .sword(ToolMaterials.DEVASTATOR, 9f, -3.5f)
             .component(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true)
     );
     public static final Item NETHERWRONG_SWORD = ModItems.register("netherwrong_sword", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
@@ -229,7 +229,7 @@ public class AttackFunctionWeapon extends Item {
                     attacker.setStackInHand(Hand.MAIN_HAND, ItemStack.EMPTY);
                 }
             }), new Settings()
-            .sword(ToolMaterials.BASE, 4f, -1f)
+            .sword(ToolMaterials.BASE, 7f, -1.2f)
             .maxDamage(350)
             .rarity(Rarity.RARE)
     );

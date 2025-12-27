@@ -1,0 +1,30 @@
+{
+  "downgrades_on_death": true,
+  "retain_base_tier": true,
+  "tiers": [
+    {
+      "cost": {
+        "iron": 10
+      },
+      "item": "minecraft:wooden_pickaxe"
+    },
+    {
+      "cost": {
+        "iron": 10
+      },
+      "item": "minecraft:iron_pickaxe"
+    },
+    {
+      "cost": {
+        "gold": 3
+      },
+      "item": "minecraft:golden_pickaxe"
+    },
+    {
+      "cost": {
+        "gold": 6
+      },
+      "item": "minecraft:netherite_pickaxe"
+    }
+  ]
+}

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class SkywarsData extends ItemDataContainer<SkywarsItemData> {
+public class SkywarsLootDataContainer extends ItemDataContainer<SkywarsItemData> {
     private Map<Integer, CumulativeWeightList<Pair<Item, Integer>>[]> cumulativeWeightPools = new HashMap<>();
 
     private Map<Integer, CumulativeWeightList<Pair<Item, Integer>>[]> getCumulativeWeightPools() {

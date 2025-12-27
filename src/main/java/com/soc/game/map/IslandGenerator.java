@@ -1,7 +1,7 @@
 package com.soc.game.map;
 
+import com.soc.resourcedata.containers.BedwarsGeneratorDataContainer;
 import com.soc.resourcedata.deserialisation.IslandGeneratorUpgrade;
-import com.soc.resourcedata.listeners.GameData;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
@@ -10,7 +10,7 @@ import net.minecraft.world.World;
 import java.util.List;
 
 public class IslandGenerator {
-    private static final List<IslandGeneratorUpgrade> GENERATOR_UPGRADES = GameData.INSTANCE.getBedwarsData().getIslandGeneratorUpgrades();
+    private static final List<IslandGeneratorUpgrade> GENERATOR_UPGRADES = BedwarsGeneratorDataContainer.INSTANCE.getIslandGeneratorUpgrades();
 
     private int tier = 0;
 

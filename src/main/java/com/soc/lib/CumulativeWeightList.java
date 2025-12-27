@@ -26,6 +26,7 @@ public class CumulativeWeightList<V> {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public CumulativeWeightList(Map<?, SkywarsItemData> pool, int tier) {
         this();
         for (Map.Entry<?, SkywarsItemData> entry : pool.entrySet()) {

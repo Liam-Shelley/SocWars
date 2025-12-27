@@ -1,6 +1,8 @@
 package com.soc.game.manager.bedwars;
 
 import com.soc.game.manager.BedwarsGameManager;
+import com.soc.resourcedata.deserialisation.Cost;
+import com.soc.screenhandler.BedwarsShopScreenHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
@@ -11,6 +13,7 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 
@@ -18,19 +21,19 @@ public abstract class BaseShopItem {
     public static final PacketCodec<RegistryByteBuf, BaseShopItem> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.collection(ArrayList::new, PacketCodecs.INTEGER), BaseShopItem::getCosts, ItemStack.PACKET_CODEC, BaseShopItem::getIcon, ClientDisplayShopItem::new);
 
     private static class ClientDisplayShopItem extends BaseShopItem {
-        protected ClientDisplayShopItem(List<Integer> costs, ItemStack icon) {
+        private ClientDisplayShopItem(List<Integer> costs, ItemStack icon) {
             super(costs.get(0), costs.get(1), costs.get(2), costs.get(3), icon);
         }
 
         @Override
-        public boolean buy(PlayerEntity player) {
+        public boolean buy(PlayerEntity player, BedwarsShopScreenHandler context) {
             return false;
         }
     }
 
     public static final BaseShopItem EMPTY = new BaseShopItem(1, 1, 1, 1, Items.AIR.getDefaultStack()) {
         @Override
-        public boolean buy(PlayerEntity player) {
+        public boolean buy(PlayerEntity player, BedwarsShopScreenHandler context) {
             return false;
         }
     };
@@ -48,7 +51,11 @@ public abstract class BaseShopItem {
         this.icon = icon;
     }
 
-    public abstract boolean buy(PlayerEntity player);
+    protected BaseShopItem(Cost cost, ItemStack icon) {
+        this(cost.iron(), cost.gold(), cost.diamonds(), cost.emeralds(), icon);
+    }
+
+    public abstract boolean buy(PlayerEntity player, BedwarsShopScreenHandler context);
 
     public Text getTooltipName() {
         return getTooltipNameOfItem(this.icon);
@@ -58,13 +65,13 @@ public abstract class BaseShopItem {
         return Text.literal(icon.getCount() + "x ").formatted(Formatting.DARK_PURPLE).append(icon.getItemName().copy().formatted(icon.getRarity().getFormatting()));
     }
 
-    public final OptionalInt canAfford(PlayerEntity player) {
+    public final Pair<Boolean, OptionalInt> canAfford(PlayerEntity player) {
         final PlayerInventory playerInventory = player.getInventory();
 
         final boolean canAfford = this.costMap.entrySet().stream().map(entry -> playerInventory.count(entry.getKey()) >= entry.getValue()).reduce(true, Boolean::logicalAnd);
         final int emptySlot = playerInventory.getEmptySlot();
 
-        return canAfford && emptySlot >= 0 ? OptionalInt.of(emptySlot) : OptionalInt.empty();
+        return Pair.of(canAfford, emptySlot >= 0 ? OptionalInt.of(emptySlot) : OptionalInt.empty());
     }
 
     //Just manually inline this once I actually use it

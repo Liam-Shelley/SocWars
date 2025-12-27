@@ -4,7 +4,6 @@ import com.soc.screenhandler.BedwarsShopScreenHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.ScreenHandler;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 
@@ -18,7 +17,7 @@ public class StockSlot extends ShopSlot {
 
     @Override
     public ItemStack takeStack(int amount) {
-        final boolean success = super.context.getShopItem(this).buy(super.player);
+        final boolean success = super.context.getShopItem(this).buy(super.player, super.context);
 
         super.player.playSound(success ? BUY_SUCCESS : BUY_FAIL);
 

@@ -2,12 +2,21 @@ package com.soc.lib.json;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.soc.SocWars;
+import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
+import net.minecraft.util.Identifier;
 
 import java.io.Reader;
+import java.io.StringReader;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class JsonHelper {
+    public static final String ITEM_KEY = "item";
+    public static final String ITEM_COUNT_KEY = "item_count";
+    public static final String ITEM_COMPONENTS_KEY = "item_components";
+
     private JsonHelper() {}
 
     public static float getDefaultedFloat(JsonObject json, String key, float def) {
@@ -45,5 +54,27 @@ public class JsonHelper {
         for (JsonElement jsonElement : net.minecraft.util.JsonHelper.deserializeArray(reader)) {
             function.accept(jsonElement.getAsJsonObject());
         }
+    }
+
+    public static void runFunctionOverArray(JsonObject object, String key, Consumer<JsonObject> function) {
+        SocWars.LOGGER.warn("MAKE SURE THIS FUNCTION ACTUALLY WORKS");
+        runFunctionOverArray(new StringReader(object.get(key).getAsString()), function);
+    }
+
+    public static ItemStack getDefaultedItem(JsonObject object, ItemStack def) {
+        final Identifier id = Identifier.of(object.get(ITEM_KEY).getAsString());
+
+        if (!Registries.ITEM.containsId(id)) return def;
+
+        final ItemStack stack = new ItemStack(
+                Registries.ITEM.get(id),
+                getDefaultedInt(object, ITEM_COUNT_KEY, 1)
+        );
+
+        return stack;
+    }
+
+    public static ItemStack getDefaultedItem(JsonObject object) {
+        return getDefaultedItem(object, ItemStack.EMPTY);
     }
 }

@@ -4,6 +4,7 @@ import com.soc.networking.s2c.*;
 import com.soc.networking.s2c.bedwars.JoinBedwarsPayload;
 import com.soc.networking.s2c.bedwars.LeaveBedwarsPayload;
 import com.soc.networking.s2c.bedwars.BedBreakPayload;
+import com.soc.networking.s2c.bedwars.ShopDataPayload;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 
 public class S2CPayloads {
