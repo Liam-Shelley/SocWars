@@ -127,7 +127,7 @@ public class BedwarsShopBase extends HandledScreen<BedwarsShopScreenHandler> {
     }
 
     private void drawCategoryTooltip(DrawContext context, int x, int y, BedwarsShopCategory category) {
-        TooltipBackgroundRenderer.render(context, x + 12, y - 12, 60, 8, null);
+        TooltipBackgroundRenderer.render(context, x + 12, y - 12, super.textRenderer.getWidth(category.getName()), 8, null);
         context.drawText(super.textRenderer, category.getName(), x + 12, y - 12, 0xffffffff, true);
     }
 

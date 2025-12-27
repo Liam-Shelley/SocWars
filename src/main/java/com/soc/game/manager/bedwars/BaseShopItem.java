@@ -18,11 +18,11 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.*;
 
 public abstract class BaseShopItem {
-    public static final PacketCodec<RegistryByteBuf, BaseShopItem> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.collection(ArrayList::new, PacketCodecs.INTEGER), BaseShopItem::getCosts, ItemStack.PACKET_CODEC, BaseShopItem::getIcon, ClientDisplayShopItem::new);
+    public static final PacketCodec<RegistryByteBuf, BaseShopItem> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.collection(ArrayList::new, PacketCodecs.INTEGER), BaseShopItem::getCosts, PacketCodecs.optional(ItemStack.PACKET_CODEC), BaseShopItem::getOptionalIcon, ClientDisplayShopItem::new);
 
     private static class ClientDisplayShopItem extends BaseShopItem {
-        private ClientDisplayShopItem(List<Integer> costs, ItemStack icon) {
-            super(costs.get(0), costs.get(1), costs.get(2), costs.get(3), icon);
+        private ClientDisplayShopItem(List<Integer> costs, Optional<ItemStack> icon) {
+            super(costs.get(0), costs.get(1), costs.get(2), costs.get(3), icon.orElse(ItemStack.EMPTY));
         }
 
         @Override
@@ -85,6 +85,9 @@ public abstract class BaseShopItem {
 
     public final ItemStack getIcon() {
         return this.icon;
+    }
+    public final Optional<ItemStack> getOptionalIcon() {
+        return this.icon.isEmpty() ? Optional.empty() : Optional.of(this.icon);
     }
 
     private List<Integer> getCosts() {

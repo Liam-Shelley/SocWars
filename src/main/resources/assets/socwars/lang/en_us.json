@@ -261,6 +261,7 @@
   "game.bedwars.lose": "GG EZ rekt lmao",
   "game.bedwars.bed_broken.title": "Bed Broken!",
   "game.bedwars.bed_broken.chat": "%1$s bed was broken by %2$s",
+  "game.bedwars.shop.category.blocks": "Building Blocks",
   "hud.bedwars.has_bed": "  ||  Bed: ",
   "hud.bedwars.team": "%s Team",
   "hud.tick": "✔",

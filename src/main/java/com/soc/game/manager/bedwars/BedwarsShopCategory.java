@@ -9,10 +9,11 @@ import net.minecraft.text.TextCodecs;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class BedwarsShopCategory {
     public static final int MAX_ITEMS = 36;
-    public static final PacketCodec<RegistryByteBuf, BedwarsShopCategory> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.collection(ArrayList::new, BaseShopItem.PACKET_CODEC), BedwarsShopCategory::getItems, ItemStack.PACKET_CODEC, BedwarsShopCategory::getIcon, TextCodecs.PACKET_CODEC, BedwarsShopCategory::getName, BedwarsShopCategory::new);
+    public static final PacketCodec<RegistryByteBuf, BedwarsShopCategory> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.collection(ArrayList::new, BaseShopItem.PACKET_CODEC), BedwarsShopCategory::getItems, PacketCodecs.optional(ItemStack.PACKET_CODEC), BedwarsShopCategory::getOptionalIcon, TextCodecs.PACKET_CODEC, BedwarsShopCategory::getName, BedwarsShopCategory::new);
 
     private final List<BaseShopItem> items;
     private final ItemStack icon;
@@ -28,6 +29,10 @@ public class BedwarsShopCategory {
         this.name = name;
     }
 
+    public BedwarsShopCategory(List<BaseShopItem> items, Optional<ItemStack> icon, Text name) {
+        this(items, icon.orElse(ItemStack.EMPTY), name);
+    }
+
     public BaseShopItem getShopItem(int slot) {
         if (slot < 0 || slot >= this.items.size()) return BaseShopItem.EMPTY;
         final BaseShopItem item = this.items.get(slot);
@@ -36,6 +41,9 @@ public class BedwarsShopCategory {
 
     public ItemStack getIcon() {
         return this.icon;
+    }
+    public Optional<ItemStack> getOptionalIcon() {
+        return this.icon.isEmpty() ? Optional.empty() : Optional.of(this.icon);
     }
 
     public Text getName() {

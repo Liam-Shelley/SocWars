@@ -35,17 +35,15 @@ public class BedwarsShopDataContainer implements CachedData {
             final int itemsSize = BedwarsShopScreenHandler.STOCK_WIDTH * BedwarsShopScreenHandler.STOCK_HEIGHT;
             final List<BaseShopItem> items = new ArrayList<>(itemsSize);
             for (int i = 0; i < itemsSize; i++) {
-                items.add(null);
+                items.add(BaseShopItem.EMPTY);
             }
 
             for (int i = 0; i < preSelection.length; i++) {
                 for (int j = 0; j < preSelection[i].length; j++) {
                     final BedwarsShopSlot shopSlot = preSelection[i][j];
-                    final int index = i * BedwarsShopScreenHandler.STOCK_HEIGHT + j;
+                    final int index = i * BedwarsShopScreenHandler.STOCK_WIDTH + j;
 
-                    if (shopSlot == null) {
-                        items.set(index, null);
-                    } else {
+                    if (shopSlot != null) {
                         final List<Identifier> options = shopSlot.options();
                         final Identifier choice = options.get(random.nextBetween(0, options.size() - 1));
                         final BaseShopItem item = this.resourceItemMap.get(choice);
