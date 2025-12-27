@@ -177,7 +177,7 @@ public record MapCheckResults(Set<SpawnPosition> spawnPositions, Set<BlockPos> c
     }
 
     private BlockPos getSingleCentre() {
-        if (this.centrePositions.size() != 1) throw new IllegalStateException("Tried to access a relative position function while there are multiple centres");
+        if (this.centrePositions.size() != 1) throw new IllegalStateException("Tried to access options relative position function while there are multiple centres");
         return this.centrePositions.stream().findFirst().get();
     }
 

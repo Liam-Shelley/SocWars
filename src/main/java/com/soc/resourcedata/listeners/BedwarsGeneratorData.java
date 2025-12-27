@@ -13,7 +13,7 @@ import static com.soc.resourcedata.ResourceManager.readResources;
 public class BedwarsGeneratorData implements SimpleSynchronousResourceReloadListener {
     public static final BedwarsGeneratorData INSTANCE = new BedwarsGeneratorData();
 
-    //Maybe change to a Path -> Consumer<Reader> Map to control how each resource is loaded
+    //Maybe change to options Path -> Consumer<Reader> Map to control how each resource is loaded
 
     private BedwarsGeneratorData() {}
 

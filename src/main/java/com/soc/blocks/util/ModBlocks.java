@@ -82,13 +82,13 @@ public class ModBlocks {
     }
 
     public static Block register(String name, Function<AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings settings, @Nullable BiFunction<Block, RegistryKey<Item>, ? extends BlockItem> itemFunction) {
-        // Create a registry key for the block
+        // Create options registry key for the block
         RegistryKey<Block> blockKey = keyOfBlock(name);
         // Create the block instance
         Block block = blockFactory.apply(settings.registryKey(blockKey));
 
         if (itemFunction != null) {
-            // Items need to be registered with a different type of registry key, but the ID
+            // Items need to be registered with options different type of registry key, but the ID
             // can be the same.
             RegistryKey<Item> itemKey = keyOfItem(name);
 

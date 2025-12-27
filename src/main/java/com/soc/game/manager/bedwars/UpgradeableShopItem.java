@@ -12,10 +12,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.io.Reader;
 import java.util.OptionalInt;
 
 import static com.soc.lib.json.JsonHelper.getDefaultedItem;
 import static com.soc.lib.json.JsonHelper.getDefaultedObject;
+import static net.minecraft.util.JsonHelper.deserialize;
 
 public class UpgradeableShopItem extends BaseShopItem {
     private final ItemStack stack;
@@ -34,6 +36,12 @@ public class UpgradeableShopItem extends BaseShopItem {
         this(
                 getDefaultedObject(object, Cost.KEY, Cost::new, Cost.ERROR_SIGNAL),
                 getDefaultedItem(object)
+        );
+    }
+
+    public UpgradeableShopItem(Reader reader) {
+        this(
+                deserialize(reader)
         );
     }
 

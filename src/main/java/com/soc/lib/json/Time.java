@@ -23,7 +23,7 @@ public record Time(int ticks) {
                 getDefaultedInt(object, TICKS_KEY)
         );
 
-        if (this.ticks <= 0) SocWars.LOGGER.info("Read \"Time\" record from NBT with non-positive time. This may be intentional, but I thought it was worth putting in a warning");
+        if (this.ticks <= 0) SocWars.LOGGER.info("Read \"Time\" record from NBT with non-positive time. This may be intentional, but I thought it was worth putting in options warning");
     }
 
     public int seconds() {

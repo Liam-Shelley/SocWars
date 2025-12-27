@@ -1,0 +1,13 @@
+{
+  "name": "",
+  "icon": "",
+  "contents": [
+    {
+      "x": 0,
+      "y": 0,
+      "options": [
+        "socwars:bedwars_shop_data/upgradeable_items/pickaxe.json"
+      ]
+    }
+  ]
+}

@@ -18,10 +18,10 @@ import net.minecraft.screen.slot.Slot;
 import java.util.function.Consumer;
 
 public class BedwarsShopScreenHandler extends ScreenHandler {
-    private static final int STOCK_WIDTH = 9;
-    private static final int STOCK_HEIGHT = 4;
-    private static final int CATEGORIES_WIDTH = 2;
-    private static final int CATEGORIES_HEIGHT = 4;
+    public static final int STOCK_WIDTH = 9;
+    public static final int STOCK_HEIGHT = 4;
+    public static final int CATEGORIES_WIDTH = 2;
+    public static final int CATEGORIES_HEIGHT = 4;
 
     private final PlayerEntity player;
     private final PlayerInventory playerInventory;

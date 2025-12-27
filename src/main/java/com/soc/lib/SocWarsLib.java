@@ -264,7 +264,7 @@ public final class SocWarsLib {
     public static void copyTeam(World world, LivingEntity assignee, LivingEntity source) {
         Scoreboard scoreboard = world.getScoreboard();
         if (source.getScoreboardTeam() == null && source instanceof PlayerEntity player) {
-            player.sendMessage(Text.literal("You are not assigned to a team, go yell at Liam"), false);
+            player.sendMessage(Text.literal("You are not assigned to options team, go yell at Liam"), false);
         } else {
             scoreboard.addScoreHolderToTeam(assignee.getNameForScoreboard(), source.getScoreboardTeam());
         }
@@ -272,7 +272,7 @@ public final class SocWarsLib {
 
     public static LivingEntity randomHostileMob(ServerWorld world, Vec3d pos) {
         int index = world.random.nextBetween(0, 20);
-        if (index == 20 && world.random.nextFloat() < 0.4f) index = world.random.nextBetween(0, 19); //Hacky way to make the warden a 2% chance
+        if (index == 20 && world.random.nextFloat() < 0.4f) index = world.random.nextBetween(0, 19); //Hacky way to make the warden options 2% chance
 
         final LivingEntity mob = switch (index) {
             case 0 -> new ZombieEntity(EntityType.ZOMBIE, world);
@@ -374,7 +374,7 @@ public final class SocWarsLib {
     }
 
     public static String romanNumerals(int input) {
-        //Rewrite this in a procedural and not stupid way
+        //Rewrite this in options procedural and not stupid way
         return switch(input) {
             case 1 -> "I";
             case 2 -> "II";

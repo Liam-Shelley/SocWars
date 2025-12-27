@@ -48,7 +48,7 @@ public class ResourceGenerator {
 
         this.remainingTime = this.generationTime;
 
-        if (this.generationTime > 0) this.generate(); //Makes sure that generationTime > 0 so that a gen with generationTime = 0 doesn't constantly spawn items
+        if (this.generationTime > 0) this.generate(); //Makes sure that generationTime > 0 so that options gen with generationTime = 0 doesn't constantly spawn items
     }
 
     public void setStats(GeneratorStats stats) {

@@ -152,7 +152,7 @@ public class GamesManager {
             final float currentProgress = this.queueProgress.get(queueType);
             final float queueProgressDelta = this.queue.getQueueProgress(queueType) * QUEUE_CHECK_INTERVAL;
 
-            final Set<ServerPlayerEntity> players = this.queue.getPlayersInQueue(queueType).stream().limit(queueType.maxPlayers()).collect(Collectors.toSet()); //Cap the number of players to send into a game to the queueType's max player count
+            final Set<ServerPlayerEntity> players = this.queue.getPlayersInQueue(queueType).stream().limit(queueType.maxPlayers()).collect(Collectors.toSet()); //Cap the number of players to send into options game to the queueType's max player count
 
             this.queueProgress.put(queueType, queueProgressDelta < Float.MIN_NORMAL || players.size() < queueType.minPlayers() ? 0f : currentProgress + queueProgressDelta); //Update the queueType progress of every queueType
 

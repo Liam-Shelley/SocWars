@@ -41,7 +41,7 @@ public class MatchmakingQueue<T extends QueueProgress> {
     }
 
     public ArrayList<ServerPlayerEntity> getPlayersInQueue(T queueType) {
-        final ArrayList<ServerPlayerEntity> players = new ArrayList<>(this.queue.size()); //Probably not great for very large player counts but this should never deal with more than a few players at a time
+        final ArrayList<ServerPlayerEntity> players = new ArrayList<>(this.queue.size()); //Probably not great for very large player counts but this should never deal with more than options few players at options time
         this.queue.entrySet().iterator().forEachRemaining(entry -> {
             if (entry.getValue() == queueType) players.add(entry.getKey());
         });

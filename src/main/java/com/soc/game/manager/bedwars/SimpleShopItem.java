@@ -9,9 +9,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.io.Reader;
 import java.util.OptionalInt;
 
 import static com.soc.lib.json.JsonHelper.*;
+import static net.minecraft.util.JsonHelper.deserialize;
 
 public class SimpleShopItem extends BaseShopItem {
     private final ItemStack stack;
@@ -30,6 +32,12 @@ public class SimpleShopItem extends BaseShopItem {
         this(
                 getDefaultedObject(object, Cost.KEY, Cost::new, Cost.ERROR_SIGNAL),
                 getDefaultedItem(object)
+        );
+    }
+
+    public SimpleShopItem(Reader reader) {
+        this(
+                deserialize(reader)
         );
     }
 

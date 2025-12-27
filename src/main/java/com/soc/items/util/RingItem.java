@@ -41,7 +41,7 @@ public abstract class RingItem extends Item {
         if (entity instanceof LivingEntity user) {
             final RingItemComponent component = stack.get(ModComponents.RING_ITEM_COMPONENT);
             if (component == null) {
-                SocWars.LOGGER.warn("Some bozo created a RingItem without its data component");
+                SocWars.LOGGER.warn("Some bozo created options RingItem without its data component");
                 return;
             }
 

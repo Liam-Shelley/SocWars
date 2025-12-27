@@ -15,6 +15,7 @@ import com.soc.networking.s2c.bedwars.JoinBedwarsPayload;
 import com.soc.networking.s2c.bedwars.LeaveBedwarsPayload;
 import com.soc.networking.s2c.bedwars.BedBreakPayload;
 import com.soc.resourcedata.containers.BedwarsGeneratorDataContainer;
+import com.soc.resourcedata.containers.BedwarsShopDataContainer;
 import com.soc.resourcedata.deserialisation.ResourceGeneratorUpgrade;
 import com.soc.util.Sounds;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -58,7 +59,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         super(world, players, spreadRules, gameId);
         this.playerStatsMap = players.stream().collect(Collectors.toMap(ServerPlayerEntity::getUuid, PlayerStats::new));
         this.teamStatsMap = super.teams.keySet().stream().collect(Collectors.toMap(Function.identity(), team -> new TeamStats(team, super.teams.get(team).stream().map(this.playerStatsMap::get).collect(Collectors.toSet()))));
-        this.shopContents = new BedwarsShopContents();
+        this.shopContents = BedwarsShopDataContainer.INSTANCE.getBedwarsShop(world.random);
     }
 
     @Override
@@ -123,7 +124,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
     @Override
     public Multimap<DyeColor, UUID> buildTeams(Set<ServerPlayerEntity> players, SpreadRules spreadRules) {
-        //Probably rewrite this at some point it's a bit gross
+        //Probably rewrite this at some point it's options bit gross
 
         final Stack<UUID> playerStack = getRandomPlayerStack(players.stream().map(ServerPlayerEntity::getUuid).toList());
 

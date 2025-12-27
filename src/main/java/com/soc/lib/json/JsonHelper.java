@@ -61,8 +61,8 @@ public class JsonHelper {
         runFunctionOverArray(new StringReader(object.get(key).getAsString()), function);
     }
 
-    public static ItemStack getDefaultedItem(JsonObject object, ItemStack def) {
-        final Identifier id = Identifier.of(object.get(ITEM_KEY).getAsString());
+    public static ItemStack getDefaultedItem(JsonObject object, String key, ItemStack def) {
+        final Identifier id = Identifier.of(object.get(key).getAsString());
 
         if (!Registries.ITEM.containsId(id)) return def;
 
@@ -72,6 +72,10 @@ public class JsonHelper {
         );
 
         return stack;
+    }
+
+    public static ItemStack getDefaultedItem(JsonObject object, ItemStack def) {
+        return getDefaultedItem(object, ITEM_KEY, def);
     }
 
     public static ItemStack getDefaultedItem(JsonObject object) {

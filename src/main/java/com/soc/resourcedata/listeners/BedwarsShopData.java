@@ -1,7 +1,9 @@
 package com.soc.resourcedata.listeners;
-
 import com.soc.SocWars;
-import com.soc.resourcedata.containers.BedwarsGeneratorDataContainer;
+import com.soc.game.manager.bedwars.SimpleShopItem;
+import com.soc.game.manager.bedwars.UpgradeableShopItem;
+import com.soc.resourcedata.containers.BedwarsShopDataContainer;
+import com.soc.resourcedata.deserialisation.PreSelectionBedwarsShopCategory;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
@@ -20,22 +22,19 @@ public class BedwarsShopData implements SimpleSynchronousResourceReloadListener 
 
     @Override
     public void reload(ResourceManager manager) {
-        BedwarsGeneratorDataContainer.INSTANCE.clear();
+        BedwarsShopDataContainer.INSTANCE.clear();
 
-        readResources(manager, "bedwars_shop_data/shops", endsWithStringPredicate("team.json", "individual.json"), (reader, id) -> {
+        readResources(manager, "bedwars_shop_data/shops", BASE_PATH_PREDICATE, (reader, id) -> {
             switch(id.toString()) {
-                case "socwars:bedwars_shop_data/shops/team.json" -> SocWars.LOGGER.info("team.json found");
-                case "socwars:bedwars_shop_data/shops/individual.json" -> SocWars.LOGGER.info("individual.json found");
-                case "socwars:bedwars_shop_data/shops/a.json" -> SocWars.LOGGER.info("a.json should not have been found");
+                case "socwars:bedwars_shop_data/shops/team.json" -> {
+
+                }
+                default -> BedwarsShopDataContainer.INSTANCE.addCategorySlot(id, new PreSelectionBedwarsShopCategory(reader));
             }
         });
-        readResources(manager, "bedwars_shop_data/simple_items", BASE_PATH_PREDICATE, (reader, id) -> {
+        readResources(manager, "bedwars_shop_data/simple_items", BASE_PATH_PREDICATE, (reader, id) -> BedwarsShopDataContainer.INSTANCE.addSlotResource(id, new SimpleShopItem(reader)));
+        readResources(manager, "bedwars_shop_data/upgradeable_items", BASE_PATH_PREDICATE, (reader, id) -> BedwarsShopDataContainer.INSTANCE.addSlotResource(id, new UpgradeableShopItem(reader)));
 
-        });
-        readResources(manager, "bedwars_shop_data/upgradeable_items", BASE_PATH_PREDICATE, (reader, id) -> {
-
-        });
-
-        BedwarsGeneratorDataContainer.INSTANCE.cache();
+        BedwarsShopDataContainer.INSTANCE.cache();
     }
 }
