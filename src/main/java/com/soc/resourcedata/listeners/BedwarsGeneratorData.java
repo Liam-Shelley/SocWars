@@ -28,9 +28,9 @@ public class BedwarsGeneratorData implements SimpleSynchronousResourceReloadList
 
         readResources(manager, "bedwars_generators", BASE_PATH_PREDICATE, (reader, id) -> {
             switch (id.getPath()) {
-                case "game_data/island_generator_upgrades.json" -> JsonHelper.runFunctionOverArray(reader, BedwarsGeneratorDataContainer.INSTANCE::addIslandGeneratorUpgrade);
-                case "game_data/diamond_generator_upgrades.json" -> JsonHelper.runFunctionOverArray(reader, BedwarsGeneratorDataContainer.INSTANCE::addDiamondGeneratorUpgrade);
-                case "game_data/emerald_generator_upgrades.json" -> JsonHelper.runFunctionOverArray(reader, BedwarsGeneratorDataContainer.INSTANCE::addEmeraldGeneratorUpgrade);
+                case "bedwars_generators/island_generator_upgrades.json" -> JsonHelper.runFunctionOverArray(reader, BedwarsGeneratorDataContainer.INSTANCE::addIslandGeneratorUpgrade);
+                case "bedwars_generators/diamond_generator_upgrades.json" -> JsonHelper.runFunctionOverArray(reader, BedwarsGeneratorDataContainer.INSTANCE::addDiamondGeneratorUpgrade);
+                case "bedwars_generators/emerald_generator_upgrades.json" -> JsonHelper.runFunctionOverArray(reader, BedwarsGeneratorDataContainer.INSTANCE::addEmeraldGeneratorUpgrade);
             }
         });
 

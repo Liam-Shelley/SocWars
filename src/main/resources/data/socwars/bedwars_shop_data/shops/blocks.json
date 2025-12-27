@@ -1,6 +1,6 @@
 {
-  "name": "",
-  "icon": "",
+  "name": "blocks",
+  "icon": "minecraft:white_wool",
   "contents": [
     {
       "x": 0,

@@ -30,7 +30,8 @@ public class BedwarsShopCategory {
 
     public BaseShopItem getShopItem(int slot) {
         if (slot < 0 || slot >= this.items.size()) return BaseShopItem.EMPTY;
-        return this.items.get(slot);
+        final BaseShopItem item = this.items.get(slot);
+        return item == null ? BaseShopItem.EMPTY : item;
     }
 
     public ItemStack getIcon() {
