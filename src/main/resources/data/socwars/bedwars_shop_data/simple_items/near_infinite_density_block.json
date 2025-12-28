@@ -3,5 +3,6 @@
     "iron": 128,
     "emeralds": 2
   },
-  "item": "socwars:near_infinite_density_block"
+  "item": "socwars:near_infinite_density_block",
+  "count": 2
 }

@@ -2,5 +2,6 @@
   "cost": {
     "iron": 16
   },
-  "item": "socwars:perspex_block"
+  "item": "socwars:perspex_block",
+  "count": 4
 }

@@ -14,7 +14,7 @@ import java.util.function.Function;
 
 public class JsonHelper {
     public static final String ITEM_KEY = "item";
-    public static final String ITEM_COUNT_KEY = "item_count";
+    public static final String ITEM_COUNT_KEY = "count";
     public static final String ITEM_COMPONENTS_KEY = "item_components";
 
     private JsonHelper() {}

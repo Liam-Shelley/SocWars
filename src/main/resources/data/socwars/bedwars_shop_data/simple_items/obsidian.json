@@ -3,5 +3,6 @@
     "iron": 8,
     "emeralds": 1
   },
-  "item": "minecraft:obsidian"
+  "item": "minecraft:obsidian",
+  "count": 4
 }

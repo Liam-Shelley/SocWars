@@ -2,5 +2,6 @@
   "cost": {
     "iron": 24
   },
-  "item": "socwars:rubber_block"
+  "item": "socwars:rubber_block",
+  "count": 8
 }

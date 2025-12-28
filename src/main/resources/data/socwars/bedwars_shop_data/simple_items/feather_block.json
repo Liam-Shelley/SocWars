@@ -2,5 +2,6 @@
   "cost": {
     "iron": 8
   },
-  "item": "socwars:feather_block"
+  "item": "socwars:feather_block",
+  "count": 2
 }

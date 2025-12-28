@@ -2,5 +2,6 @@
   "cost": {
     "gold": 6
   },
-  "item": "socwars:hardened_lava_block"
+  "item": "socwars:hardened_lava_block",
+  "count": 2
 }

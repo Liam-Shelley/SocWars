@@ -29,7 +29,7 @@ public record PreSelectionBedwarsShopCategory(Text name, ItemStack icon, Bedwars
     }
 
     private static BedwarsShopSlot[][] deserialiseSlots(JsonArray array) {
-        final BedwarsShopSlot[][] list = new BedwarsShopSlot[BedwarsShopScreenHandler.STOCK_HEIGHT][BedwarsShopScreenHandler.STOCK_WIDTH];
+        final BedwarsShopSlot[][] list = new BedwarsShopSlot[BedwarsShopScreenHandler.STOCK_WIDTH][BedwarsShopScreenHandler.STOCK_HEIGHT];
         array.forEach(element -> BedwarsShopSlot.deserialiseAndAddSlot(list, element.getAsJsonObject()));
 
         return list;

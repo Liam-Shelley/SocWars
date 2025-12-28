@@ -2,5 +2,6 @@
   "cost": {
     "emeralds": 4
   },
-  "item": "socwars:gallium_block"
+  "item": "socwars:gallium_block",
+  "count": 1
 }

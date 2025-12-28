@@ -5,5 +5,6 @@
     "diamonds": 8,
     "emeralds": 4
   },
-  "item": "socwars:liam_block"
+  "item": "socwars:liam_block",
+  "count": 2
 }

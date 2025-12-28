@@ -1,5 +1,6 @@
 package com.soc.resourcedata.containers;
 
+import com.soc.SocWars;
 import com.soc.game.manager.bedwars.BaseShopItem;
 import com.soc.game.manager.bedwars.BedwarsShopCategory;
 import com.soc.game.manager.bedwars.BedwarsShopContents;
@@ -41,13 +42,18 @@ public class BedwarsShopDataContainer implements CachedData {
             for (int i = 0; i < preSelection.length; i++) {
                 for (int j = 0; j < preSelection[i].length; j++) {
                     final BedwarsShopSlot shopSlot = preSelection[i][j];
-                    final int index = i * BedwarsShopScreenHandler.STOCK_WIDTH + j;
+                    final int index = i + j * BedwarsShopScreenHandler.STOCK_WIDTH;
 
                     if (shopSlot != null) {
                         final List<Identifier> options = shopSlot.options();
-                        final Identifier choice = options.get(random.nextBetween(0, options.size() - 1));
-                        final BaseShopItem item = this.resourceItemMap.get(choice);
-                        items.set(index, item == null ? BaseShopItem.EMPTY : item);
+                        if (options.isEmpty()) {
+                            items.set(index, BaseShopItem.EMPTY);
+                            SocWars.LOGGER.warn("Skipping loading slot at ({}, {}) as there were no options to choose from", i, j);
+                        } else {
+                            final Identifier choice = options.get(random.nextBetween(0, options.size() - 1));
+                            final BaseShopItem item = this.resourceItemMap.get(choice);
+                            items.set(index, item == null ? BaseShopItem.EMPTY : item);
+                        }
                     }
                 }
             }

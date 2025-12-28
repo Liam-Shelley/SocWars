@@ -3,5 +3,6 @@
     "gold": 4,
     "emeralds": 1
   },
-  "item": "socwars:unobtanium_block"
+  "item": "socwars:unobtanium_block",
+  "count": 2
 }

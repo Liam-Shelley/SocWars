@@ -1,6 +1,6 @@
 {
-  "name": "game.bedwars.shop.category.blocks",
-  "icon": "minecraft:gray_wool",
+  "name": "game.bedwars.shop.category.weapons",
+  "icon": "minecraft:diamond_sword",
   "contents": [
     {
       "x": 0,

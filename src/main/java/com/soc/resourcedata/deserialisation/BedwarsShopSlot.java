@@ -21,7 +21,7 @@ public record BedwarsShopSlot (List<Identifier> options) {
 
     private static List<Identifier> deserialise(JsonObject object) {
         final List<Identifier> list = new ArrayList<>();
-        object.get(OPTIONS_KEY).getAsJsonArray().forEach(element -> list.add(Identifier.of(element.getAsString())));
+        object.get(OPTIONS_KEY).getAsJsonArray().forEach(element -> list.add(Identifier.of(element.getAsString()).withSuffixedPath(".json")));
 
         return list;
     }

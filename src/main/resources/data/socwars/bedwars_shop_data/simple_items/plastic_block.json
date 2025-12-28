@@ -2,5 +2,6 @@
   "cost": {
     "gold": 3
   },
-  "item": "socwars:plastic_block"
+  "item": "socwars:plastic_block",
+  "count": 8
 }

@@ -2,5 +2,6 @@
   "cost": {
     "iron": 16
   },
-  "item": "socwars:many_beds_block"
+  "item": "socwars:many_beds_block",
+  "count": 1
 }
