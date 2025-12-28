@@ -1,6 +1,7 @@
 package com.soc.game.manager.bedwars;
 
 import com.google.gson.JsonObject;
+import com.soc.items.TrainingWeights;
 import com.soc.resourcedata.deserialisation.Cost;
 import com.soc.screenhandler.BedwarsShopScreenHandler;
 import net.minecraft.component.DataComponentTypes;
@@ -56,7 +57,7 @@ public class SimpleShopItem extends BaseShopItem {
 
         if (equippableComponent != null && equippableComponent.slot().isArmorSlot()) {
             final ItemStack stack = this.stack.copy();
-            stack.addEnchantment(enchantment(player.getWorld(), Enchantments.BINDING_CURSE), 1);
+            if (!this.stack.isOf(TrainingWeights.TRAINING_WEIGHTS)) stack.addEnchantment(enchantment(player.getWorld(), Enchantments.BINDING_CURSE), 1);
             player.equipStack(equippableComponent.slot(), stack);
             return true;
         } else {

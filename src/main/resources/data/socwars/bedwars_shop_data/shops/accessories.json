@@ -4,10 +4,57 @@
   "page_priority": 5,
   "contents": [
     {
-      "x": 0,
+      "x": 1,
       "y": 0,
       "options": [
+        "socwars:bedwars_shop_data/simple_items/dice_of_fate"
+      ]
+    },
+    {
+      "x": 5,
+      "y": 0,
+      "options": [
+        "socwars:bedwars_shop_data/simple_items/lesser_speed_ring",
+        "socwars:bedwars_shop_data/simple_items/lesser_jump_ring"
+      ]
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "options": [
+        "socwars:bedwars_shop_data/simple_items/greater_speed_ring",
+        "socwars:bedwars_shop_data/simple_items/greater_jump_ring",
         "socwars:bedwars_shop_data/simple_items/invisibility_ring"
+      ]
+    },
+    {
+      "x": 1,
+      "y": 2,
+      "options": [
+        "socwars:bedwars_shop_data/simple_items/training_weights",
+        "socwars:bedwars_shop_data/simple_items/summoners_garb",
+        "socwars:bedwars_shop_data/simple_items/portable_stepping_stool"
+      ]
+    },
+    {
+      "x": 7,
+      "y": 2,
+      "options": [
+        "socwars:bedwars_shop_data/simple_items/empty",
+        "socwars:bedwars_shop_data/simple_items/empty",
+        "socwars:bedwars_shop_data/simple_items/empty",
+        "socwars:bedwars_shop_data/simple_items/empty",
+        "socwars:bedwars_shop_data/simple_items/empty",
+        "socwars:bedwars_shop_data/simple_items/empty",
+        "socwars:bedwars_shop_data/simple_items/empty",
+        "socwars:bedwars_shop_data/simple_items/empty",
+        "socwars:bedwars_shop_data/simple_items/empty",
+        "socwars:bedwars_shop_data/simple_items/empty",
+        "socwars:bedwars_shop_data/simple_items/empty",
+        "socwars:bedwars_shop_data/simple_items/empty",
+        "socwars:bedwars_shop_data/simple_items/empty",
+        "socwars:bedwars_shop_data/simple_items/jbl_speaker",
+        "socwars:bedwars_shop_data/simple_items/ue_megaboom"
       ]
     }
   ]
