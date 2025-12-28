@@ -119,24 +119,24 @@
       "x": 4,
       "y": 1,
       "options": [
-        "socwars:bedwars_shop_data/simple_items/gambler_boots",
-        "socwars:bedwars_shop_data/simple_items/cartoon_boots"
+        "socwars:bedwars_shop_data/simple_items/gambler_helmet",
+        "socwars:bedwars_shop_data/simple_items/cartoon_helmet"
       ]
     },
     {
       "x": 5,
       "y": 1,
       "options": [
-        "socwars:bedwars_shop_data/simple_items/gambler_boots",
-        "socwars:bedwars_shop_data/simple_items/cartoon_boots"
+        "socwars:bedwars_shop_data/simple_items/gambler_chestplate",
+        "socwars:bedwars_shop_data/simple_items/cartoon_chestplate"
       ]
     },
     {
       "x": 6,
       "y": 1,
       "options": [
-        "socwars:bedwars_shop_data/simple_items/gambler_boots",
-        "socwars:bedwars_shop_data/simple_items/cartoon_boots"
+        "socwars:bedwars_shop_data/simple_items/gambler_leggings",
+        "socwars:bedwars_shop_data/simple_items/cartoon_leggings"
       ]
     },
     {
@@ -151,24 +151,24 @@
       "x": 4,
       "y": 2,
       "options": [
-        "socwars:bedwars_shop_data/simple_items/steadfast_boots",
-        "socwars:bedwars_shop_data/simple_items/demolitionist_boots"
+        "socwars:bedwars_shop_data/simple_items/steadfast_helmet",
+        "socwars:bedwars_shop_data/simple_items/demolitionist_helmet"
       ]
     },
     {
       "x": 5,
       "y": 2,
       "options": [
-        "socwars:bedwars_shop_data/simple_items/steadfast_boots",
-        "socwars:bedwars_shop_data/simple_items/demolitionist_boots"
+        "socwars:bedwars_shop_data/simple_items/steadfast_chestplate",
+        "socwars:bedwars_shop_data/simple_items/demolitionist_chestplate"
       ]
     },
     {
       "x": 6,
       "y": 2,
       "options": [
-        "socwars:bedwars_shop_data/simple_items/steadfast_boots",
-        "socwars:bedwars_shop_data/simple_items/demolitionist_boots"
+        "socwars:bedwars_shop_data/simple_items/steadfast_leggings",
+        "socwars:bedwars_shop_data/simple_items/demolitionist_leggings"
       ]
     },
     {
@@ -176,7 +176,7 @@
       "y": 2,
       "options": [
         "socwars:bedwars_shop_data/simple_items/steadfast_boots",
-        "socwars:bedwars_shop_data/simple_items/demolitionist_boots",
+        "socwars:bedwars_shop_data/simple_items/demolitionist_boots"
       ]
     }
   ]
