@@ -18,10 +18,10 @@ import net.minecraft.screen.slot.Slot;
 import java.util.function.Consumer;
 
 public class BedwarsShopScreenHandler extends ScreenHandler {
-    public static final int STOCK_WIDTH = 9;
-    public static final int STOCK_HEIGHT = 4;
-    public static final int CATEGORIES_WIDTH = 2;
-    public static final int CATEGORIES_HEIGHT = 4;
+    public static final int STOCK_WIDTH = 8;
+    public static final int STOCK_HEIGHT = 3;
+    public static final int CATEGORIES_WIDTH = 3;
+    public static final int CATEGORIES_HEIGHT = 3;
 
     private final PlayerEntity player;
     private final PlayerInventory playerInventory;
@@ -53,7 +53,7 @@ public class BedwarsShopScreenHandler extends ScreenHandler {
     private void makeSlots() {
         for (int x = 0; x < STOCK_WIDTH; x++) {
             for (int y = 0; y < STOCK_HEIGHT; y++) {
-                this.addSlot(new StockSlot(this.stock, x + STOCK_WIDTH * y, x * 18 + 48, y * 18 + 18, this.player, this));
+                this.addSlot(new StockSlot(this.stock, x + STOCK_WIDTH * y, x * 18 + 66, y * 18 + 18, this.player, this));
             }
         }
 
@@ -63,7 +63,7 @@ public class BedwarsShopScreenHandler extends ScreenHandler {
             }
         }
 
-        this.addPlayerSlots(this.playerInventory, 48, 104);
+        this.addPlayerSlots(this.playerInventory, 48, 86);
 
         this.refreshItems();
         this.refreshCategories();
@@ -76,7 +76,7 @@ public class BedwarsShopScreenHandler extends ScreenHandler {
 
     @Override
     public boolean canUse(PlayerEntity player) {
-        return this.manager != null || player.getWorld().isClient || true ;
+        return this.manager != null || player.getWorld().isClient ;
     }
 
     public final BedwarsGameManager getManager() {

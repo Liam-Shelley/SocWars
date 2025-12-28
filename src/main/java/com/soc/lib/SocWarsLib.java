@@ -7,6 +7,7 @@ import com.soc.mixin.MostRecentDamage;
 import com.soc.util.Random;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ItemEnchantmentsComponent;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -255,6 +256,12 @@ public final class SocWarsLib {
                         .getEntry(damageType.getValue()).get(),
                 attacker
         );
+    }
+
+    public static RegistryEntry<Enchantment> enchantment(World world, RegistryKey<Enchantment> enchantment) {
+        return world.getRegistryManager()
+                .getOrThrow(RegistryKeys.ENCHANTMENT)
+                .getEntry(enchantment.getValue()).orElseThrow();
     }
 
     public static DamageSource damageSource(World world, RegistryKey<DamageType> damageType) {

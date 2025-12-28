@@ -1,0 +1,14 @@
+{
+  "name": "game.bedwars.shop.category.accessories",
+  "icon": "socwars:lesser_speed_ring",
+  "page_priority": 5,
+  "contents": [
+    {
+      "x": 0,
+      "y": 0,
+      "options": [
+        "socwars:bedwars_shop_data/simple_items/invisibility_ring"
+      ]
+    }
+  ]
+}

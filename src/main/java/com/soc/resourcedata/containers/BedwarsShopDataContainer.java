@@ -11,6 +11,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.random.Random;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class BedwarsShopDataContainer implements CachedData {
 
@@ -19,7 +20,7 @@ public class BedwarsShopDataContainer implements CachedData {
     public static final BedwarsShopDataContainer INSTANCE = new BedwarsShopDataContainer();
 
     private final Map<Identifier, BaseShopItem> resourceItemMap = new HashMap<>();
-    private final Map<Identifier, PreSelectionBedwarsShopCategory> categoryStockSlotsMap = new HashMap<>();
+    private final Map<Identifier, PreSelectionBedwarsShopCategory> categoryStockSlotsMap = new TreeMap<>();
 
     public final void addSlotResource(Identifier id, BaseShopItem shopItem) {
         this.resourceItemMap.put(id, shopItem);
@@ -30,7 +31,7 @@ public class BedwarsShopDataContainer implements CachedData {
     }
 
     public final BedwarsShopContents getBedwarsShop(Random random) {
-        final List<BedwarsShopCategory> categories = this.categoryStockSlotsMap.entrySet().stream().limit(7).map(entry -> {
+        final List<BedwarsShopCategory> categories = this.categoryStockSlotsMap.entrySet().stream().map(entry -> {
             final BedwarsShopSlot[][] preSelection = entry.getValue().contents();
 
             final int itemsSize = BedwarsShopScreenHandler.STOCK_WIDTH * BedwarsShopScreenHandler.STOCK_HEIGHT;
@@ -48,7 +49,7 @@ public class BedwarsShopDataContainer implements CachedData {
                         final List<Identifier> options = shopSlot.options();
                         if (options.isEmpty()) {
                             items.set(index, BaseShopItem.EMPTY);
-                            SocWars.LOGGER.warn("Skipping loading slot at ({}, {}) as there were no options to choose from", i, j);
+                            SocWars.LOGGER.warn("Skipping loading slot at ({}, {}) as the options pool was empty", i, j);
                         } else {
                             final Identifier choice = options.get(random.nextBetween(0, options.size() - 1));
                             final BaseShopItem item = this.resourceItemMap.get(choice);
@@ -63,7 +64,9 @@ public class BedwarsShopDataContainer implements CachedData {
                     entry.getValue().icon(),
                     entry.getValue().name()
             );
-        }).toList();
+        }).limit(BedwarsShopScreenHandler.CATEGORIES_WIDTH * BedwarsShopScreenHandler.CATEGORIES_HEIGHT - 1).collect(Collectors.toList());
+
+        categories.addFirst(BedwarsShopCategory.DEFAULT_QUICK_BUY);
 
         return new BedwarsShopContents(categories);
     }

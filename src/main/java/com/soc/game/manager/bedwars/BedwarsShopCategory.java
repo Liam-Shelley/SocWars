@@ -1,6 +1,7 @@
 package com.soc.game.manager.bedwars;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
@@ -13,24 +14,29 @@ import java.util.Optional;
 
 public class BedwarsShopCategory {
     public static final int MAX_ITEMS = 36;
-    public static final PacketCodec<RegistryByteBuf, BedwarsShopCategory> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.collection(ArrayList::new, BaseShopItem.PACKET_CODEC), BedwarsShopCategory::getItems, PacketCodecs.optional(ItemStack.PACKET_CODEC), BedwarsShopCategory::getOptionalIcon, TextCodecs.PACKET_CODEC, BedwarsShopCategory::getName, BedwarsShopCategory::new);
+    public static final PacketCodec<RegistryByteBuf, BedwarsShopCategory> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.BOOLEAN, BedwarsShopCategory::isQuickBuy, PacketCodecs.collection(ArrayList::new, BaseShopItem.PACKET_CODEC), BedwarsShopCategory::getItems, PacketCodecs.optional(ItemStack.PACKET_CODEC), BedwarsShopCategory::getOptionalIcon, TextCodecs.PACKET_CODEC, BedwarsShopCategory::getName, BedwarsShopCategory::new);
 
     private final List<BaseShopItem> items;
     private final ItemStack icon;
     private final Text name;
 
-    public BedwarsShopCategory(ItemStack icon, Text name) {
-        this(List.of(new SimpleShopItem(8, 1, 0, 0, new ItemStack(icon.getItem(), 3))), icon, name);
+    private final boolean isQuickBuy;
+
+    public static final BedwarsShopCategory DEFAULT_QUICK_BUY = new BedwarsShopCategory(true, null, Items.NETHER_STAR.getDefaultStack(), Text.translatable("game.bedwars.shop.category.quick_buy"));
+
+    public BedwarsShopCategory(boolean isQuickBuy, List<BaseShopItem> items, ItemStack icon, Text name) {
+        this.items = isQuickBuy ? List.of() : items;
+        this.icon = icon.copyWithCount(1);
+        this.name = name;
+        this.isQuickBuy = isQuickBuy;
+    }
+
+    public BedwarsShopCategory(boolean isQuickBuy, List<BaseShopItem> items, Optional<ItemStack> icon, Text name) {
+        this(isQuickBuy, items, icon.orElse(Items.BARRIER.getDefaultStack()), name);
     }
 
     public BedwarsShopCategory(List<BaseShopItem> items, ItemStack icon, Text name) {
-        this.items = items;
-        this.icon = icon.copyWithCount(1);
-        this.name = name;
-    }
-
-    public BedwarsShopCategory(List<BaseShopItem> items, Optional<ItemStack> icon, Text name) {
-        this(items, icon.orElse(ItemStack.EMPTY), name);
+        this(false, items, icon, name);
     }
 
     public BaseShopItem getShopItem(int slot) {
@@ -42,7 +48,7 @@ public class BedwarsShopCategory {
     public ItemStack getIcon() {
         return this.icon;
     }
-    public Optional<ItemStack> getOptionalIcon() {
+    private Optional<ItemStack> getOptionalIcon() {
         return this.icon.isEmpty() ? Optional.empty() : Optional.of(this.icon);
     }
 
@@ -51,6 +57,15 @@ public class BedwarsShopCategory {
     }
 
     public List<BaseShopItem> getItems() {
-        return this.items;
+        List<BaseShopItem> a = this.getQuickBuyItems();
+        return this.isQuickBuy ? a : this.items;
+    }
+
+    public List<BaseShopItem> getQuickBuyItems() {
+        return List.of();
+    }
+
+    public boolean isQuickBuy() {
+        return this.isQuickBuy;
     }
 }

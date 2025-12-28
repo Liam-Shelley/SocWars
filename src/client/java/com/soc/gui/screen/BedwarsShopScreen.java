@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class BedwarsShopBase extends HandledScreen<BedwarsShopScreenHandler> {
+public class BedwarsShopScreen extends HandledScreen<BedwarsShopScreenHandler> {
     private static final Identifier TEXTURE = Identifier.of(SocWars.MOD_ID, "textures/gui/container/bedwars_shop_base.png");
     private static final Text CATEGORIES_TITLE = Text.translatable("shop.title.pages");
     private static final int CATEGORIES_TITLE_X = 8;
@@ -35,27 +35,23 @@ public class BedwarsShopBase extends HandledScreen<BedwarsShopScreenHandler> {
     private static final Item[] RESOURCE_DISPLAY_ITEMS = new Item[] {Items.IRON_INGOT, Items.GOLD_INGOT, Items.DIAMOND, Items.EMERALD};
 
     private final PlayerInventory playerInventory;
-    private final BedwarsGameManager manager;
-    private final BedwarsShopContents shopContents;
     private final List<ShopResourceDisplay> resourceDisplays = new ArrayList<>(RESOURCE_DISPLAY_ITEMS.length);
 
-    public BedwarsShopBase(BedwarsShopScreenHandler handler, PlayerInventory inventory, Text title) {
+    public BedwarsShopScreen(BedwarsShopScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
         super.client = MinecraftClient.getInstance();
 
-        super.backgroundHeight = 186;
+        super.backgroundHeight = 168;
         super.backgroundWidth = 216;
-        super.titleX = 48;
+        super.titleX = 66;
         super.titleY = 6;
         super.playerInventoryTitleX = 48;
-        super.playerInventoryTitleY = 92;
+        super.playerInventoryTitleY = 74;
 
         this.playerInventory = inventory;
-        this.manager = handler.getManager();
-        this.shopContents = handler.getShopContents();
 
         for (int i = 0; i < RESOURCE_DISPLAY_ITEMS.length; i++) {
-            this.resourceDisplays.add(new ShopResourceDisplay(RESOURCE_DISPLAY_ITEMS[i], 8, i * 18 + 104));
+            this.resourceDisplays.add(new ShopResourceDisplay(RESOURCE_DISPLAY_ITEMS[i], 8, i * 18 + 86));
         }
     }
 
@@ -94,7 +90,7 @@ public class BedwarsShopBase extends HandledScreen<BedwarsShopScreenHandler> {
             if (item.canAfford(this.playerInventory.player).getLeft()) name.append(Text.literal(" ✔").formatted(Formatting.GREEN));
             int nameWidth = super.textRenderer.getWidth(name);
 
-            TooltipBackgroundRenderer.render(context, x + 12, y - 12, nameWidth, 30, icon.get(DataComponentTypes.TOOLTIP_STYLE));
+            TooltipBackgroundRenderer.render(context, x + 12, y - 12, Math.max(nameWidth, 65), 31, icon.get(DataComponentTypes.TOOLTIP_STYLE));
 
             context.drawText(super.textRenderer, name, x + 12, y - 12, 0xffffffff, true);
         }
@@ -136,7 +132,7 @@ public class BedwarsShopBase extends HandledScreen<BedwarsShopScreenHandler> {
         super.drawForeground(context, mouseX, mouseY);
         context.drawText(this.textRenderer, CATEGORIES_TITLE, CATEGORIES_TITLE_X, CATEGORIES_TITLE_Y, Colors.DARK_GRAY, false);
 
-        this.resourceDisplays.forEach(display -> display.render(context, BedwarsShopBase.super.textRenderer, BedwarsShopBase.this.playerInventory));
+        this.resourceDisplays.forEach(display -> display.render(context, BedwarsShopScreen.super.textRenderer, BedwarsShopScreen.this.playerInventory));
     }
 
     @Override

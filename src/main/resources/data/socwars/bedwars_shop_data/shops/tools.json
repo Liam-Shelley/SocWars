@@ -1,0 +1,14 @@
+{
+  "name": "game.bedwars.shop.category.tools",
+  "icon": "minecraft:diamond_pickaxe",
+  "page_priority": 3,
+  "contents": [
+    {
+      "x": 0,
+      "y": 0,
+      "options": [
+        "socwars:bedwars_shop_data/simple_items/invisibility_ring"
+      ]
+    }
+  ]
+}

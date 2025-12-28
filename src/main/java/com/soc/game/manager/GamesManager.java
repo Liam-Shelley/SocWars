@@ -127,14 +127,10 @@ public class GamesManager {
     }
 
     private int getNewGameId() {
-        final Iterator<? extends AbstractGameManager<?, ?, ?>> games = this.games.iterator();
-
-        int i = 0;
-        while (games.hasNext() && games.next() != null) {
-            i++;
+        for (int i = 0; i < this.games.size(); i++) {
+            if (this.games.get(i) == null) return i;
         }
-
-        return games.hasNext() ? --i : i;
+        return this.games.size();
     }
 
     public void tick(MinecraftServer server) {

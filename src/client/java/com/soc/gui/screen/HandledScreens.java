@@ -6,6 +6,6 @@ import static net.minecraft.client.gui.screen.ingame.HandledScreens.register;
 
 public class HandledScreens {
     public static void initialise() {
-        register(ScreenHandlers.BEDWARS_SHOP_SCREEN_HANDLER, BedwarsShopBase::new);
+        register(ScreenHandlers.BEDWARS_SHOP_SCREEN_HANDLER, BedwarsShopScreen::new);
     }
 }

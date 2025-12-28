@@ -1,0 +1,14 @@
+{
+  "name": "game.bedwars.shop.category.melee",
+  "icon": "minecraft:diamond_sword",
+  "page_priority": 1,
+  "contents": [
+    {
+      "x": 0,
+      "y": 0,
+      "options": [
+        "socwars:bedwars_shop_data/simple_items/invisibility_ring"
+      ]
+    }
+  ]
+}
