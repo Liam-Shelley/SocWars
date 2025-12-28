@@ -8,6 +8,20 @@
       "options": [
         "socwars:bedwars_shop_data/simple_items/invisibility_ring.json"
       ]
+    },
+    {
+      "x": 1,
+      "y": 2,
+      "options": [
+        "socwars:bedwars_shop_data/simple_items/lesser_speed_ring.json"
+      ]
+    },
+    {
+      "x": 2,
+      "y": 4,
+      "options": [
+        "socwars:bedwars_shop_data/simple_items/greater_speed_ring.json"
+      ]
     }
   ]
 }

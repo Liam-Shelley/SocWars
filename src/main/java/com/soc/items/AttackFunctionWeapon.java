@@ -1,6 +1,5 @@
 package com.soc.items;
 
-import com.soc.SocWars;
 import com.soc.effects.util.ModEffects;
 import com.soc.networking.s2c.AddVelocityPayload;
 import com.soc.util.BlockTags;
@@ -19,7 +18,6 @@ import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.*;
-import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -41,7 +39,6 @@ import net.minecraft.util.Unit;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
@@ -222,14 +219,14 @@ public class AttackFunctionWeapon extends Item {
             .rarity(Rarity.RARE)
     );
     public static final Item SPRING_SWORD = ModItems.register("spring_sword", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
-                if (attacker.getWorld().random.nextBetween(1, attacker.isOnGround() ? 8 : 6) == 1) {
+                if (attacker.getWorld().random.nextBetween(1, attacker.isOnGround() ? 6 : 4) == 1) {
                     ItemEntity item = attacker.dropItem(stack, true, false);
                     item.setVelocity(attacker.getRotationVector().multiply(0.3f));
 
                     attacker.setStackInHand(Hand.MAIN_HAND, ItemStack.EMPTY);
                 }
             }), new Settings()
-            .sword(ToolMaterials.BASE, 7f, -1.2f)
+            .sword(ToolMaterials.BASE, 8f, -1.2f)
             .maxDamage(350)
             .rarity(Rarity.RARE)
     );

@@ -1,0 +1,13 @@
+{
+  "name": "game.bedwars.shop.category.blocks",
+  "icon": "minecraft:gray_wool",
+  "contents": [
+    {
+      "x": 0,
+      "y": 0,
+      "options": [
+        "socwars:bedwars_shop_data/simple_items/invisibility_ring.json"
+      ]
+    }
+  ]
+}
