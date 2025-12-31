@@ -7,6 +7,21 @@
       "x": 0,
       "y": 0,
       "options": [
+        "socwars:bedwars_shop_data/simple_items/test_pickaxe"
+      ]
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "options": [
+        "socwars:bedwars_shop_data/simple_items/test_axe"
+      ]
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "options": [
+        "socwars:bedwars_shop_data/simple_items/test_shears"
       ]
     },
     {

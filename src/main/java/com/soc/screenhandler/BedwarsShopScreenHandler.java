@@ -4,6 +4,7 @@ import com.soc.game.manager.BedwarsGameManager;
 import com.soc.game.manager.bedwars.BedwarsShopCategory;
 import com.soc.game.manager.bedwars.BedwarsShopContents;
 import com.soc.game.manager.bedwars.BaseShopItem;
+import com.soc.game.manager.bedwars.SimpleShopItem;
 import com.soc.networking.s2c.bedwars.ShopDataPayload;
 import com.soc.screenhandler.slots.CategorySlot;
 import com.soc.screenhandler.slots.StockSlot;
@@ -112,12 +113,12 @@ public class BedwarsShopScreenHandler extends ScreenHandler {
         }
     }
 
-    public BaseShopItem getShopItem(Slot slot) {
+    public BaseShopItem<?> getShopItem(Slot slot) {
         return this.getShopItem(slot.getIndex());
     }
 
-    public BaseShopItem getShopItem(int slot) {
-        return this.currentCategory == null ? BaseShopItem.EMPTY : this.currentCategory.getShopItem(slot);
+    public BaseShopItem<?> getShopItem(int slot) {
+        return this.currentCategory == null ? SimpleShopItem.EMPTY : this.currentCategory.getShopItem(slot);
     }
 
     public ItemStack getCategoryIcon(int slot) {

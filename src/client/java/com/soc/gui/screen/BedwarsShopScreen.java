@@ -1,9 +1,7 @@
 package com.soc.gui.screen;
 
 import com.soc.SocWars;
-import com.soc.game.manager.BedwarsGameManager;
 import com.soc.game.manager.bedwars.BedwarsShopCategory;
-import com.soc.game.manager.bedwars.BedwarsShopContents;
 import com.soc.game.manager.bedwars.BaseShopItem;
 import com.soc.gui.ShopResourceDisplay;
 import com.soc.screenhandler.BedwarsShopScreenHandler;
@@ -83,7 +81,7 @@ public class BedwarsShopScreen extends HandledScreen<BedwarsShopScreenHandler> {
         }
     }
 
-    private void drawCostTooltip(DrawContext context, int x, int y, BaseShopItem item) {
+    private void drawCostTooltip(DrawContext context, int x, int y, BaseShopItem<?> item) {
         final ItemStack icon = item.getIcon();
         {
             final MutableText name = item.getTooltipName().copy();

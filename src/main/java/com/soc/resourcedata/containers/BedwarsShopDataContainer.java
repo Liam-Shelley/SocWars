@@ -4,6 +4,7 @@ import com.soc.SocWars;
 import com.soc.game.manager.bedwars.BaseShopItem;
 import com.soc.game.manager.bedwars.BedwarsShopCategory;
 import com.soc.game.manager.bedwars.BedwarsShopContents;
+import com.soc.game.manager.bedwars.SimpleShopItem;
 import com.soc.resourcedata.deserialisation.BedwarsShopSlot;
 import com.soc.resourcedata.deserialisation.PreSelectionBedwarsShopCategory;
 import com.soc.screenhandler.BedwarsShopScreenHandler;
@@ -19,10 +20,10 @@ public class BedwarsShopDataContainer implements CachedData {
 
     public static final BedwarsShopDataContainer INSTANCE = new BedwarsShopDataContainer();
 
-    private final Map<Identifier, BaseShopItem> resourceItemMap = new HashMap<>();
+    private final Map<Identifier, BaseShopItem<?>> resourceItemMap = new HashMap<>();
     private final Map<Identifier, PreSelectionBedwarsShopCategory> categoryStockSlotsMap = new TreeMap<>();
 
-    public final void addSlotResource(Identifier id, BaseShopItem shopItem) {
+    public final void addSlotResource(Identifier id, BaseShopItem<?> shopItem) {
         this.resourceItemMap.put(id, shopItem);
     }
 
@@ -35,9 +36,9 @@ public class BedwarsShopDataContainer implements CachedData {
             final BedwarsShopSlot[][] preSelection = entry.getValue().contents();
 
             final int itemsSize = BedwarsShopScreenHandler.STOCK_WIDTH * BedwarsShopScreenHandler.STOCK_HEIGHT;
-            final List<BaseShopItem> items = new ArrayList<>(itemsSize);
+            final List<BaseShopItem<?>> items = new ArrayList<>(itemsSize);
             for (int i = 0; i < itemsSize; i++) {
-                items.add(BaseShopItem.EMPTY);
+                items.add(SimpleShopItem.EMPTY);
             }
 
             for (int i = 0; i < preSelection.length; i++) {
@@ -48,12 +49,12 @@ public class BedwarsShopDataContainer implements CachedData {
                     if (shopSlot != null) {
                         final List<Identifier> options = shopSlot.options();
                         if (options.isEmpty()) {
-                            items.set(index, BaseShopItem.EMPTY);
+                            items.set(index, SimpleShopItem.EMPTY);
                             SocWars.LOGGER.warn("Skipping loading slot at ({}, {}) as the options pool was empty", i, j);
                         } else {
                             final Identifier choice = options.get(random.nextBetween(0, options.size() - 1));
-                            final BaseShopItem item = this.resourceItemMap.get(choice);
-                            items.set(index, item == null ? BaseShopItem.EMPTY : item);
+                            final BaseShopItem<?> item = this.resourceItemMap.get(choice);
+                            items.set(index, item == null ? SimpleShopItem.EMPTY : item);
                         }
                     }
                 }

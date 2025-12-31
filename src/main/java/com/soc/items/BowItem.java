@@ -133,7 +133,7 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
                     super.onBlockHit(blockHitResult);
                     randomTeleport(world, this, 2, 15, 2f);
                 }
-            }, stack -> 0.65f, stack -> 3.5f), new Settings()
+            }, stack -> 0.9f, stack -> 3.5f), new Settings()
             .rarity(Rarity.RARE)
             .maxDamage(350)
     );

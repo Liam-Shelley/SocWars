@@ -10,26 +10,43 @@ import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.OptionalInt;
 
 import static com.soc.lib.SocWarsLib.enchantment;
 import static com.soc.lib.json.JsonHelper.*;
 import static net.minecraft.util.JsonHelper.deserialize;
 
-public class SimpleShopItem extends BaseShopItem {
+public class SimpleShopItem extends BaseShopItem<SimpleShopItem> {
+    private static final int ID = 1;
+
+    static {
+        BaseShopItem.DECODER_MAP.put(ID, SimpleShopItem::decode);
+    }
+
+    private static final PacketCodec<RegistryByteBuf, SimpleShopItem> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.collection(ArrayList::new, PacketCodecs.INTEGER), SimpleShopItem::getCosts, PacketCodecs.optional(ItemStack.PACKET_CODEC), SimpleShopItem::getOptionalStack, SimpleShopItem::new);
+
+    public static final SimpleShopItem EMPTY = new SimpleShopItem(Cost.DEFAULT, ItemStack.EMPTY);
+
+
     private final ItemStack stack;
 
-    public SimpleShopItem(int iron, int gold, int diamonds, int emeralds, ItemStack stack) {
-        super(iron, gold, diamonds, emeralds, stack);
-        this.stack = stack;
+    private SimpleShopItem(List<Integer> costs, Optional<ItemStack> stack) {
+        super(costs.get(0), costs.get(1), costs.get(2), costs.get(3));
+        this.stack = stack.orElse(ItemStack.EMPTY);
     }
 
     public SimpleShopItem(Cost cost, ItemStack stack) {
-        super(cost, stack);
+        super(cost);
         this.stack = stack;
     }
 
@@ -68,8 +85,31 @@ public class SimpleShopItem extends BaseShopItem {
         }
     }
 
+    private Optional<ItemStack> getOptionalStack() {
+        return this.stack.isEmpty() ? Optional.empty() : Optional.of(this.stack);
+    }
+
     @Override
     public Text getTooltipName() {
         return getTooltipNameOfItem(this.stack);
+    }
+
+    @Override
+    public ItemStack getIcon() {
+        return this.stack;
+    }
+
+    @Override
+    protected PacketCodec<RegistryByteBuf, SimpleShopItem> getPacketCodec() {
+        return PACKET_CODEC;
+    }
+
+    @Override
+    protected int id() {
+        return ID;
+    }
+
+    private static SimpleShopItem decode(RegistryByteBuf byteBuf) {
+        return PACKET_CODEC.decode(byteBuf);
     }
 }
