@@ -18,7 +18,7 @@ public class BedwarsShopCategory {
         @Override
         public List<BaseShopItem<?>> decode(RegistryByteBuf byteBuf) {
             int size = PacketCodecs.readCollectionSize(byteBuf, Integer.MAX_VALUE);
-            List<BaseShopItem<?>> collection = new ArrayList<>(Math.min(size, 65536));
+            final List<BaseShopItem<?>> collection = new ArrayList<>(Math.min(size, 65536));
 
             for (int i = 0; i < size; i++) {
                 final int itemId = VarInts.read(byteBuf);

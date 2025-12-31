@@ -1,18 +1,20 @@
 package com.soc.game.manager.bedwars;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.soc.resourcedata.deserialisation.Cost;
+import com.soc.resourcedata.deserialisation.CostStack;
 import com.soc.screenhandler.BedwarsShopScreenHandler;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.EquippableComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.text.Text;
+import net.minecraft.util.JsonHelper;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.Reader;
@@ -20,43 +22,47 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalInt;
 
-import static com.soc.lib.json.JsonHelper.getDefaultedObject;
 import static net.minecraft.util.JsonHelper.deserialize;
 
 public class UpgradeableShopItem extends BaseShopItem<UpgradeableShopItem> {
     private static final int ID = 2;
+    private static final PacketCodec<RegistryByteBuf, UpgradeableShopItem> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.collection(ArrayList::new, PacketCodecs.INTEGER), UpgradeableShopItem::getCosts, PacketCodecs.collection(ArrayList::new, ItemStack.PACKET_CODEC), UpgradeableShopItem::getStacks, PacketCodecs.INTEGER, UpgradeableShopItem::getTier, UpgradeableShopItem::new);
 
     static {
         BaseShopItem.DECODER_MAP.put(ID, UpgradeableShopItem::decode);
     }
 
-    private static final PacketCodec<RegistryByteBuf, UpgradeableShopItem> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.collection(ArrayList::new, PacketCodecs.INTEGER), UpgradeableShopItem::getCosts, PacketCodecs.collection(ArrayList::new, ItemStack.PACKET_CODEC), UpgradeableShopItem::getStacks, PacketCodecs.INTEGER, UpgradeableShopItem::getTier, UpgradeableShopItem::new);
+    public static final String TIERS_KEY = "tiers";
 
-    private final List<ItemStack> stacks;
+    private final List<CostStack> stacks;
     private int tier;
 
-    private UpgradeableShopItem(List<Integer> costs, List<ItemStack> stacks, int tier) {
-        super(costs.get(0), costs.get(1), costs.get(2), costs.get(3));
+    private UpgradeableShopItem(List<CostStack> stacks, int tier) {
+        super(0, 0, 0, 0);
         this.stacks = stacks;
         this.tier = tier;
     }
 
-    public UpgradeableShopItem(Cost cost, List<ItemStack> stacks) {
-        super(cost);
-        this.stacks = stacks;
-    }
-
     public UpgradeableShopItem(JsonObject object) {
         this(
-                getDefaultedObject(object, Cost.KEY, Cost::new, Cost.ERROR_SIGNAL),
-                List.of(Items.EMERALD_BLOCK.getDefaultStack())
+                deserialiseItems(JsonHelper.getArray(object, TIERS_KEY)),
+                0
         );
+    }
+
+    public UpgradeableShopItem(List<Integer> integers, List<ItemStack> itemStacks, Integer integer) {
+        this(itemStacks.stream().map(stack -> new CostStack(Cost.DEFAULT, stack)).toList(), 0);
+    }
+
+    private static List<CostStack> deserialiseItems(JsonArray array) {
+        List<CostStack> items = new ArrayList<>();
+        array.forEach(element -> items.add(new CostStack(element.getAsJsonObject())));
+
+        return items;
     }
 
     public UpgradeableShopItem(Reader reader) {
-        this(
-                deserialize(reader)
-        );
+        this(deserialize(reader));
     }
 
     @Override
@@ -80,7 +86,7 @@ public class UpgradeableShopItem extends BaseShopItem<UpgradeableShopItem> {
     }
 
     private List<ItemStack> getStacks() {
-        return this.stacks;
+        return this.stacks.stream().map(CostStack::stack).toList();
     }
 
     private int getTier() {
@@ -88,7 +94,7 @@ public class UpgradeableShopItem extends BaseShopItem<UpgradeableShopItem> {
     }
 
     private ItemStack getStack() {
-        return this.stacks.get(this.tier);
+        return this.stacks.get(this.tier).stack();
     }
 
     @Override
