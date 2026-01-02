@@ -29,10 +29,6 @@ public class UpgradeableShopItem implements ShopItem<UpgradeableShopItem> {
     public static final int ID = 2;
     private static final PacketCodec<RegistryByteBuf, UpgradeableShopItem> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.collection(ArrayList::new, CostStack.PACKET_CODEC), UpgradeableShopItem::getStacks, PacketCodecs.BOOLEAN, UpgradeableShopItem::downgradeOnDeath, PacketCodecs.BOOLEAN, UpgradeableShopItem::retainBaseTier, PacketCodecs.INTEGER, UpgradeableShopItem::getTier, UpgradeableShopItem::new);
 
-    static {
-        ShopItem.DECODER_MAP.put(ID, PACKET_CODEC::decode);
-    }
-
     private static final AtomicInteger SLOT_TRACKING_ID_TRACKER = new AtomicInteger();
 
     public static final String TIERS_KEY = "tiers";
@@ -46,6 +42,10 @@ public class UpgradeableShopItem implements ShopItem<UpgradeableShopItem> {
     private final int slotTrackingId = SLOT_TRACKING_ID_TRACKER.getAndIncrement();
 
     private int tier;
+
+    public static void initialise() {
+        ShopItem.DECODER_MAP.put(ID, PACKET_CODEC::decode);
+    }
 
     private UpgradeableShopItem(List<CostStack> stacks, boolean downgradeOnDeath, boolean retainBaseTier, int tier) {
         this.stacks = stacks;

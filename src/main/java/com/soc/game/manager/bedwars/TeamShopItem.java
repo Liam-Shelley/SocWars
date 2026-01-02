@@ -27,10 +27,6 @@ public class TeamShopItem implements ShopItem<TeamShopItem> {
     public static final int ID = 3;
     private static final PacketCodec<RegistryByteBuf, TeamShopItem> PACKET_CODEC = PacketCodec.tuple(Cost.PACKET_CODEC, TeamShopItem::getCost, PacketCodecs.optional(ItemStack.PACKET_CODEC), TeamShopItem::getOptionalStack, TeamShopItem::new);
 
-    static {
-        ShopItem.DECODER_MAP.put(ID, PACKET_CODEC::decode);
-    }
-
     public static final String MAP_KEY = "map";
     private static final ItemStack DOUBLE_DEFAULT_STACK = Items.RESIN_BLOCK.getDefaultStack().copy();
 
@@ -40,6 +36,10 @@ public class TeamShopItem implements ShopItem<TeamShopItem> {
 
     private final Cost cost;
     private Either<ItemStack, Map<DyeColourWithEmpty, ItemStack>> stackMap;
+
+    public static void initialise() {
+        ShopItem.DECODER_MAP.put(ID, PACKET_CODEC::decode);
+    }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public TeamShopItem(Cost cost, Optional<ItemStack> stack) {

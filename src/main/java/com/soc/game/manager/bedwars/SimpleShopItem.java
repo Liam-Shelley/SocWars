@@ -20,14 +20,14 @@ public class SimpleShopItem implements ShopItem<SimpleShopItem> {
     public static final int ID = 1;
     private static final PacketCodec<RegistryByteBuf, SimpleShopItem> PACKET_CODEC = PacketCodec.tuple(Cost.PACKET_CODEC, SimpleShopItem::getCost, PacketCodecs.optional(ItemStack.PACKET_CODEC), SimpleShopItem::getOptionalStack, SimpleShopItem::new);
 
-    static {
-        ShopItem.DECODER_MAP.put(ID, PACKET_CODEC::decode);
-    }
-
     public static final SimpleShopItem EMPTY = new SimpleShopItem(Cost.DEFAULT, ItemStack.EMPTY);
 
     private final Cost cost;
     private final ItemStack stack;
+
+    public static void initialise() {
+        ShopItem.DECODER_MAP.put(ID, PACKET_CODEC::decode);
+    }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public SimpleShopItem(Cost cost, Optional<ItemStack> stack) {
