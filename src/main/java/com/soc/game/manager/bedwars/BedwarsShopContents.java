@@ -32,4 +32,8 @@ public record BedwarsShopContents(List<BedwarsShopCategory> contents) {
     public void downgradeItems() {
         this.contents.forEach(BedwarsShopCategory::downgradeItems);
     }
+
+    public List<UpgradeableShopItem> getUpgradeableShopItems() {
+        return this.contents.stream().flatMap(category -> category.getItems().stream().filter(item -> item instanceof UpgradeableShopItem).map(item -> (UpgradeableShopItem)item)).toList();
+    }
 }

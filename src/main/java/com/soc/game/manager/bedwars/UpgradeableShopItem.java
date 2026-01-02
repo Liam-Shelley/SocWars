@@ -17,6 +17,7 @@ import net.minecraft.util.JsonHelper;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static com.soc.lib.json.JsonHelper.getDefaultedBoolean;
 import static net.minecraft.util.JsonHelper.deserialize;
@@ -35,7 +36,9 @@ public class UpgradeableShopItem implements ShopItem<UpgradeableShopItem> {
 
     private final List<CostStack> stacks;
     private final boolean downgradeOnDeath;
+
     private final boolean retainBaseTier;
+    private final UUID slotTrackingId = UUID.randomUUID();
 
     private int tier;
 

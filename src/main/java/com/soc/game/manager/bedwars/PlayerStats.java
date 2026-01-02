@@ -7,9 +7,12 @@ import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.OptionalInt;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collector;
@@ -22,11 +25,12 @@ public class PlayerStats {
     private final BedwarsShopContents shopContents;
     private boolean isAlive = true;
 
-    private final Int2IntMap toolSlotMap = new Int2IntOpenHashMap(8);
+    private final Map<UUID, OptionalInt> toolSlotMap;
 
     public PlayerStats(ServerPlayerEntity player, long shopSeed) {
         this.player = player.getUuid();
         this.shopContents = BedwarsShopDataContainer.INSTANCE.getBedwarsShop(shopSeed);
+        this.toolSlotMap = new HashMap<>();
     }
 
     public void onDeath(boolean canRespawn, World world) {
@@ -54,10 +58,6 @@ public class PlayerStats {
             final Integer component = inventory.getStack(i).get(ModComponents.GAME_TOOL);
             if (component != null) toolSlotMap.put(i, component.intValue());
         }
-    }
-
-    public Int2IntMap getToolSlotMap() {
-        return this.toolSlotMap;
     }
 
     public UUID getPlayer() {

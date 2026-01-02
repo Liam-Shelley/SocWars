@@ -195,6 +195,8 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         final boolean canRespawn = this.canRespawn(player);
         this.getPlayerStats(player).onDeath(canRespawn, super.world);
 
+        player.getInventory().clear();
+
         this.broadcastDeath(player, source, !canRespawn);
 
         super.onPlayerDeath(player, source, amount);
@@ -270,9 +272,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
                 remainder = 64;
             } while (stacks-- > 0);
-
         }
-        giver.getInventory().clear();
     }
 
     protected static void dropResources(ServerPlayerEntity player) {
@@ -329,6 +329,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         return GamesManager.getInstance().getGame(player).map(manager -> manager instanceof BedwarsGameManager bedwarsGameManager ? bedwarsGameManager : null).orElse(null);
     }
 
+    @SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "UnusedReturnValue"})
     public static boolean sendShopData(ServerPlayerEntity player, OptionalInt syncId) {
         final BedwarsGameManager manager = getBedwarsGameManager(player);
 
