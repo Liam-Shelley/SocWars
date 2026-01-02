@@ -1,9 +1,12 @@
 package com.soc.util;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.Encoder;
 import com.mojang.serialization.codecs.PrimitiveCodec;
 
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public interface Codecs {

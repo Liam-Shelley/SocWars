@@ -58,7 +58,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         super(world, players, spreadRules, gameId);
 
         final long shopSeed = world.random.nextLong();
-        this.playerStatsMap = players.stream().collect(Collectors.toMap(ServerPlayerEntity::getUuid, player -> new PlayerStats(player, shopSeed)));
+        this.playerStatsMap = players.stream().collect(Collectors.toMap(ServerPlayerEntity::getUuid, player -> new PlayerStats(player, this.getTeam(player), shopSeed)));
         this.teamStatsMap = super.teams.keySet().stream().collect(Collectors.toMap(Function.identity(), team -> new TeamStats(team, super.teams.get(team).stream().map(this.playerStatsMap::get).collect(Collectors.toSet()))));
     }
 
@@ -193,9 +193,11 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         getPlayerAttacker(player).ifPresentOrElse(attacker -> giveResourcesToPlayer(player, (ServerPlayerEntity) attacker), () -> dropResources(player));
 
         final boolean canRespawn = this.canRespawn(player);
-        this.getPlayerStats(player).onDeath(canRespawn, super.world);
 
+        final PlayerStats playerStats = this.getPlayerStats(player);
+        playerStats.onDeath(canRespawn, super.world);
         player.getInventory().clear();
+        playerStats.returnToolsToSlots(super.world);
 
         this.broadcastDeath(player, source, !canRespawn);
 

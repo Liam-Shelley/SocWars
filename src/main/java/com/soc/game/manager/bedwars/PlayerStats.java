@@ -7,13 +7,11 @@ import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.OptionalInt;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -25,12 +23,11 @@ public class PlayerStats {
     private final BedwarsShopContents shopContents;
     private boolean isAlive = true;
 
-    private final Map<UUID, OptionalInt> toolSlotMap;
+    private final Map<Integer, Integer> toolSlotMap = new HashMap<>();
 
-    public PlayerStats(ServerPlayerEntity player, long shopSeed) {
+    public PlayerStats(ServerPlayerEntity player, DyeColor team, long shopSeed) {
         this.player = player.getUuid();
-        this.shopContents = BedwarsShopDataContainer.INSTANCE.getBedwarsShop(shopSeed);
-        this.toolSlotMap = new HashMap<>();
+        this.shopContents = BedwarsShopDataContainer.INSTANCE.getBedwarsShop(shopSeed, team);
     }
 
     public void onDeath(boolean canRespawn, World world) {
@@ -56,8 +53,16 @@ public class PlayerStats {
         final PlayerInventory inventory = player.getInventory();
         for (int i = 0; i < inventory.size(); i++) {
             final Integer component = inventory.getStack(i).get(ModComponents.GAME_TOOL);
-            if (component != null) toolSlotMap.put(i, component.intValue());
+            if (component != null) this.toolSlotMap.put(component, i);
         }
+    }
+
+    public void returnToolsToSlots(World world) {
+        final PlayerEntity player = world.getPlayerByUuid(this.player);
+        if (player == null) return;
+
+        final PlayerInventory inventory = player.getInventory();
+        this.toolSlotMap.forEach((id, slot) -> this.shopContents.getUpgradeableShopItemBySlotTrackingId(id).ifPresent(shopItem -> inventory.setStack(slot, shopItem.getDowngradedStackCopy().copy())));
     }
 
     public UUID getPlayer() {

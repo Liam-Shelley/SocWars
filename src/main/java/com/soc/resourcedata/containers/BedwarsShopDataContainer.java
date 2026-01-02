@@ -8,6 +8,7 @@ import com.soc.game.manager.bedwars.SimpleShopItem;
 import com.soc.resourcedata.deserialisation.BedwarsShopSlot;
 import com.soc.resourcedata.deserialisation.PreSelectionBedwarsShopCategory;
 import com.soc.screenhandler.BedwarsShopScreenHandler;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.random.Random;
 
@@ -31,7 +32,7 @@ public class BedwarsShopDataContainer implements CachedData {
         this.categoryStockSlotsMap.put(id, stockSlots);
     }
 
-    public final BedwarsShopContents getBedwarsShop(long shopSeed) {
+    public final BedwarsShopContents getBedwarsShop(long shopSeed, DyeColor team) {
         final Random random = Random.create(shopSeed);
 
         final List<BedwarsShopCategory> categories = this.categoryStockSlotsMap.entrySet().stream().map(entry -> {

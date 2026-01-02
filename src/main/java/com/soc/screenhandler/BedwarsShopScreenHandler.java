@@ -84,16 +84,6 @@ public class BedwarsShopScreenHandler extends ScreenHandler {
         return this.manager;
     }
 
-    public final BedwarsShopContents getShopContents() {
-        return this.shopContents;
-    }
-
-    public boolean runInManager(Consumer<BedwarsGameManager> consumer) {
-        if (this.manager == null) return false;
-        consumer.accept(this.manager);
-        return true;
-    }
-
     public void setCurrentCategory(int slot) {
         if (slot < 0 || slot >= this.shopContents.getNumCategories()) return;
         this.currentCategory = this.shopContents.getCategory(slot);

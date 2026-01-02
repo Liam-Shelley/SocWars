@@ -16,6 +16,7 @@ import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static com.soc.lib.SocWarsLib.enchantment;
@@ -53,26 +54,41 @@ public interface ShopItem<INHERITOR> {
         return Text.literal(icon.getCount() + "x ").formatted(Formatting.DARK_PURPLE).append(icon.getItemName().copy().formatted(icon.getRarity().getFormatting()));
     }
 
-    default boolean giveStack(ItemStack itemStack, PlayerEntity player, boolean checkSlot) {
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    default boolean giveStack(ItemStack stack, PlayerEntity player, OptionalInt slot) {
+        return this.giveStackNoCopy(stack.copy(), player, slot);
+    }
+
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    default boolean giveStack(ItemStack stack, PlayerEntity player, OptionalInt slot, Consumer<ItemStack> stackModifier) {
+        final ItemStack modifiedStack = stack.copy();
+        stackModifier.accept(modifiedStack);
+        return this.giveStackNoCopy(modifiedStack, player, slot);
+    }
+
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    private boolean giveStackNoCopy(ItemStack stack, PlayerEntity player, OptionalInt slot) {
         if (!this.getCost().canAfford(player)) return false;
 
-        final EquippableComponent equippableComponent = itemStack.get(DataComponentTypes.EQUIPPABLE);
+        final EquippableComponent equippableComponent = stack.get(DataComponentTypes.EQUIPPABLE);
 
         if (equippableComponent != null && equippableComponent.slot().isArmorSlot()) {
-            if (ItemStack.areItemsEqual(player.getEquippedStack(equippableComponent.slot()), itemStack)) return false;
-
-            final ItemStack stack = itemStack.copy();
+            if (ItemStack.areItemsEqual(player.getEquippedStack(equippableComponent.slot()), stack)) return false;
 
             if (!stack.isOf(TrainingWeights.TRAINING_WEIGHTS)) stack.addEnchantment(enchantment(player.getWorld(), Enchantments.BINDING_CURSE), 1);
             player.equipStack(equippableComponent.slot(), stack);
             return true;
         } else {
-            if (inventoryCanAcceptStack(player.getInventory(), itemStack) || !checkSlot) {
-                player.giveItemStack(itemStack.copy());
+            if (slot.isPresent()) {
+                player.getInventory().setStack(slot.getAsInt(), stack);
                 return true;
+            } else {
+                if (inventoryCanAcceptStack(player.getInventory(), stack)) {
+                    player.giveItemStack(stack);
+                    return true;
+                }
+                return false;
             }
-
-            return false;
         }
     }
 

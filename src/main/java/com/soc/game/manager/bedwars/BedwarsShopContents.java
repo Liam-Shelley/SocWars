@@ -7,6 +7,7 @@ import net.minecraft.network.codec.PacketCodecs;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public record BedwarsShopContents(List<BedwarsShopCategory> contents) {
     public static final PacketCodec<RegistryByteBuf, BedwarsShopContents> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.collection(ArrayList::new, BedwarsShopCategory.PACKET_CODEC), BedwarsShopContents::contents, BedwarsShopContents::new);
@@ -33,7 +34,13 @@ public record BedwarsShopContents(List<BedwarsShopCategory> contents) {
         this.contents.forEach(BedwarsShopCategory::downgradeItems);
     }
 
-    public List<UpgradeableShopItem> getUpgradeableShopItems() {
-        return this.contents.stream().flatMap(category -> category.getItems().stream().filter(item -> item instanceof UpgradeableShopItem).map(item -> (UpgradeableShopItem)item)).toList();
+    /// Will crash if you try to use this with the wrong id for the type of shop item
+    @SuppressWarnings("unchecked")
+    public <T extends ShopItem<T>> List<T> getShopItemsByTypeId(int id) {
+        return (List<T>)(Object)this.contents.stream().flatMap(category -> category.getItems().stream().filter(item -> item.id() == id)).toList();
+    }
+
+    public Optional<UpgradeableShopItem> getUpgradeableShopItemBySlotTrackingId(int id) {
+        return this.<UpgradeableShopItem>getShopItemsByTypeId(UpgradeableShopItem.ID).stream().filter(item -> item.matchesSlotTrackingId(id)).findFirst();
     }
 }

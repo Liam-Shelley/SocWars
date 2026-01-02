@@ -50,6 +50,7 @@ public class ModItems {
         ThrowableItem.initialise();
         ExtendoBridge.initialise();
         BlockItems.initialise();
+        BaseTool.initialise();
     }
 
     public static Item register(String name, Function<Item.Settings, Item> itemFactory, Item.Settings settings) {

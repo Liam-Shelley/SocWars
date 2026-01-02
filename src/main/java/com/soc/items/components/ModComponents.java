@@ -8,6 +8,8 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Unit;
 
+import java.util.UUID;
+
 public interface ModComponents {
     ComponentType<RingItemComponent> RING_ITEM_COMPONENT = Registry.register(
             Registries.DATA_COMPONENT_TYPE,

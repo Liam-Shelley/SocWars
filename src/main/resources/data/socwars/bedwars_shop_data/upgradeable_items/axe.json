@@ -6,59 +6,59 @@
       "cost": {
         "iron": 5
       },
-      "item": "minecraft:wooden_pickaxe"
+      "item": "minecraft:wooden_axe"
     },
     {
       "cost": {
         "iron": 10
       },
-      "item": "minecraft:stone_pickaxe"
+      "item": "minecraft:stone_axe"
     },
     {
       "cost": {
         "iron": 20
       },
-      "item": "minecraft:iron_pickaxe"
+      "item": "minecraft:iron_axe"
     },
     {
       "cost": {
         "gold": 5
       },
-      "item": "minecraft:diamond_pickaxe"
+      "item": "minecraft:diamond_axe"
     },
     {
       "cost": {
         "iron": 20,
         "gold": 6
       },
-      "item": "minecraft:netherite_pickaxe"
+      "item": "minecraft:netherite_axe"
     },
     {
       "cost": {
         "iron": 32,
         "gold": 8
       },
-      "item": "socwars:emerald_pickaxe"
+      "item": "socwars:emerald_axe"
     },
     {
       "cost": {
         "gold": 10
       },
-      "item": "socwars:unobtanium_pickaxe"
+      "item": "socwars:unobtanium_axe"
     },
     {
       "cost": {
         "gold": 12,
         "emeralds": 1
       },
-      "item": "socwars:bedrock_pickaxe"
+      "item": "socwars:bedrock_axe"
     },
     {
       "cost": {
         "gold": 4,
         "emeralds": 2
       },
-      "item": "socwars:fish_pickaxe"
+      "item": "socwars:fish_axe"
     }
   ]
 }

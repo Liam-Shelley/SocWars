@@ -1,0 +1,38 @@
+{
+  "downgrade_on_death": true,
+  "retain_base_tier": true,
+  "tiers": [
+    {
+      "cost": {
+        "iron": 5
+      },
+      "item": "socwars:stone_shears"
+    },
+    {
+      "cost": {
+        "iron": 30
+      },
+      "item": "minecraft:shears"
+    },
+    {
+      "cost": {
+        "iron": 20,
+        "gold": 4
+      },
+      "item": "socwars:diamond_shears"
+    },
+    {
+      "cost": {
+        "gold": 10
+      },
+      "item": "socwars:unobtanium_shears"
+    },
+    {
+      "cost": {
+        "gold": 4,
+        "emeralds": 2
+      },
+      "item": "socwars:fish_shears"
+    }
+  ]
+}

@@ -4,24 +4,24 @@
   "page_priority": 3,
   "contents": [
     {
-      "x": 0,
+      "x": 2,
       "y": 0,
       "options": [
         "socwars:bedwars_shop_data/upgradeable_items/pickaxe"
       ]
     },
     {
-      "x": 1,
+      "x": 3,
       "y": 0,
       "options": [
-        "socwars:bedwars_shop_data/simple_items/test_axe"
+        "socwars:bedwars_shop_data/upgradeable_items/axe"
       ]
     },
     {
-      "x": 2,
+      "x": 4,
       "y": 0,
       "options": [
-        "socwars:bedwars_shop_data/simple_items/test_shears"
+        "socwars:bedwars_shop_data/upgradeable_items/shears"
       ]
     },
     {
