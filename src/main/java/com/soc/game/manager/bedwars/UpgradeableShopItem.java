@@ -5,101 +5,99 @@ import com.google.gson.JsonObject;
 import com.soc.resourcedata.deserialisation.Cost;
 import com.soc.resourcedata.deserialisation.CostStack;
 import com.soc.screenhandler.BedwarsShopScreenHandler;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.EquippableComponent;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.JsonHelper;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.OptionalInt;
 
+import static com.soc.lib.json.JsonHelper.getDefaultedBoolean;
 import static net.minecraft.util.JsonHelper.deserialize;
 
-public class UpgradeableShopItem extends BaseShopItem<UpgradeableShopItem> {
+public class UpgradeableShopItem implements ShopItem<UpgradeableShopItem> {
     private static final int ID = 2;
-    private static final PacketCodec<RegistryByteBuf, UpgradeableShopItem> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.collection(ArrayList::new, PacketCodecs.INTEGER), UpgradeableShopItem::getCosts, PacketCodecs.collection(ArrayList::new, ItemStack.PACKET_CODEC), UpgradeableShopItem::getStacks, PacketCodecs.INTEGER, UpgradeableShopItem::getTier, UpgradeableShopItem::new);
+    private static final PacketCodec<RegistryByteBuf, UpgradeableShopItem> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.collection(ArrayList::new, CostStack.PACKET_CODEC), UpgradeableShopItem::getStacks, PacketCodecs.BOOLEAN, UpgradeableShopItem::downgradeOnDeath, PacketCodecs.BOOLEAN, UpgradeableShopItem::retainBaseTier, PacketCodecs.INTEGER, UpgradeableShopItem::getTier, UpgradeableShopItem::new);
 
     static {
-        BaseShopItem.DECODER_MAP.put(ID, UpgradeableShopItem::decode);
+        ShopItem.DECODER_MAP.put(ID, PACKET_CODEC::decode);
     }
 
     public static final String TIERS_KEY = "tiers";
+    public static final String DOWNGRADE_ON_DEATH_KEY = "downgrade_on_death";
+    public static final String RETAIN_BASE_TIER_KEY = "retain_base_tier";
 
     private final List<CostStack> stacks;
+    private final boolean downgradeOnDeath;
+    private final boolean retainBaseTier;
+
     private int tier;
 
-    private UpgradeableShopItem(List<CostStack> stacks, int tier) {
-        super(0, 0, 0, 0);
+    private UpgradeableShopItem(List<CostStack> stacks, boolean downgradeOnDeath, boolean retainBaseTier, int tier) {
         this.stacks = stacks;
+        this.downgradeOnDeath = downgradeOnDeath;
+        this.retainBaseTier = retainBaseTier;
         this.tier = tier;
     }
 
     public UpgradeableShopItem(JsonObject object) {
         this(
                 deserialiseItems(JsonHelper.getArray(object, TIERS_KEY)),
+                getDefaultedBoolean(object, DOWNGRADE_ON_DEATH_KEY),
+                getDefaultedBoolean(object, RETAIN_BASE_TIER_KEY),
                 0
         );
-    }
-
-    public UpgradeableShopItem(List<Integer> integers, List<ItemStack> itemStacks, Integer integer) {
-        this(itemStacks.stream().map(stack -> new CostStack(Cost.DEFAULT, stack)).toList(), 0);
-    }
-
-    private static List<CostStack> deserialiseItems(JsonArray array) {
-        List<CostStack> items = new ArrayList<>();
-        array.forEach(element -> items.add(new CostStack(element.getAsJsonObject())));
-
-        return items;
     }
 
     public UpgradeableShopItem(Reader reader) {
         this(deserialize(reader));
     }
 
+    private static List<CostStack> deserialiseItems(JsonArray array) {
+        final List<CostStack> items = new ArrayList<>();
+        array.forEach(element -> items.add(new CostStack(element.getAsJsonObject())));
+
+        return items;
+    }
+
     @Override
     public boolean buy(PlayerEntity player, BedwarsShopScreenHandler context) {
-        final Pair<Boolean, OptionalInt> canAfford = super.canAfford(player);
-        if (!canAfford.getLeft()) return false;
+        if (this.tier == this.stacks.size()) return false;
 
-        super.costMap.forEach((item, count) -> Inventories.remove(player.getInventory(), predStack -> predStack.isOf(item), count, false));
-
-        final EquippableComponent equippableComponent = this.getStack().get(DataComponentTypes.EQUIPPABLE);
-
-        if (equippableComponent != null && equippableComponent.slot().isArmorSlot()) {
-            player.equipStack(equippableComponent.slot(), this.getStack().copy());
-            return true;
-        } else {
-            final boolean openSlot = canAfford.getRight().isPresent();
-
-            if (openSlot) player.giveItemStack(this.getStack().copy());
-            return openSlot;
+        final boolean gaveStack = this.giveStack(this.getStack(), player, this.tier == 0);
+        if (gaveStack) {
+            this.tier++;
+            this.takeItems(player);
         }
+
+        return gaveStack;
     }
 
-    private List<ItemStack> getStacks() {
-        return this.stacks.stream().map(CostStack::stack).toList();
+    private List<CostStack> getStacks() {
+        return this.stacks;
     }
-
+    private boolean downgradeOnDeath() {
+        return this.downgradeOnDeath;
+    }
+    private boolean retainBaseTier() {
+        return this.retainBaseTier;
+    }
     private int getTier() {
         return this.tier;
     }
 
-    private ItemStack getStack() {
-        return this.stacks.get(this.tier).stack();
+    private CostStack getStackAndCost() {
+        return this.tier < this.stacks.size() ? this.stacks.get(this.tier) : this.stacks.getLast();
     }
 
-    @Override
-    public Text getTooltipName() {
-        return getTooltipNameOfItem(this.getIcon());
+    private ItemStack getStack() {
+        return this.getStackAndCost().stack();
     }
 
     @Override
@@ -108,16 +106,31 @@ public class UpgradeableShopItem extends BaseShopItem<UpgradeableShopItem> {
     }
 
     @Override
-    protected PacketCodec<RegistryByteBuf, UpgradeableShopItem> getPacketCodec() {
+    public Cost getCost() {
+        return this.getStackAndCost().cost();
+    }
+
+    @Override
+    public PacketCodec<RegistryByteBuf, UpgradeableShopItem> getPacketCodec() {
         return PACKET_CODEC;
     }
 
     @Override
-    protected int id() {
+    public int id() {
         return ID;
     }
 
-    private static UpgradeableShopItem decode(RegistryByteBuf byteBuf) {
-        return PACKET_CODEC.decode(byteBuf);
+    public void downgrade() {
+        if (this.downgradeOnDeath && this.tier > (this.retainBaseTier ? 1 : 0)) this.tier--;
+    }
+
+    @Override
+    public Text affordabilitySuffix(PlayerEntity player) {
+        return this.tier < this.stacks.size() ? ShopItem.super.affordabilitySuffix(player) : Text.translatable("game.bedwars.shop.item.max_tier").formatted(Formatting.YELLOW, Formatting.BOLD);
+    }
+
+    @Override
+    public UpgradeableShopItem lazyClone() {
+        return new UpgradeableShopItem(this.stacks, this.downgradeOnDeath, this.retainBaseTier, 0);
     }
 }

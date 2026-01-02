@@ -21,6 +21,8 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageType;
 import net.minecraft.entity.mob.*;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -396,4 +398,44 @@ public final class SocWarsLib {
             default -> "";
         };
     }
+
+    public static boolean inventoryCanAcceptStack(Inventory inventory, ItemStack insertStack) {
+        final Iterator<ItemStack> iter = inventory.iterator();
+
+        final int maxCount = insertStack.getMaxCount();
+        int remainingCount = insertStack.getCount();
+
+        for (int i = 0; iter.hasNext(); i++) {
+            final ItemStack inventoryStack = iter.next();
+            if (inventoryStack.isEmpty() && i < PlayerInventory.MAIN_SIZE) return true;
+
+            if (ItemStack.areItemsAndComponentsEqual(insertStack, inventoryStack)) {
+                remainingCount -= maxCount - inventoryStack.getCount();
+
+                if (remainingCount <= 0) return true;
+            }
+        }
+
+        return false;
+    }
+
+    /*
+    public static boolean inventoryCanAcceptStack(Inventory inventory, ItemStack insertStack) {
+        final Iterator<ItemStack> iter = inventory.iterator();
+
+        final int maxCount = insertStack.getMaxCount();
+        int remainingCount = insertStack.getCount();
+
+        for (int i = 0; iter.hasNext(); i++) {
+            final ItemStack inventoryStack = iter.next();
+            if (inventoryStack.isEmpty()) return true;
+
+            if (ItemStack.areItemsAndComponentsEqual(insertStack, inventoryStack)) {
+                remainingCount -= maxCount - inventoryStack.getCount();
+            }
+        }
+
+        return remainingCount == 0;
+    }
+     */
 }

@@ -53,13 +53,13 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
     private final Map<UUID, PlayerStats> playerStatsMap;
     private final Map<DyeColor, TeamStats> teamStatsMap;
-    private final BedwarsShopContents shopContents;
 
     protected BedwarsGameManager(ServerWorld world, Set<ServerPlayerEntity> players, @NotNull SpreadRules spreadRules, int gameId) {
         super(world, players, spreadRules, gameId);
-        this.playerStatsMap = players.stream().collect(Collectors.toMap(ServerPlayerEntity::getUuid, PlayerStats::new));
+
+        final long shopSeed = world.random.nextLong();
+        this.playerStatsMap = players.stream().collect(Collectors.toMap(ServerPlayerEntity::getUuid, player -> new PlayerStats(player, shopSeed)));
         this.teamStatsMap = super.teams.keySet().stream().collect(Collectors.toMap(Function.identity(), team -> new TeamStats(team, super.teams.get(team).stream().map(this.playerStatsMap::get).collect(Collectors.toSet()))));
-        this.shopContents = BedwarsShopDataContainer.INSTANCE.getBedwarsShop(world.random);
     }
 
     @Override
@@ -124,7 +124,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
     @Override
     public Multimap<DyeColor, UUID> buildTeams(Set<ServerPlayerEntity> players, SpreadRules spreadRules) {
-        //Probably rewrite this at some point it's options bit gross
+        //Probably rewrite this at some point it's a bit gross
 
         final Stack<UUID> playerStack = getRandomPlayerStack(players.stream().map(ServerPlayerEntity::getUuid).toList());
 
@@ -320,8 +320,8 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         }).orElse(true);
     }
 
-    public BedwarsShopContents getShopContents() {
-        return this.shopContents;
+    public BedwarsShopContents getShopContents(UUID player) {
+        return this.playerStatsMap.get(player).getShopContents();
     }
 
     @Nullable
@@ -329,12 +329,12 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         return GamesManager.getInstance().getGame(player).map(manager -> manager instanceof BedwarsGameManager bedwarsGameManager ? bedwarsGameManager : null).orElse(null);
     }
 
-    public static boolean sendShopData(PlayerEntity player, OptionalInt syncId) {
+    public static boolean sendShopData(ServerPlayerEntity player, OptionalInt syncId) {
         final BedwarsGameManager manager = getBedwarsGameManager(player);
 
         if (syncId.isEmpty() || !(player instanceof ServerPlayerEntity) || manager == null) return false;
 
-        ServerPlayNetworking.send((ServerPlayerEntity)player, new ShopDataPayload(manager.getShopContents(), syncId.getAsInt()));
+        ServerPlayNetworking.send(player, new ShopDataPayload(manager.getShopContents(player.getUuid()), syncId.getAsInt()));
         return true;
     }
 

@@ -1,5 +1,6 @@
 package com.soc.game.manager.bedwars;
 
+import com.soc.resourcedata.containers.BedwarsShopDataContainer;
 import net.minecraft.util.DyeColor;
 
 import java.util.Collection;

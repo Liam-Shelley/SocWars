@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public record BedwarsShopContents(List<BedwarsShopCategory> contents) {
-    public static final int MAX_CATEGORIES = 8;
     public static final PacketCodec<RegistryByteBuf, BedwarsShopContents> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.collection(ArrayList::new, BedwarsShopCategory.PACKET_CODEC), BedwarsShopContents::contents, BedwarsShopContents::new);
 
     public BedwarsShopCategory getCategory(int slot) {
@@ -28,5 +27,9 @@ public record BedwarsShopContents(List<BedwarsShopCategory> contents) {
 
     public int getNumCategories() {
         return this.contents.size();
+    }
+
+    public void downgradeItems() {
+        this.contents.forEach(BedwarsShopCategory::downgradeItems);
     }
 }

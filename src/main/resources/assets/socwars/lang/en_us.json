@@ -269,6 +269,7 @@
   "game.bedwars.shop.category.food": "Food",
   "game.bedwars.shop.category.armour": "Armour",
   "game.bedwars.shop.category.accessories": "Accessories",
+  "game.bedwars.shop.item.max_tier": " MAX",
   "hud.bedwars.has_bed": "  ||  Bed: ",
   "hud.bedwars.team": "%s Team",
   "hud.tick": "✔",

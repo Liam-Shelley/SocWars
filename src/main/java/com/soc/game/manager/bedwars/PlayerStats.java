@@ -1,6 +1,7 @@
 package com.soc.game.manager.bedwars;
 
 import com.soc.items.components.ModComponents;
+import com.soc.resourcedata.containers.BedwarsShopDataContainer;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import net.minecraft.entity.player.PlayerEntity;
@@ -18,17 +19,14 @@ public class PlayerStats {
     public static final Collector<PlayerStats, ?, Map<UUID, PlayerStats>> MAP_COLLECTOR = Collectors.toMap(PlayerStats::getPlayer, Function.identity());
 
     private final UUID player;
+    private final BedwarsShopContents shopContents;
     private boolean isAlive = true;
-
-    private int pickaxeTier;
-    private int axeTier;
-    private int shearsTier;
-    private int armourTier;
 
     private final Int2IntMap toolSlotMap = new Int2IntOpenHashMap(8);
 
-    public PlayerStats(ServerPlayerEntity player) {
+    public PlayerStats(ServerPlayerEntity player, long shopSeed) {
         this.player = player.getUuid();
+        this.shopContents = BedwarsShopDataContainer.INSTANCE.getBedwarsShop(shopSeed);
     }
 
     public void onDeath(boolean canRespawn, World world) {
@@ -36,11 +34,7 @@ public class PlayerStats {
             this.isAlive = false;
         }
 
-        if (this.pickaxeTier > 0) this.pickaxeTier--;
-        if (this.axeTier > 0) this.axeTier--;
-        if (this.shearsTier > 0) this.shearsTier--;
-        if (this.armourTier > 0) this.armourTier--;
-
+        this.shopContents.downgradeItems();
         this.updateToolMap(world);
     }
 
@@ -72,5 +66,9 @@ public class PlayerStats {
 
     public boolean isAlive() {
         return this.isAlive;
+    }
+
+    public BedwarsShopContents getShopContents() {
+        return this.shopContents;
     }
 }

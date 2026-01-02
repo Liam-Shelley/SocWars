@@ -19,17 +19,17 @@ public class JsonHelper {
 
     private JsonHelper() {}
 
-    public static float getDefaultedFloat(JsonObject json, String key, float def) {
+    public static boolean getDefaultedBoolean(JsonObject json, String key, boolean def) {
         final JsonElement a = json.get(key);
         try {
-            return a == null ? def : a.getAsFloat();
+            return a == null ? def : a.getAsBoolean();
         } catch(Exception e) {
             return def;
         }
     }
 
-    public static float getDefaultedFloat(JsonObject json, String key) {
-        return getDefaultedFloat(json, key, 0f);
+    public static boolean getDefaultedBoolean(JsonObject json, String key) {
+        return getDefaultedBoolean(json, key, false);
     }
 
     public static int getDefaultedInt(JsonObject json, String key, int def) {
@@ -43,6 +43,19 @@ public class JsonHelper {
 
     public static int getDefaultedInt(JsonObject json, String key) {
         return getDefaultedInt(json, key, 0);
+    }
+
+    public static float getDefaultedFloat(JsonObject json, String key, float def) {
+        final JsonElement a = json.get(key);
+        try {
+            return a == null ? def : a.getAsFloat();
+        } catch(Exception e) {
+            return def;
+        }
+    }
+
+    public static float getDefaultedFloat(JsonObject json, String key) {
+        return getDefaultedFloat(json, key, 0f);
     }
 
     public static <T> T getDefaultedObject(JsonObject json, String key, Function<JsonObject, T> constructor, T def) {

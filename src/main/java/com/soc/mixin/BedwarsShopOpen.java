@@ -5,6 +5,7 @@ import com.soc.screenhandler.BedwarsShopScreenHandler;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -19,8 +20,10 @@ import java.util.OptionalInt;
 public abstract class BedwarsShopOpen {
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/passive/VillagerEntity;getOffers()Lnet/minecraft/village/TradeOfferList;"), method = "interactMob", cancellable = true)
 	void socwars_bedwarsShopOpen(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
-		OptionalInt syncId = player.openHandledScreen(new SimpleNamedScreenHandlerFactory(BedwarsShopScreenHandler::new, Text.of("Shop")));
-		BedwarsGameManager.sendShopData(player, syncId);
+		if (player instanceof ServerPlayerEntity serverPlayer) {
+			OptionalInt syncId = player.openHandledScreen(new SimpleNamedScreenHandlerFactory(BedwarsShopScreenHandler::new, Text.of("Shop")));
+			BedwarsGameManager.sendShopData(serverPlayer, syncId);
+		}
 		cir.setReturnValue(ActionResult.SUCCESS);
 	}
 }

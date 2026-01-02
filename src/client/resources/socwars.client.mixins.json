@@ -5,7 +5,8 @@
   "client": [
     "KeyboardInputModifier",
     "MouseInputModifier",
-    "OpenMapBlockScreen"
+    "OpenMapBlockScreen",
+    "RefreshShopItemsOnUpgrade"
   ],
   "injectors": {
     "defaultRequire": 1

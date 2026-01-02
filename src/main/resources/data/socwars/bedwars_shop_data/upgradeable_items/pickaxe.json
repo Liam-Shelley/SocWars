@@ -1,5 +1,5 @@
 {
-  "downgrades_on_death": true,
+  "downgrade_on_death": true,
   "retain_base_tier": true,
   "tiers": [
     {

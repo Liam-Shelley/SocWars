@@ -2,7 +2,7 @@ package com.soc.gui.screen;
 
 import com.soc.SocWars;
 import com.soc.game.manager.bedwars.BedwarsShopCategory;
-import com.soc.game.manager.bedwars.BaseShopItem;
+import com.soc.game.manager.bedwars.ShopItem;
 import com.soc.gui.ShopResourceDisplay;
 import com.soc.screenhandler.BedwarsShopScreenHandler;
 import net.minecraft.client.MinecraftClient;
@@ -23,7 +23,6 @@ import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class BedwarsShopScreen extends HandledScreen<BedwarsShopScreenHandler> {
     private static final Identifier TEXTURE = Identifier.of(SocWars.MOD_ID, "textures/gui/container/bedwars_shop_base.png");
@@ -81,11 +80,11 @@ public class BedwarsShopScreen extends HandledScreen<BedwarsShopScreenHandler> {
         }
     }
 
-    private void drawCostTooltip(DrawContext context, int x, int y, BaseShopItem<?> item) {
+    private void drawCostTooltip(DrawContext context, int x, int y, ShopItem<?> item) {
         final ItemStack icon = item.getIcon();
         {
             final MutableText name = item.getTooltipName().copy();
-            if (item.canAfford(this.playerInventory.player).getLeft()) name.append(Text.literal(" ✔").formatted(Formatting.GREEN));
+            name.append(item.affordabilitySuffix(playerInventory.player));
             int nameWidth = super.textRenderer.getWidth(name);
 
             TooltipBackgroundRenderer.render(context, x + 12, y - 12, Math.max(nameWidth, 65), 31, icon.get(DataComponentTypes.TOOLTIP_STYLE));
@@ -95,27 +94,23 @@ public class BedwarsShopScreen extends HandledScreen<BedwarsShopScreenHandler> {
 
         context.getMatrices().pushMatrix();
         context.getMatrices().scaleAround(0.8f, x, y);
-
-        final Map<Item, Integer> costMap = item.getCostMap();
-        int i = 0;
-        for (Map.Entry<Item, Integer> cost : costMap.entrySet()) {
-            final boolean canAfford = this.playerInventory.count(cost.getKey()) >= cost.getValue();
+        item.getCost().forEach((costItem, costAmount, i) -> {
+            final boolean canAfford = this.playerInventory.count(costItem) >= costAmount;
             {
                 final int xStart = x + i * 20 + 16;
                 final int yStart = y + 2;
 
-                context.drawItem(cost.getKey().getDefaultStack(), xStart, yStart);
+                context.drawItem(costItem.getDefaultStack(), xStart, yStart);
 
                 if (!canAfford) {
                     context.fill(xStart, yStart, xStart + 16, yStart + 16, 0xaa000000);
                 }
             }
             {
-                String costString = String.valueOf(cost.getValue());
+                String costString = String.valueOf(costAmount);
                 context.drawText(super.textRenderer, costString, x + i * 20 + 34 - costString.length() * 6, y + 16, canAfford ? 0xefffffff : 0xefdf1020, true);
             }
-            i++;
-        }
+        });
 
         context.getMatrices().popMatrix();
     }

@@ -3,7 +3,7 @@ package com.soc.screenhandler;
 import com.soc.game.manager.BedwarsGameManager;
 import com.soc.game.manager.bedwars.BedwarsShopCategory;
 import com.soc.game.manager.bedwars.BedwarsShopContents;
-import com.soc.game.manager.bedwars.BaseShopItem;
+import com.soc.game.manager.bedwars.ShopItem;
 import com.soc.game.manager.bedwars.SimpleShopItem;
 import com.soc.networking.s2c.bedwars.ShopDataPayload;
 import com.soc.screenhandler.slots.CategorySlot;
@@ -45,7 +45,7 @@ public class BedwarsShopScreenHandler extends ScreenHandler {
         this.categories = new SimpleInventory(CATEGORIES_WIDTH * CATEGORIES_HEIGHT);
 
         this.manager = BedwarsGameManager.getBedwarsGameManager(player);
-        this.shopContents = this.manager == null ? null : this.manager.getShopContents();
+        this.shopContents = this.manager == null ? null : this.manager.getShopContents(player.getUuid());
         this.currentCategory = this.shopContents == null ? null : this.shopContents.getFirstCategory();
 
         this.makeSlots();
@@ -101,7 +101,7 @@ public class BedwarsShopScreenHandler extends ScreenHandler {
         this.refreshItems();
     }
 
-    private void refreshItems() {
+    public void refreshItems() {
         for (int i = 0; i < this.stock.size(); i++) {
             this.stock.setStack(i, this.getShopItem(i).getIcon());
         }
@@ -113,11 +113,11 @@ public class BedwarsShopScreenHandler extends ScreenHandler {
         }
     }
 
-    public BaseShopItem<?> getShopItem(Slot slot) {
+    public ShopItem<?> getShopItem(Slot slot) {
         return this.getShopItem(slot.getIndex());
     }
 
-    public BaseShopItem<?> getShopItem(int slot) {
+    public ShopItem<?> getShopItem(int slot) {
         return this.currentCategory == null ? SimpleShopItem.EMPTY : this.currentCategory.getShopItem(slot);
     }
 
