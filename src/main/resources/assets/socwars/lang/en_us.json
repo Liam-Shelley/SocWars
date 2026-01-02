@@ -273,6 +273,7 @@
   "game.bedwars.lose": "GG EZ rekt lmao",
   "game.bedwars.bed_broken.title": "Bed Broken!",
   "game.bedwars.bed_broken.chat": "%1$s bed was broken by %2$s",
+  "game.bedwars.receive_items": "+ %1$sx %2$s",
   "game.bedwars.shop.category.quick_buy": "Quick Buy",
   "game.bedwars.shop.category.blocks": "Building Blocks",
   "game.bedwars.shop.category.ranged": "Ranged Weapons",

@@ -271,6 +271,8 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
                 final ItemStack stack = new ItemStack(resource, remainder);
                 stack.set(ModComponents.RESOURCE_COUNTED, Unit.INSTANCE);
                 receiver.giveItemStack(stack);
+                receiver.sendMessage(Text.translatable("game.bedwars.receive_items", stack.getCount(), stack.toHoverableText()).formatted(Formatting.DARK_GREEN), false);
+
 
                 remainder = 64;
             } while (stacks-- > 0);

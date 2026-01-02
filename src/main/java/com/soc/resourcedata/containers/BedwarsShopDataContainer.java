@@ -1,10 +1,7 @@
 package com.soc.resourcedata.containers;
 
 import com.soc.SocWars;
-import com.soc.game.manager.bedwars.ShopItem;
-import com.soc.game.manager.bedwars.BedwarsShopCategory;
-import com.soc.game.manager.bedwars.BedwarsShopContents;
-import com.soc.game.manager.bedwars.SimpleShopItem;
+import com.soc.game.manager.bedwars.*;
 import com.soc.resourcedata.deserialisation.BedwarsShopSlot;
 import com.soc.resourcedata.deserialisation.PreSelectionBedwarsShopCategory;
 import com.soc.screenhandler.BedwarsShopScreenHandler;
@@ -57,7 +54,11 @@ public class BedwarsShopDataContainer implements CachedData {
                         } else {
                             final Identifier choice = options.get(random.nextBetween(0, options.size() - 1));
                             final ShopItem<?> item = this.resourceItemMap.get(choice);
-                            items.set(index, item == null ? SimpleShopItem.EMPTY : (ShopItem<?>)item.lazyClone());
+                            final ShopItem<?> lazilyClonedItem = item == null ? SimpleShopItem.EMPTY : (ShopItem<?>)item.lazyClone();
+                            if (lazilyClonedItem instanceof TeamShopItem teamItem) {
+                                teamItem.setTeam(team);
+                            }
+                            items.set(index, lazilyClonedItem);
                         }
                     }
                 }

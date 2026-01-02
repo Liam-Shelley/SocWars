@@ -3,6 +3,7 @@ package com.soc.lib.json;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.soc.SocWars;
+import com.soc.game.map.DyeColourWithEmpty;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.DyeColor;
@@ -100,11 +101,11 @@ public class JsonHelper {
     }
 
     //Absolute goddamn mess of a function but oh well I don't have to look at it
-    public static Map<DyeColor, ItemStack> getDoubleDefaultedDyeColourItemStackMap(JsonObject object, String key, ItemStack doubleDef) {
+    public static Map<DyeColourWithEmpty, ItemStack> getDoubleDefaultedDyeColourItemStackMap(JsonObject object, String key, ItemStack doubleDef) {
         final JsonElement element = object.get(key);
         if (!element.isJsonObject()) {
             final ItemStack finalDoubleDef = doubleDef;
-            return Arrays.stream(DyeColor.values()).collect(Collectors.toMap(Function.identity(), colour -> finalDoubleDef));
+            return Arrays.stream(DyeColourWithEmpty.values()).collect(Collectors.toMap(Function.identity(), colour -> finalDoubleDef));
         }
 
         final int count = getDefaultedInt(object, ITEM_COUNT_KEY, 1);
@@ -117,9 +118,9 @@ public class JsonHelper {
         }
 
         final ItemStack def = doubleDef;
-        return Arrays.stream(DyeColor.values()).collect(Collectors.toMap(Function.identity(), colour -> {
+        return Arrays.stream(DyeColourWithEmpty.values()).collect(Collectors.toMap(Function.identity(), colour -> {
             try {
-                return getItemFromString(mapObject.get(colour.toString()).getAsString(), count, def);
+                return getItemFromString(mapObject.get(colour.toStringWithEmptyAlias("default")).getAsString(), count, def);
             } catch (Exception ignored) {
                 return def;
             }

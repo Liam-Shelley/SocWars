@@ -1,6 +1,7 @@
 package com.soc.resourcedata.listeners;
 import com.soc.SocWars;
 import com.soc.game.manager.bedwars.SimpleShopItem;
+import com.soc.game.manager.bedwars.TeamShopItem;
 import com.soc.game.manager.bedwars.UpgradeableShopItem;
 import com.soc.resourcedata.containers.BedwarsShopDataContainer;
 import com.soc.resourcedata.deserialisation.PreSelectionBedwarsShopCategory;
@@ -34,6 +35,7 @@ public class BedwarsShopData implements SimpleSynchronousResourceReloadListener 
         });
         readResources(manager, "bedwars_shop_data/simple_items", BASE_PATH_PREDICATE, (reader, id) -> BedwarsShopDataContainer.INSTANCE.addSlotResource(id, new SimpleShopItem(reader)));
         readResources(manager, "bedwars_shop_data/upgradeable_items", BASE_PATH_PREDICATE, (reader, id) -> BedwarsShopDataContainer.INSTANCE.addSlotResource(id, new UpgradeableShopItem(reader)));
+        readResources(manager, "bedwars_shop_data/team_items", BASE_PATH_PREDICATE, (reader, id) -> BedwarsShopDataContainer.INSTANCE.addSlotResource(id, new TeamShopItem(reader)));
 
         BedwarsShopDataContainer.INSTANCE.cache();
     }

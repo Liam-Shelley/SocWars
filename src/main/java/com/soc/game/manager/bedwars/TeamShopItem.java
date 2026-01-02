@@ -5,20 +5,22 @@ import com.mojang.datafixers.util.Either;
 import com.soc.game.map.DyeColourWithEmpty;
 import com.soc.resourcedata.deserialisation.Cost;
 import com.soc.screenhandler.BedwarsShopScreenHandler;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
+import net.minecraft.text.Text;
+import net.minecraft.util.DyeColor;
 
 import java.io.Reader;
 import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
 
-import static com.soc.lib.json.JsonHelper.getDefaultedItem;
-import static com.soc.lib.json.JsonHelper.getDefaultedObject;
+import static com.soc.lib.json.JsonHelper.*;
 import static net.minecraft.util.JsonHelper.deserialize;
 
 public class TeamShopItem implements ShopItem<TeamShopItem> {
@@ -29,26 +31,31 @@ public class TeamShopItem implements ShopItem<TeamShopItem> {
         ShopItem.DECODER_MAP.put(ID, PACKET_CODEC::decode);
     }
 
-    public static final TeamShopItem EMPTY = new TeamShopItem(Cost.DEFAULT, ItemStack.EMPTY);
+    public static final String MAP_KEY = "map";
+    private static final ItemStack DOUBLE_DEFAULT_STACK = Items.RESIN_BLOCK.getDefaultStack().copy();
+
+    static {
+        DOUBLE_DEFAULT_STACK.set(DataComponentTypes.ITEM_NAME, Text.of("ERROR_ITEM"));
+    }
 
     private final Cost cost;
-    private Either<ItemStack, Map<DyeColourWithEmpty, ItemStack>> stack;
+    private Either<ItemStack, Map<DyeColourWithEmpty, ItemStack>> stackMap;
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public TeamShopItem(Cost cost, Optional<ItemStack> stack) {
         this.cost = cost;
-        this.stack = Either.left(stack.orElse(Items.RESIN_BLOCK.getDefaultStack()));
+        this.stackMap = Either.left(stack.orElse(DOUBLE_DEFAULT_STACK));
     }
 
     public TeamShopItem(Cost cost, Map<DyeColourWithEmpty, ItemStack> stackMap) {
         this.cost = cost;
-        this.stack = Either.right(stackMap);
+        this.stackMap = Either.right(stackMap);
     }
 
     public TeamShopItem(JsonObject object) {
         this(
                 getDefaultedObject(object, Cost.KEY, Cost::new, Cost.ERROR_SIGNAL),
-                getDefaultedItem(object)
+                getDoubleDefaultedDyeColourItemStackMap(object, MAP_KEY, DOUBLE_DEFAULT_STACK)
         );
     }
 
@@ -58,21 +65,32 @@ public class TeamShopItem implements ShopItem<TeamShopItem> {
         );
     }
 
+    public void setTeam(DyeColor team) {
+        this.stackMap.right().ifPresent(map -> this.stackMap = Either.left(map.get(DyeColourWithEmpty.fromDyeColour(team))));
+    }
+
     @Override
     public boolean buy(PlayerEntity player, BedwarsShopScreenHandler context) {
-        final boolean gaveStack = this.giveStack(this.stack, player, OptionalInt.empty());
+        final boolean gaveStack = this.giveStack(this.getStack(), player, OptionalInt.empty());
         if (gaveStack) this.takeItems(player);
 
         return gaveStack;
     }
 
+    private ItemStack getStack() {
+        if (this.stackMap.left().isPresent()) return this.stackMap.left().get();
+        if (this.stackMap.right().isPresent()) return this.stackMap.right().get().get(DyeColourWithEmpty.EMPTY);
+        return DOUBLE_DEFAULT_STACK;
+    }
+
     private Optional<ItemStack> getOptionalStack() {
-        return this.stack.isEmpty() ? Optional.empty() : Optional.of(this.stack);
+        final ItemStack stack = this.getStack();
+        return stack.isEmpty() ? Optional.empty() : Optional.of(stack);
     }
 
     @Override
     public ItemStack getIcon() {
-        return this.stack;
+        return this.getStack();
     }
 
     @Override
@@ -90,8 +108,9 @@ public class TeamShopItem implements ShopItem<TeamShopItem> {
         return ID;
     }
 
+    /// Should only be called before {@link TeamShopItem#setTeam} has been called
     @Override
     public TeamShopItem lazyClone() {
-        return this;
+        return new TeamShopItem(this.cost, this.stackMap.right().get());
     }
 }
