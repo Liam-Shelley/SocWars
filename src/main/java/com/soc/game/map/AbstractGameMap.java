@@ -2,6 +2,8 @@ package com.soc.game.map;
 
 import com.google.common.collect.Multimap;
 import com.soc.SocWars;
+import com.soc.lib.Coroutine;
+import com.soc.lib.Coroutines;
 import com.soc.nbt.SpawnPosition;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
@@ -28,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
@@ -38,6 +41,9 @@ public abstract class AbstractGameMap {
     public static final String CENTRE_POS_KEY = "centre_positions";
     public static final String SPAWN_POSITION_KEY = "spawn_position";
     public static final String SPAWN_TEAMS_KEY = "spawn_teams";
+
+    private static final int Y_CLEARING_BUFFER = 64;
+    private static final int XZ_CLEARING_BUFFER = 64;
 
     protected final StructureTemplate structure;
     protected final BlockPos centrePos;
@@ -168,10 +174,21 @@ public abstract class AbstractGameMap {
         this.structure.place(this.world, this.absoluteCentrePos.subtract(this.centrePos), this.absoluteCentrePos, new StructurePlacementData(), this.world.random, Block.NOTIFY_LISTENERS);
     }
 
+    //Should probably optimise this at some point
     public final void destroyMap() {
         final BlockPos minPos = this.absoluteCentrePos.subtract(this.centrePos);
         final BlockPos maxPos = minPos.add(this.structure.getSize());
-        iterateInCube(minPos, maxPos, pos -> this.world.setBlockState(pos, Blocks.AIR.getDefaultState()));
+
+        final AtomicInteger y = new AtomicInteger(Math.min(maxPos.getY() + Y_CLEARING_BUFFER, this.world.getTopYInclusive()));
+        final int minX = minPos.getX() - XZ_CLEARING_BUFFER;
+        final int maxX = maxPos.getX() + XZ_CLEARING_BUFFER;
+        final int minZ = minPos.getZ() - XZ_CLEARING_BUFFER;
+        final int maxZ = maxPos.getZ() + XZ_CLEARING_BUFFER;
+
+        Coroutines.getInstance().startCoroutine(new Coroutine<>(this, map -> {
+            iterateInCube(new BlockPos(minX, y.get() - 1, minZ), new BlockPos(maxX, y.get(), maxZ), pos -> this.world.setBlockState(pos, Blocks.AIR.getDefaultState()));
+            return y.getAndDecrement() < this.world.getBottomY();
+        }));
 
         this.world.getOtherEntities(null, new Box(minPos.toCenterPos(), maxPos.toCenterPos()), entity -> entity.getType() != EntityType.PLAYER).forEach(entity -> entity.kill(this.world));
     }
