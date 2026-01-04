@@ -82,20 +82,13 @@ public class IntBox {
         for (int x : ZERO_ONE) {
             for (int y : ZERO_ONE) {
                 for (int z : ZERO_ONE) {
-                    final int minX = this.min.getX() + x * (this.getSize().getX() >> 1);
-                    final int minY = this.min.getY() + y * (this.getSize().getY() >> 1);
-                    final int minZ = this.min.getZ() + z * (this.getSize().getZ() >> 1);
-                    final int maxX = this.min.getX() + (x + 1) * (this.getSize().getX() >> 1);
-                    final int maxY = this.min.getY() + (y + 1) * (this.getSize().getY() >> 1);
-                    final int maxZ = this.min.getZ() + (z + 1) * (this.getSize().getZ() >> 1);
-
                     split[x + (y << 1) + (z << 2)] = new IntBox(
-                            minX,
-                            minY,
-                            minZ,
-                            maxX,
-                            maxY,
-                            maxZ
+                            this.min.getX() + x * (this.getSize().getX() >> 1),
+                            this.min.getY() + y * (this.getSize().getY() >> 1),
+                            this.min.getZ() + z * (this.getSize().getZ() >> 1),
+                            this.min.getX() + (x + 1) * (this.getSize().getX() >> 1),
+                            this.min.getY() + (y + 1) * (this.getSize().getY() >> 1),
+                            this.min.getZ() + (z + 1) * (this.getSize().getZ() >> 1)
                     );
                 }
             }

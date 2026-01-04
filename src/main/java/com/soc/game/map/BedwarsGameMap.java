@@ -2,12 +2,8 @@ package com.soc.game.map;
 
 import com.google.common.collect.*;
 import com.soc.SocWars;
-import com.soc.lib.CubicList;
-import com.soc.lib.IntBox;
 import com.soc.lib.SparseVoxelOctree;
 import com.soc.nbt.SpawnPosition;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.*;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -16,9 +12,8 @@ import net.minecraft.structure.StructureTemplate;
 import net.minecraft.structure.StructureTemplateManager;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -57,13 +52,14 @@ public class BedwarsGameMap extends AbstractGameMap {
             @NotNull Set<SpawnPosition> spawnPositions,
             @NotNull BlockPos centrePos,
             @NotNull BlockPos absoluteCentrePos,
+            @Nullable SparseVoxelOctree<Boolean> blockProtectionOverlay,
             @NotNull ServerWorld world,
             @NotNull Set<BlockPos> diamondGens,
             @NotNull Set<BlockPos> emeraldGens,
             @NotNull Set<BlockPos> islandGens,
             @NotNull Set<BlockPos> bedPositions
     ) {
-        super(structure, spawnPositions, centrePos, absoluteCentrePos, world);
+        super(structure, spawnPositions, centrePos, absoluteCentrePos, blockProtectionOverlay, world);
         this.diamondGens = ResourceGenerator.resourceGenerators(Items.DIAMOND.getDefaultStack(), world, diamondGens.stream().map(super::pos).collect(Collectors.toSet()), false, 30 * 20);
         this.emeraldGens = ResourceGenerator.resourceGenerators(Items.EMERALD.getDefaultStack(), world, emeraldGens.stream().map(super::pos).collect(Collectors.toSet()), false, 30 * 20);
         this.islandGens = this.makeIslandGenerators(world, islandGens.stream().map(super::pos).collect(Collectors.toSet()), spawnPositions.stream().map(spawnPosition -> spawnPosition.withPos(super.pos(spawnPosition.pos()))).collect(Collectors.toSet()));
@@ -72,30 +68,20 @@ public class BedwarsGameMap extends AbstractGameMap {
 
     /// Constructor used only for saving the map to file
     public BedwarsGameMap(
-            World world,
             StructureTemplate structure,
             @NotNull Set<SpawnPosition> spawnPositions,
             @NotNull BlockPos centrePos,
-            @NotNull BlockPos absoluteCentrePos,
+            @Nullable SparseVoxelOctree<Boolean> blockProtectionOverlay,
             @NotNull Set<BlockPos> diamondGens,
             @NotNull Set<BlockPos> emeraldGens,
             @NotNull Set<BlockPos> islandGens,
             @NotNull Set<BlockPos> bedPositions
     ) {
-        super(structure, spawnPositions, centrePos, new BlockPos(0, 0, 0));
+        super(structure, spawnPositions, centrePos, blockProtectionOverlay);
         this.diamondGens = ResourceGenerator.resourceGenerators(Items.DIAMOND.getDefaultStack(), super.world, diamondGens, false, 30 * 20);
         this.emeraldGens = ResourceGenerator.resourceGenerators(Items.EMERALD.getDefaultStack(), super.world, emeraldGens, false, 30 * 20);
         this.islandGens = this.makeIslandGenerators(super.world, islandGens, spawnPositions);
         this.bedPositions = this.makeBedPositions(spawnPositions, bedPositions);
-
-        final BlockPos origin = absoluteCentrePos.up();
-        final CubicList<BlockState> naive = new CubicList<>(structure.getSize(), (x, y, z) -> world.getBlockState(origin.add(x, y, z)));
-        final SparseVoxelOctree<BlockState> octree = naive.asOctree();
-
-        final IntBox octreeBox = new IntBox(origin.getX(), origin.getY(), origin.getZ(), origin.getX() + structure.getSize().getX(), origin.getY() + structure.getSize().getY(), origin.getZ() + structure.getSize().getZ());
-
-        final Vec3i offset = new Vec3i(origin.getX() % octree.getNodeSize(), origin.getY() % octree.getNodeSize(), origin.getZ() % octree.getNodeSize());
-        octreeBox.forEach((x, y, z) -> world.setBlockState(new BlockPos(x, y + octree.getNodeSize(), z), octree.get(x, y, z, offset)));
     }
 
     private Map<DyeColor, BlockPos> makeBedPositions(Set<SpawnPosition> spawnPositions, Set<BlockPos> bedPositions) {
@@ -128,6 +114,7 @@ public class BedwarsGameMap extends AbstractGameMap {
                 spawns,
                 BlockPos.fromLong(centrePosLong.get()),
                 centrePos,
+                SparseVoxelOctree.fromNbtBooleanOnly(BLOCK_PROTECTION_OVERLAY_KEY, compound),
                 world,
                 getBlockPosSet(compound, DIAMOND_GENS_KEY).orElseGet(() -> { SocWars.LOGGER.error("Failed to load diamond gens"); return Set.of(); }),
                 getBlockPosSet(compound, EMERALD_GENS_KEY).orElseGet(() -> { SocWars.LOGGER.error("Failed to load emerald gens"); return Set.of(); }),

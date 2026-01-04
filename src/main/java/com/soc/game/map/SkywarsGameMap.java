@@ -1,6 +1,7 @@
 package com.soc.game.map;
 
 import com.soc.SocWars;
+import com.soc.lib.SparseVoxelOctree;
 import com.soc.nbt.SkywarsChest;
 import com.soc.nbt.SpawnPosition;
 import com.soc.resourcedata.listeners.SkywarsLootData;
@@ -21,6 +22,7 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,10 +39,11 @@ public class SkywarsGameMap extends AbstractGameMap {
             @NotNull Set<SpawnPosition> spawnPositions,
             @NotNull BlockPos centrePos,
             @NotNull BlockPos absoluteCentrePos,
+            @Nullable SparseVoxelOctree<Boolean> blockProtectionOverlay,
             @NotNull ServerWorld world,
             @NotNull Set<SkywarsChest> lootChests
     ) {
-        super(structure, spawnPositions, centrePos, absoluteCentrePos, world);
+        super(structure, spawnPositions, centrePos, absoluteCentrePos, blockProtectionOverlay, world);
         this.lootChests = lootChests.stream().collect(Collectors.toMap(chest -> super.pos(chest.pos()), IngameSkywarsChest::new));
     }
 
@@ -49,10 +52,10 @@ public class SkywarsGameMap extends AbstractGameMap {
             StructureTemplate structure,
             @NotNull Set<SpawnPosition> spawnPositions,
             @NotNull BlockPos centrePos,
-            @NotNull BlockPos absoluteCentrePos,
+            @Nullable SparseVoxelOctree<Boolean> blockProtectionOverlay,
             @NotNull Set<SkywarsChest> lootChests
     ) {
-        super(structure, spawnPositions, centrePos, new BlockPos(0, 0, 0));
+        super(structure, spawnPositions, centrePos, blockProtectionOverlay);
         this.lootChests = lootChests.stream().collect(Collectors.toMap(chest -> super.pos(chest.pos()), IngameSkywarsChest::new));
     }
 
@@ -123,6 +126,7 @@ public class SkywarsGameMap extends AbstractGameMap {
                 spawns,
                 BlockPos.fromLong(centrePosLong.get()),
                 centrePos,
+                null,
                 world,
                 chests
         ));
@@ -132,7 +136,7 @@ public class SkywarsGameMap extends AbstractGameMap {
     public NbtCompound toNbt(NbtCompound compound) {
         super.toNbt(compound);
 
-        compound.put(SkywarsChest.LIST_KEY, getChestsAsNbt());
+        compound.put(SkywarsChest.LIST_KEY, this.getChestsAsNbt());
 
         return compound;
     }

@@ -1,17 +1,20 @@
 package com.soc.lib;
 
+import net.minecraft.nbt.NbtByte;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.util.math.Vec3i;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedList;
+import java.util.Optional;
 import java.util.Queue;
 
 public class SparseVoxelOctree<T> implements OctreeNode {
-    private class Offset {
-        public Offset() {
-
-        }
-    }
+    public static final String SIZE_KEY = "size";
+    public static final String TREE_KEY = "tree";
 
     private final int nodeSize; //Must always be some natural 2^n
     private final OctreeNode[] nodes = new OctreeNode[8];
@@ -78,6 +81,10 @@ public class SparseVoxelOctree<T> implements OctreeNode {
         return ((Homogeneous<T>)candidate).get();
     }
 
+    public T get(Vec3i pos, Vec3i origin) {
+        return this.get(pos.getX(), pos.getY(), pos.getZ(), origin);
+    }
+
     private OctreeNode getNode(int x, int y, int z) {
         final int halfNodeSize = this.nodeSize >> 1;
 
@@ -94,6 +101,16 @@ public class SparseVoxelOctree<T> implements OctreeNode {
                 (topHalfY ? 2 : 0) +
                 (topHalfZ ? 4 : 0)
         ];
+
+        /*
+        final int halfNodeSize = this.nodeSize >> 1;
+
+        return this.nodes[
+                (x % this.nodeSize < halfNodeSize ? 0 : 1) +
+                (y % this.nodeSize < halfNodeSize ? 0 : 2) +
+                (z % this.nodeSize < halfNodeSize ? 0 : 4)
+        ];
+         */
     }
 
     @Override
@@ -104,6 +121,25 @@ public class SparseVoxelOctree<T> implements OctreeNode {
     @Override
     public int getNodeSize() {
         return this.nodeSize;
+    }
+
+    /// Should never be called from outside of this class, instead use {@link SparseVoxelOctree#writeToNbtBooleanOnly(String, NbtCompound)}
+    @Override
+    public NbtElement toNbtBooleanOnly() {
+        final NbtList list = new NbtList();
+        for (OctreeNode node : this.nodes) {
+            list.add(node.toNbtBooleanOnly());
+        }
+        return list;
+    }
+
+    public void writeToNbtBooleanOnly(String key, NbtCompound compound) {
+        final NbtCompound svoCompound = new NbtCompound();
+
+        svoCompound.putInt(SIZE_KEY, this.nodeSize);
+        svoCompound.put(TREE_KEY, this.toNbtBooleanOnly());
+
+        compound.put(key, svoCompound);
     }
 
     private static Vec3i pad(Vec3i unpadded) {
@@ -118,5 +154,36 @@ public class SparseVoxelOctree<T> implements OctreeNode {
         return new Vec3i(size, size, size);
     }
 
+    @Nullable
+    public static SparseVoxelOctree<Boolean> fromNbtBooleanOnly(String key, NbtCompound compound) {
+        final Optional<NbtCompound> svoCompoundOptional = compound.getCompound(key);
+        if (svoCompoundOptional.isEmpty()) return null;
+        final NbtCompound svoCompound = svoCompoundOptional.get();
 
+        final Optional<Integer> sizeOptional = svoCompound.getInt(SIZE_KEY);
+        if (sizeOptional.isEmpty()) return null;
+        final int size = sizeOptional.get();
+
+        return fromNbtBooleanOnly(size, svoCompound.getListOrEmpty(TREE_KEY));
+    }
+
+    private static SparseVoxelOctree<Boolean> fromNbtBooleanOnly(int size, NbtList list) {
+        final SparseVoxelOctree<Boolean> base = new SparseVoxelOctree<>(size);
+
+        for (int i = 0; i < list.size(); i++) {
+            final NbtElement element = list.get(i);
+            final Optional<Byte> maybeValue = element.asByte();
+            if (maybeValue.isPresent()) {
+                base.nodes[i] = new Homogeneous<>(maybeValue.get() > 0);
+                continue;
+            }
+            final Optional<NbtList> maybeList = element.asNbtList();
+            if (maybeList.isPresent()) {
+                base.nodes[i] = fromNbtBooleanOnly(size / 2, maybeList.get());
+                continue;
+            }
+        }
+
+        return base;
+    }
 }

@@ -4,6 +4,7 @@ import com.google.common.collect.Multimap;
 import com.soc.SocWars;
 import com.soc.lib.Coroutine;
 import com.soc.lib.Coroutines;
+import com.soc.lib.SparseVoxelOctree;
 import com.soc.nbt.SpawnPosition;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
@@ -39,8 +40,7 @@ import static com.soc.lib.SocWarsLib.iterateInCube;
 public abstract class AbstractGameMap {
     public static final String STRUCTURE_KEY = "structure";
     public static final String CENTRE_POS_KEY = "centre_positions";
-    public static final String SPAWN_POSITION_KEY = "spawn_position";
-    public static final String SPAWN_TEAMS_KEY = "spawn_teams";
+    public static final String BLOCK_PROTECTION_OVERLAY_KEY = "block_protection_overlay";
 
     private static final int Y_CLEARING_BUFFER = 64;
     private static final int XZ_CLEARING_BUFFER = 64;
@@ -49,6 +49,7 @@ public abstract class AbstractGameMap {
     protected final BlockPos centrePos;
     protected final BlockPos absoluteCentrePos;
     protected final Map<DyeColor, BlockPos> spawnPositions;
+    protected final SparseVoxelOctree<Boolean> blockProtectionOverlay;
 
     protected final ServerWorld world;
     protected int tick;
@@ -58,12 +59,14 @@ public abstract class AbstractGameMap {
             @NotNull Set<SpawnPosition> spawnPositions,
             @NotNull BlockPos centrePos,
             BlockPos absoluteCentrePos,
+            SparseVoxelOctree<Boolean> blockProtectionOverlay,
             ServerWorld world
     ) {
         this.structure = structure;
         this.spawnPositions = spawnPositions.stream().collect(Collectors.toMap(SpawnPosition::dyeColour, SpawnPosition::pos));
         this.centrePos = centrePos.toImmutable();
         this.absoluteCentrePos = absoluteCentrePos;
+        this.blockProtectionOverlay = blockProtectionOverlay;
         this.world = world;
     }
 
@@ -72,13 +75,13 @@ public abstract class AbstractGameMap {
             StructureTemplate structure,
             @NotNull Set<SpawnPosition> spawnPositions,
             @NotNull BlockPos centrePos,
-            BlockPos absoluteCentrePos
+            SparseVoxelOctree<Boolean> blockProtectionOverlay
     ) {
         this(
                 structure,
                 spawnPositions,
                 centrePos.toImmutable(),
-                absoluteCentrePos,
+                new BlockPos(0, 0, 0), blockProtectionOverlay,
                 null
         );
     }
@@ -101,8 +104,10 @@ public abstract class AbstractGameMap {
 
     public NbtCompound toNbt(NbtCompound compound) {
         compound.put(STRUCTURE_KEY, this.structure.writeNbt(new NbtCompound()));
-        compound.put(SpawnPosition.LIST_KEY, getSpawnsAsNbt());
+        compound.put(SpawnPosition.LIST_KEY, this.getSpawnsAsNbt());
         compound.putLong(CENTRE_POS_KEY, this.centrePos.asLong());
+
+        if (this.blockProtectionOverlay != null) this.blockProtectionOverlay.writeToNbtBooleanOnly(BLOCK_PROTECTION_OVERLAY_KEY, compound);
 
         return compound;
     }
@@ -167,17 +172,22 @@ public abstract class AbstractGameMap {
     public final BlockPos pos(BlockPos pos) {
         return pos.add(this.absoluteCentrePos);
     }
+
+    public final BlockPos getOrigin() {
+        return this.absoluteCentrePos.subtract(this.centrePos);
+    }
+
     public final Set<DyeColor> getTeamColours() {
         return this.spawnPositions.keySet();
     }
 
     public final void placeMap() {
-        this.structure.place(this.world, this.absoluteCentrePos.subtract(this.centrePos), this.absoluteCentrePos, new StructurePlacementData(), this.world.random, Block.NOTIFY_LISTENERS);
+        this.structure.place(this.world, this.getOrigin(), this.absoluteCentrePos, new StructurePlacementData(), this.world.random, Block.NOTIFY_LISTENERS);
     }
 
     //Should probably optimise this at some point
     public final void destroyMap() {
-        final BlockPos minPos = this.absoluteCentrePos.subtract(this.centrePos);
+        final BlockPos minPos = this.getOrigin();
         final BlockPos maxPos = minPos.add(this.structure.getSize());
 
         final AtomicInteger y = new AtomicInteger(Math.min(maxPos.getY() + Y_CLEARING_BUFFER, this.world.getTopYInclusive()));
@@ -223,5 +233,9 @@ public abstract class AbstractGameMap {
                 function.accept(direction, this.pos(position));
             });
         });
+    }
+
+    public final boolean isProtected(BlockPos pos) {
+        return this.blockProtectionOverlay != null && this.blockProtectionOverlay.get(pos, this.getOrigin());
     }
 }

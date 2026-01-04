@@ -10,7 +10,9 @@ import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.BedwarsGameMap;
 import com.soc.game.map.MapCheckResults;
 import com.soc.game.map.SkywarsGameMap;
+import com.soc.lib.CubicList;
 import com.soc.lib.InfoList;
+import com.soc.lib.SparseVoxelOctree;
 import com.soc.nbt.SkywarsChest;
 import com.soc.nbt.SpawnPosition;
 import com.soc.util.BlockTags;
@@ -183,20 +185,23 @@ public class MapBlockEntity extends BlockEntity {
         structure.saveFromWorld(this.world, this.pos, this.regionSize, false, IGNORED_BLOCKS);
         final BlockPos centrePos = this.mapCheckResults.centrePositions().stream().findAny().orElse(new BlockPos(0, 0, 0)).subtract(this.pos);
 
+        final BlockPos origin = this.pos.up();
+        final CubicList<Boolean> naive = new CubicList<>(structure.getSize(), (x, y, z) -> !world.getBlockState(origin.add(x, y, z)).isAir());
+        final SparseVoxelOctree<Boolean> blockProtectionOverlay = naive.asOctree();
+
         AbstractGameMap map = switch (this.mapType) {
             case SKYWARS -> new SkywarsGameMap(
                     structure,
                     this.mapCheckResults.getRelativeSpawnPositions(),
                     centrePos,
-                    this.pos,
+                    blockProtectionOverlay,
                     this.mapCheckResults.getRelativeSkywarsChests()
             );
             case BEDWARS -> new BedwarsGameMap(
-                    super.world,
                     structure,
                     this.mapCheckResults.getRelativeSpawnPositions(),
                     centrePos,
-                    this.pos,
+                    blockProtectionOverlay,
                     this.mapCheckResults.getRelative(this.mapCheckResults.diamondGens()),
                     this.mapCheckResults.getRelative(this.mapCheckResults.emeraldGens()),
                     this.mapCheckResults.getRelative(this.mapCheckResults.islandGens()),
@@ -205,7 +210,7 @@ public class MapBlockEntity extends BlockEntity {
             case PROP_HUNT -> throw new IllegalArgumentException("prop hunt map saving not yet implemented, please try again later (or yell at Liam)");
         };
 
-        NbtCompound mapNbt = map.toNbt(new NbtCompound());
+        final NbtCompound mapNbt = map.toNbt(new NbtCompound());
 
         try {
             NbtIo.write(mapNbt, Path.of(getMapDirectory().toString(), String.format("%s.%s", this.mapName, this.mapType.getFileExtension())));

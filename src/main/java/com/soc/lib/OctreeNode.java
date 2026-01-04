@@ -1,7 +1,13 @@
 package com.soc.lib;
 
+import net.minecraft.nbt.NbtByte;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+
 public interface OctreeNode {
     class Homogeneous<T> implements OctreeNode {
+        public static final String VALUE_KEY = "value";
+
         private final T value;
 
         public Homogeneous(T value) {
@@ -18,7 +24,12 @@ public interface OctreeNode {
             return 1;
         }
 
-        T get() {
+        @Override
+        public NbtElement toNbtBooleanOnly() {
+            return NbtByte.of(this.value != null && (boolean)this.value);
+        }
+
+        public T get() {
             return this.value;
         }
     }
@@ -28,4 +39,6 @@ public interface OctreeNode {
     };
 
     int getNodeSize();
+
+    NbtElement toNbtBooleanOnly();
 }
