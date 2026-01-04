@@ -172,15 +172,15 @@ public class MapBlockEntity extends BlockEntity {
         }
         //endregion
         this.mapCheckResults = new MapCheckResults(spawnPositions, centrePositions, flaggedFaces, diamondGens, emeraldGens, islandGens, bedPositions, lootChests);
-        this.mapCheckInfo = mapCheckResults.generateInfo(this.mapType);
+        this.mapCheckInfo = this.mapCheckResults.generateInfo(this.mapType);
     }
 
     public boolean saveMap(ServerPlayerEntity player) {
         this.checkStructure();
-        if (this.mapCheckInfo.hasErrors() || this.world.isClient) return false;
+        if (this.mapCheckInfo.hasErrors() || super.world.isClient) return false;
 
         final StructureTemplate structure = new StructureTemplate();
-        structure.saveFromWorld(this.world, this.pos.add(0, 1, 0), this.regionSize, false, IGNORED_BLOCKS);
+        structure.saveFromWorld(this.world, this.pos, this.regionSize, false, IGNORED_BLOCKS);
         final BlockPos centrePos = this.mapCheckResults.centrePositions().stream().findAny().orElse(new BlockPos(0, 0, 0)).subtract(this.pos);
 
         AbstractGameMap map = switch (this.mapType) {
@@ -188,12 +188,15 @@ public class MapBlockEntity extends BlockEntity {
                     structure,
                     this.mapCheckResults.getRelativeSpawnPositions(),
                     centrePos,
+                    this.pos,
                     this.mapCheckResults.getRelativeSkywarsChests()
             );
             case BEDWARS -> new BedwarsGameMap(
+                    super.world,
                     structure,
                     this.mapCheckResults.getRelativeSpawnPositions(),
                     centrePos,
+                    this.pos,
                     this.mapCheckResults.getRelative(this.mapCheckResults.diamondGens()),
                     this.mapCheckResults.getRelative(this.mapCheckResults.emeraldGens()),
                     this.mapCheckResults.getRelative(this.mapCheckResults.islandGens()),

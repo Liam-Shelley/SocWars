@@ -11,32 +11,12 @@ import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraft.world.explosion.Explosion;
-import net.minecraft.world.explosion.ExplosionBehavior;
 import org.jetbrains.annotations.Nullable;
 
 import static com.soc.entities.util.ModEntities.HYDROGEN_BOMB;
 import static com.soc.entities.util.ModEntities.NUCLEAR_BOMB;
 
 public class BigTntEntity extends Entity implements Ownable {
-    public static class BigTntExplosionBehaviour extends ExplosionBehavior {
-        private float knockbackModifier;
-
-        @Override
-        public float calculateDamage(Explosion explosion, Entity entity, float amount) {
-            return super.calculateDamage(explosion, entity, amount) * 8f;
-        }
-
-        @Override
-        public float getKnockbackModifier(Entity entity) {
-            return knockbackModifier;
-        }
-
-        public void setKnockbackModifier(float modifier) {
-            this.knockbackModifier = modifier;
-        }
-    }
-
     public enum BigTntType {
         NUCLEAR(14f, 6 * 20),
         HYDROGEN(24f, 9 * 20);
@@ -106,9 +86,7 @@ public class BigTntEntity extends Entity implements Ownable {
     }
 
     private void explode() {
-        final BigTntExplosionBehaviour behaviour = new BigTntExplosionBehaviour();
-        behaviour.setKnockbackModifier(this.tntType.explosionRadius * 0.125f);
-        SphereExplosion.explode(this.getWorld(), this.getPos(), this.tntType.explosionRadius, behaviour);
+        SphereExplosion.explode(this.getWorld(), this.getPos(), this.tntType.explosionRadius, 4f, 2f, LazyEntityReference.resolve(this.igniter, this.getWorld(), LivingEntity.class));
     }
 
     protected void writeCustomData(WriteView view) {

@@ -49,10 +49,11 @@ public class SkywarsGameMap extends AbstractGameMap {
             StructureTemplate structure,
             @NotNull Set<SpawnPosition> spawnPositions,
             @NotNull BlockPos centrePos,
+            @NotNull BlockPos absoluteCentrePos,
             @NotNull Set<SkywarsChest> lootChests
     ) {
-        super(structure, spawnPositions, centrePos);
-        this.lootChests = lootChests.stream().collect(Collectors.toMap(chest -> super.pos(chest.pos()).down(), IngameSkywarsChest::new));
+        super(structure, spawnPositions, centrePos, new BlockPos(0, 0, 0));
+        this.lootChests = lootChests.stream().collect(Collectors.toMap(chest -> super.pos(chest.pos()), IngameSkywarsChest::new));
     }
 
     public void placeLootChests() {

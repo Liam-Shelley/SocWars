@@ -152,6 +152,8 @@
   "death.attack.expon.player": "%1$s was factorised by %2$s",
   "death.attack.full_metal_sword": "%1$s got some!",
   "death.attack.full_metal_sword.player": "%2$s gave %1$s some!",
+  "death.attack.sphere_explosion": "%1$s was mistaken for Caracas, Venezuela!",
+  "death.attack.sphere_explosion.player": "%1$s was sublimated by %2$s",
   "collectible.collect": "§2You found %s!",
   "collectible.already_collected": "§cYou have already collected %s!",
   "queue.join": "§2You have joined the queue for %s",

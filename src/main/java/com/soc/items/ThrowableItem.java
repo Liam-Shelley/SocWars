@@ -29,7 +29,7 @@ import java.util.function.Consumer;
 import static com.soc.items.util.ModItems.addItemToGroups;
 
 public class ThrowableItem extends Item {
-    public static World world;
+    public static World WORLD;
 
     public enum ThrowableType {
         FIREBALL,
@@ -53,7 +53,7 @@ public class ThrowableItem extends Item {
         addItemToGroups(THROWABLE_TNT, ItemGroups.COMBAT);
         addItemToGroups(ENDER_BEAM, ItemGroups.COMBAT);
 
-        net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents.LOAD.register((a, b) -> world = b);
+        net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents.LOAD.register((a, b) -> WORLD = b);
     }
 
     public static final Item FIREBALL = ModItems.register("fireball", (settings) -> new ThrowableItem(settings, ThrowableType.FIREBALL), new Settings().useCooldown(0.75f));
@@ -68,7 +68,7 @@ public class ThrowableItem extends Item {
 
         if (world instanceof ServerWorld serverWorld) {
             switch (this.fireballType) {
-                case FIREBALL -> spawnEntityWithVelocity(new BWFireballEntity(world, user, Vec3d.ZERO, 4), serverWorld, user, 0.8f);
+                case FIREBALL -> spawnEntityWithVelocity(new BWFireballEntity(world, user, Vec3d.ZERO, 4), serverWorld, user, 1.5f);
                 case SNAIL -> spawnEntityWithVelocity(new BWFireballEntity(world, user, Vec3d.ZERO, 10), serverWorld, user, 0.2f);
                 case DRAGON -> spawnEntityWithVelocity(new DragonFireballEntity(world, user, Vec3d.ZERO), serverWorld, user, 0.8f);
                 case TNT -> {
@@ -98,7 +98,7 @@ public class ThrowableItem extends Item {
         Text text = switch (this.fireballType) {
             case FIREBALL, TNT, ENDER -> null;
             case SNAIL -> Text.translatable("tooltip.snail_fireball").withColor(0xe6e475);
-            case DRAGON -> Text.translatable("tooltip.dragon_fireball").withColor(Color.HSBtoRGB(world == null ? 0f : world.getTime() / 50f, 1f, 1f));
+            case DRAGON -> Text.translatable("tooltip.dragon_fireball").withColor(Color.HSBtoRGB(WORLD == null ? 0f : WORLD.getTime() / 50f, 1f, 1f));
         };
 
         if (text != null) {

@@ -15,6 +15,7 @@
     "OnDamageEventTrigger",
     "OnHitArmour",
     "OnPickUpItemEventTrigger",
+    "TooFastPort",
     "UseDurationScale",
     "VelocityPacketUnlimit"
   ],

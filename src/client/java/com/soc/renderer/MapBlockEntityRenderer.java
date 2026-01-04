@@ -13,7 +13,6 @@ import net.minecraft.util.math.Vec3d;
 public class MapBlockEntityRenderer implements BlockEntityRenderer<MapBlockEntity> {
     public MapBlockEntityRenderer(BlockEntityRendererFactory.Context context) {}
 
-
     @Override
     public void render(MapBlockEntity entity, float tickProgress, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, Vec3d cameraPos) {
         matrices.push();
@@ -29,5 +28,15 @@ public class MapBlockEntityRenderer implements BlockEntityRenderer<MapBlockEntit
                 0.13f, 0.13f, 0.13f);
 
         matrices.pop();
+    }
+
+    @Override
+    public boolean rendersOutsideBoundingBox() {
+        return true;
+    }
+
+    @Override
+    public boolean isInRenderDistance(MapBlockEntity blockEntity, Vec3d pos) {
+        return true;
     }
 }

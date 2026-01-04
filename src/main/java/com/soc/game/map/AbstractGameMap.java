@@ -71,13 +71,14 @@ public abstract class AbstractGameMap {
     public AbstractGameMap(
             StructureTemplate structure,
             @NotNull Set<SpawnPosition> spawnPositions,
-            @NotNull BlockPos centrePos
+            @NotNull BlockPos centrePos,
+            BlockPos absoluteCentrePos
     ) {
         this(
                 structure,
                 spawnPositions,
                 centrePos.toImmutable(),
-                new BlockPos(0, 0, 0),
+                absoluteCentrePos,
                 null
         );
     }
