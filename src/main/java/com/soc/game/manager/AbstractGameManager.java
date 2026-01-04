@@ -122,7 +122,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     public void endGame(boolean immediate) {
         this.removeTeams();
         this.map.destroyMap();
-        this.sendPlayersToLobby();
+        //this.sendPlayersToLobby();
 
         Database.getStatement().ifPresent(statement -> this.dbTables.values().forEach(table -> {
             SocWars.LOGGER.info("Saving db table for {}", this.gameId);
@@ -422,5 +422,9 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     public void leaveAsSpectator(ServerPlayerEntity player) {
         this.sendPlayerToLobby(player);
         this.sendLeaveGamePayload(player);
+    }
+
+    public final boolean isBlockProtected(BlockPos pos) {
+        return this.map.isBlockProtected(pos);
     }
 }

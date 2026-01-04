@@ -220,12 +220,12 @@ public abstract class AbstractGameMap {
     }
 
     public void spawnCages(boolean place) {
-        BiConsumer<Direction, BlockPos> function = place ? (direction, pos) -> {
-            final BlockPos currentPos = pos.offset(direction);
-            if (this.world.isAir(currentPos)) this.world.setBlockState(currentPos, Blocks.BARRIER.getDefaultState());
+        final BiConsumer<Direction, BlockPos> function = place ? (direction, pos) -> {
+                final BlockPos currentPos = pos.offset(direction);
+                if (this.world.isAir(currentPos)) this.world.setBlockState(currentPos, Blocks.BARRIER.getDefaultState());
         } : (direction, pos) -> {
-            final BlockPos currentPos = pos.offset(direction);
-            if (this.world.getBlockState(currentPos).isOf(Blocks.BARRIER)) this.world.setBlockState(currentPos, Blocks.AIR.getDefaultState());
+                final BlockPos currentPos = pos.offset(direction);
+                if (this.world.getBlockState(currentPos).isOf(Blocks.BARRIER)) this.world.setBlockState(currentPos, Blocks.AIR.getDefaultState());
         };
 
         this.spawnPositions.values().forEach(position -> {
@@ -235,7 +235,7 @@ public abstract class AbstractGameMap {
         });
     }
 
-    public final boolean isProtected(BlockPos pos) {
+    public final boolean isBlockProtected(BlockPos pos) {
         return this.blockProtectionOverlay != null && this.blockProtectionOverlay.get(pos, this.getOrigin());
     }
 }

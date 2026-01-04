@@ -1,18 +1,20 @@
 package com.soc.util;
 
+import com.soc.game.manager.AbstractGameManager;
+import com.soc.game.manager.GamesManager;
+import com.soc.game.map.AbstractGameMap;
+import com.soc.lib.SparseVoxelOctree;
 import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.ExplosionS2CPacket;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
 import net.minecraft.util.math.*;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
@@ -20,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import static com.soc.lib.SocWarsLib.damageSource;
 import static com.soc.lib.SocWarsLib.iterateInSphere;
@@ -27,10 +30,22 @@ import static com.soc.lib.SocWarsLib.iterateInSphere;
 public class SphereExplosion {
     private SphereExplosion() {}
 
-    public static void explode(World world, Vec3d centre, float explosionRadius, float explosionVariance, float damageFactor, float knockbackFactor, @Nullable LivingEntity causingPlayer) {
-        final DamageSource source = damageSource(world, DamageTypes.SPHERE_EXPLOSION, causingPlayer);
+    public static void explode(World world, Vec3d centre, float explosionRadius, float explosionVariance, float damageFactor, float knockbackFactor, @Nullable LivingEntity causingEntity) {
+        final DamageSource source = damageSource(world, DamageTypes.SPHERE_EXPLOSION, causingEntity);
 
-        boolean damage = world instanceof ServerWorld serverWorld && serverWorld.getGameRules().getBoolean(GameRules.TNT_EXPLODES);
+        final Optional<AbstractGameManager<?, ?, ?>> managerOptional = causingEntity == null ? Optional.empty() : GamesManager.getInstance().getGame(causingEntity);
+
+        final Predicate<BlockPos> damage;
+        if (managerOptional.isPresent()) {
+            final AbstractGameManager<?, ?, ?> manager = managerOptional.get();
+            damage = pos -> {
+                final boolean doDamage = !manager.isBlockProtected(pos);
+                return doDamage;
+            };
+        } else {
+            final boolean def = world instanceof ServerWorld serverWorld && serverWorld.getGameRules().getBoolean(GameRules.TNT_EXPLODES);
+            damage = pos -> def;
+        }
 
         final BlockPos centrePos = BlockPos.ofFloored(centre);
 
@@ -41,7 +56,7 @@ public class SphereExplosion {
 
                 if (currentState == Blocks.WATER.getDefaultState()) trySpawnSteam(world, pos);
 
-                if (damage) world.setBlockState(pos, Blocks.AIR.getDefaultState());
+                if (damage.test(pos)) world.setBlockState(pos, Blocks.AIR.getDefaultState());
         });
 
         final List<Entity> nearbyEntities = world.getOtherEntities(null, Box.of(centre, explosionRadius * 2f, explosionRadius * 2f, explosionRadius * 2f));

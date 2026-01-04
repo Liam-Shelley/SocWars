@@ -182,8 +182,8 @@ public class MapBlockEntity extends BlockEntity {
         if (this.mapCheckInfo.hasErrors() || super.world.isClient) return false;
 
         final StructureTemplate structure = new StructureTemplate();
-        structure.saveFromWorld(this.world, this.pos, this.regionSize, false, IGNORED_BLOCKS);
-        final BlockPos centrePos = this.mapCheckResults.centrePositions().stream().findAny().orElse(new BlockPos(0, 0, 0)).subtract(this.pos);
+        structure.saveFromWorld(this.world, this.pos.up(), this.regionSize, false, IGNORED_BLOCKS);
+        final BlockPos centrePos = this.mapCheckResults.centrePositions().stream().findAny().orElse(new BlockPos(0, 0, 0)).subtract(this.pos).up();
 
         final BlockPos origin = this.pos.up();
         final CubicList<Boolean> naive = new CubicList<>(structure.getSize(), (x, y, z) -> !world.getBlockState(origin.add(x, y, z)).isAir());
