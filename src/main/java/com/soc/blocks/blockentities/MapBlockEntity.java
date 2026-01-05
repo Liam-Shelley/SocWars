@@ -186,7 +186,10 @@ public class MapBlockEntity extends BlockEntity {
         final BlockPos centrePos = this.mapCheckResults.centrePositions().stream().findAny().orElse(new BlockPos(0, 0, 0)).subtract(this.pos).up();
 
         final BlockPos origin = this.pos.up();
-        final CubicList<Boolean> naive = new CubicList<>(structure.getSize(), (x, y, z) -> !world.getBlockState(origin.add(x, y, z)).isAir());
+        final CubicList<Boolean> naive = new CubicList<>(structure.getSize(), (x, y, z) -> {
+            final BlockState state = super.world.getBlockState(origin.add(x, y, z));
+            return !(state.isAir() || state.isReplaceable());
+        });
         final SparseVoxelOctree<Boolean> blockProtectionOverlay = naive.asOctree();
 
         AbstractGameMap map = switch (this.mapType) {

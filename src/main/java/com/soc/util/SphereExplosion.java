@@ -10,6 +10,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.ExplosionS2CPacket;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -20,8 +21,10 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import static com.soc.lib.SocWarsLib.damageSource;
@@ -31,26 +34,19 @@ public class SphereExplosion {
     private SphereExplosion() {}
 
     public static void explode(World world, Vec3d centre, float explosionRadius, float explosionVariance, float damageFactor, float knockbackFactor, @Nullable LivingEntity causingEntity) {
-        final DamageSource source = damageSource(world, DamageTypes.SPHERE_EXPLOSION, causingEntity);
-
         final Optional<AbstractGameManager<?, ?, ?>> managerOptional = causingEntity == null ? Optional.empty() : GamesManager.getInstance().getGame(causingEntity);
 
         final Predicate<BlockPos> damage;
         if (managerOptional.isPresent()) {
             final AbstractGameManager<?, ?, ?> manager = managerOptional.get();
-            damage = pos -> {
-                final boolean doDamage = !manager.isBlockProtected(pos);
-                return doDamage;
-            };
+            damage = manager::isBlockUnprotected;
         } else {
             final boolean def = world instanceof ServerWorld serverWorld && serverWorld.getGameRules().getBoolean(GameRules.TNT_EXPLODES);
             damage = pos -> def;
         }
 
-        final BlockPos centrePos = BlockPos.ofFloored(centre);
-
-        iterateInSphere(centrePos, explosionRadius, explosionVariance, pos -> {
-                BlockState currentState = world.getBlockState(pos);
+        iterateInSphere(BlockPos.ofFloored(centre), explosionRadius, explosionVariance, pos -> {
+                final BlockState currentState = world.getBlockState(pos);
 
                 if (currentState.isIn(BlockTags.IMMUNE)) return;
 
@@ -59,18 +55,29 @@ public class SphereExplosion {
                 if (damage.test(pos)) world.setBlockState(pos, Blocks.AIR.getDefaultState());
         });
 
+        applyDamageAndKnockback(world, centre, explosionRadius, damageFactor, knockbackFactor, damageSource(world, DamageTypes.SPHERE_EXPLOSION, causingEntity));
+    }
+
+    public static void explode(World world, Vec3d centre, float explosionRadius, float damageFactor, float knockbackFactor, @Nullable LivingEntity causingPlayer) {
+        explode(world, centre, explosionRadius, 1.5f, damageFactor, knockbackFactor, causingPlayer);
+    }
+
+    private static void applyDamageAndKnockback(World world, Vec3d centre, float explosionRadius, float damageFactor, float knockbackFactor, DamageSource source) {
         final List<Entity> nearbyEntities = world.getOtherEntities(null, Box.of(centre, explosionRadius * 2f, explosionRadius * 2f, explosionRadius * 2f));
+        final Set<PlayerEntity> knockbackAppliedPlayers = new HashSet<>();
+
         nearbyEntities.forEach(entity -> {
             final Vec3d pos = entity.getPos();
             final float distance = (float)pos.distanceTo(centre);
 
             if (distance > explosionRadius) return;
 
-            final float intensity = Math.min(1f / (float)Math.sqrt(distance), 2f) * explosionRadius;
+            final float intensity = Math.min(1f / (float)Math.sqrt(distance), 1.5f) * explosionRadius;
 
             final Vec3d knockback = pos.subtract(centre.subtract(0d, 0.5d, 0d)).normalize().multiply(intensity * knockbackFactor * 0.25f);
             if (entity instanceof ServerPlayerEntity serverPlayer) {
                 serverPlayer.networkHandler.sendPacket(new ExplosionS2CPacket(centre, Optional.of(knockback), ParticleTypes.EXPLOSION, SoundEvents.ENTITY_GENERIC_EXPLODE));
+                knockbackAppliedPlayers.add(serverPlayer);
             } else {
                 entity.addVelocity(knockback);
             }
@@ -78,12 +85,15 @@ public class SphereExplosion {
             if (world instanceof ServerWorld serverWorld) {
                 entity.damage(serverWorld, source, intensity * damageFactor);
             }
-
         });
-    }
 
-    public static void explode(World world, Vec3d centre, float explosionRadius, float damageFactor, float knockbackFactor, @Nullable LivingEntity causingPlayer) {
-        explode(world, centre, explosionRadius, 1.5f, damageFactor, knockbackFactor, causingPlayer);
+        if (world instanceof ServerWorld serverWorld) {
+            serverWorld.getPlayers().forEach(player -> {
+               if (player.getPos().isInRange(centre, 250) && !knockbackAppliedPlayers.contains(player)) {
+                   player.networkHandler.sendPacket(new ExplosionS2CPacket(centre, Optional.empty(), ParticleTypes.EXPLOSION, SoundEvents.ENTITY_GENERIC_EXPLODE));
+               }
+            });
+        }
     }
 
     private static void trySpawnSteam(World world, float x, float y, float z) {

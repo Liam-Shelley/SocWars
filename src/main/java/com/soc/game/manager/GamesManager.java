@@ -72,7 +72,7 @@ public class GamesManager {
         //        this.getGame(player).map(game -> game.onBedBroken(player, pos)).orElse(true)
         //);
         PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) ->
-                state.isIn(BlockTags.BEDS) ? this.getGame(player).map(game -> game.onBedBroken((ServerPlayerEntity) player, pos)).orElse(true) : true
+                state.isIn(BlockTags.BEDS) ? this.getGame(player).map(game -> game.onBedBroken((ServerPlayerEntity) player, pos)).orElse(true) : this.getGame(player).map(game -> game.onBlockBroken((ServerPlayerEntity) player, pos)).orElse(true)
         );
         ServerPlayerEvents.JOIN.register(player ->
                 this.getGame(player).ifPresent(game -> game.onPlayerJoin(player))

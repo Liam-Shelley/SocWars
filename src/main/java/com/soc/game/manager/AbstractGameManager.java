@@ -174,6 +174,10 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         return true;
     }
 
+    public boolean onBlockBroken(ServerPlayerEntity player, BlockPos pos) {
+        return this.isBlockUnprotected(pos);
+    }
+
     public void onPlayerJoin(ServerPlayerEntity player) {
         this.sendJoinGamePayload(player);
     }
@@ -426,5 +430,9 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
 
     public final boolean isBlockProtected(BlockPos pos) {
         return this.map.isBlockProtected(pos);
+    }
+
+    public final boolean isBlockUnprotected(BlockPos pos) {
+        return !this.map.isBlockProtected(pos);
     }
 }

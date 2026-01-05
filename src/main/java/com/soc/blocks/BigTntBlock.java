@@ -1,6 +1,7 @@
 package com.soc.blocks;
 
 import com.soc.entities.BigTntEntity;
+import com.soc.game.manager.GamesManager;
 import com.soc.util.Sounds;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -38,7 +39,9 @@ public class BigTntBlock extends Block {
 
     @Override
     public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
-        super.onPlaced(world, pos, state, placer, itemStack);
+        if (placer != null && GamesManager.getInstance().getGame(placer).isPresent()) {
+            this.ignite(world, pos, (PlayerEntity)placer);
+        }
     }
 
     @Override

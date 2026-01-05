@@ -228,11 +228,10 @@ public abstract class AbstractGameMap {
                 if (this.world.getBlockState(currentPos).isOf(Blocks.BARRIER)) this.world.setBlockState(currentPos, Blocks.AIR.getDefaultState());
         };
 
-        this.spawnPositions.values().forEach(position -> {
-            Arrays.stream(Direction.values()).filter(direction -> direction.getAxis().isHorizontal()).forEach(direction -> {
-                function.accept(direction, this.pos(position));
-            });
-        });
+        this.spawnPositions.values().forEach(position -> Arrays.stream(Direction.values()).filter(direction -> direction.getAxis().isHorizontal()).forEach(direction -> {
+            function.accept(direction, this.pos(position));
+            function.accept(direction, this.pos(position).down());
+        }));
     }
 
     public final boolean isBlockProtected(BlockPos pos) {
