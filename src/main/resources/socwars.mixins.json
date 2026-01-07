@@ -10,7 +10,7 @@
     "DepositableChest",
     "DropItemEvent",
     "MostRecentDamage",
-    "OnBedBrokenEventTrigger",
+    "OnBlockPlacedEventTrigger",
     "OnChestOpenedEventTrigger",
     "OnDamageEventTrigger",
     "OnHitArmour",

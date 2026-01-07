@@ -2,6 +2,7 @@ package com.soc.events;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.minecraft.util.ActionResult;
 
 import java.util.Arrays;
 
@@ -30,13 +31,12 @@ public interface ModEvents {
         }
     });
 
-    Event<OnBedBroken> ON_BED_BROKEN = EventFactory.createArrayBacked(OnBedBroken.class, listeners -> (player, pos) -> {
-        boolean allowEvent = true;
-
-        for (OnBedBroken listener : listeners) {
-            allowEvent &= listener.onBedBreak(player, pos);
+    Event<OnBlockPlaced> ON_BLOCK_PLACED = EventFactory.createArrayBacked(OnBlockPlaced.class, listeners -> (player, pos, context) -> {
+        for (OnBlockPlaced listener : listeners) {
+            final ActionResult result = listener.onItemPickup(player, pos, context);
+            if (result != ActionResult.PASS) return result;
         }
 
-        return allowEvent;
+        return ActionResult.PASS;
     });
 }

@@ -11,12 +11,15 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.BlockItem;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -68,11 +71,11 @@ public class GamesManager {
         ModEvents.ON_ITEM_PICKUP.register((player, stack) ->
                 this.getGame(player).ifPresent(game -> game.onItemPickup(player, stack))
         );
-        //ModEvents.ON_BED_BROKEN.register((player, pos) ->
-        //        this.getGame(player).map(game -> game.onBedBroken(player, pos)).orElse(true)
-        //);
         PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) ->
-                state.isIn(BlockTags.BEDS) ? this.getGame(player).map(game -> game.onBedBroken((ServerPlayerEntity) player, pos)).orElse(true) : this.getGame(player).map(game -> game.onBlockBroken((ServerPlayerEntity) player, pos)).orElse(true)
+                state.isIn(BlockTags.BEDS) ? this.getGame(player).map(game -> game.onBedBroken((ServerPlayerEntity) player, pos)).orElse(true) : this.getGame(player).map(game -> game.onBlockBroken((ServerPlayerEntity) player, pos, state, blockEntity)).orElse(true)
+        );
+        ModEvents.ON_BLOCK_PLACED.register((player, pos, context) ->
+                this.getGame(player).map(game -> game.onBlockPlaced(player, pos, context)).orElse(ActionResult.PASS)
         );
         ServerPlayerEvents.JOIN.register(player ->
                 this.getGame(player).ifPresent(game -> game.onPlayerJoin(player))

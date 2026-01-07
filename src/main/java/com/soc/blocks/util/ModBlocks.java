@@ -44,6 +44,8 @@ public class ModBlocks {
     public static final Block EMERALD_GEN_PLACEHOLDER = ModBlocks.register("emerald_gen_placeholder", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true);
     public static final Block ISLAND_GEN_PLACEHOLDER = ModBlocks.register("island_gen_placeholder", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true);
 
+    public static final Block PROTECTED_AIR = ModBlocks.register("protected_air", Block::new, AbstractBlock.Settings.create().noCollision(), true);
+
     public static final Block MOSHPIT_MAP = ModBlocks.register("moshpit_map", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.WOOL).noCollision().nonOpaque(), true); //Maybe fix voxel shape
 
     public static final Block NUCLEAR_BOMB = ModBlocks.register("nuclear_bomb", settings -> new BigTntBlock(settings, BigTntEntity.BigTntType.NUCLEAR), AbstractBlock.Settings.create().breakInstantly().sounds(BlockSoundGroup.GRASS), true);

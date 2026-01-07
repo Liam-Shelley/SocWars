@@ -27,17 +27,13 @@ import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
 import net.minecraft.structure.StructureTemplate;
 import net.minecraft.text.Text;
-import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 import static com.soc.blocks.blockentities.ModBlockEntities.MAP_BLOCK_ENTITY;
 import static com.soc.blocks.util.ModBlocks.*;
@@ -56,7 +52,8 @@ public class MapBlockEntity extends BlockEntity {
             EMERALD_GEN_PLACEHOLDER,
             ISLAND_GEN_PLACEHOLDER,
             CHEST_PLACEHOLDER,
-            Blocks.AIR
+            Blocks.AIR,
+            PROTECTED_AIR
     );
 
     private BlockPos.Mutable regionSize;

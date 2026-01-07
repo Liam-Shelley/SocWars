@@ -14,5 +14,6 @@ public class S2CPayloads {
         PayloadTypeRegistry.playS2C().register(LeaveBedwarsPayload.ID, LeaveBedwarsPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(BedBreakPayload.ID, BedBreakPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(ShopDataPayload.ID, ShopDataPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(UpdateHotbarPayload.ID, UpdateHotbarPayload.CODEC);
     }
 }

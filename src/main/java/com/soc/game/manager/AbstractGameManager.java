@@ -7,15 +7,20 @@ import com.soc.database.stats.BaseTable;
 import com.soc.database.stats.CombatTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.SpreadRules;
+import com.soc.networking.s2c.UpdateHotbarPayload;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUsageContext;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.s2c.play.ClearTitleS2CPacket;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
+import net.minecraft.network.packet.s2c.play.InventoryS2CPacket;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.scoreboard.AbstractTeam;
 import net.minecraft.scoreboard.Scoreboard;
@@ -27,7 +32,10 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
@@ -174,8 +182,18 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         return true;
     }
 
-    public boolean onBlockBroken(ServerPlayerEntity player, BlockPos pos) {
+    public boolean onBlockBroken(ServerPlayerEntity player, BlockPos pos, BlockState state, BlockEntity blockEntity) {
         return this.isBlockUnprotected(pos);
+    }
+
+    public ActionResult onBlockPlaced(ServerPlayerEntity player, BlockPos pos, ItemUsageContext context) {
+        final boolean allow = this.isBlockUnprotected(pos);
+        if (allow) {
+            return ActionResult.PASS;
+        } else {
+            ServerPlayNetworking.send(player, new UpdateHotbarPayload(player.playerScreenHandler.syncId, player.playerScreenHandler.getRevision(), player.getInventory()));
+            return ActionResult.FAIL;
+        }
     }
 
     public void onPlayerJoin(ServerPlayerEntity player) {

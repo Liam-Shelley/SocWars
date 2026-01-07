@@ -6,8 +6,15 @@ import com.soc.networking.s2c.bedwars.*;
 import com.soc.player.PlayerDataManager;
 import com.soc.screenhandler.BedwarsShopScreenHandler;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.NetworkThreadUtils;
+import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
+
+import java.util.List;
 
 public class S2CReceivers {
     public static void initialise() {
@@ -36,6 +43,15 @@ public class S2CReceivers {
             final ScreenHandler screenHandler = context.player().currentScreenHandler;
             if (screenHandler.syncId == payload.syncId() && screenHandler instanceof BedwarsShopScreenHandler bedwarsShopScreenHandler) {
                 bedwarsShopScreenHandler.setShopContents(payload);
+            }
+        });
+        ClientPlayNetworking.registerGlobalReceiver(UpdateHotbarPayload.ID, (payload, context) -> {
+            final PlayerEntity player = context.player();
+            final PlayerScreenHandler screenHandler = player.playerScreenHandler;
+            final List<ItemStack> contents = payload.contents();
+
+            for (int i = 0; i < payload.contents().size(); i++) {
+                screenHandler.setStackInSlot(i + 36, payload.revision(), contents.get(i));
             }
         });
     }
