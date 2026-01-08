@@ -8,9 +8,13 @@ import net.minecraft.util.Identifier;
 
 public interface BlockTags {
     TagKey<Block> IMMUNE = from_string("immune");
+    TagKey<Block> NO_BREAK_FROM_WATER = from_string("no_break_from_water");
     TagKey<Block> MAP_PLACEHOLDER = from_string("map_placeholder");
+    TagKey<Block> MAP_PLACEHOLDER_WITHOUT_BEDS = from_string("map_placeholder_without_beds");
 
     private static TagKey<Block> from_string(String id) {
         return TagKey.of(RegistryKeys.BLOCK, Identifier.of(SocWars.MOD_ID, id));
     }
+
+    static void initialise() {}
 }

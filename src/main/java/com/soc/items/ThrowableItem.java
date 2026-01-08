@@ -56,11 +56,11 @@ public class ThrowableItem extends Item {
         net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents.LOAD.register((a, b) -> WORLD = b);
     }
 
-    public static final Item FIREBALL = ModItems.register("fireball", (settings) -> new ThrowableItem(settings, ThrowableType.FIREBALL), new Settings().useCooldown(0.75f));
-    public static final Item DRAGON_FIREBALL = ModItems.register("dragon_fireball", (settings) -> new ThrowableItem(settings, ThrowableType.DRAGON), new Settings().useCooldown(0.75f).rarity(Rarity.UNCOMMON));
-    public static final Item SNAIL_FIREBALL = ModItems.register("snail_fireball", (settings) -> new ThrowableItem(settings, ThrowableType.SNAIL), new Settings().useCooldown(0.75f).rarity(Rarity.EPIC));
-    public static final Item THROWABLE_TNT = ModItems.register("throwable_tnt", (settings) -> new ThrowableItem(settings, ThrowableType.TNT), new Settings().useCooldown(0.75f));
-    public static final Item ENDER_BEAM = ModItems.register("ender_beam", (settings) -> new ThrowableItem(settings, ThrowableType.ENDER), new Settings().useCooldown(0.75f));
+    public static final Item FIREBALL = ModItems.register("fireball", settings -> new ThrowableItem(settings, ThrowableType.FIREBALL), new Settings().useCooldown(0.75f));
+    public static final Item DRAGON_FIREBALL = ModItems.register("dragon_fireball", settings -> new ThrowableItem(settings, ThrowableType.DRAGON), new Settings().useCooldown(0.75f).rarity(Rarity.UNCOMMON));
+    public static final Item SNAIL_FIREBALL = ModItems.register("snail_fireball", settings -> new ThrowableItem(settings, ThrowableType.SNAIL), new Settings().useCooldown(0.75f).rarity(Rarity.EPIC));
+    public static final Item THROWABLE_TNT = ModItems.register("throwable_tnt", settings -> new ThrowableItem(settings, ThrowableType.TNT), new Settings().useCooldown(0.75f));
+    public static final Item ENDER_BEAM = ModItems.register("ender_beam", settings -> new ThrowableItem(settings, ThrowableType.ENDER), new Settings().useCooldown(0.75f));
 
     @Override
     public ActionResult use(World world, PlayerEntity user, Hand hand) {
@@ -72,7 +72,7 @@ public class ThrowableItem extends Item {
                 case SNAIL -> spawnEntityWithVelocity(new BWFireballEntity(world, user, Vec3d.ZERO, 10), serverWorld, user, 0.2f);
                 case DRAGON -> spawnEntityWithVelocity(new DragonFireballEntity(world, user, Vec3d.ZERO), serverWorld, user, 1.5f);
                 case TNT -> {
-                    final TntEntity tnt = ((TntEntity)spawnEntityWithVelocity(new TntEntity(EntityType.TNT, world), serverWorld, user, 0.6f));
+                    final TntEntity tnt = spawnEntityWithVelocity(new TntEntity(EntityType.TNT, world), serverWorld, user, 0.6f);
                     tnt.setFuse(40);
                 }
                 case ENDER -> spawnEntityWithVelocity(new EnderBeamEntity(ModEntities.ENDER_BEAM_TYPE, world), serverWorld, user, 1f);
@@ -83,7 +83,7 @@ public class ThrowableItem extends Item {
         return ActionResult.SUCCESS;
     }
 
-    public static Entity spawnEntityWithVelocity(Entity entity, ServerWorld world, LivingEntity user, float speed) {
+    public static <T extends Entity> T spawnEntityWithVelocity(T entity, ServerWorld world, LivingEntity user, float speed) {
         entity.setPosition(user.getEyePos());
         entity.setVelocity(user.getRotationVector().multiply(speed));
 
@@ -95,7 +95,7 @@ public class ThrowableItem extends Item {
     @Override
     @SuppressWarnings("deprecation")
     public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
-        Text text = switch (this.fireballType) {
+        final Text text = switch (this.fireballType) {
             case FIREBALL, TNT, ENDER -> null;
             case SNAIL -> Text.translatable("tooltip.snail_fireball").withColor(0xe6e475);
             case DRAGON -> Text.translatable("tooltip.dragon_fireball").withColor(Color.HSBtoRGB(WORLD == null ? 0f : WORLD.getTime() / 50f, 1f, 1f));

@@ -44,8 +44,8 @@ public class ModBlocks {
     public static final Block DIAMOND_GEN_PLACEHOLDER = ModBlocks.register("diamond_gen_placeholder", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true);
     public static final Block EMERALD_GEN_PLACEHOLDER = ModBlocks.register("emerald_gen_placeholder", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true);
     public static final Block ISLAND_GEN_PLACEHOLDER = ModBlocks.register("island_gen_placeholder", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true);
-    public static final Block TEAM_SHOP_PLACEHOLDER = ModBlocks.register("team_shop_placeholder", SimpleHorizontalFacingBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true);
     public static final Block INDIVIDUAL_SHOP_PLACEHOLDER = ModBlocks.register("individual_shop_placeholder", SimpleHorizontalFacingBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true);
+    public static final Block TEAM_SHOP_PLACEHOLDER = ModBlocks.register("team_shop_placeholder", SimpleHorizontalFacingBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true);
 
     public static final Block PROTECTED_AIR = ModBlocks.register("protected_air", Block::new, AbstractBlock.Settings.create().noCollision(), true);
 
