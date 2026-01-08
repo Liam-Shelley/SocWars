@@ -97,5 +97,11 @@
 				"down": {"uv": [2.5, 0.5, 2, 1], "texture": "#1"}
 			}
 		}
-	]
+	],
+	"display": {
+		"gui": {
+			"rotation": [10, 320, 0],
+			"translation": [0, -16, 0]
+		}
+	}
 }

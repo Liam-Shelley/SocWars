@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "socwars:block/team_shop_placeholder",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "socwars:block/team_shop_placeholder",
+      "y": 0
+    },
+    "facing=west": {
+      "model": "socwars:block/team_shop_placeholder",
+      "y": 270
+    },
+    "facing=south": {
+      "model": "socwars:block/team_shop_placeholder",
+      "y": 180
+    }
+  }
+}

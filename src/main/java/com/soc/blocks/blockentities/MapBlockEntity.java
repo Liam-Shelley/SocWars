@@ -52,6 +52,8 @@ public class MapBlockEntity extends BlockEntity {
             EMERALD_GEN_PLACEHOLDER,
             ISLAND_GEN_PLACEHOLDER,
             CHEST_PLACEHOLDER,
+            INDIVIDUAL_SHOP_PLACEHOLDER,
+            TEAM_SHOP_PLACEHOLDER,
             Blocks.AIR,
             PROTECTED_AIR
     );

@@ -64,7 +64,7 @@ public class ThrowableItem extends Item {
 
     @Override
     public ActionResult use(World world, PlayerEntity user, Hand hand) {
-        ItemStack itemStack = user.getStackInHand(hand);
+        final ItemStack itemStack = user.getStackInHand(hand);
 
         if (world instanceof ServerWorld serverWorld) {
             switch (this.fireballType) {
@@ -72,7 +72,7 @@ public class ThrowableItem extends Item {
                 case SNAIL -> spawnEntityWithVelocity(new BWFireballEntity(world, user, Vec3d.ZERO, 10), serverWorld, user, 0.2f);
                 case DRAGON -> spawnEntityWithVelocity(new DragonFireballEntity(world, user, Vec3d.ZERO), serverWorld, user, 1.5f);
                 case TNT -> {
-                    TntEntity tnt = ((TntEntity)spawnEntityWithVelocity(new TntEntity(EntityType.TNT, world), serverWorld, user, 0.6f));
+                    final TntEntity tnt = ((TntEntity)spawnEntityWithVelocity(new TntEntity(EntityType.TNT, world), serverWorld, user, 0.6f));
                     tnt.setFuse(40);
                 }
                 case ENDER -> spawnEntityWithVelocity(new EnderBeamEntity(ModEntities.ENDER_BEAM_TYPE, world), serverWorld, user, 1f);

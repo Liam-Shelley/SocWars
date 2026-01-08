@@ -1,5 +1,6 @@
 package com.soc.blocks.util;
 
+import com.mojang.serialization.MapCodec;
 import com.soc.SocWars;
 import com.soc.blocks.*;
 import com.soc.entities.BigTntEntity;
@@ -38,11 +39,13 @@ public class ModBlocks {
     public static final Block SPAWN_PLACEHOLDER = ModBlocks.register("spawn_placeholder", ColourStateBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true);
     public static final Block CENTRE_PLACEHOLDER = ModBlocks.register("centre_placeholder", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true);
 
-    public static final Block CHEST_PLACEHOLDER = ModBlocks.register("chest_placeholder", settings -> new TierBlock(settings, 1), AbstractBlock.Settings.create().sounds(BlockSoundGroup.STONE).nonOpaque(), false);
+    public static final Block CHEST_PLACEHOLDER = ModBlocks.register("chest_placeholder", settings -> new TierBlock(settings, 1), AbstractBlock.Settings.create().sounds(BlockSoundGroup.STONE).noCollision().nonOpaque(), false);
 
     public static final Block DIAMOND_GEN_PLACEHOLDER = ModBlocks.register("diamond_gen_placeholder", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true);
     public static final Block EMERALD_GEN_PLACEHOLDER = ModBlocks.register("emerald_gen_placeholder", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true);
     public static final Block ISLAND_GEN_PLACEHOLDER = ModBlocks.register("island_gen_placeholder", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true);
+    public static final Block TEAM_SHOP_PLACEHOLDER = ModBlocks.register("team_shop_placeholder", SimpleHorizontalFacingBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true);
+    public static final Block INDIVIDUAL_SHOP_PLACEHOLDER = ModBlocks.register("individual_shop_placeholder", SimpleHorizontalFacingBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true);
 
     public static final Block PROTECTED_AIR = ModBlocks.register("protected_air", Block::new, AbstractBlock.Settings.create().noCollision(), true);
 
@@ -69,11 +72,6 @@ public class ModBlocks {
             true
     );
      */
-
-    //public static final Block RED_BEDWARS_BED = ModBlocks.register("red_bedwars_bed", (settings) -> new BedwarsBed(DyeColor.RED, settings), bedSettings(DyeColor.RED), true);
-    //public static final Block YELLOW_BEDWARS_BED = ModBlocks.register("yellow_bedwars_bed", (settings) -> new BedwarsBed(DyeColor.YELLOW, settings), bedSettings(DyeColor.YELLOW), true);
-    //public static final Block LIME_BEDWARS_BED = ModBlocks.register("lime_bedwars_bed", (settings) -> new BedwarsBed(DyeColor.LIME, settings), bedSettings(DyeColor.LIME), true);
-    //public static final Block BLUE_BEDWARS_BED = ModBlocks.register("blue_bedwars_bed", (settings) -> new BedwarsBed(DyeColor.BLUE, settings), bedSettings(DyeColor.BLUE), true);
 
     public static Block register(String name, Function<AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings settings, boolean shouldRegisterItem) {
         return ModBlocks.register(name, blockFactory, settings, shouldRegisterItem ? UnaryOperator.identity() : null);
@@ -108,15 +106,5 @@ public class ModBlocks {
 
     private static RegistryKey<Item> keyOfItem(String name) {
         return RegistryKey.of(RegistryKeys.ITEM, Identifier.of(SocWars.MOD_ID, name));
-    }
-
-    private static AbstractBlock.Settings bedSettings(DyeColor color) {
-        return AbstractBlock.Settings.create()
-                .mapColor(color.getMapColor())
-                .sounds(BlockSoundGroup.WOOD)
-                .hardness(0.2f)
-                .resistance(1000000f)
-                .nonOpaque()
-                .pistonBehavior(PistonBehavior.BLOCK);
     }
 }
