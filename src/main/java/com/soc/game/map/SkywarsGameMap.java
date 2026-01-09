@@ -76,7 +76,7 @@ public class SkywarsGameMap extends AbstractGameMap {
         inventory.clear();
         for (int i = 0; i < inventory.size(); i++) {
             final float random = this.world.random.nextFloat(); //Redo all of this code because it's awful; probably take from data
-            if (random > 0.5f + tier * 0.04f) {
+            if (random > 0.75f + tier * 0.02f) {
                 final float random2 = this.world.random.nextFloat();
                 final int pool = random2 < 0.55f + tier * 0.04f ? 0 : 1;
 

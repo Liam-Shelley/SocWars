@@ -7,6 +7,7 @@ import com.soc.database.stats.BaseTable;
 import com.soc.database.stats.CombatTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.SpreadRules;
+import com.soc.lib.Events;
 import com.soc.networking.s2c.UpdateHotbarPayload;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
@@ -130,7 +131,8 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     public void endGame(boolean immediate) {
         this.removeTeams();
         this.map.destroyMap();
-        //this.sendPlayersToLobby();
+        this.setGameMode(GameMode.SPECTATOR);
+        Events.getInstance().scheduleEvent(this::sendPlayersToLobby, 20 * 10);
 
         Database.getStatement().ifPresent(statement -> this.dbTables.values().forEach(table -> {
             SocWars.LOGGER.info("Saving db table for {}", this.gameId);

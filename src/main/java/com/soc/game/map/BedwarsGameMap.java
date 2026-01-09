@@ -39,6 +39,8 @@ public class BedwarsGameMap extends AbstractGameMap {
     public static final String EMERALD_GENS_KEY = "emerald_gens";
     public static final String ISLAND_GENS_KEY = "island_gens";
     public static final String BED_POSITIONS_KEY = "bed_positions";
+    public static final String INDIVIDUAL_SHOPS_KEY = "individual_shops";
+    public static final String TEAM_SHOPS_KEY = "team_shops";
 
     public static final float SPLIT_RANGE = 4f;
 
@@ -46,6 +48,8 @@ public class BedwarsGameMap extends AbstractGameMap {
     private final Set<ResourceGenerator> emeraldGens;
     private final Multimap<DyeColourWithEmpty, IslandGenerator> islandGens;
     private final Map<DyeColor, BlockPos> bedPositions;
+    private final Set<BlockPos> individualShops;
+    private final Set<BlockPos> teamShops;
 
     public BedwarsGameMap(
             StructureTemplate structure,
@@ -57,13 +61,17 @@ public class BedwarsGameMap extends AbstractGameMap {
             @NotNull Set<BlockPos> diamondGens,
             @NotNull Set<BlockPos> emeraldGens,
             @NotNull Set<BlockPos> islandGens,
-            @NotNull Set<BlockPos> bedPositions
+            @NotNull Set<BlockPos> bedPositions,
+            @NotNull Set<BlockPos> individualShops,
+            @NotNull Set<BlockPos> teamShops
     ) {
         super(structure, spawnPositions, centrePos, absoluteCentrePos, blockProtectionOverlay, world);
         this.diamondGens = ResourceGenerator.resourceGenerators(Items.DIAMOND.getDefaultStack(), world, diamondGens.stream().map(super::pos).collect(Collectors.toSet()), false, 30 * 20);
         this.emeraldGens = ResourceGenerator.resourceGenerators(Items.EMERALD.getDefaultStack(), world, emeraldGens.stream().map(super::pos).collect(Collectors.toSet()), false, 30 * 20);
         this.islandGens = this.makeIslandGenerators(world, islandGens.stream().map(super::pos).collect(Collectors.toSet()), spawnPositions.stream().map(spawnPosition -> spawnPosition.withPos(super.pos(spawnPosition.pos()))).collect(Collectors.toSet()));
         this.bedPositions = this.makeBedPositions(spawnPositions, bedPositions);
+        this.individualShops = individualShops;
+        this.teamShops = teamShops;
     }
 
     /// Constructor used only for saving the map to file
@@ -75,13 +83,17 @@ public class BedwarsGameMap extends AbstractGameMap {
             @NotNull Set<BlockPos> diamondGens,
             @NotNull Set<BlockPos> emeraldGens,
             @NotNull Set<BlockPos> islandGens,
-            @NotNull Set<BlockPos> bedPositions
+            @NotNull Set<BlockPos> bedPositions,
+            @NotNull Set<BlockPos> individualShops,
+            @NotNull Set<BlockPos> teamShops
     ) {
         super(structure, spawnPositions, centrePos, blockProtectionOverlay);
         this.diamondGens = ResourceGenerator.resourceGenerators(Items.DIAMOND.getDefaultStack(), super.world, diamondGens, false, 30 * 20);
         this.emeraldGens = ResourceGenerator.resourceGenerators(Items.EMERALD.getDefaultStack(), super.world, emeraldGens, false, 30 * 20);
         this.islandGens = this.makeIslandGenerators(super.world, islandGens, spawnPositions);
         this.bedPositions = this.makeBedPositions(spawnPositions, bedPositions);
+        this.individualShops = individualShops;
+        this.teamShops = teamShops;
     }
 
     private Map<DyeColor, BlockPos> makeBedPositions(Set<SpawnPosition> spawnPositions, Set<BlockPos> bedPositions) {
@@ -119,7 +131,9 @@ public class BedwarsGameMap extends AbstractGameMap {
                 getBlockPosSet(compound, DIAMOND_GENS_KEY).orElseGet(() -> { SocWars.LOGGER.error("Failed to load diamond gens"); return Set.of(); }),
                 getBlockPosSet(compound, EMERALD_GENS_KEY).orElseGet(() -> { SocWars.LOGGER.error("Failed to load emerald gens"); return Set.of(); }),
                 getBlockPosSet(compound, ISLAND_GENS_KEY).orElseGet(() -> { SocWars.LOGGER.error("Failed to load island gens"); return Set.of(); }),
-                getBlockPosSet(compound, BED_POSITIONS_KEY).orElseGet(() -> { SocWars.LOGGER.error("Failed to load bed positions"); return Set.of(); })
+                getBlockPosSet(compound, BED_POSITIONS_KEY).orElseGet(() -> { SocWars.LOGGER.error("Failed to load bed positions"); return Set.of(); }),
+                getBlockPosSet(compound, INDIVIDUAL_SHOPS_KEY).orElseGet(() -> { SocWars.LOGGER.error("Failed to load individual shops"); return Set.of(); }),
+                getBlockPosSet(compound, TEAM_SHOPS_KEY).orElseGet(() -> { SocWars.LOGGER.error("Failed to load team shops"); return Set.of(); })
         ));
     }
 
@@ -131,6 +145,8 @@ public class BedwarsGameMap extends AbstractGameMap {
         putBlockPosCollection(compound, EMERALD_GENS_KEY, this.emeraldGens.stream().map(ResourceGenerator::getPos).toList());
         putBlockPosCollection(compound, ISLAND_GENS_KEY, this.islandGens.values().stream().map(IslandGenerator::getPos).toList());
         putBlockPosCollection(compound, BED_POSITIONS_KEY, this.bedPositions.values());
+        putBlockPosCollection(compound, INDIVIDUAL_SHOPS_KEY, this.individualShops);
+        putBlockPosCollection(compound, TEAM_SHOPS_KEY, this.teamShops);
 
         return compound;
     }

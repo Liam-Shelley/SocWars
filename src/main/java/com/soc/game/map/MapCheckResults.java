@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 import static com.soc.lib.SocWarsLib.*;
 
-public record MapCheckResults(Set<SpawnPosition> spawnPositions, Set<BlockPos> centrePositions, Set<Direction> flaggedFaces, Set<BlockPos> diamondGens, Set<BlockPos> emeraldGens, Set<BlockPos> islandGens, Set<BlockPos> bedPositions, Set<SkywarsChest> lootChests) {
+public record MapCheckResults(Set<SpawnPosition> spawnPositions, Set<BlockPos> centrePositions, Set<Direction> flaggedFaces, Set<BlockPos> diamondGens, Set<BlockPos> emeraldGens, Set<BlockPos> islandGens, Set<BlockPos> bedPositions, Set<BlockPos> individualShops, Set<BlockPos> teamShops, Set<SkywarsChest> lootChests) {
     public InfoList generateWarnings(GameType mapType) {
         InfoList warnings = new InfoList();
 

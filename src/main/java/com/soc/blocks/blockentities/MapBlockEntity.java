@@ -75,18 +75,20 @@ public class MapBlockEntity extends BlockEntity {
 
     public void checkStructure() {
         //General
-        HashSet<SpawnPosition> spawnPositions = new HashSet<>();
-        HashSet<BlockPos> centrePositions = new HashSet<>();
-        HashSet<Direction> flaggedFaces = new HashSet<>();
+        final HashSet<SpawnPosition> spawnPositions = new HashSet<>();
+        final HashSet<BlockPos> centrePositions = new HashSet<>();
+        final HashSet<Direction> flaggedFaces = new HashSet<>();
 
         //Bedwars
-        HashSet<BlockPos> diamondGens = new HashSet<>();
-        HashSet<BlockPos> emeraldGens = new HashSet<>();
-        HashSet<BlockPos> islandGens = new HashSet<>();
-        HashSet<BlockPos> bedPositions = new HashSet<>();
+        final HashSet<BlockPos> diamondGens = new HashSet<>();
+        final HashSet<BlockPos> emeraldGens = new HashSet<>();
+        final HashSet<BlockPos> islandGens = new HashSet<>();
+        final HashSet<BlockPos> bedPositions = new HashSet<>();
+        final HashSet<BlockPos> individualShops = new HashSet<>();
+        final HashSet<BlockPos> teamShops = new HashSet<>();
 
         //Skywars
-        HashSet<SkywarsChest> lootChests = new HashSet<>();
+        final HashSet<SkywarsChest> lootChests = new HashSet<>();
 
         //region Main structure check
         final BlockPos minPos = this.getPos().add(0, 1, 0);
@@ -102,6 +104,8 @@ public class MapBlockEntity extends BlockEntity {
             else if (block == DIAMOND_GEN_PLACEHOLDER) diamondGens.add(pos);
             else if (block == EMERALD_GEN_PLACEHOLDER) emeraldGens.add(pos);
             else if (block == ISLAND_GEN_PLACEHOLDER) islandGens.add(pos);
+            else if (block == INDIVIDUAL_SHOP_PLACEHOLDER) individualShops.add(pos);
+            else if (block == TEAM_SHOP_PLACEHOLDER) teamShops.add(pos);
             else if (block == CHEST_PLACEHOLDER) {
                 final BlockState state = world.getBlockState(pos);
                 lootChests.add(new SkywarsChest(pos, state.get(TierBlock.TIER), state.get(HorizontalFacingBlock.FACING).getOpposite()));
@@ -172,7 +176,7 @@ public class MapBlockEntity extends BlockEntity {
             }
         }
         //endregion
-        this.mapCheckResults = new MapCheckResults(spawnPositions, centrePositions, flaggedFaces, diamondGens, emeraldGens, islandGens, bedPositions, lootChests);
+        this.mapCheckResults = new MapCheckResults(spawnPositions, centrePositions, flaggedFaces, diamondGens, emeraldGens, islandGens, bedPositions,  individualShops, teamShops,lootChests);
         this.mapCheckInfo = this.mapCheckResults.generateInfo(this.mapType);
     }
 
@@ -191,7 +195,7 @@ public class MapBlockEntity extends BlockEntity {
         });
         final SparseVoxelOctree<Boolean> blockProtectionOverlay = naive.asOctree();
 
-        AbstractGameMap map = switch (this.mapType) {
+        final AbstractGameMap map = switch (this.mapType) {
             case SKYWARS -> new SkywarsGameMap(
                     structure,
                     this.mapCheckResults.getRelativeSpawnPositions(),
@@ -207,7 +211,9 @@ public class MapBlockEntity extends BlockEntity {
                     this.mapCheckResults.getRelative(this.mapCheckResults.diamondGens()),
                     this.mapCheckResults.getRelative(this.mapCheckResults.emeraldGens()),
                     this.mapCheckResults.getRelative(this.mapCheckResults.islandGens()),
-                    this.mapCheckResults.getRelative(this.mapCheckResults.bedPositions())
+                    this.mapCheckResults.getRelative(this.mapCheckResults.bedPositions()),
+                    this.mapCheckResults.getRelative(this.mapCheckResults.individualShops()),
+                    this.mapCheckResults.getRelative(this.mapCheckResults.teamShops())
             );
             case PROP_HUNT -> throw new IllegalArgumentException("prop hunt map saving not yet implemented, please try again later (or yell at Liam)");
         };
@@ -245,7 +251,7 @@ public class MapBlockEntity extends BlockEntity {
 
     @Override
     public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registryLookup) {
-        return createNbt(registryLookup);
+        return super.createNbt(registryLookup);
     }
 
     public BlockPos.Mutable getRegionSize() {

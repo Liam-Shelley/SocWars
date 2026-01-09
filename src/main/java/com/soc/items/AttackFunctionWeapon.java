@@ -98,7 +98,7 @@ public class AttackFunctionWeapon extends Item {
     }
 
     public static final Item LIFETHIEF = ModItems.register("lifethief", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
-                int bonusHealth = attacker.getWorld().random.nextBetween(-1, 2);
+                final int bonusHealth = attacker.getWorld().random.nextBetween(-1, 2);
 
                 if (bonusHealth >= 0) {
                     attacker.heal(bonusHealth);
@@ -122,7 +122,7 @@ public class AttackFunctionWeapon extends Item {
             .component(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true)
     );
     public static final Item NETHERWRONG_SWORD = ModItems.register("netherwrong_sword", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
-                World world = attacker.getWorld();
+                final World world = attacker.getWorld();
                 if (attacker instanceof LivingEntity && world instanceof ServerWorld serverWorld) {
                     final DamageSource damageSource = damageSource(world, DamageTypes.NETHERWRONG_SWORD);
                     attacker.damage(serverWorld, damageSource, 8f);
@@ -137,7 +137,7 @@ public class AttackFunctionWeapon extends Item {
             .maxDamage(500)
     );
     public static final Item BLUE_SWORD = ModItems.register("blue_sword", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
-                World world = attacker.getWorld();
+                final World world = attacker.getWorld();
                 if (world instanceof ServerWorld serverWorld) {
                     SlimeEntity slime = new SlimeEntity(EntityType.SLIME, world);
                     slime.setSize(2, true);
@@ -180,7 +180,7 @@ public class AttackFunctionWeapon extends Item {
             .maxDamage(450)
     );
     public static final Item STORMAGEDDON = ModItems.register("stormageddon", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
-                LightningEntity lightning = new LightningEntity(EntityType.LIGHTNING_BOLT, target.getWorld());
+                final LightningEntity lightning = new LightningEntity(EntityType.LIGHTNING_BOLT, target.getWorld());
                 lightning.setPosition(target.getPos());
                 target.getWorld().spawnEntity(lightning);
             }), new Settings()
