@@ -18,6 +18,7 @@ public class C2SReceivers {
                 mapBlockEntity.setRegionSize(BlockPos.fromLong(payload.regionSize()).mutableCopy());
                 mapBlockEntity.setMapName(payload.mapName());
                 mapBlockEntity.setMapType(GameType.fromOrdinal(payload.mapType()));
+                mapBlockEntity.setBlockProtection(payload.blockProtection());
 
                 context.player().getWorld().getChunkManager().markForUpdate(mapBlockEntity.getPos());
             }

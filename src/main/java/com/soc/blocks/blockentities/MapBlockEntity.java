@@ -61,6 +61,7 @@ public class MapBlockEntity extends BlockEntity {
     private BlockPos.Mutable regionSize;
     private String mapName;
     private GameType mapType;
+    private boolean blockProtection;
 
     private MapCheckResults mapCheckResults = null;
     private InfoList mapCheckInfo = new InfoList();
@@ -188,12 +189,17 @@ public class MapBlockEntity extends BlockEntity {
         structure.saveFromWorld(this.world, this.pos.up(), this.regionSize, false, IGNORED_BLOCKS);
         final BlockPos centrePos = this.mapCheckResults.centrePositions().stream().findAny().orElse(new BlockPos(0, 0, 0)).subtract(this.pos).down();
 
-        final BlockPos origin = this.pos.up();
-        final CubicList<Boolean> naive = new CubicList<>(structure.getSize(), (x, y, z) -> {
-            final BlockState state = super.world.getBlockState(origin.add(x, y, z));
-            return !(state.isAir() /*|| state.isReplaceable()*/ || state.isIn(net.minecraft.registry.tag.BlockTags.BEDS));
-        });
-        final SparseVoxelOctree<Boolean> blockProtectionOverlay = naive.asOctree();
+        final SparseVoxelOctree<Boolean> blockProtectionOverlay;
+        if (this.blockProtection) {
+            final BlockPos origin = this.pos.up();
+            final CubicList<Boolean> naive = new CubicList<>(structure.getSize(), (x, y, z) -> {
+                final BlockState state = super.world.getBlockState(origin.add(x, y, z));
+                return !(state.isAir() || state.isIn(net.minecraft.registry.tag.BlockTags.BEDS));
+            });
+            blockProtectionOverlay = naive.asOctree();
+        } else {
+            blockProtectionOverlay = null;
+        }
 
         final AbstractGameMap map = switch (this.mapType) {
             case SKYWARS -> new SkywarsGameMap(
@@ -276,6 +282,14 @@ public class MapBlockEntity extends BlockEntity {
     }
     public void setMapType(GameType mapType) {
         this.mapType = mapType;
+        this.markDirty();
+    }
+
+    public boolean hasBlockProtection() {
+        return this.blockProtection;
+    }
+    public void setBlockProtection(boolean enabled) {
+        this.blockProtection = enabled;
         this.markDirty();
     }
 

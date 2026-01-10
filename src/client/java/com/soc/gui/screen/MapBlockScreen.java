@@ -2,6 +2,7 @@ package com.soc.gui.screen;
 
 import com.soc.blocks.blockentities.MapBlockEntity;
 import com.soc.game.manager.GameType;
+import com.soc.game.map.Enabled;
 import com.soc.gui.widget.NumberTextFieldWidget;
 import com.soc.lib.InfoList;
 import com.soc.networking.c2s.MapBlockSaveMapPayload;
@@ -12,6 +13,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.CyclingButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.gui.widget.ToggleButtonWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
@@ -30,6 +32,8 @@ public class MapBlockScreen extends Screen {
     private final BlockPos.Mutable regionSize;
     private String mapName;
     private GameType mapType;
+    private boolean blockProtection;
+
     private InfoList mapCheckInfo;
 
     private TextFieldWidget mapNameTextField;
@@ -41,16 +45,18 @@ public class MapBlockScreen extends Screen {
     private ButtonWidget saveStructureButton;
     private ButtonWidget confirmSaveStructureButton;
     private boolean confirmSaveStructure;
+    private CyclingButtonWidget<Enabled> blockProtectionButton;
     private ButtonWidget openFolderButton;
     private ButtonWidget closeButton;
 
     public MapBlockScreen(MapBlockEntity blockEntity, World world) {
-        super(Text.translatable("screen.map_block_screen"));
+        super(Text.translatable("screen.map_block"));
         this.blockEntity = blockEntity;
 
         this.regionSize = blockEntity.getRegionSize().mutableCopy();
         this.mapName = blockEntity.getMapName();
         this.mapType = blockEntity.getMapType();
+        this.blockProtection = blockEntity.hasBlockProtection();
 
         this.mapCheckInfo = blockEntity.getMapCheckInfo(this.mapType);
     }
@@ -92,7 +98,8 @@ public class MapBlockScreen extends Screen {
                 .build(this.width / 2 - 152, 120, 100, 20, Text.translatable("button.map_block.game_type"), (button, mapType) -> {
                     this.mapType = mapType;
                     this.refreshMapCheckInfo();
-                }));
+                })
+        );
         //endregion
         //region Structure Buttons
         this.checkStructureButton = super.addDrawableChild(ButtonWidget.builder(Text.translatable("button.map_block.check_structure"), button -> {
@@ -103,6 +110,13 @@ public class MapBlockScreen extends Screen {
             this.confirmSaveStructure = false;
             this.init();
         }).dimensions(this.width / 2 + 38, 80, 110, 20).build());
+        this.blockProtectionButton = this.addDrawableChild(CyclingButtonWidget.builder(Enabled::getVariantName)
+                .values(Enabled.values()).omitKeyText().initially(Enabled.fromBoolean(this.blockProtection))
+                .build(this.width / 2 - 152, 155, 100, 20, Text.translatable("button.map_block.block_protection"), (button, value) -> {
+                    this.blockProtection = value.booleanValue();
+                    this.saveAndSync();
+                })
+        );
 
         this.saveStructureButton = super.addDrawableChild(ButtonWidget.builder(Text.translatable("button.map_block.save_structure"), button -> {
             this.saveAndSync();
@@ -113,29 +127,31 @@ public class MapBlockScreen extends Screen {
             } else if (!this.mapCheckInfo.hasErrors()) {
                 this.doServerMapSave();
             }
-        }).dimensions(this.width / 2 - 152, 145, 100, 20).build());
+        }).dimensions(this.width / 2 - 152, 195, 100, 20).build());
         this.confirmSaveStructureButton = super.addDrawableChild(ButtonWidget.builder(Text.translatable("button.map_block.confirm_save_structure").formatted(Formatting.RED), button -> {
             this.saveAndSync();
             this.confirmSaveStructure = false;
             this.init();
             this.doServerMapSave();
-        }).dimensions(this.width / 2 - 152, 145, 100, 20).build());
+        }).dimensions(this.width / 2 - 152, 195, 100, 20).build());
         //endregion
-        //region Close Button
+        //region Open Folder Button
         this.openFolderButton = super.addDrawableChild(ButtonWidget.builder(Text.translatable("button.map_block.open_folder"), button -> {
             Util.getOperatingSystem().open(getMapDirectory());
-        }).dimensions(this.width / 2 - 152, 185, 100, 20).build());
+        }).dimensions(this.width / 2 - 152, 235, 100, 20).build());
+        //endregion
+        //region Close Button
         this.closeButton = super.addDrawableChild(ButtonWidget.builder(Text.translatable("button.map_block.close"), button -> {
             this.saveSyncClose();
-        }).dimensions(this.width / 2 - 152, 210, 100, 20).build());
+        }).dimensions(this.width / 2 - 152, 260, 100, 20).build());
         //endregion
     }
 
     @Override
     protected void init() {
-        if (!initialised) {
+        if (!this.initialised) {
             this.createWidgets();
-            initialised = true;
+            this.initialised = true;
         }
 
         this.mapNameTextField.setPosition(this.width / 2 - 152, 40);
@@ -153,15 +169,17 @@ public class MapBlockScreen extends Screen {
 
         this.checkStructureButton.setPosition(this.width / 2 + 38, 80);
         this.addDrawableChild(this.checkStructureButton);
-        this.saveStructureButton.setPosition(this.width / 2 - 152, 145);
-        this.confirmSaveStructureButton.setPosition(this.width / 2 - 152, 145);
+        this.blockProtectionButton.setPosition(this.width / 2 - 152, 155);
+        this.addDrawableChild(this.blockProtectionButton);
+        this.saveStructureButton.setPosition(this.width / 2 - 152, 195);
+        this.confirmSaveStructureButton.setPosition(this.width / 2 - 152, 195);
         this.addDrawableChild(this.confirmSaveStructure ? this.confirmSaveStructureButton : this.saveStructureButton);
         this.saveStructureButton.visible = !this.confirmSaveStructure;
         this.confirmSaveStructureButton.visible = this.confirmSaveStructure;
 
-        this.openFolderButton.setPosition(this.width / 2 - 152, 185);
+        this.openFolderButton.setPosition(this.width / 2 - 152, 235);
         this.addDrawableChild(this.openFolderButton);
-        this.closeButton.setPosition(this.width / 2 - 152, 210);
+        this.closeButton.setPosition(this.width / 2 - 152, 260);
         this.addDrawableChild(this.closeButton);
     }
 
@@ -193,6 +211,7 @@ public class MapBlockScreen extends Screen {
         this.sizeZField.render(context, mouseX, mouseY, deltaTicks);
 
         context.drawTextWithShadow(this.textRenderer, Text.translatable("text.map_block.game_type"), this.width / 2 - 153, 110, -6250336);
+        context.drawTextWithShadow(this.textRenderer, Text.translatable("text.map_block.block_protection"), this.width / 2 - 153, 145, -6250336);
 
         this.saveStructureButton.active = !this.mapCheckInfo.hasErrors();
 
@@ -236,8 +255,9 @@ public class MapBlockScreen extends Screen {
         this.blockEntity.setRegionSize(this.regionSize);
         this.blockEntity.setMapName(this.mapName);
         this.blockEntity.setMapType(this.mapType);
+        this.blockEntity.setBlockProtection(this.blockProtection);
 
-        final MapBlockUpdatePayload payload = new MapBlockUpdatePayload(this.blockEntity.getPos().asLong(), this.regionSize.asLong(), this.mapName, this.mapType.ordinal());
+        final MapBlockUpdatePayload payload = new MapBlockUpdatePayload(this.blockEntity.getPos().asLong(), this.regionSize.asLong(), this.mapName, this.mapType.ordinal(), this.blockProtection);
         ClientPlayNetworking.send(payload);
     }
 

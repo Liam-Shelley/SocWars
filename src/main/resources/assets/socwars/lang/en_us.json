@@ -218,6 +218,7 @@
   "text.map_block.enter_y_field": "Y Size: ",
   "text.map_block.enter_z_field": "Z Size: ",
   "text.map_block.game_type": "Map Type:",
+  "text.map_block.block_protection": "Block Protection:",
   "game_type.bedwars": "Bedwars",
   "game_type.skywars": "Skywars",
   "game_type.prop_hunt": "Prop Hunt",
@@ -292,5 +293,8 @@
   "hud.bedwars.has_bed": "  ||  Bed: ",
   "hud.bedwars.team": "%s Team",
   "hud.tick": "✔",
-  "hud.cross": "✘"
+  "hud.cross": "✘",
+  "gui.enabled": "Enabled",
+  "gui.disabled": "Disabled",
+  "screen.map_block": "Map Creator"
 }
