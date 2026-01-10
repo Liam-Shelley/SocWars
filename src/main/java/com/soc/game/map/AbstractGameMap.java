@@ -230,7 +230,7 @@ public abstract class AbstractGameMap {
 
         this.spawnPositions.values().forEach(position -> Arrays.stream(Direction.values()).filter(direction -> direction.getAxis().isHorizontal()).forEach(direction -> {
             function.accept(direction, this.pos(position));
-            function.accept(direction, this.pos(position).down());
+            function.accept(direction, this.pos(position).up());
         }));
     }
 

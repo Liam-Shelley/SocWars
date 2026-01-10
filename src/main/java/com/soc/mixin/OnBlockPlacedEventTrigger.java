@@ -15,7 +15,7 @@ public abstract class OnBlockPlacedEventTrigger {
 	@Inject(at = @At("HEAD"), method = "useOnBlock", cancellable = true)
 	private void socwars_onBlockPlacedEvent(ItemUsageContext context, CallbackInfoReturnable<ActionResult> cir) {
 		if (context.getPlayer() instanceof ServerPlayerEntity serverPlayer) {
-			final ActionResult result = ModEvents.ON_BLOCK_PLACED.invoker().onItemPickup(serverPlayer, context.getBlockPos().offset(context.getSide()), context);
+			final ActionResult result = ModEvents.ON_BLOCK_PLACED.invoker().onItemPickup(serverPlayer, context.getWorld().getBlockState(context.getBlockPos()).isReplaceable() ? context.getBlockPos() : context.getBlockPos().offset(context.getSide()), context);
 			if (result != ActionResult.PASS) cir.setReturnValue(result);
 		}
 	}

@@ -191,7 +191,7 @@ public class MapBlockEntity extends BlockEntity {
         final BlockPos origin = this.pos.up();
         final CubicList<Boolean> naive = new CubicList<>(structure.getSize(), (x, y, z) -> {
             final BlockState state = super.world.getBlockState(origin.add(x, y, z));
-            return !(state.isAir() || state.isReplaceable() || state.isIn(net.minecraft.registry.tag.BlockTags.BEDS));
+            return !(state.isAir() /*|| state.isReplaceable()*/ || state.isIn(net.minecraft.registry.tag.BlockTags.BEDS));
         });
         final SparseVoxelOctree<Boolean> blockProtectionOverlay = naive.asOctree();
 
