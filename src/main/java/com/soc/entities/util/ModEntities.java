@@ -2,6 +2,7 @@ package com.soc.entities.util;
 
 import com.soc.SocWars;
 import com.soc.entities.BWFireballEntity;
+import com.soc.entities.BedwarsShopEntity;
 import com.soc.entities.BigTntEntity;
 import com.soc.entities.EnderBeamEntity;
 import net.minecraft.entity.Entity;
@@ -16,33 +17,39 @@ import net.minecraft.util.Identifier;
 public interface ModEntities {
     static void initialise() {}
 
-    EntityType<BWFireballEntity> BW_FIREBALL_TYPE = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "bw_fireball"), EntityType.Builder.<BWFireballEntity>create(BWFireballEntity::new, SpawnGroup.MISC)
+    EntityType<BWFireballEntity> BW_FIREBALL = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "bw_fireball"), EntityType.Builder.<BWFireballEntity>create(BWFireballEntity::new, SpawnGroup.MISC)
             .dropsNothing()
-            .dimensions(0.25F, 0.25F)
+            .dimensions(0.25f, 0.25f)
             .maxTrackingRange(4)
             .trackingTickInterval(1)
     );
     EntityType<BigTntEntity> NUCLEAR_BOMB = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "nuclear_bomb"), EntityType.Builder.<BigTntEntity>create((type, world) -> new BigTntEntity(type, world, BigTntEntity.BigTntType.NUCLEAR), SpawnGroup.MISC)
-                    .dropsNothing()
-                    .makeFireImmune()
-                    .dimensions(0.98F, 0.98F)
-                    .eyeHeight(0.15F)
-                    .maxTrackingRange(10)
-                    .trackingTickInterval(10)
+            .dropsNothing()
+            .makeFireImmune()
+            .dimensions(0.98f, 0.98f)
+            .eyeHeight(0.15f)
+            .maxTrackingRange(10)
+            .trackingTickInterval(10)
     );
     EntityType<BigTntEntity> HYDROGEN_BOMB = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "hydrogen_bomb"), EntityType.Builder.<BigTntEntity>create((type, world) -> new BigTntEntity(type, world, BigTntEntity.BigTntType.HYDROGEN), SpawnGroup.MISC)
-                    .dropsNothing()
-                    .makeFireImmune()
-                    .dimensions(0.98F, 0.98F)
-                    .eyeHeight(0.15F)
-                    .maxTrackingRange(10)
-                    .trackingTickInterval(10)
-    );
-    EntityType<EnderBeamEntity> ENDER_BEAM_TYPE = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "ender_beam"), EntityType.Builder.create(EnderBeamEntity::new, SpawnGroup.MISC)
             .dropsNothing()
-            .dimensions(0.25F, 0.25F)
+            .makeFireImmune()
+            .dimensions(0.98f, 0.98f)
+            .eyeHeight(0.15f)
+            .maxTrackingRange(10)
+            .trackingTickInterval(10)
+    );
+    EntityType<EnderBeamEntity> ENDER_BEAM = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "ender_beam"), EntityType.Builder.create(EnderBeamEntity::new, SpawnGroup.MISC)
+            .dropsNothing()
+            .dimensions(0.25f, 0.25f)
             .maxTrackingRange(4)
             .trackingTickInterval(10)
+    );
+    EntityType<BedwarsShopEntity> BEDWARS_SHOP = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "bedwars_shop"), EntityType.Builder.create(BedwarsShopEntity::new, SpawnGroup.MISC)
+            .dropsNothing()
+            .dimensions(0.6f, 1.95f)
+            .maxTrackingRange(4)
+            .eyeHeight(1.62f)
     );
 
     static <T extends Entity> EntityType<T> registerType(Identifier id, EntityType.Builder<T> type) {

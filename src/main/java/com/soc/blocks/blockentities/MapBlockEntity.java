@@ -186,26 +186,26 @@ public class MapBlockEntity extends BlockEntity {
 
         final StructureTemplate structure = new StructureTemplate();
         structure.saveFromWorld(this.world, this.pos.up(), this.regionSize, false, IGNORED_BLOCKS);
-        final BlockPos centrePos = this.mapCheckResults.centrePositions().stream().findAny().orElse(new BlockPos(0, 0, 0)).subtract(this.pos).up();
+        final BlockPos centrePos = this.mapCheckResults.centrePositions().stream().findAny().orElse(new BlockPos(0, 0, 0)).subtract(this.pos).down();
 
         final BlockPos origin = this.pos.up();
         final CubicList<Boolean> naive = new CubicList<>(structure.getSize(), (x, y, z) -> {
             final BlockState state = super.world.getBlockState(origin.add(x, y, z));
-            return !(state.isAir() || state.isReplaceable());
+            return !(state.isAir() || state.isReplaceable() || state.isIn(net.minecraft.registry.tag.BlockTags.BEDS));
         });
         final SparseVoxelOctree<Boolean> blockProtectionOverlay = naive.asOctree();
 
         final AbstractGameMap map = switch (this.mapType) {
             case SKYWARS -> new SkywarsGameMap(
                     structure,
-                    this.mapCheckResults.getRelativeSpawnPositions(),
+                    this.mapCheckResults.getRelativeGeneric(this.mapCheckResults.spawnPositions()),
                     centrePos,
                     blockProtectionOverlay,
-                    this.mapCheckResults.getRelativeSkywarsChests()
+                    this.mapCheckResults.getRelativeGeneric(this.mapCheckResults.lootChests())
             );
             case BEDWARS -> new BedwarsGameMap(
                     structure,
-                    this.mapCheckResults.getRelativeSpawnPositions(),
+                    this.mapCheckResults.getRelativeGeneric(this.mapCheckResults.spawnPositions()),
                     centrePos,
                     blockProtectionOverlay,
                     this.mapCheckResults.getRelative(this.mapCheckResults.diamondGens()),

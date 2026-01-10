@@ -2,6 +2,8 @@ package com.soc.game.map;
 
 import com.google.common.collect.*;
 import com.soc.SocWars;
+import com.soc.entities.BedwarsShopEntity;
+import com.soc.entities.util.ModEntities;
 import com.soc.lib.SparseVoxelOctree;
 import com.soc.nbt.SpawnPosition;
 import net.minecraft.item.Items;
@@ -157,6 +159,13 @@ public class BedwarsGameMap extends AbstractGameMap {
                 genPos -> new IslandGenerator(world, genPos),
                 MultimapBuilder.treeKeys().arrayListValues()::build)
         );
+    }
+
+    @Override
+    public void placeMap() {
+        super.placeMap();
+        this.individualShops.forEach(pos -> BedwarsShopEntity.spawnWithPos(super.world, super.pos(pos).toBottomCenterPos()));
+        this.teamShops.forEach(pos -> BedwarsShopEntity.spawnWithPos(super.world, super.pos(pos).toBottomCenterPos()));
     }
 
     @Override

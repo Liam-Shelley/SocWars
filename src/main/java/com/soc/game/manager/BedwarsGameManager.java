@@ -15,7 +15,6 @@ import com.soc.networking.s2c.bedwars.JoinBedwarsPayload;
 import com.soc.networking.s2c.bedwars.LeaveBedwarsPayload;
 import com.soc.networking.s2c.bedwars.BedBreakPayload;
 import com.soc.resourcedata.containers.BedwarsGeneratorDataContainer;
-import com.soc.resourcedata.containers.BedwarsShopDataContainer;
 import com.soc.resourcedata.deserialisation.ResourceGeneratorUpgrade;
 import com.soc.util.Sounds;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;

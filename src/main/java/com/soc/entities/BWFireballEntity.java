@@ -12,7 +12,7 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-import static com.soc.entities.util.ModEntities.BW_FIREBALL_TYPE;
+import static com.soc.entities.util.ModEntities.BW_FIREBALL;
 
 public class BWFireballEntity extends FireballEntity {
     private final float explosionPower;
@@ -27,7 +27,7 @@ public class BWFireballEntity extends FireballEntity {
     }
 
     public BWFireballEntity(World world, LivingEntity owner, Vec3d velocity, int explosionPower) {
-        super(BW_FIREBALL_TYPE, world);
+        super(BW_FIREBALL, world);
         this.setVelocity(velocity);
         this.explosionPower = explosionPower;
         this.setOwner(owner);

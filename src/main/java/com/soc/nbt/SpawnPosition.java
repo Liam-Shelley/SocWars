@@ -1,10 +1,11 @@
 package com.soc.nbt;
 
+import com.soc.game.map.SubtractPos;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 
-public record SpawnPosition(BlockPos pos, int colour) implements ToNbt {
+public record SpawnPosition(BlockPos pos, int colour) implements ToNbt, SubtractPos<SpawnPosition> {
     public static final String LIST_KEY = "spawn_positions";
 
     public static final String POSITION_KEY = "position";
@@ -34,6 +35,7 @@ public record SpawnPosition(BlockPos pos, int colour) implements ToNbt {
         return new SpawnPosition(pos, this.colour);
     }
 
+    @Override
     public SpawnPosition subtractPos(BlockPos pos) {
         return this.withPos(this.pos.subtract(pos));
     }

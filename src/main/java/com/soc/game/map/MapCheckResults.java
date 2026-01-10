@@ -1,17 +1,13 @@
 package com.soc.game.map;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.soc.game.manager.GameType;
 import com.soc.lib.InfoList;
 import com.soc.nbt.SkywarsChest;
 import com.soc.nbt.SpawnPosition;
 import net.minecraft.text.Text;
-import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -20,7 +16,7 @@ import static com.soc.lib.SocWarsLib.*;
 
 public record MapCheckResults(Set<SpawnPosition> spawnPositions, Set<BlockPos> centrePositions, Set<Direction> flaggedFaces, Set<BlockPos> diamondGens, Set<BlockPos> emeraldGens, Set<BlockPos> islandGens, Set<BlockPos> bedPositions, Set<BlockPos> individualShops, Set<BlockPos> teamShops, Set<SkywarsChest> lootChests) {
     public InfoList generateWarnings(GameType mapType) {
-        InfoList warnings = new InfoList();
+        final InfoList warnings = new InfoList();
 
         warnings.add(
                 () -> this.centrePositions.size() != 1,
@@ -170,14 +166,14 @@ public record MapCheckResults(Set<SpawnPosition> spawnPositions, Set<BlockPos> c
     }
 
     public InfoList generateInfo(GameType mapType) {
-        InfoList info = this.generateResults(mapType);
+        final InfoList info = this.generateResults(mapType);
         info.addEmpty(() -> !info.isEmpty());
 
         return info.concat(this.generateWarnings(mapType));
     }
 
     private BlockPos getSingleCentre() {
-        if (this.centrePositions.size() != 1) throw new IllegalStateException("Tried to access options relative position function while there are multiple centres");
+        if (this.centrePositions.size() != 1) throw new IllegalStateException("Tried to access options relative position function while there are multiple centres"); //Should be unreachable
         return this.centrePositions.stream().findFirst().get();
     }
 
@@ -185,12 +181,8 @@ public record MapCheckResults(Set<SpawnPosition> spawnPositions, Set<BlockPos> c
         return positions.stream().map(pos -> pos.subtract(this.getSingleCentre())).collect(Collectors.toSet());
     }
 
-    public Set<SkywarsChest> getRelativeSkywarsChests() {
-        return this.lootChests.stream().map(chest -> chest.subtractPos(this.getSingleCentre())).collect(Collectors.toSet());
-    }
-
-    public Set<SpawnPosition> getRelativeSpawnPositions() {
-        return this.spawnPositions.stream().filter(spawn -> spawn.colour() < 16).map(spawn -> spawn.subtractPos(this.getSingleCentre())).collect(Collectors.toSet());
+    public <T extends SubtractPos<T>> Set<T> getRelativeGeneric(Set<T> positions) {
+        return positions.stream().map(gen -> gen.subtractPos(this.getSingleCentre())).collect(Collectors.toSet());
     }
 
     /*

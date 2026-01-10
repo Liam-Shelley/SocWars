@@ -106,7 +106,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
 
     @MustBeInvokedByOverriders
     public void startGame() {
-        final AbstractGameMap map = this.map;
+        final MAP map = this.map;
         map.placeMap();
         map.spawnCages(true);
         map.spreadPlayers(this.teams);
@@ -185,11 +185,11 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     }
 
     public boolean onBlockBroken(ServerPlayerEntity player, BlockPos pos, BlockState state, BlockEntity blockEntity) {
-        return this.isBlockUnprotected(pos);
+        return this.isBlockUnprotected(player, pos);
     }
 
     public ActionResult onBlockPlaced(ServerPlayerEntity player, BlockPos pos, ItemUsageContext context) {
-        final boolean allow = this.isBlockUnprotected(pos);
+        final boolean allow = this.isBlockUnprotected(player, pos);
         if (allow) {
             return ActionResult.PASS;
         } else {
@@ -452,7 +452,15 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         return this.map.isBlockProtected(pos);
     }
 
+    public final boolean isBlockProtected(ServerPlayerEntity player, BlockPos pos) {
+        return this.map.isBlockProtected(pos) && player.getGameMode() == GameMode.SURVIVAL;
+    }
+
     public final boolean isBlockUnprotected(BlockPos pos) {
         return !this.map.isBlockProtected(pos);
+    }
+
+    public final boolean isBlockUnprotected(ServerPlayerEntity player, BlockPos pos) {
+        return !this.map.isBlockProtected(pos) || player.getGameMode() != GameMode.SURVIVAL;
     }
 }

@@ -75,7 +75,7 @@ public class ThrowableItem extends Item {
                     final TntEntity tnt = spawnEntityWithVelocity(new TntEntity(EntityType.TNT, world), serverWorld, user, 0.6f);
                     tnt.setFuse(40);
                 }
-                case ENDER -> spawnEntityWithVelocity(new EnderBeamEntity(ModEntities.ENDER_BEAM_TYPE, world), serverWorld, user, 1f);
+                case ENDER -> spawnEntityWithVelocity(new EnderBeamEntity(ModEntities.ENDER_BEAM, world), serverWorld, user, 1f);
             }
         }
 

@@ -6,10 +6,7 @@ import com.soc.game.BedwarsTeamsHUD;
 import com.soc.gui.screen.HandledScreens;
 import com.soc.items.FeatherBlockItem;
 import com.soc.networking.S2CReceivers;
-import com.soc.renderer.BWFireballEntityRenderer;
-import com.soc.renderer.BigTntRenderer;
-import com.soc.renderer.MapBlockEntityRenderer;
-import com.soc.renderer.CollectibleBlockEntityRenderer;
+import com.soc.renderer.*;
 import com.soc.resourcedata.deserialisation.SkywarsItemData;
 import com.soc.resourcedata.listeners.SkywarsLootData;
 import net.fabricmc.api.ClientModInitializer;
@@ -53,7 +50,8 @@ public class SocWarsClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		EntityRendererRegistry.register(ModEntities.NUCLEAR_BOMB, BigTntRenderer::new);
 		EntityRendererRegistry.register(ModEntities.HYDROGEN_BOMB, BigTntRenderer::new);
-		EntityRendererRegistry.register(ModEntities.BW_FIREBALL_TYPE, BWFireballEntityRenderer::new);
+		EntityRendererRegistry.register(ModEntities.BW_FIREBALL, BWFireballEntityRenderer::new);
+		EntityRendererRegistry.register(ModEntities.BEDWARS_SHOP, BedwarsShopEntityRenderer::new);
 
 		BlockEntityRendererFactories.register(MAP_BLOCK_ENTITY, MapBlockEntityRenderer::new);
 		BlockEntityRendererFactories.register(COLLECTIBLE_BLOCK_ENTITY, CollectibleBlockEntityRenderer::new);

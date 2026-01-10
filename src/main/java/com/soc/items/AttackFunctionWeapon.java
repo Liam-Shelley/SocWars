@@ -189,18 +189,16 @@ public class AttackFunctionWeapon extends Item {
             .maxDamage(500)
     );
     public static final Item DETONATOR = ModItems.register("detonator", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
-                SphereExplosion.explode(target.getWorld(), target.getPos(), 5f, 0.5f, 0.35f, attacker);
+                SphereExplosion.explode(target.getWorld(), target.getPos(), 3.5f, 0.4f, 0.25f, attacker);
             }), new Settings()
             .rarity(Rarity.RARE)
             .sword(ToolMaterials.BASE, 4.5f, -2.2f)
             .maxDamage(400)
     );
     public static final Item SHATTERSTAR = ModItems.register("shatterstar", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
-                modifyEquipment(target, attacker, ReplaceMode.PRESENT, (targetEntity, slot) -> {
-                    target.equipStack(slot, ItemStack.EMPTY);
-                }, (targetEntity, slot) -> {
-                    target.setStackInHand(Hand.MAIN_HAND, ItemStack.EMPTY);
-                });
+                modifyEquipment(target, attacker, ReplaceMode.PRESENT,
+                        (targetEntity, slot) -> target.equipStack(slot, ItemStack.EMPTY),
+                        (targetEntity, slot) -> target.setStackInHand(Hand.MAIN_HAND, ItemStack.EMPTY));
             }), new Settings()
             .maxCount(1)
             .rarity(Rarity.RARE)
@@ -210,7 +208,7 @@ public class AttackFunctionWeapon extends Item {
                     ItemStack item = leatherArmour(slot).getDefaultStack();
                     item.addEnchantment(enchantmentEntry(target.getWorld(), Enchantments.BINDING_CURSE), 1);
                     item.addEnchantment(enchantmentEntry(target.getWorld(), Enchantments.VANISHING_CURSE), 1);
-                    item.applyComponentsFrom(ComponentMap.builder().add(DataComponentTypes.UNBREAKABLE, Unit.INSTANCE).build());
+                    item.set(DataComponentTypes.UNBREAKABLE, Unit.INSTANCE);
 
                     target.equipStack(slot, item);
                 }, null);

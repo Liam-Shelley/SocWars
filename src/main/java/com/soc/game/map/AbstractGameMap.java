@@ -181,7 +181,7 @@ public abstract class AbstractGameMap {
         return this.spawnPositions.keySet();
     }
 
-    public final void placeMap() {
+    public void placeMap() {
         this.structure.place(this.world, this.getOrigin(), this.absoluteCentrePos, new StructurePlacementData(), this.world.random, Block.NOTIFY_LISTENERS);
     }
 

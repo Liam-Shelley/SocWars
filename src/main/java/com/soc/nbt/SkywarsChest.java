@@ -1,11 +1,12 @@
 package com.soc.nbt;
 
 import com.soc.game.map.IngameSkywarsChest;
+import com.soc.game.map.SubtractPos;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
-public record SkywarsChest(BlockPos pos, int tier, Direction facing) implements ToNbt {
+public record SkywarsChest(BlockPos pos, int tier, Direction facing) implements ToNbt, SubtractPos<SkywarsChest> {
     public static final String LIST_KEY = "skywars_chests";
 
     public static final String POSITION_KEY = "position";
@@ -42,6 +43,7 @@ public record SkywarsChest(BlockPos pos, int tier, Direction facing) implements 
         return new SkywarsChest(pos, this.tier, this.facing);
     }
 
+    @Override
     public SkywarsChest subtractPos(BlockPos pos) {
         return this.withPos(this.pos.subtract(pos));
     }
