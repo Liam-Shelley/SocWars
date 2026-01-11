@@ -5,6 +5,7 @@ import com.soc.entities.BWFireballEntity;
 import com.soc.entities.BedwarsShopEntity;
 import com.soc.entities.BigTntEntity;
 import com.soc.entities.EnderBeamEntity;
+import com.soc.game.manager.bedwars.ShopType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
@@ -45,7 +46,13 @@ public interface ModEntities {
             .maxTrackingRange(4)
             .trackingTickInterval(10)
     );
-    EntityType<BedwarsShopEntity> BEDWARS_SHOP = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "bedwars_shop"), EntityType.Builder.create(BedwarsShopEntity::new, SpawnGroup.MISC)
+    EntityType<BedwarsShopEntity> INDIVIDUAL_BEDWARS_SHOP = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "individual_bedwars_shop"), EntityType.Builder.<BedwarsShopEntity>create((type, world) -> new BedwarsShopEntity(type, world, ShopType.INDIVIDUAL), SpawnGroup.MISC)
+            .dropsNothing()
+            .dimensions(0.6f, 1.95f)
+            .maxTrackingRange(4)
+            .eyeHeight(1.62f)
+    );
+    EntityType<BedwarsShopEntity> TEAM_BEDWARS_SHOP = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "team_bedwars_shop"), EntityType.Builder.<BedwarsShopEntity>create((type, world) -> new BedwarsShopEntity(type, world, ShopType.TEAM), SpawnGroup.MISC)
             .dropsNothing()
             .dimensions(0.6f, 1.95f)
             .maxTrackingRange(4)

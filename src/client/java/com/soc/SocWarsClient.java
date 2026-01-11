@@ -51,7 +51,8 @@ public class SocWarsClient implements ClientModInitializer {
 		EntityRendererRegistry.register(ModEntities.NUCLEAR_BOMB, BigTntRenderer::new);
 		EntityRendererRegistry.register(ModEntities.HYDROGEN_BOMB, BigTntRenderer::new);
 		EntityRendererRegistry.register(ModEntities.BW_FIREBALL, BWFireballEntityRenderer::new);
-		EntityRendererRegistry.register(ModEntities.BEDWARS_SHOP, BedwarsShopEntityRenderer::new);
+		EntityRendererRegistry.register(ModEntities.INDIVIDUAL_BEDWARS_SHOP, BedwarsShopEntityRenderer::new);
+		EntityRendererRegistry.register(ModEntities.TEAM_BEDWARS_SHOP, BedwarsShopEntityRenderer::new);
 
 		BlockEntityRendererFactories.register(MAP_BLOCK_ENTITY, MapBlockEntityRenderer::new);
 		BlockEntityRendererFactories.register(COLLECTIBLE_BLOCK_ENTITY, CollectibleBlockEntityRenderer::new);

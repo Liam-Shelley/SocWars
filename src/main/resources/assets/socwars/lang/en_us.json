@@ -297,7 +297,8 @@
   "gui.enabled": "Enabled",
   "gui.disabled": "Disabled",
   "screen.map_block": "Map Creator",
-  "entity.socwars.bedwars_shop": "Shop",
+  "entity.socwars.individual_bedwars_shop": "Item Shop",
+  "entity.socwars.team_bedwars_shop": "Team Shop",
   "entity.socwars.nuclear_bomb": "Nuclear Bomb",
   "entity.socwars.hydrogen_bomb": "Hydrogen Bomb"
 }

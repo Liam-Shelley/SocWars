@@ -3,6 +3,7 @@ package com.soc.entities;
 import com.soc.entities.util.ModEntities;
 import com.soc.game.manager.BedwarsGameManager;
 import com.soc.game.manager.GamesManager;
+import com.soc.game.manager.bedwars.ShopType;
 import com.soc.screenhandler.BedwarsShopScreenHandler;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.entity.Entity;
@@ -36,16 +37,20 @@ import static com.soc.lib.SocWarsLib.damageSource;
 
 public class BedwarsShopEntity extends LivingEntity {
     static {
-        FabricDefaultAttributeRegistry.register(ModEntities.BEDWARS_SHOP, BedwarsShopEntity.createBedwarsShopAttributes());
+        FabricDefaultAttributeRegistry.register(ModEntities.INDIVIDUAL_BEDWARS_SHOP, BedwarsShopEntity.createBedwarsShopAttributes());
+        FabricDefaultAttributeRegistry.register(ModEntities.TEAM_BEDWARS_SHOP, BedwarsShopEntity.createBedwarsShopAttributes());
     }
 
-    public BedwarsShopEntity(EntityType<? extends BedwarsShopEntity> entityType, World world) {
+    private final ShopType shopType;
+
+    public BedwarsShopEntity(EntityType<? extends BedwarsShopEntity> entityType, World world, ShopType shopType) {
         super(entityType, world);
+        this.shopType = shopType;
     }
 
     @SuppressWarnings("UnusedReturnValue")
-    public static BedwarsShopEntity spawnWithPos(World world, Vec3d pos) {
-        final BedwarsShopEntity entity = new BedwarsShopEntity(ModEntities.BEDWARS_SHOP, world);
+    public static BedwarsShopEntity spawnWithPos(World world, Vec3d pos, ShopType shopType) {
+        final BedwarsShopEntity entity = new BedwarsShopEntity(shopType.getEntityType(), world, shopType);
         entity.setPosition(pos);
         world.spawnEntity(entity);
         return entity;
@@ -76,7 +81,7 @@ public class BedwarsShopEntity extends LivingEntity {
         if (hand == Hand.OFF_HAND || GamesManager.getInstance().getGame(player).isEmpty()) return ActionResult.PASS;
 
         if (player instanceof ServerPlayerEntity serverPlayer) {
-            final OptionalInt syncId = player.openHandledScreen(new SimpleNamedScreenHandlerFactory(BedwarsShopScreenHandler::new, Text.of("Individual Shop")));
+            final OptionalInt syncId = player.openHandledScreen(new SimpleNamedScreenHandlerFactory(this.shopType.getFactory(), Text.of("Individual Shop")));
             BedwarsGameManager.sendShopData(serverPlayer, syncId);
         }
         return player.distanceTo(this) < 10 ? ActionResult.SUCCESS : ActionResult.PASS;
