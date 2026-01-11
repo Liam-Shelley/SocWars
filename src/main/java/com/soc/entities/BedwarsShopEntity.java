@@ -2,14 +2,19 @@ package com.soc.entities;
 
 import com.soc.entities.util.ModEntities;
 import com.soc.game.manager.BedwarsGameManager;
+import com.soc.game.manager.GamesManager;
 import com.soc.screenhandler.BedwarsShopScreenHandler;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MovementType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -20,21 +25,22 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
+import java.util.List;
 import java.util.OptionalInt;
+
+import static com.soc.lib.SocWarsLib.damageSource;
 
 public class BedwarsShopEntity extends LivingEntity {
     static {
         FabricDefaultAttributeRegistry.register(ModEntities.BEDWARS_SHOP, BedwarsShopEntity.createBedwarsShopAttributes());
     }
 
-    private final Identifier skinTexture;
-
     public BedwarsShopEntity(EntityType<? extends BedwarsShopEntity> entityType, World world) {
         super(entityType, world);
-        this.skinTexture = null;
     }
 
     @SuppressWarnings("UnusedReturnValue")
@@ -48,11 +54,6 @@ public class BedwarsShopEntity extends LivingEntity {
     @Override
     protected void initDataTracker(DataTracker.Builder builder) {
         super.initDataTracker(builder);
-    }
-
-    @Override
-    public boolean damage(ServerWorld world, DamageSource source, float amount) {
-        return false;
     }
 
     @Override
@@ -72,7 +73,7 @@ public class BedwarsShopEntity extends LivingEntity {
 
     @Override
     public ActionResult interact(PlayerEntity player, Hand hand) {
-        if (hand == Hand.OFF_HAND) return ActionResult.PASS;
+        if (hand == Hand.OFF_HAND || GamesManager.getInstance().getGame(player).isEmpty()) return ActionResult.PASS;
 
         if (player instanceof ServerPlayerEntity serverPlayer) {
             final OptionalInt syncId = player.openHandledScreen(new SimpleNamedScreenHandlerFactory(BedwarsShopScreenHandler::new, Text.of("Individual Shop")));
@@ -81,6 +82,7 @@ public class BedwarsShopEntity extends LivingEntity {
         return player.distanceTo(this) < 10 ? ActionResult.SUCCESS : ActionResult.PASS;
     }
 
+    //region Invulnerable and Immobile
     @Override
     public boolean canUsePortals(boolean allowVehicles) {
         return false;
@@ -92,6 +94,14 @@ public class BedwarsShopEntity extends LivingEntity {
     }
 
     @Override
+    public boolean collidesWith(Entity other) {
+        return false;
+    }
+
+    @Override
+    public void tickMovement() {}
+
+    @Override
     public boolean isInvulnerable() {
         return this.getPos().x > -256d;
     }
@@ -99,6 +109,19 @@ public class BedwarsShopEntity extends LivingEntity {
     @Override
     public void kill(ServerWorld world) {
         this.discard();
+    }
+    //endregion
+
+    @Override
+    public boolean damage(ServerWorld world, DamageSource source, float amount) {
+        if (source.getSource() instanceof ServerPlayerEntity player) {
+            player.damage(player.getWorld(), damageSource(this.getWorld(), DamageTypes.BAD_RESPAWN_POINT, this), 8f);
+            if (world.random.nextFloat() < 0.5f) {
+                player.dropItem(player.getStackInHand(Hand.MAIN_HAND), false, false);
+                player.setStackInHand(Hand.MAIN_HAND, ItemStack.EMPTY);
+            }
+        }
+        return false;
     }
 
     public static DefaultAttributeContainer.Builder createBedwarsShopAttributes() {

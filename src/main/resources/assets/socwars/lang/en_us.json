@@ -296,5 +296,8 @@
   "hud.cross": "✘",
   "gui.enabled": "Enabled",
   "gui.disabled": "Disabled",
-  "screen.map_block": "Map Creator"
+  "screen.map_block": "Map Creator",
+  "entity.socwars.bedwars_shop": "Shop",
+  "entity.socwars.nuclear_bomb": "Nuclear Bomb",
+  "entity.socwars.hydrogen_bomb": "Hydrogen Bomb"
 }
