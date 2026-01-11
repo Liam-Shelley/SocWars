@@ -290,6 +290,8 @@
   "game.bedwars.shop.category.armour": "Armour",
   "game.bedwars.shop.category.accessories": "Accessories",
   "game.bedwars.shop.item.max_tier": " MAX",
+  "game.bedwars.shop.individual": "Item Shop",
+  "game.bedwars.shop.team": "Team Shop",
   "hud.bedwars.has_bed": "  ||  Bed: ",
   "hud.bedwars.team": "%s Team",
   "hud.tick": "✔",

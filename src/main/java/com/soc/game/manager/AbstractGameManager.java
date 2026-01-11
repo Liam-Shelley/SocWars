@@ -21,7 +21,6 @@ import net.minecraft.item.ItemUsageContext;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.s2c.play.ClearTitleS2CPacket;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
-import net.minecraft.network.packet.s2c.play.InventoryS2CPacket;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.scoreboard.AbstractTeam;
 import net.minecraft.scoreboard.Scoreboard;
@@ -35,8 +34,6 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.DyeColor;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
@@ -130,9 +127,15 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     @MustBeInvokedByOverriders
     public void endGame(boolean immediate) {
         this.removeTeams();
-        this.map.destroyMap();
+        this.map.destroyMap(immediate);
         this.setGameMode(GameMode.SPECTATOR);
-        Events.getInstance().scheduleEvent(this::sendPlayersToLobby, 20 * 10);
+
+        if (immediate) {
+            this.sendPlayersToLobby();
+        } else {
+            Events.getInstance().scheduleEvent(this::sendPlayersToLobby, 20 * 10);
+        }
+
 
         Database.getStatement().ifPresent(statement -> this.dbTables.values().forEach(table -> {
             SocWars.LOGGER.info("Saving db table for {}", this.gameId);
@@ -284,10 +287,11 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     }
 
     public final DyeColor getTeam(ServerPlayerEntity player) {
-        if (player == null) {
-            Thread.dumpStack();
-        }
-        return this.teams.entries().stream().filter(entry -> entry.getValue().equals(player.getUuid())).findAny().map(Map.Entry::getKey).orElse(null);
+        return this.getTeam(player.getUuid());
+    }
+
+    public final DyeColor getTeam(UUID uuid) {
+        return this.teams.entries().stream().filter(entry -> entry.getValue().equals(uuid)).findAny().map(Map.Entry::getKey).orElse(null);
     }
 
     public final BlockPos getSpawnPosition(ServerPlayerEntity player) {

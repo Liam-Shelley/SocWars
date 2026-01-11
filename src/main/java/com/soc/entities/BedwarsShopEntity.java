@@ -81,13 +81,13 @@ public class BedwarsShopEntity extends LivingEntity {
         if (hand == Hand.OFF_HAND || GamesManager.getInstance().getGame(player).isEmpty()) return ActionResult.PASS;
 
         if (player instanceof ServerPlayerEntity serverPlayer) {
-            final OptionalInt syncId = player.openHandledScreen(new SimpleNamedScreenHandlerFactory(this.shopType.getFactory(), Text.of("Individual Shop")));
+            final OptionalInt syncId = player.openHandledScreen(new SimpleNamedScreenHandlerFactory(this.shopType.getFactory(), Text.translatable("game.bedwars.shop." + this.shopType.toString().toLowerCase())));
             BedwarsGameManager.sendShopData(serverPlayer, syncId);
         }
         return player.distanceTo(this) < 10 ? ActionResult.SUCCESS : ActionResult.PASS;
     }
 
-    //region Invulnerable and Immobile
+    //region Make Invulnerable and Immobile
     @Override
     public boolean canUsePortals(boolean allowVehicles) {
         return false;

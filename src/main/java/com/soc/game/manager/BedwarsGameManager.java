@@ -85,11 +85,11 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
     public void endGame(boolean immediate) {
         this.eventQueue.cancelEvents();
 
-        this.playerStatsForEach((player, stats) -> {
+        this.playerStatsMap.forEach((uuid, stats) -> {
             final Text message;
             final SoundEvent sound;
-            final BedwarsTable dbTable = this.getDbTable(player);
-            if (this.teamStatsMap.get(super.getTeam(player)).isAlive()) {
+            final BedwarsTable dbTable = this.dbTables.get(uuid);
+            if (this.teamStatsMap.get(super.getTeam(uuid)).isAlive()) {
                 message = Text.translatable("game.bedwars.win");
                 sound = SoundEvents.ENTITY_PLAYER_LEVELUP;
                 dbTable.win();
@@ -100,9 +100,11 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
             }
 
             Events.getInstance().scheduleEvent(() -> {
-                player.networkHandler.sendPacket(new TitleS2CPacket(message));
+                if (this.world.getPlayerByUuid(uuid) instanceof ServerPlayerEntity player) {
+                    player.networkHandler.sendPacket(new TitleS2CPacket(message));
 
-                player.playSoundToPlayer(sound, SoundCategory.PLAYERS, 1, 1);
+                    player.playSoundToPlayer(sound, SoundCategory.PLAYERS, 1, 1);
+                }
             }, 10);
         });
 
@@ -115,10 +117,6 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
     protected final PlayerStats getPlayerStats(ServerPlayerEntity player) {
         return this.playerStatsMap.get(player.getUuid());
-    }
-
-    protected final void playerStatsForEach(BiConsumer<ServerPlayerEntity, PlayerStats> biConsumer) {
-        this.playerStatsMap.forEach((uuid, stats) -> biConsumer.accept((ServerPlayerEntity)super.world.getPlayerByUuid(uuid), stats));
     }
 
     @Override

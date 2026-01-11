@@ -19,10 +19,7 @@ import net.minecraft.structure.StructurePlacementData;
 import net.minecraft.structure.StructureTemplate;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -185,8 +182,7 @@ public abstract class AbstractGameMap {
         this.structure.place(this.world, this.getOrigin(), this.absoluteCentrePos, new StructurePlacementData(), this.world.random, Block.NOTIFY_LISTENERS);
     }
 
-    //Should probably optimise this at some point
-    public final void destroyMap() {
+    public final void destroyMap(boolean immediate) {
         final BlockPos minPos = this.getOrigin();
         final BlockPos maxPos = minPos.add(this.structure.getSize());
 
@@ -196,10 +192,14 @@ public abstract class AbstractGameMap {
         final int minZ = minPos.getZ() - XZ_CLEARING_BUFFER;
         final int maxZ = maxPos.getZ() + XZ_CLEARING_BUFFER;
 
-        Coroutines.getInstance().startCoroutine(new Coroutine<>(this, map -> {
-            iterateInCube(new BlockPos(minX, y.get() - 1, minZ), new BlockPos(maxX, y.get(), maxZ), pos -> this.world.setBlockState(pos, Blocks.AIR.getDefaultState()));
-            return y.getAndDecrement() < this.world.getBottomY();
-        }));
+        if (immediate) {
+            iterateInCube(new Vec3i(minX, this.world.getBottomY(), minZ), new Vec3i(maxX, y.get(), maxZ), pos -> this.world.setBlockState(pos, Blocks.AIR.getDefaultState()));
+        } else {
+            Coroutines.getInstance().startCoroutine(new Coroutine<>(this, map -> {
+                iterateInCube(new Vec3i(minX, y.get() - 1, minZ), new Vec3i(maxX, y.get(), maxZ), pos -> this.world.setBlockState(pos, Blocks.AIR.getDefaultState()));
+                return y.getAndDecrement() < this.world.getBottomY();
+            }));
+        }
 
         this.world.getOtherEntities(null, new Box(minPos.toCenterPos(), maxPos.toCenterPos()), entity -> entity.getType() != EntityType.PLAYER).forEach(entity -> entity.kill(this.world));
     }
