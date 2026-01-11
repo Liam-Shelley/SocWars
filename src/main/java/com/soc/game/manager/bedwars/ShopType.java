@@ -5,7 +5,7 @@ import net.minecraft.screen.ScreenHandlerFactory;
 
 public enum ShopType {
     INDIVIDUAL(BedwarsShopScreenHandler::new),
-    TEAM();
+    TEAM(null);
 
     private final ScreenHandlerFactory factory;
 
