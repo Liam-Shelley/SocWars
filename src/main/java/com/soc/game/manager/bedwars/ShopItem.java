@@ -2,6 +2,7 @@ package com.soc.game.manager.bedwars;
 
 import com.soc.items.TrainingWeights;
 import com.soc.resourcedata.deserialisation.Cost;
+import com.soc.screenhandler.AbstractShopScreenHandler;
 import com.soc.screenhandler.BedwarsIndividualShopScreenHandler;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.EquippableComponent;
@@ -25,7 +26,7 @@ import static com.soc.lib.SocWarsLib.inventoryCanAcceptStack;
 public interface ShopItem<INHERITOR> {
     Map<Integer, Function<RegistryByteBuf, ?>> DECODER_MAP = new HashMap<>();
 
-    boolean buy(PlayerEntity player, BedwarsIndividualShopScreenHandler context);
+    boolean buy(PlayerEntity player, AbstractShopScreenHandler context);
 
     ItemStack getIcon();
 

@@ -31,12 +31,14 @@ import java.util.OptionalInt;
 import static com.soc.lib.SocWarsLib.damageSource;
 
 public class BedwarsShopEntity extends LivingEntity {
+    private static final String SHOP_TYPE_STRING = "shop_type";
+
     static {
         FabricDefaultAttributeRegistry.register(ModEntities.INDIVIDUAL_BEDWARS_SHOP, BedwarsShopEntity.createBedwarsShopAttributes());
         FabricDefaultAttributeRegistry.register(ModEntities.TEAM_BEDWARS_SHOP, BedwarsShopEntity.createBedwarsShopAttributes());
     }
 
-    private final ShopType shopType;
+    private ShopType shopType;
 
     public BedwarsShopEntity(EntityType<? extends BedwarsShopEntity> entityType, World world, ShopType shopType) {
         super(entityType, world);
@@ -63,12 +65,12 @@ public class BedwarsShopEntity extends LivingEntity {
 
     @Override
     protected void readCustomData(ReadView view) {
-
+        this.shopType = ShopType.fromOrdinal(view.getInt(SHOP_TYPE_STRING, 0));
     }
 
     @Override
     protected void writeCustomData(WriteView view) {
-
+        view.putInt(SHOP_TYPE_STRING, this.shopType.ordinal());
     }
 
     @Override

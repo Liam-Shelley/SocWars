@@ -13,7 +13,8 @@ public class S2CPayloads {
         PayloadTypeRegistry.playS2C().register(JoinBedwarsPayload.ID, JoinBedwarsPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(LeaveBedwarsPayload.ID, LeaveBedwarsPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(BedBreakPayload.ID, BedBreakPayload.CODEC);
-        PayloadTypeRegistry.playS2C().register(ShopDataPayload.ID, ShopDataPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(BedwarsShopDataPayload.ID, BedwarsShopDataPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(BedwarsTeamShopDataPayload.ID, BedwarsTeamShopDataPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(UpdateHotbarPayload.ID, UpdateHotbarPayload.CODEC);
     }
 }

@@ -53,6 +53,7 @@ public class BedwarsShopCategory {
         this.isQuickBuy = isQuickBuy;
     }
 
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public BedwarsShopCategory(boolean isQuickBuy, List<ShopItem<?>> items, Optional<ItemStack> icon, Text name) {
         this(isQuickBuy, items, icon.orElse(Items.BARRIER.getDefaultStack()), name);
     }

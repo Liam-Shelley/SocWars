@@ -37,7 +37,7 @@ public class S2CReceivers {
         ClientPlayNetworking.registerGlobalReceiver(BedBreakPayload.ID, (payload, context) -> {
             BedwarsTeamsHUD.breakBed(payload.team());
         });
-        ClientPlayNetworking.registerGlobalReceiver(ShopDataPayload.ID, (payload, context) -> {
+        ClientPlayNetworking.registerGlobalReceiver(BedwarsShopDataPayload.ID, (payload, context) -> {
             final ScreenHandler screenHandler = context.player().currentScreenHandler;
             if (screenHandler.syncId == payload.syncId() && screenHandler instanceof BedwarsIndividualShopScreenHandler bedwarsIndividualShopScreenHandler) {
                 bedwarsIndividualShopScreenHandler.setShopContents(payload);

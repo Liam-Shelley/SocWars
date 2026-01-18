@@ -2,6 +2,7 @@ package com.soc.game.manager.bedwars;
 
 import com.google.gson.JsonObject;
 import com.soc.resourcedata.deserialisation.Cost;
+import com.soc.screenhandler.AbstractShopScreenHandler;
 import com.soc.screenhandler.BedwarsIndividualShopScreenHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -54,7 +55,7 @@ public class SimpleShopItem implements ShopItem<SimpleShopItem> {
     }
 
     @Override
-    public boolean buy(PlayerEntity player, BedwarsIndividualShopScreenHandler context) {
+    public boolean buy(PlayerEntity player, AbstractShopScreenHandler context) {
         final boolean gaveStack = this.giveStack(this.stack, player, OptionalInt.empty());
         if (gaveStack) this.takeItems(player);
 

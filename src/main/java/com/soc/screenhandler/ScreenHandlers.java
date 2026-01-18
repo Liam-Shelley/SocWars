@@ -9,7 +9,8 @@ import net.minecraft.screen.ScreenHandlerType;
 public interface ScreenHandlers {
     static void initialise() {}
 
-    ScreenHandlerType<BedwarsIndividualShopScreenHandler> BEDWARS_SHOP_SCREEN_HANDLER = register("individual_bedwars_shop", BedwarsIndividualShopScreenHandler::new);
+    ScreenHandlerType<BedwarsIndividualShopScreenHandler> BEDWARS_INDIVIDUAL_SHOP_SCREEN_HANDLER = register("individual_bedwars_shop", BedwarsIndividualShopScreenHandler::new);
+    ScreenHandlerType<BedwarsTeamShopScreenHandler> BEDWARS_TEAM_SHOP_SCREEN_HANDLER = register("team_bedwars_shop", BedwarsTeamShopScreenHandler::new);
 
     private static <T extends ScreenHandler> ScreenHandlerType<T> register(String id, ScreenHandlerType.Factory<T> factory) {
         return Registry.register(Registries.SCREEN_HANDLER, id, new ScreenHandlerType<>(factory, FeatureFlags.VANILLA_FEATURES));

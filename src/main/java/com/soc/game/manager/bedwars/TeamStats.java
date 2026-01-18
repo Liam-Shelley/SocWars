@@ -52,4 +52,8 @@ public class TeamStats {
     public void onPlayerInTrapRange(Vec3d pos, List<ServerPlayerEntity> players) {
         this.trapManager.trigger(pos, players);
     }
+
+    public BedwarsShopContents getShopContents() {
+        return null;
+    }
 }

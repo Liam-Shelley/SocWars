@@ -2,6 +2,7 @@ package com.soc.game.manager.bedwars;
 
 import com.soc.entities.BedwarsShopEntity;
 import com.soc.entities.util.ModEntities;
+import com.soc.game.map.DyeColourWithEmpty;
 import com.soc.screenhandler.BedwarsIndividualShopScreenHandler;
 import net.minecraft.entity.EntityType;
 import net.minecraft.screen.ScreenHandlerFactory;
@@ -24,5 +25,10 @@ public enum ShopType {
 
     public EntityType<BedwarsShopEntity> getEntityType() {
         return this.entityType;
+    }
+
+    public static ShopType fromOrdinal(int ordinal) {
+        final ShopType[] values = ShopType.values();
+        return values[ordinal < values.length ? ordinal : 0];
     }
 }

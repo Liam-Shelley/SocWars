@@ -10,7 +10,7 @@ import com.soc.game.map.*;
 import com.soc.items.components.ModComponents;
 import com.soc.lib.Events;
 import com.soc.networking.helper.Teams;
-import com.soc.networking.s2c.bedwars.ShopDataPayload;
+import com.soc.networking.s2c.bedwars.BedwarsShopDataPayload;
 import com.soc.networking.s2c.bedwars.JoinBedwarsPayload;
 import com.soc.networking.s2c.bedwars.LeaveBedwarsPayload;
 import com.soc.networking.s2c.bedwars.BedBreakPayload;
@@ -44,12 +44,12 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.soc.game.manager.bedwars.traps.TrapManager.TRAP_DETECTION_RANGE;
 import static com.soc.game.map.AbstractGameMap.getRandomPlayerStack;
 import static com.soc.lib.SocWarsLib.*;
 
 public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, BedwarsTable, BedwarsGameManager> {
     protected static final Item[] RESOURCES = { Items.IRON_INGOT, Items.GOLD_INGOT, Items.DIAMOND, Items.EMERALD };
-    protected static final double TRAP_DETECTION_RANGE = 8d;
 
     private final Map<UUID, PlayerStats> playerStatsMap;
     private final Map<DyeColor, TeamStats> teamStatsMap;
@@ -322,8 +322,12 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         }).orElse(true);
     }
 
-    public BedwarsShopContents getShopContents(UUID player) {
+    public BedwarsShopContents getIndividualShopContents(UUID player) {
         return this.playerStatsMap.get(player).getShopContents();
+    }
+
+    public BedwarsShopContents getTeamShopContents(UUID player) {
+        return this.teamStatsMap.get(this.getTeam(player)).getShopContents();
     }
 
     @Nullable
@@ -337,7 +341,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
         if (syncId.isEmpty() || !(player instanceof ServerPlayerEntity) || manager == null) return false;
 
-        ServerPlayNetworking.send(player, new ShopDataPayload(manager.getShopContents(player.getUuid()), syncId.getAsInt()));
+        ServerPlayNetworking.send(player, new BedwarsShopDataPayload(manager.getIndividualShopContents(player.getUuid()), syncId.getAsInt()));
         return true;
     }
 

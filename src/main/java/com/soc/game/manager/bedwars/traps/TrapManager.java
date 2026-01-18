@@ -9,6 +9,7 @@ import java.util.*;
 import static com.soc.game.manager.AbstractGameManager.mapUuidsToPlayers;
 
 public class TrapManager {
+    public static final double TRAP_DETECTION_RANGE = 8d;
     public static final int MAX_TRAP_QUEUE_SIZE = 3;
 
     private final Set<UUID> players;
@@ -41,7 +42,6 @@ public class TrapManager {
         if (this.traps.size() >= MAX_TRAP_QUEUE_SIZE) return false;
 
         this.traps.add(trap);
-
         return true;
     }
 }
