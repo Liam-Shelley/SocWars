@@ -1,0 +1,26 @@
+{
+  "cost": {
+    "iron": 4,
+    "gold": 2
+  },
+  "count": 16,
+  "map": {
+    "white": "minecraft:pale_oak_planks",
+    "orange": "minecraft:acacia_planks",
+    "magenta": "minecraft:mangrove_planks",
+    "light_blue": "minecraft:warped_planks",
+    "yellow": "minecraft:bamboo_planks",
+    "lime": "minecraft:jungle_planks",
+    "pink": "minecraft:cherry_planks",
+    "gray": "minecraft:oak_planks",
+    "light_gray": "minecraft:birch_planks",
+    "cyan": "minecraft:warped_planks",
+    "purple": "minecraft:crimson_planks",
+    "blue": "minecraft:crimson_planks",
+    "brown": "minecraft:dark_oak_planks",
+    "green": "minecraft:spruce_planks",
+    "red": "minecraft:mangrove_planks",
+    "black": "minecraft:dark_oak_planks",
+    "default": "minecraft:oak_planks"
+  }
+}

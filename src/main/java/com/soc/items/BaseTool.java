@@ -6,6 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ToolComponent;
+import net.minecraft.component.type.WeaponComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ToolMaterial;
@@ -35,6 +36,7 @@ public class BaseTool extends Item {
         ModItems.addItemToGroups(FISH_PICKAXE, ItemGroups.TOOLS);
         ModItems.addItemToGroups(FISH_AXE, ItemGroups.TOOLS);
         ModItems.addItemToGroups(FISH_SHEARS, ItemGroups.TOOLS);
+        ModItems.addItemToGroups(MULTI_TOOL, ItemGroups.TOOLS);
     }
 
     public static final Item STONE_SHEARS = ModItems.register("stone_shears", BaseTool::new, new Settings().component(DataComponentTypes.TOOL, createShearsComponent(ToolMaterial.STONE)));
@@ -49,6 +51,17 @@ public class BaseTool extends Item {
     public static final Item FISH_PICKAXE = ModItems.register("fish_pickaxe", BaseTool::new, new Settings().pickaxe(ToolMaterials.FISH, 1f, -2.8f));
     public static final Item FISH_AXE = ModItems.register("fish_axe", BaseTool::new, new Settings().axe(ToolMaterials.FISH, 5f, -3f));
     public static final Item FISH_SHEARS = ModItems.register("fish_shears", BaseTool::new, new Settings().component(DataComponentTypes.TOOL, createShearsComponent(ToolMaterials.FISH)));
+    public static final Item MULTI_TOOL = ModItems.register("multi_tool", BaseTool::new, new Settings()
+            .component(DataComponentTypes.TOOL, new ToolComponent(List.of(
+                    ToolComponent.Rule.ofNeverDropping(Registries.createEntryLookup(Registries.BLOCK).getOrThrow(BlockTags.INCORRECT_FOR_NETHERITE_TOOL)),
+                    ToolComponent.Rule.ofAlwaysDropping(Registries.createEntryLookup(Registries.BLOCK).getOrThrow(BlockTags.PICKAXE_MINEABLE), ToolMaterials.FISH.speed()),
+                    ToolComponent.Rule.ofAlwaysDropping(Registries.createEntryLookup(Registries.BLOCK).getOrThrow(BlockTags.AXE_MINEABLE), ToolMaterials.FISH.speed()),
+                    ToolComponent.Rule.ofAlwaysDropping(Registries.createEntryLookup(Registries.BLOCK).getOrThrow(BlockTags.SHOVEL_MINEABLE), ToolMaterials.FISH.speed()),
+                    ToolComponent.Rule.ofAlwaysDropping(Registries.createEntryLookup(Registries.BLOCK).getOrThrow(BlockTags.HOE_MINEABLE), ToolMaterials.FISH.speed())
+            ), ToolMaterials.FISH.speed(), 1, true))
+            .component(DataComponentTypes.WEAPON, new WeaponComponent(1, 2.5f))
+            .maxDamage(ToolMaterials.FISH.durability() * 3/2)
+    );
 
     public static ToolComponent createShearsComponent(ToolMaterial toolMaterial) {
         final RegistryEntryLookup<Block> registryEntryLookup = Registries.createEntryLookup(Registries.BLOCK);

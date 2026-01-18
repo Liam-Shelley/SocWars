@@ -35,6 +35,7 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Unit;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -49,6 +50,7 @@ import static com.soc.lib.SocWarsLib.*;
 
 public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, BedwarsTable, BedwarsGameManager> {
     protected static final Item[] RESOURCES = { Items.IRON_INGOT, Items.GOLD_INGOT, Items.DIAMOND, Items.EMERALD };
+    protected static final double TRAP_DETECTION_RANGE = 12d;
 
     private final Map<UUID, PlayerStats> playerStatsMap;
     private final Map<DyeColor, TeamStats> teamStatsMap;
@@ -346,5 +348,18 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
     public void upgradeEmeraldGens(GeneratorStats stats) {
         super.map.upgradeEmeraldGens(stats);
+    }
+
+    public void checkTraps() {
+        this.teamStatsMap.forEach((team, stats) -> {
+            if (!stats.hasActiveTrap()) return;
+
+            final Vec3d pos = this.map.getSpawnPosition(team).toCenterPos();
+            @Nullable final PlayerEntity nearestEnemy = super.world.getClosestPlayer(pos.x, pos.y, pos.z, TRAP_DETECTION_RANGE, entity -> BedwarsGameManager.this.getTeam((ServerPlayerEntity) entity) != team);
+
+            if (nearestEnemy != null) {
+                stats.
+            }
+        });
     }
 }

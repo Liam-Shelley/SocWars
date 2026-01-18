@@ -70,7 +70,7 @@ public class PotionWeapon extends Item {
     );
     public static final Item GOO_SHOVEL = ModItems.register("goo_shovel", settings -> new PotionWeapon(settings, EffectRecipients.TARGET, new EffectRecord(StatusEffects.SLOWNESS, 1, 1 * 20, 1)), new Settings()
             .sword(ToolMaterials.POTIONWEAPON, -2f, -3f)
-            .component(DataComponentTypes.TOOL, new ToolComponent(List.of(ToolComponent.Rule.ofNeverDropping(Registries.createEntryLookup(Registries.BLOCK).getOrThrow(BlockTags.SHOVEL_MINEABLE)), ToolComponent.Rule.ofAlwaysDropping(Registries.createEntryLookup(Registries.BLOCK).getOrThrow(BlockTags.SHOVEL_MINEABLE), 6.5f)), 1.0F, 1, true))
+            .component(DataComponentTypes.TOOL, new ToolComponent(List.of(ToolComponent.Rule.ofNeverDropping(Registries.createEntryLookup(Registries.BLOCK).getOrThrow(BlockTags.INCORRECT_FOR_DIAMOND_TOOL)), ToolComponent.Rule.ofAlwaysDropping(Registries.createEntryLookup(Registries.BLOCK).getOrThrow(BlockTags.SHOVEL_MINEABLE), 6.5f)), 1.0f, 1, true))
             .rarity(Rarity.UNCOMMON)
             .maxDamage(20) //The code above is definitely okay and not terrible whatsoever
     );

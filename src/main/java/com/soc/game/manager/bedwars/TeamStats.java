@@ -1,14 +1,14 @@
 package com.soc.game.manager.bedwars;
 
+import com.soc.game.manager.bedwars.traps.Trap;
 import net.minecraft.util.DyeColor;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class TeamStats {
     private final DyeColor team;
     private final Map<UUID, PlayerStats> playerStatsMap;
+    private final Queue<Trap> traps = new LinkedList<>();
 
     private boolean hasBed = true;
 
@@ -38,5 +38,9 @@ public class TeamStats {
 
     public DyeColor getTeam() {
         return this.team;
+    }
+
+    public boolean hasActiveTrap() {
+        return !this.traps.isEmpty() && this.traps.peek().readyToRemoveFromQueue(0);
     }
 }

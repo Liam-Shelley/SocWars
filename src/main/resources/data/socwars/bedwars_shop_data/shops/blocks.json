@@ -4,28 +4,24 @@
   "page_priority": 0,
   "contents": [
     {
-      "x": 1,
+      "x": 2,
       "y": 0,
       "options": [
         "socwars:bedwars_shop_data/team_items/wool"
       ]
     },
     {
-      "x": 2,
-      "y": 0,
-      "options": [
-      ]
-    },
-    {
       "x": 3,
       "y": 0,
       "options": [
+        "socwars:bedwars_shop_data/team_items/planks"
       ]
     },
     {
       "x": 4,
       "y": 0,
       "options": [
+        "socwars:bedwars_shop_data/team_items/terracotta"
       ]
     },
     {
