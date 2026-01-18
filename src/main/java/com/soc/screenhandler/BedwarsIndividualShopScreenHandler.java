@@ -16,9 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 
-import java.util.function.Consumer;
-
-public class BedwarsShopScreenHandler extends ScreenHandler {
+public class BedwarsIndividualShopScreenHandler extends ScreenHandler {
     public static final int STOCK_WIDTH = 8;
     public static final int STOCK_HEIGHT = 3;
     public static final int CATEGORIES_WIDTH = 3;
@@ -33,11 +31,11 @@ public class BedwarsShopScreenHandler extends ScreenHandler {
     private BedwarsShopContents shopContents;
     private BedwarsShopCategory currentCategory;
 
-    public BedwarsShopScreenHandler(int syncId, PlayerInventory playerInventory) {
+    public BedwarsIndividualShopScreenHandler(int syncId, PlayerInventory playerInventory) {
         this(syncId, playerInventory, playerInventory.player);
     }
 
-    public BedwarsShopScreenHandler(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
+    public BedwarsIndividualShopScreenHandler(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
         super(ScreenHandlers.BEDWARS_SHOP_SCREEN_HANDLER, syncId);
         this.player = player;
         this.playerInventory = playerInventory;

@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Either;
 import com.soc.game.map.DyeColourWithEmpty;
 import com.soc.resourcedata.deserialisation.Cost;
-import com.soc.screenhandler.BedwarsShopScreenHandler;
+import com.soc.screenhandler.BedwarsIndividualShopScreenHandler;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -70,7 +70,7 @@ public class TeamShopItem implements ShopItem<TeamShopItem> {
     }
 
     @Override
-    public boolean buy(PlayerEntity player, BedwarsShopScreenHandler context) {
+    public boolean buy(PlayerEntity player, BedwarsIndividualShopScreenHandler context) {
         final boolean gaveStack = this.giveStack(this.getStack(), player, OptionalInt.empty());
         if (gaveStack) this.takeItems(player);
 

@@ -4,7 +4,7 @@ import com.soc.SocWars;
 import com.soc.game.manager.bedwars.BedwarsShopCategory;
 import com.soc.game.manager.bedwars.ShopItem;
 import com.soc.gui.ShopResourceDisplay;
-import com.soc.screenhandler.BedwarsShopScreenHandler;
+import com.soc.screenhandler.BedwarsIndividualShopScreenHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
@@ -18,13 +18,12 @@ import net.minecraft.item.Items;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BedwarsShopScreen extends HandledScreen<BedwarsShopScreenHandler> {
+public class BedwarsIndividualShopScreen extends HandledScreen<BedwarsIndividualShopScreenHandler> {
     private static final Identifier TEXTURE = Identifier.of(SocWars.MOD_ID, "textures/gui/container/bedwars_shop_base.png");
     private static final Text CATEGORIES_TITLE = Text.translatable("shop.title.pages");
     private static final int CATEGORIES_TITLE_X = 8;
@@ -34,7 +33,7 @@ public class BedwarsShopScreen extends HandledScreen<BedwarsShopScreenHandler> {
     private final PlayerInventory playerInventory;
     private final List<ShopResourceDisplay> resourceDisplays = new ArrayList<>(RESOURCE_DISPLAY_ITEMS.length);
 
-    public BedwarsShopScreen(BedwarsShopScreenHandler handler, PlayerInventory inventory, Text title) {
+    public BedwarsIndividualShopScreen(BedwarsIndividualShopScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
         super.client = MinecraftClient.getInstance();
 
@@ -125,7 +124,7 @@ public class BedwarsShopScreen extends HandledScreen<BedwarsShopScreenHandler> {
         super.drawForeground(context, mouseX, mouseY);
         context.drawText(this.textRenderer, CATEGORIES_TITLE, CATEGORIES_TITLE_X, CATEGORIES_TITLE_Y, Colors.DARK_GRAY, false);
 
-        this.resourceDisplays.forEach(display -> display.render(context, BedwarsShopScreen.super.textRenderer, BedwarsShopScreen.this.playerInventory));
+        this.resourceDisplays.forEach(display -> display.render(context, BedwarsIndividualShopScreen.super.textRenderer, BedwarsIndividualShopScreen.this.playerInventory));
     }
 
     @Override

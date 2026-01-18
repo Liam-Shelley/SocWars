@@ -2,12 +2,12 @@ package com.soc.game.manager.bedwars;
 
 import com.soc.entities.BedwarsShopEntity;
 import com.soc.entities.util.ModEntities;
-import com.soc.screenhandler.BedwarsShopScreenHandler;
+import com.soc.screenhandler.BedwarsIndividualShopScreenHandler;
 import net.minecraft.entity.EntityType;
 import net.minecraft.screen.ScreenHandlerFactory;
 
 public enum ShopType {
-    INDIVIDUAL(BedwarsShopScreenHandler::new, ModEntities.INDIVIDUAL_BEDWARS_SHOP),
+    INDIVIDUAL(BedwarsIndividualShopScreenHandler::new, ModEntities.INDIVIDUAL_BEDWARS_SHOP),
     TEAM(null, ModEntities.TEAM_BEDWARS_SHOP);
 
     private final ScreenHandlerFactory factory;

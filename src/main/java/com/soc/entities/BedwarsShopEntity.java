@@ -4,12 +4,10 @@ import com.soc.entities.util.ModEntities;
 import com.soc.game.manager.BedwarsGameManager;
 import com.soc.game.manager.GamesManager;
 import com.soc.game.manager.bedwars.ShopType;
-import com.soc.screenhandler.BedwarsShopScreenHandler;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MovementType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
@@ -25,12 +23,9 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-import java.util.List;
 import java.util.OptionalInt;
 
 import static com.soc.lib.SocWarsLib.damageSource;

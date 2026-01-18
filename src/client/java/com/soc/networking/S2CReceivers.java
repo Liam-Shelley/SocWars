@@ -4,12 +4,10 @@ import com.soc.game.BedwarsTeamsHUD;
 import com.soc.networking.s2c.*;
 import com.soc.networking.s2c.bedwars.*;
 import com.soc.player.PlayerDataManager;
-import com.soc.screenhandler.BedwarsShopScreenHandler;
+import com.soc.screenhandler.BedwarsIndividualShopScreenHandler;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.NetworkThreadUtils;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
@@ -41,8 +39,8 @@ public class S2CReceivers {
         });
         ClientPlayNetworking.registerGlobalReceiver(ShopDataPayload.ID, (payload, context) -> {
             final ScreenHandler screenHandler = context.player().currentScreenHandler;
-            if (screenHandler.syncId == payload.syncId() && screenHandler instanceof BedwarsShopScreenHandler bedwarsShopScreenHandler) {
-                bedwarsShopScreenHandler.setShopContents(payload);
+            if (screenHandler.syncId == payload.syncId() && screenHandler instanceof BedwarsIndividualShopScreenHandler bedwarsIndividualShopScreenHandler) {
+                bedwarsIndividualShopScreenHandler.setShopContents(payload);
             }
         });
         ClientPlayNetworking.registerGlobalReceiver(UpdateHotbarPayload.ID, (payload, context) -> {

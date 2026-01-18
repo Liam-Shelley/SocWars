@@ -3,7 +3,7 @@ package com.soc.resourcedata.deserialisation;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.soc.lib.json.JsonHelper;
-import com.soc.screenhandler.BedwarsShopScreenHandler;
+import com.soc.screenhandler.BedwarsIndividualShopScreenHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.NotNull;
@@ -32,7 +32,7 @@ public record PreSelectionBedwarsShopCategory(Text name, ItemStack icon, int pag
     }
 
     private static BedwarsShopSlot[][] deserialiseSlots(JsonArray array) {
-        final BedwarsShopSlot[][] list = new BedwarsShopSlot[BedwarsShopScreenHandler.STOCK_WIDTH][BedwarsShopScreenHandler.STOCK_HEIGHT];
+        final BedwarsShopSlot[][] list = new BedwarsShopSlot[BedwarsIndividualShopScreenHandler.STOCK_WIDTH][BedwarsIndividualShopScreenHandler.STOCK_HEIGHT];
         array.forEach(element -> BedwarsShopSlot.deserialiseAndAddSlot(list, element.getAsJsonObject()));
 
         return list;

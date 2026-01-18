@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.soc.items.components.ModComponents;
 import com.soc.resourcedata.deserialisation.Cost;
 import com.soc.resourcedata.deserialisation.CostStack;
-import com.soc.screenhandler.BedwarsShopScreenHandler;
+import com.soc.screenhandler.BedwarsIndividualShopScreenHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -75,7 +75,7 @@ public class UpgradeableShopItem implements ShopItem<UpgradeableShopItem> {
     }
 
     @Override
-    public boolean buy(PlayerEntity player, BedwarsShopScreenHandler context) {
+    public boolean buy(PlayerEntity player, BedwarsIndividualShopScreenHandler context) {
         if (this.tier == this.stacks.size()) return false;
 
         boolean gaveStack;

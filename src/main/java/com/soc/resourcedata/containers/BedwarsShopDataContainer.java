@@ -4,7 +4,7 @@ import com.soc.SocWars;
 import com.soc.game.manager.bedwars.*;
 import com.soc.resourcedata.deserialisation.BedwarsShopSlot;
 import com.soc.resourcedata.deserialisation.PreSelectionBedwarsShopCategory;
-import com.soc.screenhandler.BedwarsShopScreenHandler;
+import com.soc.screenhandler.BedwarsIndividualShopScreenHandler;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.random.Random;
@@ -35,7 +35,7 @@ public class BedwarsShopDataContainer implements CachedData {
         final List<BedwarsShopCategory> categories = this.categoryStockSlotsMap.entrySet().stream().map(entry -> {
             final BedwarsShopSlot[][] preSelection = entry.getValue().contents();
 
-            final int itemsSize = BedwarsShopScreenHandler.STOCK_WIDTH * BedwarsShopScreenHandler.STOCK_HEIGHT;
+            final int itemsSize = BedwarsIndividualShopScreenHandler.STOCK_WIDTH * BedwarsIndividualShopScreenHandler.STOCK_HEIGHT;
             final List<ShopItem<?>> items = new ArrayList<>(itemsSize);
             for (int i = 0; i < itemsSize; i++) {
                 items.add(SimpleShopItem.EMPTY);
@@ -44,7 +44,7 @@ public class BedwarsShopDataContainer implements CachedData {
             for (int i = 0; i < preSelection.length; i++) {
                 for (int j = 0; j < preSelection[i].length; j++) {
                     final BedwarsShopSlot shopSlot = preSelection[i][j];
-                    final int index = i + j * BedwarsShopScreenHandler.STOCK_WIDTH;
+                    final int index = i + j * BedwarsIndividualShopScreenHandler.STOCK_WIDTH;
 
                     if (shopSlot != null) {
                         final List<Identifier> options = shopSlot.options();
@@ -69,7 +69,7 @@ public class BedwarsShopDataContainer implements CachedData {
                     entry.getValue().icon(),
                     entry.getValue().name()
             );
-        }).limit(BedwarsShopScreenHandler.CATEGORIES_WIDTH * BedwarsShopScreenHandler.CATEGORIES_HEIGHT - 1).collect(Collectors.toList());
+        }).limit(BedwarsIndividualShopScreenHandler.CATEGORIES_WIDTH * BedwarsIndividualShopScreenHandler.CATEGORIES_HEIGHT - 1).collect(Collectors.toList());
 
         categories.addFirst(BedwarsShopCategory.DEFAULT_QUICK_BUY);
 
