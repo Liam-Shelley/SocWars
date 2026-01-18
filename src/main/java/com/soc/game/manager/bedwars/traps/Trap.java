@@ -1,33 +1,20 @@
 package com.soc.game.manager.bedwars.traps;
 
-import com.mojang.serialization.Lifecycle;
-import com.soc.SocWars;
-import com.soc.game.manager.bedwars.TeamStats;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.SimpleRegistry;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.MustBeInvokedByOverriders;
+import net.minecraft.util.math.Vec3d;
+
+import java.util.List;
 
 public abstract class Trap {
-    public static final RegistryKey<Registry<Trap>> TRAPS_REGISTRY_KEY = RegistryKey.ofRegistry(Identifier.of(SocWars.MOD_ID, "traps"));
-    public static final Registry<Trap> TRAPS_REGISTRY = new SimpleRegistry<>(TRAPS_REGISTRY_KEY, Lifecycle.stable());
-
-    private final int time;
-
-    private int timeTriggered = -1;
+    private final int cooldownTime;
 
     public Trap(int time) {
-        this.time = time;
+        this.cooldownTime = time;
     }
 
-    @MustBeInvokedByOverriders
-    public void trigger(TeamStats team, ServerPlayerEntity player, int time) {
-        this.timeTriggered = time;
-    }
+    public abstract void trigger(Vec3d pos, List<ServerPlayerEntity> team, List<ServerPlayerEntity> players);
 
-    public boolean readyToRemoveFromQueue(int time) {
-        return this.timeTriggered != -1 && time > this.timeTriggered + this.time;
+    public final int getCooldownTime() {
+        return this.cooldownTime;
     }
 }

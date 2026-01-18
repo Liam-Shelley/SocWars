@@ -41,7 +41,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -50,7 +49,7 @@ import static com.soc.lib.SocWarsLib.*;
 
 public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, BedwarsTable, BedwarsGameManager> {
     protected static final Item[] RESOURCES = { Items.IRON_INGOT, Items.GOLD_INGOT, Items.DIAMOND, Items.EMERALD };
-    protected static final double TRAP_DETECTION_RANGE = 12d;
+    protected static final double TRAP_DETECTION_RANGE = 8d;
 
     private final Map<UUID, PlayerStats> playerStatsMap;
     private final Map<DyeColor, TeamStats> teamStatsMap;
@@ -60,7 +59,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
         final long shopSeed = world.random.nextLong();
         this.playerStatsMap = players.stream().collect(Collectors.toMap(ServerPlayerEntity::getUuid, player -> new PlayerStats(player, this.getTeam(player), shopSeed)));
-        this.teamStatsMap = super.teams.keySet().stream().collect(Collectors.toMap(Function.identity(), team -> new TeamStats(team, super.teams.get(team).stream().map(this.playerStatsMap::get).collect(Collectors.toSet()))));
+        this.teamStatsMap = super.teams.keySet().stream().collect(Collectors.toMap(Function.identity(), team -> new TeamStats(team, super.teams.get(team).stream().map(this.playerStatsMap::get).collect(Collectors.toSet()), world)));
     }
 
     @Override
@@ -350,16 +349,19 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         super.map.upgradeEmeraldGens(stats);
     }
 
+    @Override
+    public void tick() {
+        super.tick();
+        this.checkTraps();
+    }
+
     public void checkTraps() {
         this.teamStatsMap.forEach((team, stats) -> {
             if (!stats.hasActiveTrap()) return;
 
-            final Vec3d pos = this.map.getSpawnPosition(team).toCenterPos();
-            @Nullable final PlayerEntity nearestEnemy = super.world.getClosestPlayer(pos.x, pos.y, pos.z, TRAP_DETECTION_RANGE, entity -> BedwarsGameManager.this.getTeam((ServerPlayerEntity) entity) != team);
-
-            if (nearestEnemy != null) {
-                stats.
-            }
+            final Vec3d pos = this.map.getBedPosition(team).toCenterPos();
+            final List<ServerPlayerEntity> enemiesInRange = this.getPlayers().stream().filter(player -> this.getTeam(player) != team && player.getPos().isInRange(pos, TRAP_DETECTION_RANGE)).toList();
+            stats.onPlayerInTrapRange(pos, enemiesInRange);
         });
     }
 }

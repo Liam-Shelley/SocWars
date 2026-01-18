@@ -11,6 +11,7 @@ import com.soc.game.manager.GamesManager;
 import com.soc.game.manager.bedwars.SimpleShopItem;
 import com.soc.game.manager.bedwars.TeamShopItem;
 import com.soc.game.manager.bedwars.UpgradeableShopItem;
+import com.soc.game.manager.bedwars.traps.Traps;
 import com.soc.items.components.ModComponents;
 import com.soc.items.util.ModItems;
 import com.soc.lib.Coroutines;
@@ -68,6 +69,8 @@ public class SocWars implements ModInitializer {
 		SimpleShopItem.initialise();
 		UpgradeableShopItem.initialise();
 		TeamShopItem.initialise();
+
+		Traps.initialise();
 
 		Database.initialise();
 	}

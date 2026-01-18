@@ -187,4 +187,8 @@ public class BedwarsGameMap extends AbstractGameMap {
     public Map<DyeColor, BlockPos> getBedPositions() {
         return this.bedPositions;
     }
+
+    public BlockPos getBedPosition(DyeColor team) {
+        return this.pos(this.bedPositions.get(team));
+    }
 }

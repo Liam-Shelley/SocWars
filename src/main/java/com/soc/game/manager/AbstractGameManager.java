@@ -37,6 +37,7 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
+import net.minecraft.world.World;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
@@ -221,23 +222,23 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     }
 
     public final Collection<ServerPlayerEntity> getPlayers() {
-        return this.mapUuidsToPlayers(this.teams.values());
+        return mapUuidsToPlayers(this.world, this.teams.values());
     }
 
     public final Collection<ServerPlayerEntity> getPlayers(DyeColor team) {
-        return this.mapUuidsToPlayers(this.teams.get(team));
+        return mapUuidsToPlayers(this.world, this.teams.get(team));
     }
 
     public final Collection<ServerPlayerEntity> getSpectators() {
-        return this.mapUuidsToPlayers(this.spectators);
+        return mapUuidsToPlayers(this.world, this.spectators);
     }
 
     protected final void playersForEach(BiConsumer<DyeColor, ServerPlayerEntity> biConsumer) {
         this.teams.forEach((team, uuid) -> biConsumer.accept(team, (ServerPlayerEntity)this.world.getPlayerByUuid(uuid)));
     }
 
-    protected final Collection<ServerPlayerEntity> mapUuidsToPlayers(Collection<UUID> players) {
-        return players.stream().map(player -> (ServerPlayerEntity)this.world.getPlayerByUuid(player)).filter(Objects::nonNull).toList();
+    public static List<ServerPlayerEntity> mapUuidsToPlayers(World world, Collection<UUID> players) {
+        return players.stream().map(player -> (ServerPlayerEntity)world.getPlayerByUuid(player)).filter(Objects::nonNull).toList();
     }
 
     protected final Team addTeamFromColour(DyeColor colour) {

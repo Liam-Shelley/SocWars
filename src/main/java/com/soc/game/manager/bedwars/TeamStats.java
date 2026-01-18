@@ -1,20 +1,25 @@
 package com.soc.game.manager.bedwars;
 
-import com.soc.game.manager.bedwars.traps.Trap;
+import com.soc.game.manager.AbstractGameManager;
+import com.soc.game.manager.bedwars.traps.TrapManager;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 import java.util.*;
 
 public class TeamStats {
     private final DyeColor team;
     private final Map<UUID, PlayerStats> playerStatsMap;
-    private final Queue<Trap> traps = new LinkedList<>();
+    private final TrapManager trapManager;
 
     private boolean hasBed = true;
 
-    public TeamStats(DyeColor team, Collection<PlayerStats> playerStatsCollection) {
+    public TeamStats(DyeColor team, Collection<PlayerStats> playerStatsCollection, World world) {
         this.team = team;
         this.playerStatsMap = playerStatsCollection.stream().collect(PlayerStats.MAP_COLLECTOR);
+        this.trapManager = new TrapManager(playerStatsMap.keySet(), world);
     }
 
     public boolean hasBed() {
@@ -41,6 +46,10 @@ public class TeamStats {
     }
 
     public boolean hasActiveTrap() {
-        return !this.traps.isEmpty() && this.traps.peek().readyToRemoveFromQueue(0);
+        return this.trapManager.hasActiveTrap();
+    }
+
+    public void onPlayerInTrapRange(Vec3d pos, List<ServerPlayerEntity> players) {
+        this.trapManager.trigger(pos, players);
     }
 }
