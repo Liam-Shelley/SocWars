@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BedwarsIndividualShopScreen extends HandledScreen<BedwarsIndividualShopScreenHandler> {
-    private static final Identifier TEXTURE = Identifier.of(SocWars.MOD_ID, "textures/gui/container/bedwars_shop_base.png");
+    private static final Identifier TEXTURE = Identifier.of(SocWars.MOD_ID, "textures/gui/container/bedwars_individual_shop_base.png");
     private static final Text CATEGORIES_TITLE = Text.translatable("shop.title.pages");
     private static final int CATEGORIES_TITLE_X = 8;
     private static final int CATEGORIES_TITLE_Y = 6;
