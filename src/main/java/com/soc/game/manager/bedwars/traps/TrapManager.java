@@ -22,6 +22,8 @@ public class TrapManager {
         this.players = players;
         this.world = world;
         this.nextTrapTriggerTime = world.getTime();
+
+        traps.addAll(List.of(SimpleTriggerTrap.SHUFFLE, SimpleTriggerTrap.ENLARGEMENT, SimpleTriggerTrap.POSTURA, SimpleTriggerTrap.PERPLEXITY, SimpleTriggerTrap.LAUNCH));
     }
 
     public boolean hasActiveTrap() {

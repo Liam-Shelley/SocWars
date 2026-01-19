@@ -1,6 +1,5 @@
 package com.soc.game.manager.bedwars;
 
-import com.soc.game.manager.AbstractGameManager;
 import com.soc.game.manager.bedwars.traps.TrapManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.DyeColor;
