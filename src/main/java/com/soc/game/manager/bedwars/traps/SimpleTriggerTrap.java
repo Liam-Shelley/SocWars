@@ -11,10 +11,12 @@ import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Vec3d;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import static com.soc.lib.SocWarsLib.resetScale;
 import static com.soc.lib.SocWarsLib.scaleEntity;
@@ -32,9 +34,9 @@ public class SimpleTriggerTrap extends Trap {
     }));
     public static final Trap SHUFFLE = register("shuffle", new SimpleTriggerTrap(20 * 20, player -> {
         final PlayerInventory inventory = player.getInventory();
-        final List<ItemStack> items = inventory.getMainStacks();
+        final List<ItemStack> items = new ArrayList<>(inventory.getMainStacks());
         Collections.shuffle(items);
-        for (int i = 0; i < items.size(); i++) {
+        for (int i = 0; !items.isEmpty(); i++) {
             inventory.setStack(i, items.removeFirst());
         }
     }));

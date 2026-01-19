@@ -364,8 +364,8 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
             if (!stats.hasActiveTrap()) return;
 
             final Vec3d pos = this.map.getBedPosition(team).toCenterPos();
-            final List<ServerPlayerEntity> enemiesInRange = this.getPlayers().stream().filter(player -> this.getTeam(player) != team && player.getPos().isInRange(pos, TRAP_DETECTION_RANGE)).toList();
-            stats.onPlayerInTrapRange(pos, enemiesInRange);
+            final List<ServerPlayerEntity> enemiesInRange = this.getPlayers().stream().filter(player -> (this.getTeam(player) != team || true) && player.getPos().isInRange(pos, TRAP_DETECTION_RANGE)).toList();
+            if(!enemiesInRange.isEmpty()) stats.onPlayerInTrapRange(pos, enemiesInRange);
         });
     }
 }

@@ -23,7 +23,7 @@ public class TrapManager {
         this.world = world;
         this.nextTrapTriggerTime = world.getTime();
 
-        traps.addAll(List.of(SimpleTriggerTrap.SHUFFLE, SimpleTriggerTrap.ENLARGEMENT, SimpleTriggerTrap.POSTURA, SimpleTriggerTrap.PERPLEXITY, SimpleTriggerTrap.LAUNCH));
+        traps.addAll(List.of(SimpleTriggerTrap.ENLARGEMENT, SimpleTriggerTrap.SHUFFLE, SimpleTriggerTrap.POSTURA, SimpleTriggerTrap.PERPLEXITY, SimpleTriggerTrap.LAUNCH));
     }
 
     public boolean hasActiveTrap() {
@@ -37,7 +37,8 @@ public class TrapManager {
     }
 
     private boolean cooldownFinished() {
-        return this.nextTrapTriggerTime < this.world.getTime();
+        final boolean finished = this.nextTrapTriggerTime < this.world.getTime();
+        return finished;
     }
 
     public boolean addTrap(Trap trap) {
