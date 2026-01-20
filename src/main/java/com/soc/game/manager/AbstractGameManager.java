@@ -284,7 +284,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
 
     public final BlockPos generateCentrePosition() {
         final BlockPos initial = new BlockPos(20000, 0, 20000);
-        return initial.add(0, 0, 500 * this.gameId);
+        return initial.add(0, 0, 1000 * this.gameId);
     }
 
     public final DyeColor getTeam(ServerPlayerEntity player) {

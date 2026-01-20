@@ -47,9 +47,16 @@ import java.util.stream.Collectors;
 import static com.soc.game.manager.bedwars.traps.TrapManager.TRAP_DETECTION_RANGE;
 import static com.soc.game.map.AbstractGameMap.getRandomPlayerStack;
 import static com.soc.lib.SocWarsLib.*;
+import static net.minecraft.item.Items.*;
 
 public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, BedwarsTable, BedwarsGameManager> {
-    protected static final Item[] RESOURCES = { Items.IRON_INGOT, Items.GOLD_INGOT, Items.DIAMOND, Items.EMERALD };
+    protected static final Item[] RESOURCES = { IRON_INGOT, GOLD_INGOT, Items.DIAMOND, Items.EMERALD };
+    protected static final Map<Item, Formatting> RESOURCE_TO_COLOUR_MAP = Map.of(
+            IRON_INGOT, Formatting.GRAY,
+            GOLD_INGOT, Formatting.GOLD,
+            DIAMOND, Formatting.BLUE,
+            EMERALD, Formatting.GREEN
+    );
 
     private final Map<UUID, PlayerStats> playerStatsMap;
     private final Map<DyeColor, TeamStats> teamStatsMap;
@@ -188,16 +195,15 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
     @Override
     public boolean onPlayerDeath(ServerPlayerEntity player, DamageSource source, float amount) {
-        getPlayerAttacker(player).ifPresentOrElse(attacker -> giveResourcesToPlayer(player, (ServerPlayerEntity) attacker), () -> dropResources(player));
-
         final boolean canRespawn = this.canRespawn(player);
+        this.broadcastDeath(player, source, !canRespawn);
+
+        getPlayerAttacker(player).ifPresentOrElse(attacker -> giveResourcesToPlayer(player, (ServerPlayerEntity) attacker), () -> dropResources(player));
 
         final PlayerStats playerStats = this.getPlayerStats(player);
         playerStats.onDeath(canRespawn, super.world);
         player.getInventory().clear();
         playerStats.returnToolsToSlots(super.world);
-
-        this.broadcastDeath(player, source, !canRespawn);
 
         super.onPlayerDeath(player, source, amount);
 
@@ -256,24 +262,25 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
     protected static void giveResourcesToPlayer(ServerPlayerEntity giver, ServerPlayerEntity receiver) {
         for (Item resource : RESOURCES) {
-            //final ItemStack stack = new ItemStack(resource, count);
-            //stack.set(ModComponents.RESOURCE_COUNTED, Unit.INSTANCE);
-            //receiver.giveItemStack(stack);
-
-
             final int count = giver.getInventory().count(resource);
-            int stacks = count >> 6;
-            int remainder = count % 64;
+            final ItemStack stack = new ItemStack(resource, count);
+            stack.set(ModComponents.RESOURCE_COUNTED, Unit.INSTANCE);
+            receiver.giveItemStack(stack);
 
-            do {
-                final ItemStack stack = new ItemStack(resource, remainder);
-                stack.set(ModComponents.RESOURCE_COUNTED, Unit.INSTANCE);
-                receiver.giveItemStack(stack);
-                receiver.sendMessage(Text.translatable("game.bedwars.receive_items", stack.getCount(), stack.toHoverableText()).formatted(Formatting.DARK_GREEN), false);
+            if (count > 0) receiver.sendMessage(Text.translatable("game.bedwars.receive_items", count, resource.getDefaultStack().toHoverableText().copy().formatted(RESOURCE_TO_COLOUR_MAP.get(resource))).formatted(Formatting.DARK_GREEN), false);
 
+            //Some very special code I wrote for the sake of writing bad code
+            //
+            //int stacks = count >> 6;
+            //int remainder = count % 64;
 
-                remainder = 64;
-            } while (stacks-- > 0);
+            //do {
+            //    final ItemStack stack = new ItemStack(resource, remainder);
+            //    stack.set(ModComponents.RESOURCE_COUNTED, Unit.INSTANCE);
+            //    receiver.giveItemStack(stack);
+
+            //    remainder = 64;
+            //} while (stacks-- > 0);
         }
     }
 
@@ -364,7 +371,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
             if (!stats.hasActiveTrap()) return;
 
             final Vec3d pos = this.map.getBedPosition(team).toCenterPos();
-            final List<ServerPlayerEntity> enemiesInRange = this.getPlayers().stream().filter(player -> (this.getTeam(player) != team || true) && player.getPos().isInRange(pos, TRAP_DETECTION_RANGE)).toList();
+            final List<ServerPlayerEntity> enemiesInRange = this.getPlayers().stream().filter(player -> this.getTeam(player) != team && player.getPos().isInRange(pos, TRAP_DETECTION_RANGE)).toList();
             if(!enemiesInRange.isEmpty()) stats.onPlayerInTrapRange(pos, enemiesInRange);
         });
     }

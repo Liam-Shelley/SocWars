@@ -2,7 +2,6 @@ package com.soc.game.manager.bedwars.traps;
 
 import com.soc.effects.util.ModEffects;
 import com.soc.lib.Events;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerInventory;
@@ -16,7 +15,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import static com.soc.lib.SocWarsLib.resetScale;
 import static com.soc.lib.SocWarsLib.scaleEntity;
@@ -32,7 +30,7 @@ public class SimpleTriggerTrap extends Trap {
         player.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 20 * 20, 1, false, true, true));
         player.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 20 * 20, 1, false, true, true));
     }));
-    public static final Trap SHUFFLE = register("shuffle", new SimpleTriggerTrap(20 * 20, player -> {
+    public static final Trap SHUFFLE = register("shuffle", new SimpleTriggerTrap(5 * 20, player -> {
         final PlayerInventory inventory = player.getInventory();
         final List<ItemStack> items = new ArrayList<>(inventory.getMainStacks());
         Collections.shuffle(items);
@@ -40,13 +38,14 @@ public class SimpleTriggerTrap extends Trap {
             inventory.setStack(i, items.removeFirst());
         }
     }));
-    public static final Trap PERPLEXITY = register("perplexity", new SimpleTriggerTrap(20 * 20, player -> player.addStatusEffect(new StatusEffectInstance(ModEffects.PERPLEXITY, 20 * 20, 1, false, true, true))));
+    public static final Trap PERPLEXITY = register("perplexity", new SimpleTriggerTrap(20 * 20, player -> player.addStatusEffect(new StatusEffectInstance(ModEffects.PERPLEXITY, 20 * 20, 0, false, true, true))));
     public static final Trap ENLARGEMENT = register("enlargement", new SimpleTriggerTrap(20 * 20, player -> {
         scaleEntity(player, 2f);
         Events.getInstance().scheduleEvent(() -> resetScale(player), 20 * 20);
     }));
     public static final Trap GLOWING = register("glowing", new SimpleTriggerTrap(20 * 20, player -> player.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, 20 * 20, 0, false, true, true))));
     public static final Trap POSTURA = register("postura", new SimpleTriggerTrap(20 * 20, player -> player.addStatusEffect(new StatusEffectInstance(ModEffects.ARTHRODESIS, 20 * 20, 0, false, true, true))));
+    public static final Trap SPEED = register("speed", new SimpleTriggerTrap(2 * 20, player -> player.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 2 * 20, 9, false, true, true))));
 
     private final Consumer<ServerPlayerEntity> enemyTriggerFunction;
     private final BiConsumer<Vec3d, ServerPlayerEntity> teamPlayerTriggerFunction;
