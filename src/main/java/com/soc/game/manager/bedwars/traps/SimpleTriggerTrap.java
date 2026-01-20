@@ -13,7 +13,6 @@ import net.minecraft.util.math.Vec3d;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import static com.soc.lib.SocWarsLib.resetScale;
@@ -48,21 +47,14 @@ public class SimpleTriggerTrap extends Trap {
     public static final Trap SPEED = register("speed", new SimpleTriggerTrap(2 * 20, player -> player.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 2 * 20, 9, false, true, true))));
 
     private final Consumer<ServerPlayerEntity> enemyTriggerFunction;
-    private final BiConsumer<Vec3d, ServerPlayerEntity> teamPlayerTriggerFunction;
-
-    public SimpleTriggerTrap(int time, Consumer<ServerPlayerEntity> enemyTriggerFunction, BiConsumer<Vec3d, ServerPlayerEntity> teamPlayerTriggerFunction) {
-        super(time);
-        this.enemyTriggerFunction = enemyTriggerFunction;
-        this.teamPlayerTriggerFunction = teamPlayerTriggerFunction;
-    }
 
     public SimpleTriggerTrap(int time, Consumer<ServerPlayerEntity> enemyTriggerFunction) {
-        this(time, enemyTriggerFunction, (pos, player) -> {});
+        super(time);
+        this.enemyTriggerFunction = enemyTriggerFunction;
     }
 
     @Override
     public void trigger(Vec3d pos, List<ServerPlayerEntity> team, List<ServerPlayerEntity> players) {
         players.forEach(this.enemyTriggerFunction);
-        team.forEach(player -> this.teamPlayerTriggerFunction.accept(pos, player));
     }
 }
