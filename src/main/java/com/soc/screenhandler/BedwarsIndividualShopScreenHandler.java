@@ -5,7 +5,6 @@ import com.soc.game.manager.bedwars.BedwarsShopCategory;
 import com.soc.game.manager.bedwars.BedwarsShopContents;
 import com.soc.game.manager.bedwars.ShopItem;
 import com.soc.game.manager.bedwars.SimpleShopItem;
-import com.soc.networking.s2c.bedwars.BedwarsShopDataPayload;
 import com.soc.screenhandler.slots.CategorySlot;
 import com.soc.screenhandler.slots.StockSlot;
 import net.minecraft.entity.player.PlayerEntity;
@@ -26,7 +25,6 @@ public class BedwarsIndividualShopScreenHandler extends AbstractShopScreenHandle
     private final Inventory stock;
     private final Inventory categories;
 
-    private final BedwarsGameManager manager;
     private BedwarsShopContents shopContents;
     private BedwarsShopCategory currentCategory;
 
@@ -41,8 +39,8 @@ public class BedwarsIndividualShopScreenHandler extends AbstractShopScreenHandle
         this.stock = new SimpleInventory(STOCK_WIDTH * STOCK_HEIGHT);
         this.categories = new SimpleInventory(CATEGORIES_WIDTH * CATEGORIES_HEIGHT);
 
-        this.manager = BedwarsGameManager.getBedwarsGameManager(player);
-        this.shopContents = this.manager == null ? null : this.manager.getIndividualShopContents(player.getUuid());
+        final BedwarsGameManager manager = BedwarsGameManager.getBedwarsGameManager(player);
+        this.shopContents = manager == null ? null : manager.getIndividualShopContents(player.getUuid());
         this.currentCategory = this.shopContents == null ? null : this.shopContents.getFirstCategory();
 
         this.makeSlots();
@@ -61,7 +59,7 @@ public class BedwarsIndividualShopScreenHandler extends AbstractShopScreenHandle
             }
         }
 
-        this.addPlayerSlots(this.playerInventory, 48, 86);
+        this.addPlayerSlots(this.playerInventory, 48, this.getPlayerInventorySlotHeight());
 
         this.refreshItems();
         this.refreshCategories();
@@ -103,17 +101,15 @@ public class BedwarsIndividualShopScreenHandler extends AbstractShopScreenHandle
         return this.shopContents.getCategory(slot);
     }
 
-    public boolean isStock(Slot slot) {
-        return slot.inventory == this.stock;
-    }
-
-    public boolean isCategory(Slot slot) {
-        return slot.inventory == this.categories;
-    }
-
-    public void setShopContents(BedwarsShopDataPayload payload) {
-        this.shopContents = payload.shopContents();
+    @Override
+    public void setShopContents(BedwarsShopContents shopContents) {
+        this.shopContents = shopContents;
         this.refreshItems();
         this.refreshCategories();
+    }
+
+    @Override
+    public int getPlayerInventorySlotHeight() {
+        return 86;
     }
 }

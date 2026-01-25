@@ -1,7 +1,6 @@
 package com.soc.screenhandler.slots;
 
 import com.soc.screenhandler.AbstractShopScreenHandler;
-import com.soc.screenhandler.BedwarsIndividualShopScreenHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
@@ -21,4 +20,6 @@ public abstract class ShopSlot<T extends AbstractShopScreenHandler> extends Slot
     public boolean canInsert(ItemStack stack) {
         return false;
     }
+
+    public abstract ShopSlotType getSlotType();
 }

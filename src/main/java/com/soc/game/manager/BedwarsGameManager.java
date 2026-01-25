@@ -10,10 +10,7 @@ import com.soc.game.map.*;
 import com.soc.items.components.ModComponents;
 import com.soc.lib.Events;
 import com.soc.networking.helper.Teams;
-import com.soc.networking.s2c.bedwars.BedwarsShopDataPayload;
-import com.soc.networking.s2c.bedwars.JoinBedwarsPayload;
-import com.soc.networking.s2c.bedwars.LeaveBedwarsPayload;
-import com.soc.networking.s2c.bedwars.BedBreakPayload;
+import com.soc.networking.s2c.bedwars.*;
 import com.soc.resourcedata.containers.BedwarsGeneratorDataContainer;
 import com.soc.resourcedata.deserialisation.ResourceGeneratorUpgrade;
 import com.soc.util.Sounds;
@@ -337,6 +334,10 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         return this.teamStatsMap.get(this.getTeam(player)).getShopContents();
     }
 
+    public int[] getTrapProgressStats(UUID player) {
+        return this.teamStatsMap.get(this.getTeam(player)).getTrapProgressStats();
+    }
+
     @Nullable
     public static BedwarsGameManager getBedwarsGameManager(PlayerEntity player) {
         return GamesManager.getInstance().getGame(player).map(manager -> manager instanceof BedwarsGameManager bedwarsGameManager ? bedwarsGameManager : null).orElse(null);
@@ -348,7 +349,8 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
         if (syncId.isEmpty() || !(player instanceof ServerPlayerEntity) || manager == null) return false;
 
-        ServerPlayNetworking.send(player, new BedwarsShopDataPayload(manager.getIndividualShopContents(player.getUuid()), syncId.getAsInt()));
+        ServerPlayNetworking.send(player, new BedwarsIndividualShopDataPayload(manager.getIndividualShopContents(player.getUuid()), syncId.getAsInt()));
+        ServerPlayNetworking.send(player, new BedwarsTeamShopDataPayload(manager.getTeamShopContents(player.getUuid()), syncId.getAsInt()));
         return true;
     }
 

@@ -1,7 +1,9 @@
 package com.soc.game.manager.bedwars;
 
 import com.soc.game.manager.bedwars.traps.TrapManager;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -53,6 +55,16 @@ public class TeamStats {
     }
 
     public BedwarsShopContents getShopContents() {
-        return null;
+        final ArrayList<BedwarsShopCategory> categories = new ArrayList<>();
+        categories.add(new BedwarsShopCategory(List.of(), ItemStack.EMPTY, Text.of("Traps")));
+        categories.add(new BedwarsShopCategory(List.of(), ItemStack.EMPTY, Text.of("Abilities")));
+        categories.add(new BedwarsShopCategory(List.of(), ItemStack.EMPTY, Text.of("Traps Display")));
+        categories.add(new BedwarsShopCategory(List.of(), ItemStack.EMPTY, Text.of("Abilities Display")));
+
+        return new BedwarsShopContents(categories);
+    }
+
+    public int[] getTrapProgressStats() {
+        return this.trapManager.getTrapProgressStats();
     }
 }

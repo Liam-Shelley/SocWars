@@ -17,7 +17,7 @@ public class BedwarsShopCategory {
     public static final PacketCodec<RegistryByteBuf, BedwarsShopCategory> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.BOOLEAN, BedwarsShopCategory::isQuickBuy, new PacketCodec<>() {
         @Override
         public List<ShopItem<?>> decode(RegistryByteBuf byteBuf) {
-            int size = PacketCodecs.readCollectionSize(byteBuf, Integer.MAX_VALUE);
+            final int size = PacketCodecs.readCollectionSize(byteBuf, Integer.MAX_VALUE);
             final List<ShopItem<?>> collection = new ArrayList<>(Math.min(size, 65536));
 
             for (int i = 0; i < size; i++) {
@@ -32,9 +32,7 @@ public class BedwarsShopCategory {
         public void encode(RegistryByteBuf byteBuf, List<ShopItem<?>> collection) {
             PacketCodecs.writeCollectionSize(byteBuf, collection.size(), Integer.MAX_VALUE);
 
-            collection.forEach(shopItem -> {
-                shopItem.writePacketData(byteBuf);
-            });
+            collection.forEach(shopItem -> shopItem.writePacketData(byteBuf));
         }
     }, BedwarsShopCategory::getItems, PacketCodecs.optional(ItemStack.PACKET_CODEC), BedwarsShopCategory::getOptionalIcon, TextCodecs.PACKET_CODEC, BedwarsShopCategory::getName, BedwarsShopCategory::new);
 

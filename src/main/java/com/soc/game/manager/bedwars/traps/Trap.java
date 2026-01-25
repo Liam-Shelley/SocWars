@@ -12,7 +12,7 @@ public abstract class Trap {
         this.cooldownTime = time;
     }
 
-    public abstract void trigger(Vec3d pos, List<ServerPlayerEntity> team, List<ServerPlayerEntity> players);
+    public abstract void trigger(Vec3d pos, List<ServerPlayerEntity> team, List<ServerPlayerEntity> enemies);
 
     public final int getCooldownTime() {
         return this.cooldownTime;

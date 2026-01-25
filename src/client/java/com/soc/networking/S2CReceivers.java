@@ -4,7 +4,9 @@ import com.soc.game.BedwarsTeamsHUD;
 import com.soc.networking.s2c.*;
 import com.soc.networking.s2c.bedwars.*;
 import com.soc.player.PlayerDataManager;
+import com.soc.screenhandler.AbstractShopScreenHandler;
 import com.soc.screenhandler.BedwarsIndividualShopScreenHandler;
+import com.soc.screenhandler.BedwarsTeamShopScreenHandler;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -37,10 +39,16 @@ public class S2CReceivers {
         ClientPlayNetworking.registerGlobalReceiver(BedBreakPayload.ID, (payload, context) -> {
             BedwarsTeamsHUD.breakBed(payload.team());
         });
-        ClientPlayNetworking.registerGlobalReceiver(BedwarsShopDataPayload.ID, (payload, context) -> {
+        ClientPlayNetworking.registerGlobalReceiver(BedwarsIndividualShopDataPayload.ID, (payload, context) -> {
             final ScreenHandler screenHandler = context.player().currentScreenHandler;
-            if (screenHandler.syncId == payload.syncId() && screenHandler instanceof BedwarsIndividualShopScreenHandler bedwarsIndividualShopScreenHandler) {
-                bedwarsIndividualShopScreenHandler.setShopContents(payload);
+            if (screenHandler.syncId == payload.syncId() && screenHandler instanceof BedwarsIndividualShopScreenHandler shopScreenHandler) {
+                shopScreenHandler.setShopContents(payload.shopContents());
+            }
+        });
+        ClientPlayNetworking.registerGlobalReceiver(BedwarsTeamShopDataPayload.ID, (payload, context) -> {
+            final ScreenHandler screenHandler = context.player().currentScreenHandler;
+            if (screenHandler.syncId == payload.syncId() && screenHandler instanceof BedwarsTeamShopScreenHandler shopScreenHandler) {
+                shopScreenHandler.setShopContents(payload.shopContents());
             }
         });
         ClientPlayNetworking.registerGlobalReceiver(UpdateHotbarPayload.ID, (payload, context) -> {

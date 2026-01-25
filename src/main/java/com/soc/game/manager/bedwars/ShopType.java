@@ -4,12 +4,13 @@ import com.soc.entities.BedwarsShopEntity;
 import com.soc.entities.util.ModEntities;
 import com.soc.game.map.DyeColourWithEmpty;
 import com.soc.screenhandler.BedwarsIndividualShopScreenHandler;
+import com.soc.screenhandler.BedwarsTeamShopScreenHandler;
 import net.minecraft.entity.EntityType;
 import net.minecraft.screen.ScreenHandlerFactory;
 
 public enum ShopType {
     INDIVIDUAL(BedwarsIndividualShopScreenHandler::new, ModEntities.INDIVIDUAL_BEDWARS_SHOP),
-    TEAM(null, ModEntities.TEAM_BEDWARS_SHOP);
+    TEAM(BedwarsTeamShopScreenHandler::new, ModEntities.TEAM_BEDWARS_SHOP);
 
     private final ScreenHandlerFactory factory;
     private final EntityType<BedwarsShopEntity> entityType;

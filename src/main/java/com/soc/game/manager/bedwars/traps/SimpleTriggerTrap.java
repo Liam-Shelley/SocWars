@@ -54,7 +54,7 @@ public class SimpleTriggerTrap extends Trap {
     }
 
     @Override
-    public void trigger(Vec3d pos, List<ServerPlayerEntity> team, List<ServerPlayerEntity> players) {
-        players.forEach(this.enemyTriggerFunction);
+    public void trigger(Vec3d pos, List<ServerPlayerEntity> team, List<ServerPlayerEntity> enemies) {
+        enemies.forEach(this.enemyTriggerFunction);
     }
 }

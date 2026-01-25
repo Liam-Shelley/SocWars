@@ -2,13 +2,16 @@ package com.soc.screenhandler;
 
 import com.soc.game.manager.bedwars.BedwarsShopContents;
 import com.soc.game.manager.bedwars.ShopItem;
-import com.soc.game.manager.bedwars.SimpleShopItem;
-import com.soc.networking.s2c.bedwars.BedwarsShopDataPayload;
+import com.soc.screenhandler.slots.DisplaySlot;
 import com.soc.screenhandler.slots.StockSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
+import net.minecraft.item.Items;
+import net.minecraft.screen.ArrayPropertyDelegate;
+import net.minecraft.screen.PropertyDelegate;
+import net.minecraft.world.World;
 
 public class BedwarsTeamShopScreenHandler extends AbstractShopScreenHandler {
     public static final int TRAPS_WIDTH = 5;
@@ -24,19 +27,25 @@ public class BedwarsTeamShopScreenHandler extends AbstractShopScreenHandler {
     public static final int ABILITIES_DISPLAY_HEIGHT = 1;
     public static final int ABILITIES_DISPLAY_SIZE = ABILITIES_DISPLAY_WIDTH * ABILITIES_DISPLAY_HEIGHT;
     private static final int[] CATEGORY_SIZES = {TRAPS_SIZE, ABILITIES_SIZE, TRAPS_DISPLAY_SIZE, ABILITIES_DISPLAY_SIZE};
+
+    public static final int PLAYER_INVENTORY_SLOT_HEIGHT = 102;
+
     private final Inventory traps;
     private final Inventory abilities;
     private final Inventory trapsDisplay;
     private final Inventory abilitiesDisplay;
 
+    private int[] trapProgressStats = new int[4];
+
     private BedwarsShopContents shopContents;
 
     public BedwarsTeamShopScreenHandler(int syncId, PlayerInventory playerInventory) {
         this(syncId, playerInventory, playerInventory.player);
+        this.addProperties(new ArrayPropertyDelegate(4));
     }
 
     public BedwarsTeamShopScreenHandler(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
-        super(ScreenHandlers.BEDWARS_INDIVIDUAL_SHOP_SCREEN_HANDLER, syncId, playerInventory, player);
+        super(ScreenHandlers.BEDWARS_TEAM_SHOP_SCREEN_HANDLER, syncId, playerInventory, player);
         this.traps = new SimpleInventory(TRAPS_SIZE);
         this.abilities = new SimpleInventory(ABILITIES_SIZE);
         this.trapsDisplay = new SimpleInventory(TRAPS_DISPLAY_SIZE);
@@ -45,35 +54,53 @@ public class BedwarsTeamShopScreenHandler extends AbstractShopScreenHandler {
         this.shopContents = super.manager == null ? null : super.manager.getTeamShopContents(player.getUuid());
 
         this.makeSlots();
+
+        final int[] trapProgressStats = super.manager == null ? new int[4] : super.manager.getTrapProgressStats(player.getUuid());
+        this.addProperties(new PropertyDelegate() {
+            @Override
+            public int get(int index) {
+                return trapProgressStats[index];
+            }
+
+            @Override
+            public void set(int index, int value) {
+                BedwarsTeamShopScreenHandler.this.trapProgressStats[index] = value;
+            }
+
+            @Override
+            public int size() {
+                return 4;
+            }
+        });
     }
 
     @SuppressWarnings("ConstantValue")
     private void makeSlots() {
         for (int x = 0; x < TRAPS_WIDTH; x++) {
             for (int y = 0; y < TRAPS_HEIGHT; y++) {
-                this.addSlot(new StockSlot(this.traps, x + TRAPS_WIDTH * y, x * 18 + 66, y * 18 + 18, this.player, this));
+                this.addSlot(new StockSlot(this.traps, x + TRAPS_WIDTH * y, x * 18 + 26, y * 18 + 24, this.player, this));
             }
         }
 
         for (int x = 0; x < ABILITIES_WIDTH; x++) {
             for (int y = 0; y < ABILITIES_HEIGHT; y++) {
-                this.addSlot(new StockSlot(this.abilities, x + ABILITIES_WIDTH * y, x * 18 + 8, y * 18 - 36, this.player, this));
+                this.addSlot(new StockSlot(this.abilities, x + ABILITIES_WIDTH * y, x * 18 + 138, y * 18 + 24, this.player, this));
             }
         }
 
         for (int x = 0; x < TRAPS_DISPLAY_WIDTH; x++) {
             for (int y = 0; y < TRAPS_DISPLAY_HEIGHT; y++) {
-                this.addSlot(new StockSlot(this.trapsDisplay, x + TRAPS_DISPLAY_WIDTH * y, x * 18 + 66, y * 18 - 36, this.player, this));
+                this.addSlot(new DisplaySlot(this.trapsDisplay, x + TRAPS_DISPLAY_WIDTH * y, x * 18 + 26, y * 18 + 74, this.player, this));
             }
         }
 
         for (int x = 0; x < ABILITIES_DISPLAY_WIDTH; x++) {
             for (int y = 0; y < ABILITIES_DISPLAY_HEIGHT; y++) {
-                this.addSlot(new StockSlot(this.abilitiesDisplay, x + ABILITIES_DISPLAY_WIDTH * y, x * 18 + 8, y * 18 - 36, this.player, this));
+                this.addSlot(new DisplaySlot(this.abilitiesDisplay, x + ABILITIES_DISPLAY_WIDTH * y, x * 18 + 138, y * 18 + 74, this.player, this));
             }
         }
 
-        this.addPlayerSlots(this.playerInventory, 48, 86);
+        this.addPlayerSlots(this.playerInventory, 48, this.getPlayerInventorySlotHeight());
 
         this.refreshItems();
     }
@@ -82,16 +109,16 @@ public class BedwarsTeamShopScreenHandler extends AbstractShopScreenHandler {
     public void refreshItems() {
         int i = 0;
         for (int j = 0; j < this.traps.size(); j++, i++) {
-            this.traps.setStack(j, this.getShopItem(i).getIcon());
+            this.traps.setStack(j, /*this.getShopItem(i).getIcon()*/ Items.TRIPWIRE_HOOK.getDefaultStack());
         }
         for (int j = 0; j < this.abilities.size(); j++, i++) {
-            this.abilities.setStack(j, this.getShopItem(i).getIcon());
+            this.abilities.setStack(j, /*this.getShopItem(i).getIcon()*/ Items.AMETHYST_SHARD.getDefaultStack());
         }
         for (int j = 0; j < this.trapsDisplay.size(); j++, i++) {
-            this.trapsDisplay.setStack(j, this.getShopItem(i).getIcon());
+            this.trapsDisplay.setStack(j, /*this.getShopItem(i).getIcon()*/ Items.OAK_PLANKS.getDefaultStack());
         }
         for (int j = 0; j < this.abilitiesDisplay.size(); j++, i++) {
-            this.abilitiesDisplay.setStack(j, this.getShopItem(i).getIcon());
+            this.abilitiesDisplay.setStack(j, /*this.getShopItem(i).getIcon()*/ Items.AMETHYST_BLOCK.getDefaultStack());
         }
     }
 
@@ -106,8 +133,22 @@ public class BedwarsTeamShopScreenHandler extends AbstractShopScreenHandler {
         throw new IndexOutOfBoundsException(slot);
     }
 
-    public void setShopContents(BedwarsShopDataPayload payload) {
-        this.shopContents = payload.shopContents();
+    @Override
+    public void setShopContents(BedwarsShopContents shopContents) {
+        this.shopContents = shopContents;
         this.refreshItems();
+    }
+
+    public float getTrapProgress(World world) {
+        return this.trapProgressStats[0] < world.getTime() ? 1f : (float)(this.trapProgressStats[0] - world.getTime()) / this.trapProgressStats[1];
+    }
+
+    public float getAbilityProgress(World world) {
+        return this.trapProgressStats[2] < world.getTime() ? 1f : (float)(this.trapProgressStats[2] - world.getTime()) / this.trapProgressStats[3];
+    }
+
+    @Override
+    public int getPlayerInventorySlotHeight() {
+        return 110;
     }
 }

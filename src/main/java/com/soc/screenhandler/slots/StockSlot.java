@@ -24,4 +24,9 @@ public class StockSlot extends ShopSlot<AbstractShopScreenHandler> {
 
         return ItemStack.EMPTY;
     }
+
+    @Override
+    public ShopSlotType getSlotType() {
+        return ShopSlotType.STOCK;
+    }
 }

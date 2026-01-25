@@ -17,4 +17,9 @@ public class CategorySlot extends ShopSlot<BedwarsIndividualShopScreenHandler> {
         this.context.setCurrentCategory(this.getIndex());
         return ItemStack.EMPTY;
     }
+
+    @Override
+    public ShopSlotType getSlotType() {
+        return ShopSlotType.CATEGORY;
+    }
 }
