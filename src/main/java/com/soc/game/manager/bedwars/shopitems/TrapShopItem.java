@@ -1,14 +1,17 @@
 package com.soc.game.manager.bedwars.shopitems;
 
 import com.google.gson.JsonObject;
+import com.soc.game.manager.BedwarsGameManager;
 import com.soc.game.manager.bedwars.traps.Trap;
 import com.soc.game.manager.bedwars.traps.Traps;
 import com.soc.resourcedata.deserialisation.Cost;
 import com.soc.screenhandler.AbstractShopScreenHandler;
+import com.soc.screenhandler.BedwarsTeamShopScreenHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -55,7 +58,12 @@ public class TrapShopItem implements ShopItem<TrapShopItem> {
 
     @Override
     public boolean buy(PlayerEntity player, AbstractShopScreenHandler context) {
-        return false;
+        if (!this.cost.canAfford(player)) return false;
+        final BedwarsGameManager manager = context.getManager();
+
+        final boolean queueHasSpace = player.getWorld().isClient ? context instanceof BedwarsTeamShopScreenHandler teamHandler && teamHandler.hasRoomInTrapDisplay() : manager.buyTrap((ServerPlayerEntity) player, this.trap);
+        if (queueHasSpace) this.takeItems(player);
+        return queueHasSpace;
     }
 
     @Override

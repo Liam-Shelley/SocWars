@@ -1,5 +1,6 @@
 package com.soc.game.manager.bedwars;
 
+import com.soc.game.manager.bedwars.traps.Trap;
 import com.soc.game.manager.bedwars.traps.TrapManager;
 import com.soc.resourcedata.containers.BedwarsShopDataContainer;
 import net.minecraft.item.ItemStack;
@@ -65,5 +66,13 @@ public class TeamStats {
 
     public int[] getTrapProgressStats() {
         return this.trapManager.getTrapProgressStats();
+    }
+
+    public boolean buyTrap(Trap trap) {
+        return this.trapManager.buyTrap(trap);
+    }
+
+    public boolean buyAbility(Trap ability) {
+        return this.trapManager.buyTrap(ability);
     }
 }

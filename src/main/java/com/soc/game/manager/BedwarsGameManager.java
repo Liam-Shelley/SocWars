@@ -7,6 +7,7 @@ import com.soc.game.manager.bedwars.BedwarsShopContents;
 import com.soc.game.manager.bedwars.PlayerStats;
 import com.soc.game.manager.bedwars.ShopType;
 import com.soc.game.manager.bedwars.TeamStats;
+import com.soc.game.manager.bedwars.traps.Trap;
 import com.soc.game.map.*;
 import com.soc.items.components.ModComponents;
 import com.soc.lib.Events;
@@ -380,5 +381,13 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
             final List<ServerPlayerEntity> enemiesInRange = this.getPlayers().stream().filter(player -> this.getTeam(player) != team && player.getPos().isInRange(pos, TRAP_DETECTION_RANGE)).toList();
             if(!enemiesInRange.isEmpty()) stats.onPlayerInTrapRange(pos, enemiesInRange);
         });
+    }
+
+    public boolean buyTrap(ServerPlayerEntity player, Trap trap) {
+        return this.teamStatsMap.get(this.getTeam(player)).buyTrap(trap);
+    }
+
+    public boolean buyAbility(ServerPlayerEntity player, Trap ability) {
+        return this.teamStatsMap.get(this.getTeam(player)).buyAbility(ability);
     }
 }

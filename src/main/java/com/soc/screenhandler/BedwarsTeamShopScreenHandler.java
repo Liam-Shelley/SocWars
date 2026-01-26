@@ -89,7 +89,7 @@ public class BedwarsTeamShopScreenHandler extends AbstractShopScreenHandler {
         }
 
         for (int y = 0; y < TRAPS_DISPLAY_HEIGHT; y++) {
-                for (int x = 0; x < TRAPS_DISPLAY_WIDTH; x++) {
+            for (int x = 0; x < TRAPS_DISPLAY_WIDTH; x++) {
                 this.addSlot(new DisplaySlot(this.trapsDisplay, x + TRAPS_DISPLAY_WIDTH * y, x * 18 + 26, y * 18 + 74, this.player, this));
             }
         }
@@ -153,5 +153,13 @@ public class BedwarsTeamShopScreenHandler extends AbstractShopScreenHandler {
     @Override
     public int getPlayerInventorySlotHeight() {
         return 110;
+    }
+
+    public boolean hasRoomInTrapDisplay() {
+        return this.trapsDisplay.getStack(TRAPS_DISPLAY_SIZE - 1).isEmpty();
+    }
+
+    public boolean hasRoomInAbilityDisplay() {
+        return this.abilitiesDisplay.getStack(ABILITIES_DISPLAY_SIZE - 1).isEmpty();
     }
 }

@@ -56,10 +56,17 @@ public class TrapManager {
         this.currentAbilityDuration = ability.getCooldownTime();
     }
 
-    public boolean addTrap(Trap trap) {
+    public boolean buyTrap(Trap trap) {
         if (this.traps.size() >= TRAPS_DISPLAY_SIZE) return false;
 
         this.traps.add(trap);
+        return true;
+    }
+
+    public boolean buyAbility(Trap trap) {
+        if (this.abilities.size() >= ABILITIES_DISPLAY_SIZE) return false;
+
+        this.abilities.add(trap);
         return true;
     }
 

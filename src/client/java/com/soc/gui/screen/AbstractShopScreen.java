@@ -63,7 +63,7 @@ public abstract class AbstractShopScreen<T extends AbstractShopScreenHandler> ex
         final ItemStack icon = item.getIcon();
         {
             final MutableText name = item.getTooltipName().copy();
-            if (!(item instanceof TrapShopItem)) name.append(item.affordabilitySuffix(this.playerInventory.player));
+            name.append(item.affordabilitySuffix(this.playerInventory.player));
             int nameWidth = super.textRenderer.getWidth(name);
 
             TooltipBackgroundRenderer.render(context, x + 12, y - 12, Math.max(nameWidth, 65), 31, icon.get(DataComponentTypes.TOOLTIP_STYLE));
