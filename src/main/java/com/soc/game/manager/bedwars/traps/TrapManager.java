@@ -1,9 +1,15 @@
 package com.soc.game.manager.bedwars.traps;
 
+import com.soc.game.manager.AbstractGameManager;
 import com.soc.game.manager.bedwars.BedwarsShopCategory;
 import com.soc.game.manager.bedwars.shopitems.ShopItem;
 import com.soc.game.manager.bedwars.shopitems.SimpleShopItem;
+import com.soc.lib.SocWarsLib;
+import net.minecraft.network.packet.s2c.play.SubtitleS2CPacket;
+import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -11,6 +17,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.soc.game.manager.AbstractGameManager.mapUuidsToPlayers;
+import static com.soc.lib.SocWarsLib.colouredTextFromColour;
 import static com.soc.screenhandler.BedwarsTeamShopScreenHandler.ABILITIES_DISPLAY_SIZE;
 import static com.soc.screenhandler.BedwarsTeamShopScreenHandler.TRAPS_DISPLAY_SIZE;
 
@@ -40,9 +47,15 @@ public class TrapManager {
         return !this.traps.isEmpty() && this.nextTrapTriggerTime < this.world.getTime();
     }
 
-    public void trigger(Vec3d pos, List<ServerPlayerEntity> players) {
+    public void trigger(AbstractGameManager<?, ?, ?> manager, Vec3d pos, List<ServerPlayerEntity> players) {
         final Trap trap = this.traps.remove();
         trap.trigger(pos, mapUuidsToPlayers(this.world, this.team), players);
+
+        final Text teamsText = players.stream().map(manager::getTeam).distinct().map(SocWarsLib::colouredTextFromColour).reduce((a, b) -> a.append(", ").append(b)).get();
+        mapUuidsToPlayers(this.world, this.team).forEach(player -> {
+            player.networkHandler.sendPacket(new TitleS2CPacket(Text.translatable("game.bedwars.trap_triggered.title")));
+            player.networkHandler.sendPacket(new SubtitleS2CPacket(Text.translatable("game.bedwars.trap_triggered.subtitle", trap.getName(), teamsText)));
+        });
 
         this.nextTrapTriggerTime = this.world.getTime() + trap.getCooldownTime();
         this.currentTrapDuration = trap.getCooldownTime();

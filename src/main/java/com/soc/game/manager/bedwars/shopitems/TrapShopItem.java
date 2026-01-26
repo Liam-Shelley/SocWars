@@ -97,6 +97,6 @@ public class TrapShopItem implements ShopItem<TrapShopItem> {
 
     @Override
     public Text getTooltipName() {
-        return Text.translatable("trap." + this.trap.getId().getPath());
+        return this.trap.getName();
     }
 }

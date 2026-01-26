@@ -4,6 +4,7 @@ import com.soc.SocWars;
 import com.soc.game.manager.bedwars.shopitems.DisplayShopItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 
@@ -42,5 +43,9 @@ public abstract class Trap {
 
     public DisplayShopItem getDisplayShopItem() {
         return new DisplayShopItem(this.getIcon());
+    }
+
+    public Text getName() {
+        return Text.translatable("trap." + this.getId().getPath());
     }
 }

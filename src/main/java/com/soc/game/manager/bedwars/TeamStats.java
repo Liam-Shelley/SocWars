@@ -1,5 +1,6 @@
 package com.soc.game.manager.bedwars;
 
+import com.soc.game.manager.AbstractGameManager;
 import com.soc.game.manager.bedwars.traps.Trap;
 import com.soc.game.manager.bedwars.traps.TrapManager;
 import com.soc.resourcedata.containers.BedwarsShopDataContainer;
@@ -54,8 +55,8 @@ public class TeamStats {
         return this.trapManager.hasActiveTrap();
     }
 
-    public void onPlayerInTrapRange(Vec3d pos, List<ServerPlayerEntity> players) {
-        this.trapManager.trigger(pos, players);
+    public void onPlayerInTrapRange(AbstractGameManager<?, ?, ?> manager, Vec3d pos, List<ServerPlayerEntity> players) {
+        this.trapManager.trigger(manager, pos, players);
     }
 
     public BedwarsShopContents getShopContents() {

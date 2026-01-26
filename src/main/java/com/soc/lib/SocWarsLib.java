@@ -95,7 +95,7 @@ public final class SocWarsLib {
         };
     }
 
-    public static Text colouredTextFromColour(DyeColor colour) {
+    public static MutableText colouredTextFromColour(DyeColor colour) {
         return Text.translatable("color.minecraft." + colour.asString()).formatted(formattingColourFromDye(colour));
     }
 

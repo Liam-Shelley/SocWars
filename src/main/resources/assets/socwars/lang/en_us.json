@@ -296,6 +296,8 @@
   "game.bedwars.shop.item.max_tier": " MAX",
   "game.bedwars.shop.individual": "Item Shop",
   "game.bedwars.shop.team": "Team Shop",
+  "game.bedwars.trap_triggered.title": "TRAP TRIGGERED!",
+  "game.bedwars.trap_triggered.subtitle": "Your %s trap was set off by %s",
   "hud.bedwars.has_bed": "  ||  Bed: ",
   "hud.bedwars.team": "%s Team",
   "hud.tick": "✔",

@@ -88,6 +88,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         });
     }
 
+    @SuppressWarnings("DataFlowIssue")
     @Override
     public void endGame(boolean immediate) {
         this.eventQueue.cancelEvents();
@@ -379,7 +380,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
             final Vec3d pos = this.map.getBedPosition(team).toCenterPos();
             final List<ServerPlayerEntity> enemiesInRange = this.getPlayers().stream().filter(player -> this.getTeam(player) != team && player.getPos().isInRange(pos, TRAP_DETECTION_RANGE)).toList();
-            if(!enemiesInRange.isEmpty()) stats.onPlayerInTrapRange(pos, enemiesInRange);
+            if(!enemiesInRange.isEmpty()) stats.onPlayerInTrapRange(this, pos, enemiesInRange);
         });
     }
 
