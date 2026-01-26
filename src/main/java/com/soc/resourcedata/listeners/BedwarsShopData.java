@@ -1,8 +1,9 @@
 package com.soc.resourcedata.listeners;
 import com.soc.SocWars;
-import com.soc.game.manager.bedwars.SimpleShopItem;
-import com.soc.game.manager.bedwars.TeamShopItem;
-import com.soc.game.manager.bedwars.UpgradeableShopItem;
+import com.soc.game.manager.bedwars.shopitems.SimpleShopItem;
+import com.soc.game.manager.bedwars.shopitems.TeamShopItem;
+import com.soc.game.manager.bedwars.shopitems.TrapShopItem;
+import com.soc.game.manager.bedwars.shopitems.UpgradeableShopItem;
 import com.soc.resourcedata.containers.BedwarsShopDataContainer;
 import com.soc.resourcedata.deserialisation.PreSelectionBedwarsShopCategory;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
@@ -27,15 +28,15 @@ public class BedwarsShopData implements SimpleSynchronousResourceReloadListener 
 
         readResources(manager, "bedwars_shop_data/shops", BASE_PATH_PREDICATE, (reader, id) -> {
             switch(id.toString()) {
-                case "socwars:bedwars_shop_data/shops/team.json" -> {
-
-                }
+                case "socwars:bedwars_shop_data/shops/traps.json" -> BedwarsShopDataContainer.INSTANCE.setTeamStockCategory(0, new PreSelectionBedwarsShopCategory(reader));
+                case "socwars:bedwars_shop_data/shops/abilities.json" -> BedwarsShopDataContainer.INSTANCE.setTeamStockCategory(1, new PreSelectionBedwarsShopCategory(reader));
                 default -> BedwarsShopDataContainer.INSTANCE.addCategorySlot(id, new PreSelectionBedwarsShopCategory(reader));
             }
         });
         readResources(manager, "bedwars_shop_data/simple_items", BASE_PATH_PREDICATE, (reader, id) -> BedwarsShopDataContainer.INSTANCE.addSlotResource(id, new SimpleShopItem(reader)));
         readResources(manager, "bedwars_shop_data/upgradeable_items", BASE_PATH_PREDICATE, (reader, id) -> BedwarsShopDataContainer.INSTANCE.addSlotResource(id, new UpgradeableShopItem(reader)));
         readResources(manager, "bedwars_shop_data/team_items", BASE_PATH_PREDICATE, (reader, id) -> BedwarsShopDataContainer.INSTANCE.addSlotResource(id, new TeamShopItem(reader)));
+        readResources(manager, "bedwars_shop_data/trap_items", BASE_PATH_PREDICATE, (reader, id) -> BedwarsShopDataContainer.INSTANCE.addSlotResource(id, new TrapShopItem(reader)));
 
         BedwarsShopDataContainer.INSTANCE.cache();
     }

@@ -1,6 +1,7 @@
 package com.soc.resourcedata.deserialisation;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.soc.lib.json.JsonHelper;
 import com.soc.screenhandler.BedwarsIndividualShopScreenHandler;
@@ -20,11 +21,16 @@ public record PreSelectionBedwarsShopCategory(Text name, ItemStack icon, int pag
 
     public PreSelectionBedwarsShopCategory(JsonObject object) {
         this(
-                Text.translatable(object.get(NAME_KEY).getAsString()),
+                getName(object),
                 JsonHelper.getDefaultedItem(object, ICON_KEY, ItemStack.EMPTY),
                 JsonHelper.getDefaultedInt(object, PAGE_PRIORITY_KEY, 100),
                 deserialiseSlots(object.get(CONTENTS_KEY).getAsJsonArray())
         );
+    }
+
+    private static Text getName(JsonObject object) {
+        final JsonElement element = object.get(NAME_KEY);
+        return element == null ? Text.of("") : Text.translatable(element.getAsString());
     }
 
     public PreSelectionBedwarsShopCategory(Reader reader) {

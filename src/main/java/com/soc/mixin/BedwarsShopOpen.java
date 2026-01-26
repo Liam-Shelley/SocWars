@@ -22,7 +22,7 @@ public abstract class BedwarsShopOpen {
 	void socwars_bedwarsShopOpen(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
 		if (player instanceof ServerPlayerEntity serverPlayer) {
 			OptionalInt syncId = player.openHandledScreen(new SimpleNamedScreenHandlerFactory(BedwarsIndividualShopScreenHandler::new, Text.of("Shop")));
-			BedwarsGameManager.sendShopData(serverPlayer, syncId);
+			BedwarsGameManager.sendShopData(serverPlayer, syncId, null);
 		}
 		cir.setReturnValue(ActionResult.SUCCESS);
 	}

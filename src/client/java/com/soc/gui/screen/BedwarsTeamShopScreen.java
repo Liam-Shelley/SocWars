@@ -1,10 +1,14 @@
 package com.soc.gui.screen;
 
 import com.soc.SocWars;
+import com.soc.game.manager.bedwars.shopitems.DisplayShopItem;
 import com.soc.screenhandler.BedwarsTeamShopScreenHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.tooltip.TooltipBackgroundRenderer;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
@@ -48,5 +52,17 @@ public class BedwarsTeamShopScreen extends AbstractShopScreen<BedwarsTeamShopScr
         super.drawForeground(context, mouseX, mouseY);
         context.drawText(this.textRenderer, TRAPS_TITLE, TRAPS_TITLE_X, TRAPS_TITLE_Y, Colors.DARK_GRAY, false);
         context.drawText(this.textRenderer, ABILITIES_TITLE, ABILITIES_TITLE_X, ABILITIES_TITLE_Y, Colors.DARK_GRAY, false);
+    }
+
+    @Override
+    protected void drawDisplayTooltip(DrawContext context, int x, int y, DisplayShopItem shopItem) {
+        {
+            final MutableText name = shopItem.getTooltipName().copy();
+            int nameWidth = super.textRenderer.getWidth(name);
+
+            TooltipBackgroundRenderer.render(context, x + 12, y - 12, Math.max(nameWidth, 65), 31, /*shopItem.get(DataComponentTypes.TOOLTIP_STYLE)*/null);
+
+            context.drawText(super.textRenderer, name, x + 12, y - 12, 0xffffffff, true);
+        }
     }
 }

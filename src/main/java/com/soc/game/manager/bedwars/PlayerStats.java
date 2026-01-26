@@ -27,7 +27,7 @@ public class PlayerStats {
 
     public PlayerStats(ServerPlayerEntity player, DyeColor team, long shopSeed) {
         this.player = player.getUuid();
-        this.shopContents = BedwarsShopDataContainer.INSTANCE.getBedwarsShop(shopSeed, team);
+        this.shopContents = BedwarsShopDataContainer.INSTANCE.getIndividualBedwarsShop(shopSeed, team);
     }
 
     public void onDeath(boolean canRespawn, World world) {

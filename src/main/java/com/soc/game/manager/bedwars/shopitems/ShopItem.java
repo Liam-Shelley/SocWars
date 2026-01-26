@@ -1,9 +1,8 @@
-package com.soc.game.manager.bedwars;
+package com.soc.game.manager.bedwars.shopitems;
 
 import com.soc.items.TrainingWeights;
 import com.soc.resourcedata.deserialisation.Cost;
 import com.soc.screenhandler.AbstractShopScreenHandler;
-import com.soc.screenhandler.BedwarsIndividualShopScreenHandler;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.EquippableComponent;
 import net.minecraft.enchantment.Enchantments;

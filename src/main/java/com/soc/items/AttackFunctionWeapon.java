@@ -103,9 +103,9 @@ public class AttackFunctionWeapon extends Item {
                 if (bonusHealth >= 0) {
                     attacker.heal(bonusHealth);
                 } else {
-                    World world = attacker.getWorld();
+                    final World world = attacker.getWorld();
                     if (attacker instanceof LivingEntity && world instanceof ServerWorld serverWorld) {
-                        DamageSource damageSource = damageSource(world, DamageTypes.LIFETHIEF);
+                        final DamageSource damageSource = damageSource(world, DamageTypes.LIFETHIEF);
                         attacker.damage(serverWorld, damageSource, 1.0f);
                     }
                 }

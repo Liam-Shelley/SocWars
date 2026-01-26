@@ -8,9 +8,7 @@ import com.soc.effects.util.ModEffects;
 import com.soc.entities.util.ModEntities;
 import com.soc.events.ModEvents;
 import com.soc.game.manager.GamesManager;
-import com.soc.game.manager.bedwars.SimpleShopItem;
-import com.soc.game.manager.bedwars.TeamShopItem;
-import com.soc.game.manager.bedwars.UpgradeableShopItem;
+import com.soc.game.manager.bedwars.shopitems.*;
 import com.soc.game.manager.bedwars.traps.Traps;
 import com.soc.items.components.ModComponents;
 import com.soc.items.util.ModItems;
@@ -69,6 +67,8 @@ public class SocWars implements ModInitializer {
 		SimpleShopItem.initialise();
 		UpgradeableShopItem.initialise();
 		TeamShopItem.initialise();
+		TrapShopItem.initialise();
+		DisplayShopItem.initialise();
 
 		Traps.initialise();
 

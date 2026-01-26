@@ -306,5 +306,15 @@
   "entity.socwars.individual_bedwars_shop": "Item Shop",
   "entity.socwars.team_bedwars_shop": "Team Shop",
   "entity.socwars.nuclear_bomb": "Nuclear Bomb",
-  "entity.socwars.hydrogen_bomb": "Hydrogen Bomb"
+  "entity.socwars.hydrogen_bomb": "Hydrogen Bomb",
+  "trap.mining_fatigue": "Mining Fatigue",
+  "trap.clear_effects": "Clear Effects",
+  "trap.launch": "Launch",
+  "trap.steve_harvey": "Blindness",
+  "trap.shuffle": "Inventory Shuffle",
+  "trap.perplexity": "Perplexity",
+  "trap.enlargement": "Enlargement",
+  "trap.glowing": "Glowing",
+  "trap.postura": "Postura",
+  "trap.speed": "Speed"
 }

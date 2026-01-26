@@ -1,11 +1,10 @@
-package com.soc.game.manager.bedwars;
+package com.soc.game.manager.bedwars.shopitems;
 
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Either;
 import com.soc.game.map.DyeColourWithEmpty;
 import com.soc.resourcedata.deserialisation.Cost;
 import com.soc.screenhandler.AbstractShopScreenHandler;
-import com.soc.screenhandler.BedwarsIndividualShopScreenHandler;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;

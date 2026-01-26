@@ -3,8 +3,8 @@ package com.soc.screenhandler;
 import com.soc.game.manager.BedwarsGameManager;
 import com.soc.game.manager.bedwars.BedwarsShopCategory;
 import com.soc.game.manager.bedwars.BedwarsShopContents;
-import com.soc.game.manager.bedwars.ShopItem;
-import com.soc.game.manager.bedwars.SimpleShopItem;
+import com.soc.game.manager.bedwars.shopitems.ShopItem;
+import com.soc.game.manager.bedwars.shopitems.SimpleShopItem;
 import com.soc.screenhandler.slots.CategorySlot;
 import com.soc.screenhandler.slots.StockSlot;
 import net.minecraft.entity.player.PlayerEntity;
@@ -47,14 +47,14 @@ public class BedwarsIndividualShopScreenHandler extends AbstractShopScreenHandle
     }
 
     private void makeSlots() {
-        for (int x = 0; x < STOCK_WIDTH; x++) {
-            for (int y = 0; y < STOCK_HEIGHT; y++) {
+        for (int y = 0; y < STOCK_HEIGHT; y++) {
+            for (int x = 0; x < STOCK_WIDTH; x++) {
                 this.addSlot(new StockSlot(this.stock, x + STOCK_WIDTH * y, x * 18 + 66, y * 18 + 18, this.player, this));
             }
         }
 
-        for (int x = 0; x < CATEGORIES_WIDTH; x++) {
-            for (int y = 0; y < CATEGORIES_HEIGHT; y++) {
+        for (int y = 0; y < CATEGORIES_HEIGHT; y++) {
+            for (int x = 0; x < CATEGORIES_WIDTH; x++) {
                 this.addSlot(new CategorySlot(this.categories, x + CATEGORIES_WIDTH * y, x * 18 + 8, y * 18 + 18, this.player, this));
             }
         }

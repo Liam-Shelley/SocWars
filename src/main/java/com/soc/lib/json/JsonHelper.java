@@ -3,6 +3,8 @@ package com.soc.lib.json;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.soc.SocWars;
+import com.soc.game.manager.bedwars.traps.Trap;
+import com.soc.game.manager.bedwars.traps.Traps;
 import com.soc.game.map.DyeColourWithEmpty;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
@@ -80,8 +82,10 @@ public class JsonHelper {
     }
 
     public static ItemStack getDefaultedItem(JsonObject object, String key, ItemStack def) {
-        final Identifier id = Identifier.of(object.get(key).getAsString());
+        final JsonElement element = object.get(key);
+        if (element == null) return def;
 
+        final Identifier id = Identifier.of(element.getAsString());
         if (!Registries.ITEM.containsId(id)) return def;
 
         final ItemStack stack = new ItemStack(
@@ -130,5 +134,12 @@ public class JsonHelper {
     private static ItemStack getItemFromString(String string, int count, ItemStack def) {
         final Identifier id = Identifier.of(string);
         return Registries.ITEM.containsId(id) ? new ItemStack(Registries.ITEM.get(id), count) : def;
+    }
+
+    public static Trap getDefaultedTrap(JsonObject json, String key) {
+        final JsonElement element = json.get(key);
+        final Identifier id = Identifier.of(element.getAsString());
+
+        return Traps.REGISTRY.containsId(id) ? Traps.REGISTRY.get(id) : null; //I know that this is currently useless but I will put an empty trapitem here at some point
     }
 }

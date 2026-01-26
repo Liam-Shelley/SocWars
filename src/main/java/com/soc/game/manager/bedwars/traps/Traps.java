@@ -11,8 +11,8 @@ public interface Traps {
     RegistryKey<Registry<Trap>> REGISTRY_KEY = RegistryKey.ofRegistry(Identifier.of(SocWars.MOD_ID, "traps"));
     Registry<Trap> REGISTRY = new SimpleRegistry<>(REGISTRY_KEY, Lifecycle.stable());
 
-    static <T extends Trap> T register(String id, T trap) {
-        return Registry.register(REGISTRY, Identifier.of(SocWars.MOD_ID, id), trap);
+    static <T extends Trap> T register(T trap) {
+        return Registry.register(REGISTRY, trap.getId(), trap);
     }
 
     static void initialise() {

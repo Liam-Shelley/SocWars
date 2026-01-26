@@ -1,5 +1,7 @@
 package com.soc.game.manager.bedwars;
 
+import com.soc.game.manager.bedwars.shopitems.ShopItem;
+import com.soc.game.manager.bedwars.shopitems.UpgradeableShopItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
@@ -42,5 +44,13 @@ public record BedwarsShopContents(List<BedwarsShopCategory> contents) {
 
     public Optional<UpgradeableShopItem> getUpgradeableShopItemBySlotTrackingId(int id) {
         return this.<UpgradeableShopItem>getShopItemsByTypeId(UpgradeableShopItem.ID).stream().filter(item -> item.matchesSlotTrackingId(id)).findFirst();
+    }
+
+    public void setCategory(int index, BedwarsShopCategory category) {
+        if (index >= this.contents.size()) {
+            this.contents.add(category);
+        } else {
+            this.contents.set(index, category);
+        }
     }
 }

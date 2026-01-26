@@ -1,7 +1,7 @@
 package com.soc.screenhandler;
 
 import com.soc.game.manager.bedwars.BedwarsShopContents;
-import com.soc.game.manager.bedwars.ShopItem;
+import com.soc.game.manager.bedwars.shopitems.ShopItem;
 import com.soc.screenhandler.slots.DisplaySlot;
 import com.soc.screenhandler.slots.StockSlot;
 import net.minecraft.entity.player.PlayerEntity;
@@ -76,26 +76,26 @@ public class BedwarsTeamShopScreenHandler extends AbstractShopScreenHandler {
 
     @SuppressWarnings("ConstantValue")
     private void makeSlots() {
-        for (int x = 0; x < TRAPS_WIDTH; x++) {
-            for (int y = 0; y < TRAPS_HEIGHT; y++) {
+        for (int y = 0; y < TRAPS_HEIGHT; y++) {
+            for (int x = 0; x < TRAPS_WIDTH; x++) {
                 this.addSlot(new StockSlot(this.traps, x + TRAPS_WIDTH * y, x * 18 + 26, y * 18 + 24, this.player, this));
             }
         }
 
-        for (int x = 0; x < ABILITIES_WIDTH; x++) {
-            for (int y = 0; y < ABILITIES_HEIGHT; y++) {
+        for (int y = 0; y < ABILITIES_HEIGHT; y++) {
+            for (int x = 0; x < ABILITIES_WIDTH; x++) {
                 this.addSlot(new StockSlot(this.abilities, x + ABILITIES_WIDTH * y, x * 18 + 138, y * 18 + 24, this.player, this));
             }
         }
 
-        for (int x = 0; x < TRAPS_DISPLAY_WIDTH; x++) {
-            for (int y = 0; y < TRAPS_DISPLAY_HEIGHT; y++) {
+        for (int y = 0; y < TRAPS_DISPLAY_HEIGHT; y++) {
+                for (int x = 0; x < TRAPS_DISPLAY_WIDTH; x++) {
                 this.addSlot(new DisplaySlot(this.trapsDisplay, x + TRAPS_DISPLAY_WIDTH * y, x * 18 + 26, y * 18 + 74, this.player, this));
             }
         }
 
-        for (int x = 0; x < ABILITIES_DISPLAY_WIDTH; x++) {
-            for (int y = 0; y < ABILITIES_DISPLAY_HEIGHT; y++) {
+        for (int y = 0; y < ABILITIES_DISPLAY_HEIGHT; y++) {
+            for (int x = 0; x < ABILITIES_DISPLAY_WIDTH; x++) {
                 this.addSlot(new DisplaySlot(this.abilitiesDisplay, x + ABILITIES_DISPLAY_WIDTH * y, x * 18 + 138, y * 18 + 74, this.player, this));
             }
         }
@@ -109,16 +109,16 @@ public class BedwarsTeamShopScreenHandler extends AbstractShopScreenHandler {
     public void refreshItems() {
         int i = 0;
         for (int j = 0; j < this.traps.size(); j++, i++) {
-            this.traps.setStack(j, /*this.getShopItem(i).getIcon()*/ Items.TRIPWIRE_HOOK.getDefaultStack());
+            this.traps.setStack(j, this.getShopItem(i).getIcon());
         }
         for (int j = 0; j < this.abilities.size(); j++, i++) {
-            this.abilities.setStack(j, /*this.getShopItem(i).getIcon()*/ Items.AMETHYST_SHARD.getDefaultStack());
+            this.abilities.setStack(j, this.getShopItem(i).getIcon());
         }
         for (int j = 0; j < this.trapsDisplay.size(); j++, i++) {
-            this.trapsDisplay.setStack(j, /*this.getShopItem(i).getIcon()*/ Items.OAK_PLANKS.getDefaultStack());
+            this.trapsDisplay.setStack(j, this.getShopItem(i).getIcon());
         }
         for (int j = 0; j < this.abilitiesDisplay.size(); j++, i++) {
-            this.abilitiesDisplay.setStack(j, /*this.getShopItem(i).getIcon()*/ Items.AMETHYST_BLOCK.getDefaultStack());
+            this.abilitiesDisplay.setStack(j, this.getShopItem(i).getIcon());
         }
     }
 
@@ -126,7 +126,10 @@ public class BedwarsTeamShopScreenHandler extends AbstractShopScreenHandler {
         int slotMut = slot;
 
         for (int i = 0; i < CATEGORY_SIZES.length; i++) {
-            if (i > 0) slotMut -= CATEGORY_SIZES[i - 1];
+            if (slotMut >= CATEGORY_SIZES[i]) {
+                slotMut -= CATEGORY_SIZES[i];
+                continue;
+            }
             return this.shopContents.getCategory(i).getShopItem(slotMut);
         }
 

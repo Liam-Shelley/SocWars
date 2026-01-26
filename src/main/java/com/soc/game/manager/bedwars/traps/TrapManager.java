@@ -1,21 +1,27 @@
 package com.soc.game.manager.bedwars.traps;
 
+import com.soc.game.manager.bedwars.BedwarsShopCategory;
+import com.soc.game.manager.bedwars.shopitems.ShopItem;
+import com.soc.game.manager.bedwars.shopitems.SimpleShopItem;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.soc.game.manager.AbstractGameManager.mapUuidsToPlayers;
+import static com.soc.screenhandler.BedwarsTeamShopScreenHandler.ABILITIES_DISPLAY_SIZE;
+import static com.soc.screenhandler.BedwarsTeamShopScreenHandler.TRAPS_DISPLAY_SIZE;
 
 public class TrapManager {
     public static final double TRAP_DETECTION_RANGE = 8d;
-    public static final int MAX_TRAP_QUEUE_SIZE = 3;
 
     private final Set<UUID> team;
     private final World world;
 
     private final Queue<Trap> traps = new LinkedList<>();
+    private final Queue<Trap> abilities = new LinkedList<>();
     private long nextTrapTriggerTime;
     private int currentTrapDuration;
     private long nextAbilityTriggerTime;
@@ -25,6 +31,9 @@ public class TrapManager {
         this.team = players;
         this.world = world;
         this.nextTrapTriggerTime = world.getTime();
+
+        this.traps.add(SimpleTriggerTrap.SHUFFLE);
+        this.traps.add(SimpleTriggerTrap.GLOWING);
     }
 
     public boolean hasActiveTrap() {
@@ -48,7 +57,7 @@ public class TrapManager {
     }
 
     public boolean addTrap(Trap trap) {
-        if (this.traps.size() >= MAX_TRAP_QUEUE_SIZE) return false;
+        if (this.traps.size() >= TRAPS_DISPLAY_SIZE) return false;
 
         this.traps.add(trap);
         return true;
@@ -61,5 +70,21 @@ public class TrapManager {
                 (int)this.nextAbilityTriggerTime,
                 this.currentTrapDuration
         };
+    }
+
+    public BedwarsShopCategory getTrapsDisplay() {
+        return this.getDisplayFromList(this.traps, TRAPS_DISPLAY_SIZE);
+    }
+
+    public BedwarsShopCategory getAbilitiesDisplay() {
+        return this.getDisplayFromList(this.abilities, ABILITIES_DISPLAY_SIZE);
+    }
+
+    private BedwarsShopCategory getDisplayFromList(Collection<Trap> list, int padSize) {
+        final List<ShopItem<?>> displayItems = list.stream().map(Trap::getDisplayShopItem).collect(Collectors.toList());
+
+        while (displayItems.size() < padSize) displayItems.add(SimpleShopItem.EMPTY);
+
+        return new BedwarsShopCategory(displayItems);
     }
 }

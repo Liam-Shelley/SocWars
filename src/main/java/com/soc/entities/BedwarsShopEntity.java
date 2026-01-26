@@ -79,7 +79,7 @@ public class BedwarsShopEntity extends LivingEntity {
 
         if (player instanceof ServerPlayerEntity serverPlayer) {
             final OptionalInt syncId = player.openHandledScreen(new SimpleNamedScreenHandlerFactory(this.shopType.getFactory(), Text.translatable("game.bedwars.shop." + this.shopType.toString().toLowerCase())));
-            BedwarsGameManager.sendShopData(serverPlayer, syncId);
+            BedwarsGameManager.sendShopData(serverPlayer, syncId, this.shopType);
         }
         return player.distanceTo(this) < 10 ? ActionResult.SUCCESS : ActionResult.PASS;
     }

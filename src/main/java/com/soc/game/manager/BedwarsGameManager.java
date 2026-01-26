@@ -5,6 +5,7 @@ import com.google.common.collect.Multimap;
 import com.soc.database.stats.BedwarsTable;
 import com.soc.game.manager.bedwars.BedwarsShopContents;
 import com.soc.game.manager.bedwars.PlayerStats;
+import com.soc.game.manager.bedwars.ShopType;
 import com.soc.game.manager.bedwars.TeamStats;
 import com.soc.game.map.*;
 import com.soc.items.components.ModComponents;
@@ -63,7 +64,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
         final long shopSeed = world.random.nextLong();
         this.playerStatsMap = players.stream().collect(Collectors.toMap(ServerPlayerEntity::getUuid, player -> new PlayerStats(player, this.getTeam(player), shopSeed)));
-        this.teamStatsMap = super.teams.keySet().stream().collect(Collectors.toMap(Function.identity(), team -> new TeamStats(team, super.teams.get(team).stream().map(this.playerStatsMap::get).collect(Collectors.toSet()), world)));
+        this.teamStatsMap = super.teams.keySet().stream().collect(Collectors.toMap(Function.identity(), team -> new TeamStats(team, super.teams.get(team).stream().map(this.playerStatsMap::get).collect(Collectors.toSet()), world, shopSeed)));
     }
 
     @Override
@@ -344,13 +345,16 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
     }
 
     @SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "UnusedReturnValue"})
-    public static boolean sendShopData(ServerPlayerEntity player, OptionalInt syncId) {
+    public static boolean sendShopData(ServerPlayerEntity player, OptionalInt syncId, ShopType shopType) {
         final BedwarsGameManager manager = getBedwarsGameManager(player);
 
         if (syncId.isEmpty() || !(player instanceof ServerPlayerEntity) || manager == null) return false;
 
-        ServerPlayNetworking.send(player, new BedwarsIndividualShopDataPayload(manager.getIndividualShopContents(player.getUuid()), syncId.getAsInt()));
-        ServerPlayNetworking.send(player, new BedwarsTeamShopDataPayload(manager.getTeamShopContents(player.getUuid()), syncId.getAsInt()));
+        switch (shopType) {
+            case INDIVIDUAL -> ServerPlayNetworking.send(player, new BedwarsIndividualShopDataPayload(manager.getIndividualShopContents(player.getUuid()), syncId.getAsInt()));
+            case TEAM -> ServerPlayNetworking.send(player, new BedwarsTeamShopDataPayload(manager.getTeamShopContents(player.getUuid()), syncId.getAsInt()));
+        }
+
         return true;
     }
 

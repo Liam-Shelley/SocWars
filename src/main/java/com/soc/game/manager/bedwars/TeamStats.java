@@ -1,6 +1,7 @@
 package com.soc.game.manager.bedwars;
 
 import com.soc.game.manager.bedwars.traps.TrapManager;
+import com.soc.resourcedata.containers.BedwarsShopDataContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -14,13 +15,15 @@ public class TeamStats {
     private final DyeColor team;
     private final Map<UUID, PlayerStats> playerStatsMap;
     private final TrapManager trapManager;
+    private final BedwarsShopContents teamShopContents;
 
     private boolean hasBed = true;
 
-    public TeamStats(DyeColor team, Collection<PlayerStats> playerStatsCollection, World world) {
+    public TeamStats(DyeColor team, Collection<PlayerStats> playerStatsCollection, World world, long shopSeed) {
         this.team = team;
         this.playerStatsMap = playerStatsCollection.stream().collect(PlayerStats.MAP_COLLECTOR);
-        this.trapManager = new TrapManager(playerStatsMap.keySet(), world);
+        this.trapManager = new TrapManager(this.playerStatsMap.keySet(), world);
+        this.teamShopContents = BedwarsShopDataContainer.INSTANCE.getTeamBedwarsShop(shopSeed, team);
     }
 
     public boolean hasBed() {
@@ -55,13 +58,9 @@ public class TeamStats {
     }
 
     public BedwarsShopContents getShopContents() {
-        final ArrayList<BedwarsShopCategory> categories = new ArrayList<>();
-        categories.add(new BedwarsShopCategory(List.of(), ItemStack.EMPTY, Text.of("Traps")));
-        categories.add(new BedwarsShopCategory(List.of(), ItemStack.EMPTY, Text.of("Abilities")));
-        categories.add(new BedwarsShopCategory(List.of(), ItemStack.EMPTY, Text.of("Traps Display")));
-        categories.add(new BedwarsShopCategory(List.of(), ItemStack.EMPTY, Text.of("Abilities Display")));
-
-        return new BedwarsShopContents(categories);
+        this.teamShopContents.setCategory(2, this.trapManager.getTrapsDisplay());
+        this.teamShopContents.setCategory(3, this.trapManager.getAbilitiesDisplay());
+        return this.teamShopContents;
     }
 
     public int[] getTrapProgressStats() {

@@ -1,5 +1,8 @@
 package com.soc.game.manager.bedwars;
 
+import com.soc.game.manager.bedwars.shopitems.ShopItem;
+import com.soc.game.manager.bedwars.shopitems.SimpleShopItem;
+import com.soc.game.manager.bedwars.shopitems.UpgradeableShopItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.network.RegistryByteBuf;
@@ -58,6 +61,10 @@ public class BedwarsShopCategory {
 
     public BedwarsShopCategory(List<ShopItem<?>> items, ItemStack icon, Text name) {
         this(false, items, icon, name);
+    }
+
+    public BedwarsShopCategory(List<ShopItem<?>> items) {
+        this(false, items, ItemStack.EMPTY, Text.empty());
     }
 
     public ShopItem<?> getShopItem(int slot) {

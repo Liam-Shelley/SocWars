@@ -1,8 +1,11 @@
 package com.soc.gui.screen;
 
 import com.soc.game.manager.bedwars.BedwarsShopCategory;
-import com.soc.game.manager.bedwars.ShopItem;
+import com.soc.game.manager.bedwars.shopitems.DisplayShopItem;
+import com.soc.game.manager.bedwars.shopitems.ShopItem;
+import com.soc.game.manager.bedwars.shopitems.TrapShopItem;
 import com.soc.gui.ShopResourceDisplay;
+import com.soc.resourcedata.deserialisation.Cost;
 import com.soc.screenhandler.AbstractShopScreenHandler;
 import com.soc.screenhandler.BedwarsIndividualShopScreenHandler;
 import com.soc.screenhandler.slots.ShopSlot;
@@ -45,7 +48,12 @@ public abstract class AbstractShopScreen<T extends AbstractShopScreenHandler> ex
             switch(shopSlot.getSlotType()) {
                 case STOCK -> this.drawCostTooltip(context, x, y, this.handler.getShopItem(shopSlot));
                 case CATEGORY -> this.drawCategoryTooltip(context, x, y, ((BedwarsIndividualShopScreenHandler)this.handler).getShopCategory(super.focusedSlot));
-                case DISPLAY -> this.drawDisplayTooltip(context, x, y);
+                case DISPLAY -> {
+                    final ShopItem<?> shopItem = this.handler.getShopItem(shopSlot);
+                    if (shopItem instanceof DisplayShopItem displayShopItem) {
+                        this.drawDisplayTooltip(context, x, y, displayShopItem);
+                    }
+                }
                 default -> super.drawMouseoverTooltip(context, x, y);
             }
         }
@@ -55,17 +63,21 @@ public abstract class AbstractShopScreen<T extends AbstractShopScreenHandler> ex
         final ItemStack icon = item.getIcon();
         {
             final MutableText name = item.getTooltipName().copy();
-            name.append(item.affordabilitySuffix(this.playerInventory.player));
+            if (!(item instanceof TrapShopItem)) name.append(item.affordabilitySuffix(this.playerInventory.player));
             int nameWidth = super.textRenderer.getWidth(name);
 
             TooltipBackgroundRenderer.render(context, x + 12, y - 12, Math.max(nameWidth, 65), 31, icon.get(DataComponentTypes.TOOLTIP_STYLE));
 
             context.drawText(super.textRenderer, name, x + 12, y - 12, 0xffffffff, true);
-        }
 
+            this.drawCostIcons(context, x, y, item.getCost());
+        }
+    }
+
+    protected void drawCostIcons(DrawContext context, int x, int y, Cost cost) {
         context.getMatrices().pushMatrix();
         context.getMatrices().scaleAround(0.8f, x, y);
-        item.getCost().forEach((costItem, costAmount, i) -> {
+        cost.forEach((costItem, costAmount, i) -> {
             final boolean canAfford = this.playerInventory.count(costItem) >= costAmount;
             {
                 final int xStart = x + i * 20 + 16;
@@ -86,10 +98,10 @@ public abstract class AbstractShopScreen<T extends AbstractShopScreenHandler> ex
         context.getMatrices().popMatrix();
     }
 
-    //Yeah maybe I fix this some time later ey
+    //Yeah maybe I fix these some time later ey
     protected void drawCategoryTooltip(DrawContext context, int x, int y, BedwarsShopCategory category) {}
 
-    protected void drawDisplayTooltip(DrawContext context, int x, int y) {}
+    protected void drawDisplayTooltip(DrawContext context, int x, int y, DisplayShopItem shopItem) {}
 
     protected abstract Identifier getTexture();
 
