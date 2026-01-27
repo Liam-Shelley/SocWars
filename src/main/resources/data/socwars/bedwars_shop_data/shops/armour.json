@@ -88,34 +88,6 @@
       ]
     },
     {
-      "x": 4,
-      "y": 0,
-      "options": [
-        "socwars:bedwars_shop_data/simple_items/netherite_helmet"
-      ]
-    },
-    {
-      "x": 5,
-      "y": 0,
-      "options": [
-        "socwars:bedwars_shop_data/simple_items/netherite_chestplate"
-      ]
-    },
-    {
-      "x": 6,
-      "y": 0,
-      "options": [
-        "socwars:bedwars_shop_data/simple_items/netherite_leggings"
-      ]
-    },
-    {
-      "x": 7,
-      "y": 0,
-      "options": [
-        "socwars:bedwars_shop_data/simple_items/netherite_boots"
-      ]
-    },
-    {
       "x": 6,
       "y": 1,
       "options": [
@@ -124,7 +96,7 @@
     },
     {
       "x": 4,
-      "y": 2,
+      "y": 1,
       "options": [
         "socwars:bedwars_shop_data/simple_items/steadfast_helmet",
         "socwars:bedwars_shop_data/simple_items/demolitionist_helmet",
@@ -134,7 +106,7 @@
     },
     {
       "x": 5,
-      "y": 2,
+      "y": 1,
       "options": [
         "socwars:bedwars_shop_data/simple_items/steadfast_chestplate",
         "socwars:bedwars_shop_data/simple_items/demolitionist_chestplate",
@@ -144,7 +116,7 @@
     },
     {
       "x": 6,
-      "y": 2,
+      "y": 1,
       "options": [
         "socwars:bedwars_shop_data/simple_items/steadfast_leggings",
         "socwars:bedwars_shop_data/simple_items/demolitionist_leggings",
@@ -154,7 +126,7 @@
     },
     {
       "x": 7,
-      "y": 2,
+      "y": 1,
       "options": [
         "socwars:bedwars_shop_data/simple_items/steadfast_boots",
         "socwars:bedwars_shop_data/simple_items/demolitionist_boots",

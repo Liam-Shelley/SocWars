@@ -4,69 +4,60 @@
   "page_priority": 3,
   "contents": [
     {
-      "x": 2,
+      "x": 1,
       "y": 0,
       "options": [
         "socwars:bedwars_shop_data/upgradeable_items/pickaxe"
       ]
     },
     {
-      "x": 3,
+      "x": 2,
       "y": 0,
       "options": [
         "socwars:bedwars_shop_data/upgradeable_items/axe"
       ]
     },
     {
-      "x": 4,
+      "x": 3,
       "y": 0,
       "options": [
         "socwars:bedwars_shop_data/upgradeable_items/shears"
       ]
     },
     {
-      "x": 1,
-      "y": 1,
+      "x": 4,
+      "y": 0,
       "options": [
         "socwars:bedwars_shop_data/simple_items/lava_bucket"
       ]
     },
     {
-      "x": 2,
-      "y": 1,
+      "x": 5,
+      "y": 0,
       "options": [
         "socwars:bedwars_shop_data/simple_items/water_bucket"
+      ]
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "options": [
+        "socwars:bedwars_shop_data/simple_items/spyglass"
       ]
     },
     {
       "x": 3,
       "y": 1,
       "options": [
-        "socwars:bedwars_shop_data/simple_items/spyglass"
-      ]
-    },
-    {
-      "x": 5,
-      "y": 1,
-      "options": [
         "socwars:bedwars_shop_data/simple_items/extendo_bridge"
       ]
     },
     {
-      "x": 6,
+      "x": 4,
       "y": 1,
       "options": [
         "socwars:bedwars_shop_data/simple_items/ender_pearl",
         "socwars:bedwars_shop_data/simple_items/ender_staff"
-      ]
-    },
-    {
-      "x": 2,
-      "y": 2,
-      "options": [
-        "socwars:bedwars_shop_data/simple_items/scroll_of_hellfire",
-        "socwars:bedwars_shop_data/simple_items/scroll_of_eau",
-        "socwars:bedwars_shop_data/simple_items/c_u_e_b"
       ]
     },
     {
@@ -75,22 +66,19 @@
       "options": [
         "socwars:bedwars_shop_data/simple_items/leatherer",
         "socwars:bedwars_shop_data/simple_items/shatterstar",
-        "socwars:bedwars_shop_data/simple_items/postura"
-      ]
-    },
-    {
-      "x": 4,
-      "y": 2,
-      "options": [
+        "socwars:bedwars_shop_data/simple_items/postura",
         "socwars:bedwars_shop_data/simple_items/god_complex",
         "socwars:bedwars_shop_data/simple_items/gravity_orb",
         "socwars:bedwars_shop_data/simple_items/inflatable_iron_ingot"
       ]
     },
     {
-      "x": 5,
+      "x": 4,
       "y": 2,
       "options": [
+        "socwars:bedwars_shop_data/simple_items/scroll_of_hellfire",
+        "socwars:bedwars_shop_data/simple_items/scroll_of_eau",
+        "socwars:bedwars_shop_data/simple_items/c_u_e_b",
         "socwars:bedwars_shop_data/simple_items/velocity_staff",
         "socwars:bedwars_shop_data/simple_items/vexing_staff",
         "socwars:bedwars_shop_data/simple_items/jet_trolley"

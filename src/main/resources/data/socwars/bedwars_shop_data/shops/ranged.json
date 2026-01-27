@@ -4,21 +4,14 @@
   "page_priority": 2,
   "contents": [
     {
-      "x": 1,
+      "x": 2,
       "y": 0,
       "options": [
         "socwars:bedwars_shop_data/simple_items/bow"
       ]
     },
     {
-      "x": 2,
-      "y": 0,
-      "options": [
-        "socwars:bedwars_shop_data/simple_items/trident"
-      ]
-    },
-    {
-      "x": 5,
+      "x": 3,
       "y": 0,
       "options": [
         "socwars:bedwars_shop_data/simple_items/heater_bow",
@@ -27,7 +20,7 @@
       ]
     },
     {
-      "x": 6,
+      "x": 4,
       "y": 0,
       "options": [
         "socwars:bedwars_shop_data/simple_items/alpha_bow",
@@ -37,28 +30,14 @@
       ]
     },
     {
-      "x": 1,
+      "x": 3,
       "y": 1,
       "options": [
         "socwars:bedwars_shop_data/simple_items/wind_charge"
       ]
     },
     {
-      "x": 2,
-      "y": 1,
-      "options": [
-        "socwars:bedwars_shop_data/simple_items/fishing_rod"
-      ]
-    },
-    {
-      "x": 5,
-      "y": 1,
-      "options": [
-        "socwars:bedwars_shop_data/simple_items/pocket_sand"
-      ]
-    },
-    {
-      "x": 6,
+      "x": 4,
       "y": 1,
       "options": [
         "socwars:bedwars_shop_data/simple_items/fireball",
@@ -84,33 +63,42 @@
       ]
     },
     {
+      "x": 2,
+      "y": 2,
+      "options": [
+        "socwars:bedwars_shop_data/simple_items/trident"
+      ]
+    },
+    {
+      "x": 3,
+      "y": 2,
+      "options": [
+        "socwars:bedwars_shop_data/simple_items/fishing_rod"
+      ]
+    },
+    {
       "x": 4,
       "y": 2,
       "options": [
         "socwars:bedwars_shop_data/simple_items/waterball",
         "socwars:bedwars_shop_data/simple_items/dragon_fireball",
         "socwars:bedwars_shop_data/simple_items/lightning_orb",
-        "socwars:bedwars_shop_data/simple_items/red_shell"
+        "socwars:bedwars_shop_data/simple_items/red_shell",
+        "socwars:bedwars_shop_data/simple_items/pocket_sand",
+        "socwars:bedwars_shop_data/simple_items/wind_staff",
+        "socwars:bedwars_shop_data/simple_items/mobbing_staff"
       ]
     },
     {
       "x": 5,
       "y": 2,
       "options": [
-        "socwars:bedwars_shop_data/simple_items/wind_staff",
-        "socwars:bedwars_shop_data/simple_items/mobbing_staff",
-        "socwars:bedwars_shop_data/simple_items/shrink_ray",
-        "socwars:bedwars_shop_data/simple_items/biggening_ray"
-      ]
-    },
-    {
-      "x": 6,
-      "y": 2,
-      "options": [
         "socwars:bedwars_shop_data/simple_items/molotov_cocktail",
         "socwars:bedwars_shop_data/simple_items/throwable_tnt",
         "socwars:bedwars_shop_data/simple_items/hand_grenade",
-        "socwars:bedwars_shop_data/simple_items/holy_hand_grenade"
+        "socwars:bedwars_shop_data/simple_items/holy_hand_grenade",
+        "socwars:bedwars_shop_data/simple_items/shrink_ray",
+        "socwars:bedwars_shop_data/simple_items/biggening_ray"
       ]
     }
   ]
