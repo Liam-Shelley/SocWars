@@ -39,8 +39,7 @@ public class BedwarsIndividualShopScreenHandler extends AbstractShopScreenHandle
         this.stock = new SimpleInventory(STOCK_WIDTH * STOCK_HEIGHT);
         this.categories = new SimpleInventory(CATEGORIES_WIDTH * CATEGORIES_HEIGHT);
 
-        final BedwarsGameManager manager = BedwarsGameManager.getBedwarsGameManager(player);
-        this.shopContents = manager == null ? null : manager.getIndividualShopContents(player.getUuid());
+        this.shopContents = super.manager == null ? null : super.manager.getIndividualShopContents(player.getUuid());
         this.currentCategory = this.shopContents == null ? null : this.shopContents.getFirstCategory();
 
         this.makeSlots();

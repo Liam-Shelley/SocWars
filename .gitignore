@@ -49,3 +49,4 @@ run/usercache.json
 /.idea
 .github/workflows/build.yml
 /logs
+/out

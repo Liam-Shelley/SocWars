@@ -1,0 +1,75 @@
+{
+  "name": "game.bedwars.shop.category.blocks",
+  "icon": "minecraft:oak_planks",
+  "page_priority": 0,
+  "contents": [
+    {
+      "x": 2,
+      "y": 0,
+      "options": [
+        "socwars:bedwars_shop_data/team_items/wool"
+      ]
+    },
+    {
+      "x": 3,
+      "y": 0,
+      "options": [
+        "socwars:bedwars_shop_data/team_items/planks"
+      ]
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "options": [
+        "socwars:bedwars_shop_data/team_items/terracotta"
+      ]
+    },
+    {
+      "x": 5,
+      "y": 0,
+      "options": [
+        "socwars:bedwars_shop_data/simple_items/obsidian"
+      ]
+    },
+    {
+      "x": 2,
+      "y": 1,
+      "options": [
+        "socwars:bedwars_shop_data/simple_items/perspex_block",
+        "socwars:bedwars_shop_data/simple_items/plastic_block"
+      ]
+    },
+    {
+      "x": 3,
+      "y": 1,
+      "options": [
+        "socwars:bedwars_shop_data/simple_items/rubber_block",
+        "socwars:bedwars_shop_data/simple_items/feather_block"
+      ]
+    },
+    {
+      "x": 4,
+      "y": 1,
+      "options": [
+        "socwars:bedwars_shop_data/simple_items/hardened_lava_block",
+        "socwars:bedwars_shop_data/simple_items/unobtanium_block"
+      ]
+    },
+    {
+      "x": 5,
+      "y": 1,
+      "options": [
+        "socwars:bedwars_shop_data/simple_items/near_infinite_density_block",
+        "socwars:bedwars_shop_data/simple_items/liam_block"
+      ]
+    },
+    {
+      "x": 6,
+      "y": 1,
+      "options": [
+        "socwars:bedwars_shop_data/simple_items/many_beds_block",
+        "socwars:bedwars_shop_data/simple_items/gallium_block"
+      ]
+    }
+  ]
+}

@@ -13,17 +13,19 @@ import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import net.minecraft.text.TextCodecs;
 import net.minecraft.util.Identifier;
 
 import java.io.Reader;
 
-import static com.soc.lib.json.JsonHelper.getDefaultedObject;
-import static com.soc.lib.json.JsonHelper.getDefaultedTrap;
+import static com.soc.lib.json.JsonHelper.*;
 import static net.minecraft.util.JsonHelper.deserialize;
 
 public class TrapShopItem implements ShopItem<TrapShopItem> {
+    public static final String TOOLTIP_KEY = "tooltip";
+
     public static final int ID = 5;
-    private static final PacketCodec<RegistryByteBuf, TrapShopItem> PACKET_CODEC = PacketCodec.tuple(Cost.PACKET_CODEC, TrapShopItem::getCost, Identifier.PACKET_CODEC, TrapShopItem::getTrapId, TrapShopItem::new);
+    private static final PacketCodec<RegistryByteBuf, TrapShopItem> PACKET_CODEC = PacketCodec.tuple(Cost.PACKET_CODEC, TrapShopItem::getCost, Identifier.PACKET_CODEC, TrapShopItem::getTrapId, TextCodecs.PACKET_CODEC, TrapShopItem::getTooltip, TrapShopItem::new);
 
     public static void initialise() {
         ShopItem.DECODER_MAP.put(ID, PACKET_CODEC::decode);
@@ -31,14 +33,17 @@ public class TrapShopItem implements ShopItem<TrapShopItem> {
 
     private final Cost cost;
     private final Trap trap;
+    private final Text tooltip;
 
-    public TrapShopItem(Cost cost, Trap trap) {
+    public TrapShopItem(Cost cost, Trap trap, Text tooltip) {
         this.cost = cost;
         this.trap = trap;
+        this.tooltip = tooltip;
     }
 
-    public TrapShopItem(Cost cost, Identifier id) {
+    public TrapShopItem(Cost cost, Identifier id, Text tooltip) {
         this.cost = cost;
+        this.tooltip = tooltip;
         if(!Traps.REGISTRY.containsId(id)) throw new IllegalStateException("No trap registered on the client for id: " + id + ". Possible registry mismatch?");
         this.trap = Traps.REGISTRY.get(id);
     }
@@ -46,14 +51,13 @@ public class TrapShopItem implements ShopItem<TrapShopItem> {
     public TrapShopItem(JsonObject object) {
         this(
                 getDefaultedObject(object, Cost.KEY, Cost::new, Cost.ERROR_SIGNAL),
-                getDefaultedTrap(object, Trap.KEY)
+                getDefaultedTrap(object, Trap.KEY),
+                getDefaultedText(object, TOOLTIP_KEY)
         );
     }
 
     public TrapShopItem(Reader reader) {
-        this(
-                deserialize(reader)
-        );
+        this(deserialize(reader));
     }
 
     @Override
@@ -93,6 +97,10 @@ public class TrapShopItem implements ShopItem<TrapShopItem> {
 
     private Identifier getTrapId() {
         return this.trap.getId();
+    }
+
+    private Text getTooltip() {
+        return this.tooltip;
     }
 
     @Override

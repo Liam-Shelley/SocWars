@@ -2,6 +2,7 @@ package com.soc.screenhandler;
 
 import com.soc.game.manager.bedwars.BedwarsShopContents;
 import com.soc.game.manager.bedwars.shopitems.ShopItem;
+import com.soc.game.manager.bedwars.shopitems.SimpleShopItem;
 import com.soc.screenhandler.slots.DisplaySlot;
 import com.soc.screenhandler.slots.StockSlot;
 import net.minecraft.entity.player.PlayerEntity;
@@ -123,6 +124,8 @@ public class BedwarsTeamShopScreenHandler extends AbstractShopScreenHandler {
     }
 
     public ShopItem<?> getShopItem(final int slot) {
+        if (this.shopContents == null) return SimpleShopItem.EMPTY;
+
         int slotMut = slot;
 
         for (int i = 0; i < CATEGORY_SIZES.length; i++) {

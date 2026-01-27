@@ -74,6 +74,6 @@ public class TeamStats {
     }
 
     public boolean buyAbility(Trap ability) {
-        return this.trapManager.buyTrap(ability);
+        return this.trapManager.buyAbility(ability);
     }
 }

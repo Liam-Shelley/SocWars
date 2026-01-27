@@ -2,13 +2,18 @@ package com.soc.lib.json;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.JsonOps;
 import com.soc.SocWars;
 import com.soc.game.manager.bedwars.traps.Trap;
 import com.soc.game.manager.bedwars.traps.Traps;
 import com.soc.game.map.DyeColourWithEmpty;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
+import net.minecraft.text.Text;
+import net.minecraft.text.TextCodecs;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.io.Reader;
@@ -141,5 +146,23 @@ public class JsonHelper {
         final Identifier id = Identifier.of(element.getAsString());
 
         return Traps.REGISTRY.containsId(id) ? Traps.REGISTRY.get(id) : null; //I know that this is currently useless but I will put an empty trapitem here at some point
+    }
+
+    public static Text getDefaultedText(JsonObject json, String key, Text def) {
+        final JsonElement element = json.get(key);
+        if (element == null) return def;
+
+        Text text = Text.literal("hello this should be blue").formatted(Formatting.BLUE);
+
+        DataResult<JsonElement> a = TextCodecs.CODEC.encodeStart(JsonOps.INSTANCE, text);
+
+        SocWars.LOGGER.info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        a.ifSuccess(success -> SocWars.LOGGER.info(success.getAsString()));
+
+        return null;
+    }
+
+    public static Text getDefaultedText(JsonObject json, String key) {
+        return getDefaultedText(json, key, Text.empty());
     }
 }
