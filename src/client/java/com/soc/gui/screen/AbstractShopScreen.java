@@ -107,8 +107,8 @@ public abstract class AbstractShopScreen<T extends AbstractShopScreenHandler> ex
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
-        int i = (super.width - super.backgroundWidth) / 2;
-        int j = (super.height - super.backgroundHeight) / 2 + this.backgroundYOffset;
+        final int i = (super.width - super.backgroundWidth) / 2;
+        final int j = (super.height - super.backgroundHeight) / 2 + this.backgroundYOffset;
         context.drawTexture(RenderPipelines.GUI_TEXTURED, this.getTexture(), i, j, 0.0F, 0.0F, super.backgroundWidth, super.backgroundHeight, super.backgroundWidth, super.backgroundHeight);
 
         super.render(context, mouseX, mouseY, deltaTicks);

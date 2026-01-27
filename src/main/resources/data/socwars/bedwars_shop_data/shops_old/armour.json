@@ -18,28 +18,28 @@
       ]
     },
     {
-      "x": 2,
-      "y": 0,
+      "x": 0,
+      "y": 1,
       "options": [
         "socwars:bedwars_shop_data/simple_items/golden_leggings"
       ]
     },
     {
-      "x": 3,
-      "y": 0,
+      "x": 1,
+      "y": 1,
       "options": [
         "socwars:bedwars_shop_data/simple_items/golden_boots"
       ]
     },
     {
-      "x": 0,
+      "x": 2,
       "y": 1,
       "options": [
         "socwars:bedwars_shop_data/simple_items/iron_helmet"
       ]
     },
     {
-      "x": 1,
+      "x": 3,
       "y": 1,
       "options": [
         "socwars:bedwars_shop_data/simple_items/iron_chestplate"
@@ -47,84 +47,49 @@
     },
     {
       "x": 2,
-      "y": 1,
+      "y": 2,
       "options": [
         "socwars:bedwars_shop_data/simple_items/iron_leggings"
       ]
     },
     {
       "x": 3,
-      "y": 1,
+      "y": 2,
       "options": [
         "socwars:bedwars_shop_data/simple_items/iron_boots"
-      ]
-    },
-    {
-      "x": 0,
-      "y": 2,
-      "options": [
-        "socwars:bedwars_shop_data/simple_items/diamond_helmet"
-      ]
-    },
-    {
-      "x": 1,
-      "y": 2,
-      "options": [
-        "socwars:bedwars_shop_data/simple_items/diamond_chestplate"
-      ]
-    },
-    {
-      "x": 2,
-      "y": 2,
-      "options": [
-        "socwars:bedwars_shop_data/simple_items/diamond_leggings"
-      ]
-    },
-    {
-      "x": 3,
-      "y": 2,
-      "options": [
-        "socwars:bedwars_shop_data/simple_items/diamond_boots"
       ]
     },
     {
       "x": 4,
       "y": 0,
       "options": [
-        "socwars:bedwars_shop_data/simple_items/netherite_helmet"
+        "socwars:bedwars_shop_data/simple_items/diamond_helmet"
       ]
     },
     {
       "x": 5,
       "y": 0,
       "options": [
-        "socwars:bedwars_shop_data/simple_items/netherite_chestplate"
+        "socwars:bedwars_shop_data/simple_items/diamond_chestplate"
       ]
     },
     {
-      "x": 6,
-      "y": 0,
+      "x": 4,
+      "y": 1,
       "options": [
-        "socwars:bedwars_shop_data/simple_items/netherite_leggings"
+        "socwars:bedwars_shop_data/simple_items/diamond_leggings"
       ]
     },
     {
-      "x": 7,
-      "y": 0,
+      "x": 5,
+      "y": 1,
       "options": [
-        "socwars:bedwars_shop_data/simple_items/netherite_boots"
+        "socwars:bedwars_shop_data/simple_items/diamond_boots"
       ]
     },
     {
       "x": 6,
       "y": 1,
-      "options": [
-        "socwars:bedwars_shop_data/simple_items/turtle_shell"
-      ]
-    },
-    {
-      "x": 4,
-      "y": 2,
       "options": [
         "socwars:bedwars_shop_data/simple_items/steadfast_helmet",
         "socwars:bedwars_shop_data/simple_items/demolitionist_helmet",
@@ -133,8 +98,8 @@
       ]
     },
     {
-      "x": 5,
-      "y": 2,
+      "x": 7,
+      "y": 1,
       "options": [
         "socwars:bedwars_shop_data/simple_items/steadfast_chestplate",
         "socwars:bedwars_shop_data/simple_items/demolitionist_chestplate",
