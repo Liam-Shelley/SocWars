@@ -15,6 +15,8 @@ import net.minecraft.text.TextCodecs;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 
 public class BedwarsShopCategory {
     public static final PacketCodec<RegistryByteBuf, BedwarsShopCategory> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.BOOLEAN, BedwarsShopCategory::isQuickBuy, new PacketCodec<>() {
@@ -73,6 +75,24 @@ public class BedwarsShopCategory {
         return item == null ? SimpleShopItem.EMPTY : item;
     }
 
+    public void setShopItem(int slot, ShopItem<?> item) {
+        if (slot < 0 || slot >= this.items.size()) return;
+        this.items.set(slot, item);
+    }
+
+    public void forEachEnumerate(BiConsumer<Integer, ShopItem<?>> function) {
+        for (int i = 0; i < this.items.size(); i++) {
+            function.accept(i, this.items.get(i));
+        }
+    }
+
+    /// Return false to early exit
+    public void forEachEnumerate(BiFunction<Integer, ShopItem<?>, Boolean> function) {
+        for (int i = 0; i < this.items.size(); i++) {
+            if (!function.apply(i, this.items.get(i))) return;
+        }
+    }
+
     public ItemStack getIcon() {
         return this.icon;
     }
@@ -85,8 +105,7 @@ public class BedwarsShopCategory {
     }
 
     public List<ShopItem<?>> getItems() {
-        List<ShopItem<?>> a = this.getQuickBuyItems();
-        return this.isQuickBuy ? a : this.items;
+        return this.isQuickBuy ? this.getQuickBuyItems() : this.items;
     }
 
     public List<ShopItem<?>> getQuickBuyItems() {

@@ -1,8 +1,12 @@
 package com.soc.screenhandler;
 
+import com.soc.SocWars;
+import com.soc.game.manager.bedwars.BedwarsShopCategory;
 import com.soc.game.manager.bedwars.BedwarsShopContents;
+import com.soc.game.manager.bedwars.shopitems.DisplayShopItem;
 import com.soc.game.manager.bedwars.shopitems.ShopItem;
 import com.soc.game.manager.bedwars.shopitems.SimpleShopItem;
+import com.soc.game.manager.bedwars.shopitems.TrapShopItem;
 import com.soc.screenhandler.slots.DisplaySlot;
 import com.soc.screenhandler.slots.StockSlot;
 import net.minecraft.entity.player.PlayerEntity;
@@ -164,5 +168,29 @@ public class BedwarsTeamShopScreenHandler extends AbstractShopScreenHandler {
 
     public boolean hasRoomInAbilityDisplay() {
         return this.abilitiesDisplay.getStack(ABILITIES_DISPLAY_SIZE - 1).isEmpty();
+    }
+
+    @SuppressWarnings("DataFlowIssue") //I know that this will be valid because it can only ever be invalid before the shop has loaded, in which case you cannot buy a trap
+    public void useTrap() {
+        final BedwarsShopCategory trapsCategory = this.shopContents.getCategory(2);
+        trapsCategory.forEachEnumerate((i, item) -> {
+            trapsCategory.setShopItem(i - 1, item);
+        });
+
+        this.refreshItems();
+    }
+
+    @SuppressWarnings("DataFlowIssue")
+    public void buyTrap(TrapShopItem trapShopItem) {
+        final BedwarsShopCategory trapsCategory = this.shopContents.getCategory(2);
+        trapsCategory.forEachEnumerate((i, item) -> {
+            if (!(item instanceof DisplayShopItem display && !display.isEmpty())) {
+                trapsCategory.setShopItem(i, trapShopItem.getDisplayCopy());
+                return false;
+            }
+            return true;
+        });
+
+        this.refreshItems();
     }
 }

@@ -3,15 +3,17 @@ package com.soc.game.manager.bedwars;
 import com.soc.game.manager.AbstractGameManager;
 import com.soc.game.manager.bedwars.traps.Trap;
 import com.soc.game.manager.bedwars.traps.TrapManager;
+import com.soc.networking.s2c.bedwars.BedwarsTeamShopDataPayload;
 import com.soc.resourcedata.containers.BedwarsShopDataContainer;
-import net.minecraft.item.ItemStack;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.*;
+
+import static com.soc.game.manager.AbstractGameManager.mapUuidsToPlayers;
 
 public class TeamStats {
     private final DyeColor team;
@@ -69,11 +71,18 @@ public class TeamStats {
         return this.trapManager.getTrapProgressStats();
     }
 
-    public boolean buyTrap(Trap trap) {
-        return this.trapManager.buyTrap(trap);
+    public boolean buyTrap(Trap trap, World world) {
+        boolean success = this.trapManager.buyTrap(trap);
+        //if (success) this.resendPlayerShops(world);
+        return success;
     }
 
-    public boolean buyAbility(Trap ability) {
+    public boolean buyAbility(Trap ability, World world) {
         return this.trapManager.buyAbility(ability);
     }
+
+    //Goddamn this stupid visual bug
+    //private void resendPlayerShops(World world) {
+    //    mapUuidsToPlayers(world, this.playerStatsMap.keySet()).forEach(player -> ServerPlayNetworking.send(player, new BedwarsTeamShopDataPayload(this.getShopContents(), player.currentScreenHandler.syncId)));
+    //}
 }

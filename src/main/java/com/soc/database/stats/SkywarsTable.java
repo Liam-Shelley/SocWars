@@ -38,4 +38,9 @@ public class SkywarsTable extends CombatTable {
     public String getTableName() {
         return "SKYWARS";
     }
+
+    @Override
+    public int getKills() {
+        return super.kills + this.eliminations;
+    }
 }

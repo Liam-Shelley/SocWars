@@ -39,6 +39,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 
@@ -467,5 +468,14 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
 
     public final boolean isBlockUnprotected(ServerPlayerEntity player, BlockPos pos) {
         return !this.map.isBlockProtected(pos) || player.getGameMode() != GameMode.SURVIVAL;
+    }
+
+    protected static List<Pair<Text, Integer>> getNTopKillers(Map<UUID, ? extends CombatTable> dbTables, World world, int n) {
+        try {
+            return dbTables.entrySet().stream().sorted(Comparator.comparingInt(entry -> entry.getValue().getKills())).limit(n).map(entry -> Pair.of(world.getPlayerByUuid(entry.getKey()).getDisplayName(), entry.getValue().getKills())).toList();
+        } catch (Exception ignored) {
+            SocWars.LOGGER.warn("Failed to retrieve top killers as a player was null");
+            return List.of();
+        }
     }
 }

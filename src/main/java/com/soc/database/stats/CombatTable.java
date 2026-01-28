@@ -24,4 +24,8 @@ public abstract class CombatTable extends BaseGameTable {
     protected CombatTable(UUID player) {
         super(player);
     }
+
+    public int getKills() {
+        return this.kills;
+    }
 }

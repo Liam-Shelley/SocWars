@@ -60,7 +60,10 @@ public class TrapShopItem implements ShopItem<TrapShopItem> {
         final BedwarsGameManager manager = context.getManager();
 
         final boolean queueHasSpace = player.getWorld().isClient ? context instanceof BedwarsTeamShopScreenHandler teamHandler && teamHandler.hasRoomInTrapDisplay() : manager.buyTrap((ServerPlayerEntity) player, this.trap);
-        if (queueHasSpace) this.takeItems(player);
+        if (queueHasSpace) {
+            this.takeItems(player);
+            if (context instanceof BedwarsTeamShopScreenHandler teamShopScreenHandler) teamShopScreenHandler.buyTrap(this);
+        }
         return queueHasSpace;
     }
 
@@ -96,5 +99,9 @@ public class TrapShopItem implements ShopItem<TrapShopItem> {
     @Override
     public Text getDisplayName() {
         return this.trap.getName();
+    }
+
+    public DisplayShopItem getDisplayCopy() {
+        return this.trap.getDisplayShopItem();
     }
 }

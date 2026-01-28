@@ -5,10 +5,11 @@ import com.soc.game.manager.bedwars.BedwarsShopCategory;
 import com.soc.game.manager.bedwars.shopitems.ShopItem;
 import com.soc.game.manager.bedwars.shopitems.SimpleShopItem;
 import com.soc.lib.SocWarsLib;
+import com.soc.networking.s2c.bedwars.UseTrapPayload;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.packet.s2c.play.SubtitleS2CPacket;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -17,7 +18,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.soc.game.manager.AbstractGameManager.mapUuidsToPlayers;
-import static com.soc.lib.SocWarsLib.colouredTextFromColour;
 import static com.soc.screenhandler.BedwarsTeamShopScreenHandler.ABILITIES_DISPLAY_SIZE;
 import static com.soc.screenhandler.BedwarsTeamShopScreenHandler.TRAPS_DISPLAY_SIZE;
 
@@ -38,9 +38,6 @@ public class TrapManager {
         this.team = players;
         this.world = world;
         this.nextTrapTriggerTime = world.getTime();
-
-        this.traps.add(SimpleTriggerTrap.SHUFFLE);
-        this.traps.add(SimpleTriggerTrap.GLOWING);
     }
 
     public boolean hasActiveTrap() {
@@ -49,7 +46,10 @@ public class TrapManager {
 
     public void trigger(AbstractGameManager<?, ?, ?> manager, Vec3d pos, List<ServerPlayerEntity> players) {
         final Trap trap = this.traps.remove();
-        trap.trigger(pos, mapUuidsToPlayers(this.world, this.team), players);
+        final List<ServerPlayerEntity> team = mapUuidsToPlayers(this.world, this.team);
+
+        trap.trigger(pos, team, players);
+        team.forEach(player -> ServerPlayNetworking.send(player, new UseTrapPayload()));
 
         final Text teamsText = players.stream().map(manager::getTeam).distinct().map(SocWarsLib::colouredTextFromColour).reduce((a, b) -> a.append(", ").append(b)).get();
         mapUuidsToPlayers(this.world, this.team).forEach(player -> {
@@ -63,7 +63,10 @@ public class TrapManager {
 
     private void triggerAbility(Vec3d pos, List<ServerPlayerEntity> players) {
         final Trap ability = this.traps.remove();
-        ability.trigger(pos, mapUuidsToPlayers(this.world, this.team), players);
+        final List<ServerPlayerEntity> team = mapUuidsToPlayers(this.world, this.team);
+
+        ability.trigger(pos, team, players);
+        //team.forEach(player -> ServerPlayNetworking.send(player, new UseAbilityPayload()));
 
         this.nextAbilityTriggerTime = this.world.getTime() + ability.getCooldownTime();
         this.currentAbilityDuration = ability.getCooldownTime();

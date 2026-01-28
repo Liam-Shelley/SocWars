@@ -385,10 +385,10 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
     }
 
     public boolean buyTrap(ServerPlayerEntity player, Trap trap) {
-        return this.teamStatsMap.get(this.getTeam(player)).buyTrap(trap);
+        return this.teamStatsMap.get(this.getTeam(player)).buyTrap(trap, super.world);
     }
 
     public boolean buyAbility(ServerPlayerEntity player, Trap ability) {
-        return this.teamStatsMap.get(this.getTeam(player)).buyAbility(ability);
+        return this.teamStatsMap.get(this.getTeam(player)).buyAbility(ability, super.world);
     }
 }

@@ -55,4 +55,9 @@ public class BedwarsTable extends CombatTable {
     public String getTableName() {
         return "BEDWARS";
     }
+
+    @Override
+    public int getKills() {
+        return super.kills + this.finalKills;
+    }
 }

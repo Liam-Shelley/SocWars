@@ -95,4 +95,8 @@ public class DisplayShopItem implements ShopItem<DisplayShopItem> {
     private Optional<Text> getOptionalTooltip() {
         return Optional.ofNullable(this.tooltip);
     }
+
+    public boolean isEmpty() {
+        return this.icon.isEmpty() && this.name == null && this.tooltip == null;
+    }
 }
