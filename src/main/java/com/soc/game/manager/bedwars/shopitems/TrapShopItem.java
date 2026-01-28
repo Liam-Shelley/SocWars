@@ -22,10 +22,8 @@ import static com.soc.lib.json.JsonHelper.*;
 import static net.minecraft.util.JsonHelper.deserialize;
 
 public class TrapShopItem implements ShopItem<TrapShopItem> {
-    public static final String TOOLTIP_KEY = "tooltip";
-
     public static final int ID = 5;
-    private static final PacketCodec<RegistryByteBuf, TrapShopItem> PACKET_CODEC = PacketCodec.tuple(Cost.PACKET_CODEC, TrapShopItem::getCost, Identifier.PACKET_CODEC, TrapShopItem::getTrapId, TextCodecs.PACKET_CODEC, TrapShopItem::getTooltip, TrapShopItem::new);
+    private static final PacketCodec<RegistryByteBuf, TrapShopItem> PACKET_CODEC = PacketCodec.tuple(Cost.PACKET_CODEC, TrapShopItem::getCost, Identifier.PACKET_CODEC, TrapShopItem::getTrapId, TrapShopItem::new);
 
     public static void initialise() {
         ShopItem.DECODER_MAP.put(ID, PACKET_CODEC::decode);
@@ -33,17 +31,14 @@ public class TrapShopItem implements ShopItem<TrapShopItem> {
 
     private final Cost cost;
     private final Trap trap;
-    private final Text tooltip;
 
-    public TrapShopItem(Cost cost, Trap trap, Text tooltip) {
+    public TrapShopItem(Cost cost, Trap trap) {
         this.cost = cost;
         this.trap = trap;
-        this.tooltip = tooltip;
     }
 
-    public TrapShopItem(Cost cost, Identifier id, Text tooltip) {
+    public TrapShopItem(Cost cost, Identifier id) {
         this.cost = cost;
-        this.tooltip = tooltip;
         if(!Traps.REGISTRY.containsId(id)) throw new IllegalStateException("No trap registered on the client for id: " + id + ". Possible registry mismatch?");
         this.trap = Traps.REGISTRY.get(id);
     }
@@ -51,8 +46,7 @@ public class TrapShopItem implements ShopItem<TrapShopItem> {
     public TrapShopItem(JsonObject object) {
         this(
                 getDefaultedObject(object, Cost.KEY, Cost::new, Cost.ERROR_SIGNAL),
-                getDefaultedTrap(object, Trap.KEY),
-                getDefaultedText(object, TOOLTIP_KEY)
+                getDefaultedTrap(object, Trap.KEY)
         );
     }
 
@@ -99,12 +93,8 @@ public class TrapShopItem implements ShopItem<TrapShopItem> {
         return this.trap.getId();
     }
 
-    private Text getTooltip() {
-        return this.tooltip;
-    }
-
     @Override
-    public Text getTooltipName() {
+    public Text getDisplayName() {
         return this.trap.getName();
     }
 }

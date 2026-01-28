@@ -6,16 +6,20 @@ import com.soc.screenhandler.BedwarsTeamShopScreenHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipBackgroundRenderer;
-import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class BedwarsTeamShopScreen extends AbstractShopScreen<BedwarsTeamShopScreenHandler> {
     private static final Identifier TEXTURE = Identifier.of(SocWars.MOD_ID, "textures/gui/container/bedwars_team_shop_base.png");
+    private static final int MAX_TOOLTIP_WIDTH = 140;
     private static final Text TRAPS_TITLE = Text.translatable("shop.title.traps");
     private static final int TRAPS_TITLE_X = 26;
     private static final int TRAPS_TITLE_Y = 12;
@@ -56,13 +60,27 @@ public class BedwarsTeamShopScreen extends AbstractShopScreen<BedwarsTeamShopScr
 
     @Override
     protected void drawDisplayTooltip(DrawContext context, int x, int y, DisplayShopItem shopItem) {
-        {
-            final MutableText name = shopItem.getTooltipName().copy();
-            int nameWidth = super.textRenderer.getWidth(name);
+        final Text name = shopItem.getDisplayName();
+        @Nullable final Text tooltip = shopItem.getTooltip();
 
-            TooltipBackgroundRenderer.render(context, x + 12, y - 12, Math.max(nameWidth, 65), 31, /*shopItem.get(DataComponentTypes.TOOLTIP_STYLE)*/null);
+        final List<OrderedText> lines;
+        final int textWidth;
+        final int textHeight;
 
-            context.drawText(super.textRenderer, name, x + 12, y - 12, 0xffffffff, true);
+        if (shopItem.getTooltip() == null) {
+            lines = List.of();
+            textWidth = super.textRenderer.getWidth(name);
+            textHeight = 24;
+        } else {
+            lines = super.textRenderer.wrapLines(shopItem.getTooltip(), MAX_TOOLTIP_WIDTH - 8);
+            textWidth = Math.max(super.textRenderer.getWidth(name), Math.min(MAX_TOOLTIP_WIDTH, super.textRenderer.getWidth(tooltip) + 8));
+            textHeight = Math.max(24, lines.size() * 12 + 12);
         }
+
+        TooltipBackgroundRenderer.render(context, x + 12, y - 12, Math.max(textWidth, 65), textHeight, /*shopItem.get(DataComponentTypes.TOOLTIP_STYLE)*/null);
+        for (int i = 0; i < lines.size(); i++) {
+            context.drawText(super.textRenderer, lines.get(i), x + 20, y + 2 + 12 * i, 0xffffffff, true);
+        }
+        context.drawText(super.textRenderer, name, x + 12, y - 12, 0xffffffff, true);
     }
 }

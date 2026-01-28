@@ -41,11 +41,15 @@ public abstract class Trap {
         return this.id;
     }
 
-    public DisplayShopItem getDisplayShopItem() {
-        return new DisplayShopItem(this.getIcon());
+    private String getBaseName() {
+        return "trap." + this.getId().getPath();
     }
 
     public Text getName() {
-        return Text.translatable("trap." + this.getId().getPath());
+        return Text.translatable(this.getBaseName());
+    }
+
+    public DisplayShopItem getDisplayShopItem() {
+        return new DisplayShopItem(this.getIcon(), this.getName(), Text.translatable(this.getBaseName() + ".tooltip"));
     }
 }

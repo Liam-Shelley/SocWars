@@ -4,14 +4,14 @@
   "page_priority": 1,
   "contents": [
     {
-      "x": 2,
+      "x": 1,
       "y": 0,
       "options": [
         "socwars:bedwars_shop_data/simple_items/iron_sword"
       ]
     },
     {
-      "x": 4,
+      "x": 3,
       "y": 0,
       "options": [
         "socwars:bedwars_shop_data/simple_items/diamond_sword"

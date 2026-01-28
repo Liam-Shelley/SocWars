@@ -3,7 +3,6 @@ package com.soc.gui.screen;
 import com.soc.game.manager.bedwars.BedwarsShopCategory;
 import com.soc.game.manager.bedwars.shopitems.DisplayShopItem;
 import com.soc.game.manager.bedwars.shopitems.ShopItem;
-import com.soc.game.manager.bedwars.shopitems.TrapShopItem;
 import com.soc.gui.ShopResourceDisplay;
 import com.soc.resourcedata.deserialisation.Cost;
 import com.soc.screenhandler.AbstractShopScreenHandler;
@@ -62,7 +61,7 @@ public abstract class AbstractShopScreen<T extends AbstractShopScreenHandler> ex
     protected void drawCostTooltip(DrawContext context, int x, int y, ShopItem<?> item) {
         final ItemStack icon = item.getIcon();
         {
-            final MutableText name = item.getTooltipName().copy();
+            final MutableText name = item.getDisplayName().copy();
             name.append(item.affordabilitySuffix(this.playerInventory.player));
             int nameWidth = super.textRenderer.getWidth(name);
 

@@ -1,7 +1,9 @@
 package com.soc.lib.json;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import com.soc.SocWars;
@@ -12,7 +14,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextCodecs;
-import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
@@ -149,15 +150,25 @@ public class JsonHelper {
     }
 
     public static Text getDefaultedText(JsonObject json, String key, Text def) {
+        //Maybe write this function at some point instead of it being a bunch of experimental garbage
+        ((JsonElement)null).isJsonObject(); //Deliberately causing an error so that I remember to fix this at some point instead of wondering why something is weird
+
         final JsonElement element = json.get(key);
-        if (element == null) return def;
 
         Text text = Text.literal("hello this should be blue").formatted(Formatting.BLUE);
 
         DataResult<JsonElement> a = TextCodecs.CODEC.encodeStart(JsonOps.INSTANCE, text);
 
-        SocWars.LOGGER.info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-        a.ifSuccess(success -> SocWars.LOGGER.info(success.getAsString()));
+        a.ifSuccess(success -> {
+            String asString = new Gson().toJson(success);
+            SocWars.LOGGER.info(asString);
+            DataResult<Pair<Text, JsonElement>> b = TextCodecs.CODEC.decode(JsonOps.INSTANCE, new Gson().fromJson(asString, JsonElement.class));
+            b.ifSuccess(success2 -> {
+                SocWars.LOGGER.info(success2.getFirst().toString());
+                SocWars.LOGGER.info(success2.getSecond().toString());
+            });
+        });
+        if (element == null) return def;
 
         return null;
     }

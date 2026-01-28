@@ -46,7 +46,7 @@ public interface ShopItem<INHERITOR> {
         this.getPacketCodec().encode(byteBuf, (INHERITOR)this);
     }
 
-    default Text getTooltipName() {
+    default Text getDisplayName() {
         return getTooltipNameOfItem(this.getIcon());
     }
 
