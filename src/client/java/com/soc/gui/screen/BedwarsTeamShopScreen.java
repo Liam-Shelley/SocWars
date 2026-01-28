@@ -19,7 +19,7 @@ import java.util.List;
 
 public class BedwarsTeamShopScreen extends AbstractShopScreen<BedwarsTeamShopScreenHandler> {
     private static final Identifier TEXTURE = Identifier.of(SocWars.MOD_ID, "textures/gui/container/bedwars_team_shop_base.png");
-    private static final int MAX_TOOLTIP_WIDTH = 140;
+    private static final int MAX_TOOLTIP_WIDTH = 240;
     private static final Text TRAPS_TITLE = Text.translatable("shop.title.traps");
     private static final int TRAPS_TITLE_X = 26;
     private static final int TRAPS_TITLE_Y = 12;
