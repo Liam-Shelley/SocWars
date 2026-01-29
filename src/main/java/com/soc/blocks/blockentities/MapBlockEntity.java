@@ -72,6 +72,7 @@ public class MapBlockEntity extends BlockEntity {
         this.regionSize = new BlockPos.Mutable(1, 1, 1);
         this.mapName = "";
         this.mapType = GameType.SKYWARS;
+        this.blockProtection = false;
     }
 
     public void checkStructure() {
@@ -242,6 +243,7 @@ public class MapBlockEntity extends BlockEntity {
         view.put("region_size", BlockPos.Mutable.CODEC, this.regionSize);
         view.put("map_name", Codec.STRING, this.mapName);
         view.put("map_type", Codec.INT, this.mapType.ordinal());
+        view.put("block_protection", Codec.BOOL, this.blockProtection);
 
         super.writeData(view);
     }
@@ -253,6 +255,7 @@ public class MapBlockEntity extends BlockEntity {
         this.regionSize = view.read("region_size", BlockPos.Mutable.CODEC).orElse(new BlockPos.Mutable(1, 1, 1)).mutableCopy();
         this.mapName = view.read("map_name", Codec.STRING).orElse("");
         this.mapType = GameType.fromOrdinal(view.read("map_type", Codec.INT).orElse(0));
+        this.blockProtection = view.read("block_protection", Codec.BOOL).orElse(false);
     }
 
     @Override

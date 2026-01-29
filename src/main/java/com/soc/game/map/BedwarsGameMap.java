@@ -24,19 +24,6 @@ import java.util.stream.Collectors;
 import static com.soc.lib.SocWarsLib.*;
 
 public class BedwarsGameMap extends AbstractGameMap {
-    public static class IslandTeam {
-        private boolean hasBed = true;
-        private final DyeColor colour;
-
-        public IslandTeam(DyeColor colour) {
-            this.colour = colour;
-        }
-
-        public void breakBed() {
-            this.hasBed = false;
-        }
-    }
-
     public static final String FILE_EXTENSION = "bwmap";
     public static final String DIAMOND_GENS_KEY = "diamond_gens";
     public static final String EMERALD_GENS_KEY = "emerald_gens";
