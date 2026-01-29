@@ -31,7 +31,7 @@ import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
 @Mixin(ServerPlayNetworkHandler.class)
-public final class TooFastPort {
+public abstract class TooFastPort {
 	@ModifyConstant(method = "onPlayerMove", constant = @Constant(floatValue = 100f))
 	private float getDefaultMaxPlayerSpeed(float speed) {
 		return 1000f;

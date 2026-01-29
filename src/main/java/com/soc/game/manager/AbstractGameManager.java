@@ -115,7 +115,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         this.assignPlayersToTeams();
         this.setGameMode(GameMode.ADVENTURE);
         this.healPlayers();
-        this.clearPlayerInventories();
+        this.clearPlayerInventoriesAndEnderChests();
         this.removePlayersAttributes();
 
         PrescheduledEvents.playCountdown(() -> {
@@ -416,8 +416,11 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         this.getPlayers().forEach(AbstractGameManager::removePlayerVelocity);
     }
 
-    protected final void clearPlayerInventories() {
-        this.getPlayers().forEach(player -> player.getInventory().clear());
+    protected final void clearPlayerInventoriesAndEnderChests() {
+        this.getPlayers().forEach(player -> {
+            player.getInventory().clear();
+            player.getEnderChestInventory().clear();
+        });
     }
 
     protected final void removePlayersAttributes() {

@@ -1,20 +1,32 @@
 package com.soc.networking;
 
 import com.soc.game.BedwarsTeamsHUD;
+import com.soc.lib.Coroutine;
+import com.soc.lib.Coroutines;
 import com.soc.networking.s2c.*;
 import com.soc.networking.s2c.bedwars.*;
 import com.soc.player.PlayerDataManager;
-import com.soc.screenhandler.AbstractShopScreenHandler;
 import com.soc.screenhandler.BedwarsIndividualShopScreenHandler;
 import com.soc.screenhandler.BedwarsTeamShopScreenHandler;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.random.LocalRandom;
+import net.minecraft.util.math.random.Random;
+import net.minecraft.world.World;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.soc.lib.SocWarsLib.iterateInSphere;
+import static com.soc.lib.SocWarsLib.randomCentredVec3d;
 
 public class S2CReceivers {
     public static void initialise() {
@@ -65,6 +77,32 @@ public class S2CReceivers {
             if (screenHandler instanceof BedwarsTeamShopScreenHandler shopScreenHandler) {
                 shopScreenHandler.useTrap();
             }
+        });
+        ClientPlayNetworking.registerGlobalReceiver(SmokescreenPayload.ID, (payload, context) -> {
+            final World world = context.player().getWorld();
+            final int randomOffset = world.random.nextInt();
+
+            final AtomicInteger count = new AtomicInteger(0);
+            Coroutines.getInstance().startCoroutine(new Coroutine<>(count, t -> {
+                final int currentTime = t.getAndIncrement();
+
+                if (currentTime % 5 == 0) {
+                    final Random random = new LocalRandom(currentTime + randomOffset);
+                    context.player().playSound(SoundEvents.BLOCK_BAMBOO_WOOD_BUTTON_CLICK_OFF, 1f, currentTime / 200f + 1.1f);
+
+                    iterateInSphere(payload.pos(), 5f, 0.5f, currentPos -> {
+                        final Vec3d randomPosOffset = randomCentredVec3d(random).multiply(0.5d);
+
+                        final double x = currentPos.getX() + randomPosOffset.x + 0.5d; //How about I don't forget to centre it from the blockpos
+                        final double y = currentPos.getY() + randomPosOffset.y + 0.5d;
+                        final double z = currentPos.getZ() + randomPosOffset.z + 0.5d;
+
+                        world.addParticleClient(ParticleTypes.CLOUD, true, true, x, y, z, random.nextFloat() * 0.05f - 0.025f, random.nextFloat() * 0.05f - 0.025f, random.nextFloat() * 0.05f - 0.025f);
+                    });
+                }
+
+                return currentTime > 80;
+            }));
         });
     }
 }

@@ -7,7 +7,10 @@
     "CancelSprintParticles",
     "ChestDepositableProperty",
     "DepositableChest",
+    "DepositableEnderChest",
+    "DisableAdvancementNotifications",
     "DropItemEvent",
+    "EnderChestDepositableProperty",
     "FluidBlockBreakCancel",
     "MostRecentDamage",
     "OnBlockPlacedEventTrigger",
@@ -15,6 +18,7 @@
     "OnDamageEventTrigger",
     "OnHitArmour",
     "OnPickUpItemEventTrigger",
+    "SpongeSmokescreen",
     "TooFastPort",
     "UseDurationScale",
     "VelocityPacketUnlimit"

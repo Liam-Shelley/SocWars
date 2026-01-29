@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "sources": [
+    {
+      "type": "minecraft:directory",
+      "prefix": "entity/bed/",
+      "source": "entity/bed"
+    }
+  ]
+}

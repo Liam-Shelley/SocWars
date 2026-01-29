@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import com.soc.SocWars;
 import com.soc.mixin.MostRecentDamage;
-import com.soc.util.Random;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.enchantment.Enchantment;
@@ -38,11 +37,14 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
+import net.minecraft.util.math.random.LocalRandom;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
@@ -176,7 +178,8 @@ public final class SocWarsLib {
 
     public static void iterateInSphere(Vec3i centre, float radius, float randomRadiusFactor, Consumer<BlockPos> function) {
         final int intRadius = (int)Math.ceil(radius);
-        final Predicate<BlockPos> sphereCheckFunction = randomRadiusFactor > 10e-5 ? pos -> centre.isWithinDistance(pos, radius - Random.RANDOM.nextFloat()) : pos -> centre.isWithinDistance(pos, radius);
+        final Random random = new LocalRandom(centre.getX() + centre.getY() + centre.getZ() + function.hashCode());
+        final Predicate<BlockPos> sphereCheckFunction = randomRadiusFactor > 10e-5 ? pos -> centre.isWithinDistance(pos, radius - random.nextFloat()) : pos -> centre.isWithinDistance(pos, radius);
 
         iterateInCube(centre, intRadius, pos -> {
             if (sphereCheckFunction.test(pos)) function.accept(pos);
@@ -438,4 +441,46 @@ public final class SocWarsLib {
         return remainingCount == 0;
     }
      */
+
+    public static void depositStackIntoInventory(ItemStack stack, Inventory inventory, PlayerEntity player, boolean allMatching) {
+        if (inventory == null) return;
+
+        final Text depositedName = stack.toHoverableText();
+        final Item depositedItem = stack.getItem();
+        final AtomicInteger depositedCount = new AtomicInteger();
+
+        if (allMatching) {
+            player.getInventory().forEach(eachStack -> {
+                if (eachStack.isOf(depositedItem)) {
+                    internalDepositStackIntoInventory(eachStack, inventory, depositedCount);
+                }
+            });
+        } else {
+            internalDepositStackIntoInventory(stack, inventory, depositedCount);
+        }
+
+        inventory.markDirty();
+
+        if (depositedCount.get() > 0) {
+            player.sendMessage(Text.translatable("game.chest.deposit", depositedCount.get(), depositedName, Text.translatable("game.chest.count", inventory.count(depositedItem)).formatted(Formatting.GRAY)).formatted(Formatting.DARK_GREEN), false);
+        }
+    }
+
+    private static void internalDepositStackIntoInventory(ItemStack stack, Inventory inventory, AtomicInteger deposited) {
+        for (int i = 0; i < inventory.size() && stack.getCount() > 0; i++) {
+            final ItemStack slot = inventory.getStack(i);
+
+            if ((slot.isEmpty() || ItemStack.areItemsAndComponentsEqual(slot, stack))) {
+                final int capacity = Math.min(stack.getMaxCount() - slot.getCount(), stack.getCount());
+                inventory.setStack(i, stack.copyWithCount(slot.getCount() + capacity));
+                stack.setCount(stack.getCount() - capacity);
+
+                deposited.getAndAdd(capacity);
+            }
+        }
+    }
+
+    public static Vec3d randomCentredVec3d(Random random) {
+        return new Vec3d(random.nextDouble() * 2d - 1d, random.nextDouble() * 2d - 1d, random.nextDouble() * 2d - 1d);
+    }
 }
