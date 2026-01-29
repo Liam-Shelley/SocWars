@@ -22,9 +22,9 @@ public class SharpenedPokingStick extends Item {
     }
 
     public static final Item SHARPENED_POKING_STICK = ModItems.register("sharpened_poking_stick", SharpenedPokingStick::new, new Settings().maxDamage(150).rarity(Rarity.UNCOMMON).attributeModifiers(AttributeModifiersComponent.builder()
-            .add(EntityAttributes.ENTITY_INTERACTION_RANGE, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "stick_reach"), 3, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.HAND)
+            .add(EntityAttributes.ENTITY_INTERACTION_RANGE, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "stick_reach"), 1.75, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.HAND)
             .add(EntityAttributes.ATTACK_DAMAGE, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "stick_damage"), 5, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.HAND)
-            .add(EntityAttributes.ATTACK_SPEED, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "stick_damage"), 0.2, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.HAND)
+            .add(EntityAttributes.ATTACK_SPEED, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "stick_attack_speed"), 0.2, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.HAND)
             .build()
     ));
 }

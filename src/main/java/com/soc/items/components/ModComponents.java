@@ -41,6 +41,11 @@ public interface ModComponents {
             Identifier.of(SocWars.MOD_ID, "game_tool"),
             ComponentType.<Integer>builder().codec(Codec.INT).build()
     );
+    ComponentType<Boolean> DOUBLE_JUMP = Registry.register(
+            Registries.DATA_COMPONENT_TYPE,
+            Identifier.of(SocWars.MOD_ID, "double_jump"),
+            ComponentType.<Boolean>builder().codec(Codec.BOOL).build()
+    );
 
     static void initialise() {}
 }

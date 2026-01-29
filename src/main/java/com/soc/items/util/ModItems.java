@@ -39,6 +39,7 @@ public class ModItems {
         ExtendoBridge.initialise();
         BlockItems.initialise();
         BaseTool.initialise();
+        BaseItems.initialise();
     }
 
     public static Item register(String name, Function<Item.Settings, Item> itemFactory, Item.Settings settings) {
