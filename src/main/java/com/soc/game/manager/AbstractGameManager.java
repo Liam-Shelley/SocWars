@@ -207,6 +207,14 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         this.sendJoinGamePayload(player);
     }
 
+    public boolean onCraftingTableOpened(ServerPlayerEntity player, BlockPos pos) {
+        return true;
+    }
+
+    public boolean onFurnaceOpened(ServerPlayerEntity player, BlockPos pos) {
+        return true;
+    }
+
     @MustBeInvokedByOverriders
     public void tick() {
         this.time++;

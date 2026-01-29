@@ -80,6 +80,12 @@ public class GamesManager {
         ServerPlayerEvents.JOIN.register(player ->
                 this.getGame(player).ifPresent(game -> game.onPlayerJoin(player))
         );
+        ModEvents.ON_CRAFTING_TABLE_OPENED.register((player, pos) ->
+                this.getGame(player).map(game -> game.onCraftingTableOpened(player, pos)).orElse(true)
+        );
+        ModEvents.ON_FURNACE_OPENED.register((player, pos) ->
+                this.getGame(player).map(game -> game.onFurnaceOpened(player, pos)).orElse(true)
+        );
     }
 
     public boolean startGame(AbstractGameManager<?, ?, ?> game) {

@@ -4,8 +4,6 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.util.ActionResult;
 
-import java.util.Arrays;
-
 public interface ModEvents {
     static void initialise() {}
 
@@ -38,5 +36,25 @@ public interface ModEvents {
         }
 
         return ActionResult.PASS;
+    });
+
+    Event<OnCraftingTableOpen> ON_CRAFTING_TABLE_OPENED = EventFactory.createArrayBacked(OnCraftingTableOpen.class, listeners -> (player, pos) -> {
+        boolean allowEvent = true;
+
+        for (OnCraftingTableOpen listener : listeners) {
+            allowEvent &= listener.onOpen(player, pos);
+        }
+
+        return allowEvent;
+    });
+
+    Event<OnFurnaceOpen> ON_FURNACE_OPENED = EventFactory.createArrayBacked(OnFurnaceOpen.class, listeners -> (player, pos) -> {
+        boolean allowEvent = true;
+
+        for (OnFurnaceOpen listener : listeners) {
+            allowEvent &= listener.onOpen(player, pos);
+        }
+
+        return allowEvent;
     });
 }

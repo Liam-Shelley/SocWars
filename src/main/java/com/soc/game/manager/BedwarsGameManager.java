@@ -329,6 +329,16 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         }).orElse(true);
     }
 
+    @Override
+    public boolean onCraftingTableOpened(ServerPlayerEntity player, BlockPos pos) {
+        return false;
+    }
+
+    @Override
+    public boolean onFurnaceOpened(ServerPlayerEntity player, BlockPos pos) {
+        return false;
+    }
+
     public BedwarsShopContents getIndividualShopContents(UUID player) {
         return this.playerStatsMap.get(player).getShopContents();
     }
