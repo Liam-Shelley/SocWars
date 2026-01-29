@@ -2,7 +2,7 @@
 	"format_version": "1.21.6",
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "minecraft:block/iron_block"
+		"0": "minecraft:block/gold_block"
 	},
 	"elements": [
 		{
@@ -161,5 +161,10 @@
 			"color": 0,
 			"children": [6, 7, 8, 9, 10]
 		}
-	]
+	],
+	"display": {
+		"gui": {
+			"rotation": [10, 320, 0]
+		}
+	}
 }

@@ -16,7 +16,6 @@ import net.minecraft.world.World;
 
 import java.util.function.Consumer;
 
-import static com.soc.items.util.ModItems.addItemToGroups;
 import static com.soc.lib.SocWarsLib.*;
 
 public class EatFunctionFood extends Item { //rewrite all of this as consumable components
@@ -33,10 +32,10 @@ public class EatFunctionFood extends Item { //rewrite all of this as consumable 
     }
 
     public static void initialise() {
-        addItemToGroups(SHRINKING_PILLS, ItemGroups.FOOD_AND_DRINK);
-        addItemToGroups(BIGGENING_PILLS, ItemGroups.FOOD_AND_DRINK);
-        addItemToGroups(CHORUS_FRUIT_SALAD, ItemGroups.FOOD_AND_DRINK);
-        addItemToGroups(RED_SHELL, ItemGroups.FOOD_AND_DRINK);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(SHRINKING_PILLS, ItemGroups.FOOD_AND_DRINK);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(BIGGENING_PILLS, ItemGroups.FOOD_AND_DRINK);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(CHORUS_FRUIT_SALAD, ItemGroups.FOOD_AND_DRINK);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(RED_SHELL, ItemGroups.FOOD_AND_DRINK);
     }
 
     public static final Item SHRINKING_PILLS = ModItems.register("shrinking_pills", settings -> new EatFunctionFood(settings, (stack, world, user) -> {

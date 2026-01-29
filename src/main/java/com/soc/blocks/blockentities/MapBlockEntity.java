@@ -2,7 +2,7 @@ package com.soc.blocks.blockentities;
 
 import com.mojang.serialization.Codec;
 import com.soc.SocWars;
-import com.soc.blocks.ColourStateBlock;
+import com.soc.blocks.ModifiableColourStateBlock;
 import com.soc.blocks.TierBlock;
 import com.soc.blocks.util.ModBlocks;
 import com.soc.game.manager.GameType;
@@ -100,7 +100,7 @@ public class MapBlockEntity extends BlockEntity {
             if (!blockState.isIn(BlockTags.MAP_PLACEHOLDER)) return;
 
             final Block block = blockState.getBlock();
-            if (block == SPAWN_PLACEHOLDER) spawnPositions.add(new SpawnPosition(pos, blockState.get(ColourStateBlock.COLOUR)));
+            if (block == SPAWN_PLACEHOLDER) spawnPositions.add(new SpawnPosition(pos, blockState.get(ModifiableColourStateBlock.COLOUR).ordinal()));
             else if (block == CENTRE_PLACEHOLDER) centrePositions.add(pos);
             else if (block == DIAMOND_GEN_PLACEHOLDER) diamondGens.add(pos);
             else if (block == EMERALD_GEN_PLACEHOLDER) emeraldGens.add(pos);

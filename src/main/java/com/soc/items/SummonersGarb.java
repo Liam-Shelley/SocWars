@@ -25,7 +25,7 @@ public class SummonersGarb extends ArmourItem implements OnHitArmour {
     }
 
     public static void initialise() {
-        ModItems.addItemToGroups(SUMMONERS_GARB, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(SUMMONERS_GARB, ItemGroups.COMBAT);
     }
 
     public static final Item SUMMONERS_GARB = ModItems.register("summoners_garb", settings -> new SummonersGarb(settings, EquipmentSlot.CHEST, 6), new Settings()

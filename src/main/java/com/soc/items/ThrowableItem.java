@@ -26,8 +26,6 @@ import net.minecraft.world.World;
 import java.awt.*;
 import java.util.function.Consumer;
 
-import static com.soc.items.util.ModItems.addItemToGroups;
-
 public class ThrowableItem extends Item {
     public static World WORLD;
 
@@ -47,11 +45,11 @@ public class ThrowableItem extends Item {
     }
 
     public static void initialise() {
-        addItemToGroups(FIREBALL, ItemGroups.COMBAT);
-        addItemToGroups(DRAGON_FIREBALL, ItemGroups.COMBAT);
-        addItemToGroups(SNAIL_FIREBALL, ItemGroups.COMBAT);
-        addItemToGroups(THROWABLE_TNT, ItemGroups.COMBAT);
-        addItemToGroups(ENDER_BEAM, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(FIREBALL, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(DRAGON_FIREBALL, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(SNAIL_FIREBALL, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(THROWABLE_TNT, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(ENDER_BEAM, ItemGroups.COMBAT);
 
         net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents.LOAD.register((a, b) -> WORLD = b);
     }

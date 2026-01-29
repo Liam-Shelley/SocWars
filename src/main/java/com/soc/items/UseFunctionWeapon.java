@@ -41,7 +41,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 import static com.soc.items.BowItem.playBowSound;
-import static com.soc.items.util.ModItems.addItemToGroups;
 import static com.soc.lib.SocWarsLib.*;
 
 public class UseFunctionWeapon extends Item {
@@ -53,21 +52,21 @@ public class UseFunctionWeapon extends Item {
     }
 
     public static void initialise() {
-        addItemToGroups(DASHREND, ItemGroups.COMBAT);
-        addItemToGroups(VELOCITY_STAFF, ItemGroups.TOOLS);
-        addItemToGroups(VEXING_STAFF, ItemGroups.COMBAT);
-        addItemToGroups(YELLOW_SWORD, ItemGroups.COMBAT);
-        addItemToGroups(GRAVITY_ORB, ItemGroups.TOOLS);
-        addItemToGroups(GOD_COMPLEX, ItemGroups.TOOLS);
-        addItemToGroups(SCROLL_OF_EAU, ItemGroups.COMBAT);
-        addItemToGroups(SCROLL_OF_HELLFIRE, ItemGroups.COMBAT);
-        addItemToGroups(C_U_E_B, ItemGroups.TOOLS);
-        addItemToGroups(SHRINK_RAY, ItemGroups.COMBAT);
-        addItemToGroups(BIGGENING_RAY, ItemGroups.COMBAT);
-        addItemToGroups(THE_LINE, ItemGroups.COMBAT);
-        addItemToGroups(WHEATENATOR, ItemGroups.COMBAT);
-        addItemToGroups(DEATH_RAIN, ItemGroups.COMBAT);
-        addItemToGroups(ALPHA_BOW, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(DASHREND, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(VELOCITY_STAFF, ItemGroups.TOOLS);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(VEXING_STAFF, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(YELLOW_SWORD, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(GRAVITY_ORB, ItemGroups.TOOLS);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(GOD_COMPLEX, ItemGroups.TOOLS);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(SCROLL_OF_EAU, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(SCROLL_OF_HELLFIRE, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(C_U_E_B, ItemGroups.TOOLS);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(SHRINK_RAY, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(BIGGENING_RAY, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(THE_LINE, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(WHEATENATOR, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(DEATH_RAIN, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(ALPHA_BOW, ItemGroups.COMBAT);
     }
 
     public static final Item DASHREND = ModItems.register("dashrend", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {

@@ -1,46 +1,47 @@
 package com.soc.game.map;
 
-import com.google.gson.JsonObject;
-import com.soc.SocWars;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.StringIdentifiable;
 
 import java.util.function.Consumer;
 
-public enum DyeColourWithEmpty {
-    WHITE(DyeColor.WHITE),
-    ORANGE(DyeColor.ORANGE),
-    MAGENTA(DyeColor.MAGENTA),
-    LIGHT_BLUE(DyeColor.LIGHT_BLUE),
-    YELLOW(DyeColor.YELLOW),
-    LIME(DyeColor.LIME),
-    PINK(DyeColor.PINK),
-    GRAY(DyeColor.GRAY),
-    LIGHT_GRAY(DyeColor.LIGHT_GRAY),
-    CYAN(DyeColor.CYAN),
-    PURPLE(DyeColor.PURPLE),
-    BLUE(DyeColor.BLUE),
-    BROWN(DyeColor.BROWN),
-    GREEN(DyeColor.GREEN),
-    RED(DyeColor.RED),
-    BLACK(DyeColor.BLACK),
-    EMPTY((DyeColor)null);
+public enum DyeColourWithEmpty implements StringIdentifiable {
+    WHITE(DyeColor.WHITE, "white"),
+    ORANGE(DyeColor.ORANGE, "orange"),
+    MAGENTA(DyeColor.MAGENTA, "magenta"),
+    LIGHT_BLUE(DyeColor.LIGHT_BLUE, "light_blue"),
+    YELLOW(DyeColor.YELLOW, "yellow"),
+    LIME(DyeColor.LIME, "lime"),
+    PINK(DyeColor.PINK, "pink"),
+    GRAY(DyeColor.GRAY, "grey"),
+    LIGHT_GRAY(DyeColor.LIGHT_GRAY, "light_grey"),
+    CYAN(DyeColor.CYAN, "cyan"),
+    PURPLE(DyeColor.PURPLE, "purple"),
+    BLUE(DyeColor.BLUE, "blue"),
+    BROWN(DyeColor.BROWN, "brown"),
+    GREEN(DyeColor.GREEN, "green"),
+    RED(DyeColor.RED, "red"),
+    BLACK(DyeColor.BLACK, "black"),
+    EMPTY(null, "empty");
 
     private final DyeColor colour;
+    private final String id;
 
-    DyeColourWithEmpty(DyeColor colour) {
+    DyeColourWithEmpty(DyeColor colour, String id) {
         this.colour = colour;
+        this.id = id;
     }
 
-    DyeColourWithEmpty(JsonObject object) {
+    /*
+    public static DyeColourWithEmpty fromJson(JsonObject object) {
         DyeColor colour = null;
         try {
             colour = DyeColor.byId(object.getAsString(), null);
         } catch (Exception ignored) {
             SocWars.LOGGER.warn("Failed to parse \"{}\" as a DyeColourWithEmpty, returning Empty", object.toString());
         }
-
-        this.colour = colour;
     }
+     */
 
     public static DyeColourWithEmpty fromOrdinal(int ordinal) {
         final DyeColourWithEmpty[] values = DyeColourWithEmpty.values();
@@ -73,5 +74,10 @@ public enum DyeColourWithEmpty {
 
     public String toStringWithEmptyAlias(String alias) {
         return this.colour == null ? alias : this.colour.toString();
+    }
+
+    @Override
+    public String asString() {
+        return this.id;
     }
 }

@@ -20,7 +20,7 @@ public class GreenSword extends Item {
     }
 
     public static void initialise() {
-        ModItems.addItemToGroups(GREEN_SWORD, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(GREEN_SWORD, ItemGroups.COMBAT);
     }
 
     public static final Item GREEN_SWORD = ModItems.register("green_sword", GreenSword::new, new Settings()

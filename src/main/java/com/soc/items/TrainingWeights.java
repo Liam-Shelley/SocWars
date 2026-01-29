@@ -33,7 +33,7 @@ public class TrainingWeights extends ArmourItem {
     }
 
     public static void initialise() {
-        ModItems.addItemToGroups(TRAINING_WEIGHTS, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(TRAINING_WEIGHTS, ItemGroups.COMBAT);
     }
 
     public static final Item TRAINING_WEIGHTS = ModItems.register("training_weights", settings -> new TrainingWeights(settings, EquipmentSlot.FEET, 2), new Settings()

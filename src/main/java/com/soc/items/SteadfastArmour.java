@@ -31,10 +31,10 @@ public class SteadfastArmour extends ArmourItem {
     }
 
     public static void initialise() {
-        ModItems.addItemToGroups(STEADFAST_HELMET, ItemGroups.COMBAT);
-        ModItems.addItemToGroups(STEADFAST_CHESTPLATE, ItemGroups.COMBAT);
-        ModItems.addItemToGroups(STEADFAST_LEGGINGS, ItemGroups.COMBAT);
-        ModItems.addItemToGroups(STEADFAST_BOOTS, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(STEADFAST_HELMET, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(STEADFAST_CHESTPLATE, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(STEADFAST_LEGGINGS, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(STEADFAST_BOOTS, ItemGroups.COMBAT);
     }
 
     public static final Item STEADFAST_HELMET = ModItems.register("steadfast_helmet", (settings) -> new SteadfastArmour(settings, EquipmentSlot.HEAD, 2), new Settings().maxDamage(325).rarity(Rarity.RARE));

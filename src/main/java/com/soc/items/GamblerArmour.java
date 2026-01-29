@@ -47,10 +47,10 @@ public class GamblerArmour extends Item {
     }
 
     public static void initialise() {
-        ModItems.addItemToGroups(GAMBLER_HELMET, ItemGroups.COMBAT);
-        ModItems.addItemToGroups(GAMBLER_CHESTPLATE, ItemGroups.COMBAT);
-        ModItems.addItemToGroups(GAMBLER_LEGGINGS, ItemGroups.COMBAT);
-        ModItems.addItemToGroups(GAMBLER_BOOTS, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(GAMBLER_HELMET, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(GAMBLER_CHESTPLATE, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(GAMBLER_LEGGINGS, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(GAMBLER_BOOTS, ItemGroups.COMBAT);
     }
 
     public static final Item GAMBLER_HELMET = ModItems.register("gambler_helmet", (settings) -> new GamblerArmour(settings, new int[]{7, 5, 3, 1, 0}, EquipmentSlot.HEAD), new Settings().maxDamage(325).rarity(Rarity.RARE));

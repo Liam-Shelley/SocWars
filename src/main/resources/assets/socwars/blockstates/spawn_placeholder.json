@@ -1,54 +1,54 @@
 {
   "variants": {
-    "dye_colour_with_empty=16": {
+    "colour=empty": {
       "model": "socwars:block/spawn_placeholder/empty"
     },
-    "dye_colour_with_empty=0": {
+    "colour=white": {
       "model": "socwars:block/spawn_placeholder/white"
     },
-    "dye_colour_with_empty=1": {
+    "colour=orange": {
       "model": "socwars:block/spawn_placeholder/orange"
     },
-    "dye_colour_with_empty=2": {
+    "colour=magenta": {
       "model": "socwars:block/spawn_placeholder/magenta"
     },
-    "dye_colour_with_empty=3": {
+    "colour=light_blue": {
       "model": "socwars:block/spawn_placeholder/light_blue"
     },
-    "dye_colour_with_empty=4": {
+    "colour=yellow": {
       "model": "socwars:block/spawn_placeholder/yellow"
     },
-    "dye_colour_with_empty=5": {
+    "colour=lime": {
       "model": "socwars:block/spawn_placeholder/lime"
     },
-    "dye_colour_with_empty=6": {
+    "colour=pink": {
       "model": "socwars:block/spawn_placeholder/pink"
     },
-    "dye_colour_with_empty=7": {
+    "colour=grey": {
       "model": "socwars:block/spawn_placeholder/grey"
     },
-    "dye_colour_with_empty=8": {
+    "colour=light_grey": {
       "model": "socwars:block/spawn_placeholder/light_grey"
     },
-    "dye_colour_with_empty=9": {
+    "colour=cyan": {
       "model": "socwars:block/spawn_placeholder/cyan"
     },
-    "dye_colour_with_empty=10": {
+    "colour=purple": {
       "model": "socwars:block/spawn_placeholder/purple"
     },
-    "dye_colour_with_empty=11": {
+    "colour=blue": {
       "model": "socwars:block/spawn_placeholder/blue"
     },
-    "dye_colour_with_empty=12": {
+    "colour=brown": {
       "model": "socwars:block/spawn_placeholder/brown"
     },
-    "dye_colour_with_empty=13": {
+    "colour=green": {
       "model": "socwars:block/spawn_placeholder/green"
     },
-    "dye_colour_with_empty=14": {
+    "colour=red": {
       "model": "socwars:block/spawn_placeholder/red"
     },
-    "dye_colour_with_empty=15": {
+    "colour=black": {
       "model": "socwars:block/spawn_placeholder/black"
     }
   }

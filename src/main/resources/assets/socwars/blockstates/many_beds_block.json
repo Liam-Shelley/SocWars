@@ -1,7 +1,55 @@
 {
   "variants": {
-    "": {
-      "model": "socwars:block/many_beds_block"
+    "colour=empty": {
+      "model": "socwars:block/many_beds_block/empty"
+    },
+    "colour=white": {
+      "model": "socwars:block/many_beds_block/white"
+    },
+    "colour=orange": {
+      "model": "socwars:block/many_beds_block/orange"
+    },
+    "colour=magenta": {
+      "model": "socwars:block/many_beds_block/magenta"
+    },
+    "colour=light_blue": {
+      "model": "socwars:block/many_beds_block/light_blue"
+    },
+    "colour=yellow": {
+      "model": "socwars:block/many_beds_block/yellow"
+    },
+    "colour=lime": {
+      "model": "socwars:block/many_beds_block/lime"
+    },
+    "colour=pink": {
+      "model": "socwars:block/many_beds_block/pink"
+    },
+    "colour=grey": {
+      "model": "socwars:block/many_beds_block/grey"
+    },
+    "colour=light_grey": {
+      "model": "socwars:block/many_beds_block/light_grey"
+    },
+    "colour=cyan": {
+      "model": "socwars:block/many_beds_block/cyan"
+    },
+    "colour=purple": {
+      "model": "socwars:block/many_beds_block/purple"
+    },
+    "colour=blue": {
+      "model": "socwars:block/many_beds_block/blue"
+    },
+    "colour=brown": {
+      "model": "socwars:block/many_beds_block/brown"
+    },
+    "colour=green": {
+      "model": "socwars:block/many_beds_block/green"
+    },
+    "colour=red": {
+      "model": "socwars:block/many_beds_block/red"
+    },
+    "colour=black": {
+      "model": "socwars:block/many_beds_block/black"
     }
   }
 }

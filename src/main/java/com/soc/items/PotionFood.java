@@ -26,7 +26,6 @@ import net.minecraft.util.Rarity;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static com.soc.items.util.ModItems.addItemToGroups;
 import static net.minecraft.component.type.PotionContentsComponent.getEffectText;
 
 public class PotionFood extends Item {
@@ -88,12 +87,12 @@ public class PotionFood extends Item {
     }
 
     public static void initialise() {
-        addItemToGroups(IRON_APPLE, ItemGroups.FOOD_AND_DRINK);
-        addItemToGroups(COPPER_APPLE, ItemGroups.FOOD_AND_DRINK);
-        addItemToGroups(DIAMOND_APPLE, ItemGroups.FOOD_AND_DRINK);
-        addItemToGroups(EMERALD_APPLE, ItemGroups.FOOD_AND_DRINK);
-        addItemToGroups(NETHERITE_APPLE, ItemGroups.FOOD_AND_DRINK);
-        addItemToGroups(JELLY_DONUT, ItemGroups.FOOD_AND_DRINK);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(IRON_APPLE, ItemGroups.FOOD_AND_DRINK);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(COPPER_APPLE, ItemGroups.FOOD_AND_DRINK);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(DIAMOND_APPLE, ItemGroups.FOOD_AND_DRINK);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(EMERALD_APPLE, ItemGroups.FOOD_AND_DRINK);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(NETHERITE_APPLE, ItemGroups.FOOD_AND_DRINK);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(JELLY_DONUT, ItemGroups.FOOD_AND_DRINK);
     }
 
     public static final Item IRON_APPLE = ModItems.register("iron_apple", (settings) -> new PotionFood(settings, IRON_APPLE_EFFECTS, 6, 10), new Settings());

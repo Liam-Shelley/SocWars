@@ -17,6 +17,10 @@ import net.minecraft.world.World;
 import static com.soc.lib.SocWarsLib.damageSource;
 
 public class GalliumBlock extends ColoredFallingBlock {
+    public GalliumBlock(Settings settings) {
+        super(new ColorCode(0), settings);
+    }
+
     public GalliumBlock(ColorCode color, Settings settings) {
         super(color, settings);
     }

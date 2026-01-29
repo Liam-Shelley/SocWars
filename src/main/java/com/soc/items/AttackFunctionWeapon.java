@@ -12,7 +12,6 @@ import com.soc.util.Sounds;
 import com.soc.util.SphereExplosion;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.Blocks;
-import net.minecraft.component.ComponentMap;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.enchantment.Enchantment;
@@ -43,7 +42,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
-import static com.soc.items.util.ModItems.addItemToGroups;
 import static com.soc.lib.SocWarsLib.*;
 import static com.soc.util.SphereExplosion.fireExplosion;
 
@@ -75,24 +73,24 @@ public class AttackFunctionWeapon extends Item {
     }
 
     public static void initialise() {
-        addItemToGroups(LIFETHIEF, ItemGroups.COMBAT);
-        addItemToGroups(DEVASTATOR_PRIME, ItemGroups.COMBAT);
-        addItemToGroups(NETHERWRONG_SWORD, ItemGroups.COMBAT);
-        addItemToGroups(ORANGE_SWORD, ItemGroups.COMBAT);
-        addItemToGroups(BLUE_SWORD, ItemGroups.COMBAT);
-        addItemToGroups(PINK_SWORD, ItemGroups.COMBAT);
-        addItemToGroups(KNOCKFORWARD_SWORD, ItemGroups.COMBAT);
-        addItemToGroups(TRANSPORTAS, ItemGroups.COMBAT);
-        addItemToGroups(STORMAGEDDON, ItemGroups.COMBAT);
-        addItemToGroups(DETONATOR, ItemGroups.COMBAT);
-        addItemToGroups(SHATTERSTAR, ItemGroups.COMBAT);
-        addItemToGroups(LEATHERER, ItemGroups.COMBAT);
-        addItemToGroups(SPRING_SWORD, ItemGroups.COMBAT);
-        addItemToGroups(FLESHY_BLADE, ItemGroups.COMBAT);
-        addItemToGroups(FIRESTORM, ItemGroups.COMBAT);
-        addItemToGroups(CORRUPTED_SWORD, ItemGroups.COMBAT);
-        addItemToGroups(POSTURA, ItemGroups.COMBAT);
-        addItemToGroups(FULL_METAL_SWORD, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(LIFETHIEF, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(DEVASTATOR_PRIME, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(NETHERWRONG_SWORD, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(ORANGE_SWORD, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(BLUE_SWORD, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(PINK_SWORD, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(KNOCKFORWARD_SWORD, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(TRANSPORTAS, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(STORMAGEDDON, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(DETONATOR, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(SHATTERSTAR, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(LEATHERER, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(SPRING_SWORD, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(FLESHY_BLADE, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(FIRESTORM, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(CORRUPTED_SWORD, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(POSTURA, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(FULL_METAL_SWORD, ItemGroups.COMBAT);
 
         net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents.LOAD.register((a, b) -> WORLD = b);
     }

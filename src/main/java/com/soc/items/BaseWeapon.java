@@ -21,13 +21,13 @@ public class BaseWeapon extends Item {
     }
 
     public static void initialise() {
-        ModItems.addItemToGroups(BAT, ItemGroups.COMBAT);
-        ModItems.addItemToGroups(BARBED_WIRE_BAT, ItemGroups.COMBAT);
-        ModItems.addItemToGroups(NAILED_BAT, ItemGroups.COMBAT);
-        ModItems.addItemToGroups(RAZOR_WIRE_BAT, ItemGroups.COMBAT);
-        ModItems.addItemToGroups(SAW_BLADE_BAT, ItemGroups.COMBAT);
-        ModItems.addItemToGroups(DEVASTATOR, ItemGroups.COMBAT);
-        ModItems.addItemToGroups(NETHERIGHT_SWORD, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(BAT, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(BARBED_WIRE_BAT, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(NAILED_BAT, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(RAZOR_WIRE_BAT, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(SAW_BLADE_BAT, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(DEVASTATOR, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(NETHERIGHT_SWORD, ItemGroups.COMBAT);
     }
 
     public static final Item BAT = ModItems.register("bat", BaseWeapon::new, new Settings().sword(ToolMaterials.BASE, 4f, -1.9f));

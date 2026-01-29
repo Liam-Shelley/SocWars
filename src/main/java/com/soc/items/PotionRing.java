@@ -18,8 +18,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static com.soc.items.util.ModItems.addItemToGroups;
-
 public class PotionRing extends RingItem {
     private final List<EffectRecord> effects;
 
@@ -29,11 +27,11 @@ public class PotionRing extends RingItem {
     }
 
     public static void initialise() {
-        addItemToGroups(LESSER_SPEED_RING, ItemGroups.TOOLS);
-        addItemToGroups(GREATER_SPEED_RING, ItemGroups.TOOLS);
-        addItemToGroups(LESSER_JUMP_RING, ItemGroups.TOOLS);
-        addItemToGroups(GREATER_JUMP_RING, ItemGroups.TOOLS);
-        addItemToGroups(INFLATABLE_IRON_INGOT, ItemGroups.TOOLS);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(LESSER_SPEED_RING, ItemGroups.TOOLS);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(GREATER_SPEED_RING, ItemGroups.TOOLS);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(LESSER_JUMP_RING, ItemGroups.TOOLS);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(GREATER_JUMP_RING, ItemGroups.TOOLS);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(INFLATABLE_IRON_INGOT, ItemGroups.TOOLS);
     }
 
     public static final Item LESSER_SPEED_RING = ModItems.register("lesser_speed_ring", settings -> new PotionRing(settings, new EffectRecord(StatusEffects.SPEED, 0)), new Settings().maxDamage(30 * 20).rarity(Rarity.UNCOMMON));

@@ -1,6 +1,5 @@
 package com.soc.items;
 
-import com.soc.SocWars;
 import com.soc.items.util.ArrowFactory;
 import com.soc.items.util.ModItems;
 import com.soc.items.util.ScaledUseDuration;
@@ -47,12 +46,12 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
     }
 
     public static void initialise() {
-        ModItems.addItemToGroups(BOOM_BOW, ItemGroups.COMBAT);
-        ModItems.addItemToGroups(MEGABOOM_BOW, ItemGroups.COMBAT);
-        ModItems.addItemToGroups(FALCON_BOW, ItemGroups.COMBAT);
-        ModItems.addItemToGroups(HEATER_BOW, ItemGroups.COMBAT);
-        ModItems.addItemToGroups(CHORUS_BOW, ItemGroups.COMBAT);
-        ModItems.addItemToGroups(CATASTROPHE_BOW, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(BOOM_BOW, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(MEGABOOM_BOW, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(FALCON_BOW, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(HEATER_BOW, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(CHORUS_BOW, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(CATASTROPHE_BOW, ItemGroups.COMBAT);
     }
 
     public static final Item BOOM_BOW = ModItems.register("boom_bow", settings -> new BowItem(settings, (world, user, projectileStack,weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {

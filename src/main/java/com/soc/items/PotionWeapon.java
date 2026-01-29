@@ -18,8 +18,6 @@ import net.minecraft.util.math.random.LocalRandom;
 
 import java.util.List;
 
-import static com.soc.items.util.ModItems.addItemToGroups;
-
 public class PotionWeapon extends Item {
     private final EffectRecipients effectRecipients;
     private final EffectRecord[] effects;
@@ -55,12 +53,12 @@ public class PotionWeapon extends Item {
     }
 
     public static void initialise() {
-        addItemToGroups(BIOHACKER, ItemGroups.COMBAT);
-        addItemToGroups(GOO_SHOVEL, ItemGroups.COMBAT);
-        addItemToGroups(STATUE_BLADE, ItemGroups.COMBAT);
-        addItemToGroups(ALCHEMISM, ItemGroups.COMBAT);
-        addItemToGroups(RED_SWORD, ItemGroups.COMBAT);
-        addItemToGroups(PURPLE_SWORD, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(BIOHACKER, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(GOO_SHOVEL, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(STATUE_BLADE, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(ALCHEMISM, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(RED_SWORD, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(PURPLE_SWORD, ItemGroups.COMBAT);
     }
 
     public static final Item BIOHACKER = ModItems.register("biohacker", settings -> new PotionWeapon(settings, EffectRecipients.TARGET, new EffectRecord(StatusEffects.POISON, 1, 3 * 20, 4)), new Settings()

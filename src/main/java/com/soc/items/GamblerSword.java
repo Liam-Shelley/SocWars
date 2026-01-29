@@ -39,7 +39,7 @@ public class GamblerSword extends Item {
     }
 
     public static void initialise() {
-        ModItems.addItemToGroups(GAMBLER_SWORD, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(GAMBLER_SWORD, ItemGroups.COMBAT);
     }
 
     public static final Item GAMBLER_SWORD = ModItems.register("gambler_sword", (settings) -> new GamblerSword(settings, new int[]{2, 4, 6, 8, 10}), new Settings().maxDamage(500).rarity(Rarity.RARE));

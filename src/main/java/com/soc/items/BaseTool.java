@@ -24,19 +24,19 @@ public class BaseTool extends Item {
     }
 
     public static void initialise() {
-        ModItems.addItemToGroups(STONE_SHEARS, ItemGroups.TOOLS);
-        ModItems.addItemToGroups(DIAMOND_SHEARS, ItemGroups.TOOLS);
-        ModItems.addItemToGroups(EMERALD_PICKAXE, ItemGroups.TOOLS);
-        ModItems.addItemToGroups(EMERALD_AXE, ItemGroups.TOOLS);
-        ModItems.addItemToGroups(UNOBTANIUM_PICKAXE, ItemGroups.TOOLS);
-        ModItems.addItemToGroups(UNOBTANIUM_AXE, ItemGroups.TOOLS);
-        ModItems.addItemToGroups(UNOBTANIUM_SHEARS, ItemGroups.TOOLS);
-        ModItems.addItemToGroups(BEDROCK_PICKAXE, ItemGroups.TOOLS);
-        ModItems.addItemToGroups(BEDROCK_AXE, ItemGroups.TOOLS);
-        ModItems.addItemToGroups(FISH_PICKAXE, ItemGroups.TOOLS);
-        ModItems.addItemToGroups(FISH_AXE, ItemGroups.TOOLS);
-        ModItems.addItemToGroups(FISH_SHEARS, ItemGroups.TOOLS);
-        ModItems.addItemToGroups(MULTI_TOOL, ItemGroups.TOOLS);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(STONE_SHEARS, ItemGroups.TOOLS);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(DIAMOND_SHEARS, ItemGroups.TOOLS);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(EMERALD_PICKAXE, ItemGroups.TOOLS);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(EMERALD_AXE, ItemGroups.TOOLS);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(UNOBTANIUM_PICKAXE, ItemGroups.TOOLS);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(UNOBTANIUM_AXE, ItemGroups.TOOLS);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(UNOBTANIUM_SHEARS, ItemGroups.TOOLS);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(BEDROCK_PICKAXE, ItemGroups.TOOLS);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(BEDROCK_AXE, ItemGroups.TOOLS);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(FISH_PICKAXE, ItemGroups.TOOLS);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(FISH_AXE, ItemGroups.TOOLS);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(FISH_SHEARS, ItemGroups.TOOLS);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(MULTI_TOOL, ItemGroups.TOOLS);
     }
 
     public static final Item STONE_SHEARS = ModItems.register("stone_shears", BaseTool::new, new Settings().component(DataComponentTypes.TOOL, createShearsComponent(ToolMaterial.STONE)));

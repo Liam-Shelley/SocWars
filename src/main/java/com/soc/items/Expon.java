@@ -26,7 +26,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Consumer;
 
 import static com.soc.items.components.ModComponents.EXPON_COMPONENT;
-import static com.soc.items.util.ModItems.addItemToGroups;
 import static com.soc.lib.SocWarsLib.damageSource;
 
 public class Expon extends Item {
@@ -37,7 +36,7 @@ public class Expon extends Item {
     }
 
     public static void initialise() {
-        addItemToGroups(EXPON, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(EXPON, ItemGroups.COMBAT);
     }
 
     public static final Item EXPON = ModItems.register("expon", Expon::new, new Item.Settings()

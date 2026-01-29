@@ -26,12 +26,10 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.state.property.Properties;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -51,10 +49,10 @@ public class CartoonArmour extends ArmourItem implements OnHitArmour {
     }
 
     public static void initialise() {
-        ModItems.addItemToGroups(CARTOON_HELMET, ItemGroups.COMBAT);
-        ModItems.addItemToGroups(CARTOON_CHESTPLATE, ItemGroups.COMBAT);
-        ModItems.addItemToGroups(CARTOON_LEGGINGS, ItemGroups.COMBAT);
-        ModItems.addItemToGroups(CARTOON_BOOTS, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(CARTOON_HELMET, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(CARTOON_CHESTPLATE, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(CARTOON_LEGGINGS, ItemGroups.COMBAT);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(CARTOON_BOOTS, ItemGroups.COMBAT);
     }
 
     public static final Item CARTOON_HELMET = ModItems.register("cartoon_helmet", settings -> new CartoonArmour(settings, EquipmentSlot.HEAD, 4, (stack, wearer, world) -> {

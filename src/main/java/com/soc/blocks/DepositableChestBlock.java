@@ -1,7 +1,6 @@
 package com.soc.blocks;
 
 import com.soc.blocks.util.ModBlocks;
-import com.soc.items.util.ModItems;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -23,14 +22,14 @@ public class DepositableChestBlock extends ChestBlock {
     }
 
     public static void initialise() {
-        ModItems.addItemToGroups(DEPOSITABLE_CHEST.asItem(), ItemGroups.FUNCTIONAL);
+        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(DEPOSITABLE_CHEST.asItem(), ItemGroups.FUNCTIONAL);
     }
 
     public static final Block DEPOSITABLE_CHEST = ModBlocks.register(
             "depositable_chest",
             settings -> new DepositableChestBlock(() -> BlockEntityType.CHEST, settings),
             AbstractBlock.Settings.create().mapColor(MapColor.OAK_TAN).instrument(NoteBlockInstrument.BASS).strength(2.5F).sounds(BlockSoundGroup.WOOD).burnable(),
-            true
+            true, com.soc.items.util.ItemGroups.BLOCKS_KEY
     );
 
     @Override

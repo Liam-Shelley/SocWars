@@ -1,6 +1,7 @@
 package com.soc.items;
 
 import com.soc.items.util.EffectRecord;
+import com.soc.items.util.ItemGroups;
 import com.soc.items.util.ModItems;
 import com.soc.networking.s2c.AddVelocityPayload;
 import io.netty.buffer.ByteBuf;
@@ -26,7 +27,6 @@ import net.minecraft.world.explosion.Explosion;
 
 import java.util.Arrays;
 
-import static com.soc.items.util.ModItems.addItemToGroups;
 import static net.minecraft.item.Items.*;
 
 public class DiceOfFate extends Item {
@@ -83,7 +83,7 @@ public class DiceOfFate extends Item {
     }
 
     public static void initialise() {
-        addItemToGroups(DICE_OF_FATE);
+        ItemGroups.addItemToItemsGroup(DICE_OF_FATE);
     }
 
     public static final Item DICE_OF_FATE = ModItems.register("dice_of_fate", DiceOfFate::new, new Settings()

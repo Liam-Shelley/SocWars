@@ -19,7 +19,7 @@ public class IngameSkywarsChest {
     }
 
     public int getTier() {
-        return this.tier;
+        return this.tier + 1; //I made a stupid off by one error early on and now I will hate myself forever
     }
 
     public Direction getFacing() {
