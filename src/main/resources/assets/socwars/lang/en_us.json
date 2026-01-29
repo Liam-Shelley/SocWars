@@ -318,6 +318,7 @@
   "game.bedwars.shop.team": "Team Shop",
   "game.bedwars.trap_triggered.title": "TRAP TRIGGERED!",
   "game.bedwars.trap_triggered.subtitle": "Your %s trap was set off by %s",
+  "game.bedwars.broke_own_bed": "§cYou §oare§r§c on the %s§c team, silly",
   "hud.bedwars.has_bed": "  ||  Bed: ",
   "hud.bedwars.team": "%s Team",
   "hud.tick": "✔",

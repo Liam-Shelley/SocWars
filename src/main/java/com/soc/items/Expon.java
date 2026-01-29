@@ -65,7 +65,7 @@ public class Expon extends Item {
         if (component == null) return;
 
         final ServerWorld world = (ServerWorld)target.getWorld();
-        final float damage = ((1L << component.damageStage()) * 0.5f);
+        final float damage = (1 << component.damageStage()) * 0.5f;
         ((PlayerEntity)attacker).sendMessage(Text.of(String.valueOf(damage)), true); //maybe make options hud in 1.1?
 
         target.damage(world, damageSource(world, DamageTypes.EXPON, attacker), damage);

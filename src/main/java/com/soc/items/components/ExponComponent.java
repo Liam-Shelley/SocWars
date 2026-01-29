@@ -3,7 +3,9 @@ package com.soc.items.components;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-public record ExponComponent(long lastTimeUsed, int damageStage) { //0 is options signal value for unset time
+public record ExponComponent(long lastTimeUsed, int damageStage) { //0 is a signal value for unset time
+    public static final int MAX_DAMAGE_STAGE = 8; //Final damage is (1 << stage) * 0.5f; this caps it to 32 damage
+
     public static final ExponComponent DEFAULT = new ExponComponent(0, 0);
 
     public static final Codec<ExponComponent> CODEC = RecordCodecBuilder.create(builder -> builder.group(

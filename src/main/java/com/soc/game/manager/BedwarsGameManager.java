@@ -310,7 +310,10 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         final Optional<DyeColor> bedTeamOptional = super.map.getBedPositions().entrySet().stream().filter(entry -> super.map.pos(entry.getValue()).isWithinDistance(pos, 2d)).findFirst().map(Map.Entry::getKey);
 
         return bedTeamOptional.map(bedTeam -> {
-            if (bedTeam == super.getTeam(player) && player.getGameMode() == GameMode.SURVIVAL) return false;
+            if (bedTeam == super.getTeam(player) && player.getGameMode() == GameMode.SURVIVAL) {
+                player.sendMessage(Text.translatable("game.bedwars.broke_own_bed", colouredTextFromColour(bedTeam)), false);
+                return false;
+            }
 
             final boolean brokeBed = this.teamStatsMap.get(bedTeam).breakBed();
             if (brokeBed) {
