@@ -1,0 +1,25 @@
+{
+  "cost": {
+    "iron": 16
+  },
+  "count": 1,
+  "map": {
+    "white": "socwars:many_beds_block_white",
+    "orange": "socwars:many_beds_block_orange",
+    "magenta": "socwars:many_beds_block_magenta",
+    "light_blue": "socwars:many_beds_block_light_blue",
+    "yellow": "socwars:many_beds_block_yellow",
+    "lime": "socwars:many_beds_block_lime",
+    "pink": "socwars:many_beds_block_pink",
+    "gray": "socwars:many_beds_block_grey",
+    "light_gray": "socwars:many_beds_block_light_grey",
+    "cyan": "socwars:many_beds_block_cyan",
+    "purple": "socwars:many_beds_block_purple",
+    "blue": "socwars:many_beds_block_blue",
+    "brown": "socwars:many_beds_block_brown",
+    "green": "socwars:many_beds_block_green",
+    "red": "socwars:many_beds_block_red",
+    "black": "socwars:many_beds_block_black",
+    "default": "socwars:many_beds_block_white"
+  }
+}

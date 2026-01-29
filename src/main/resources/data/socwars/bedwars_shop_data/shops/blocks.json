@@ -45,7 +45,7 @@
       "options": [
         "socwars:bedwars_shop_data/simple_items/rubber_block",
         "socwars:bedwars_shop_data/simple_items/feather_block",
-        "socwars:bedwars_shop_data/simple_items/many_beds_block"
+        "socwars:bedwars_shop_data/team_items/many_beds_block"
       ]
     },
     {

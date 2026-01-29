@@ -83,6 +83,13 @@
         "socwars:bedwars_shop_data/simple_items/vexing_staff",
         "socwars:bedwars_shop_data/simple_items/jet_trolley"
       ]
+    },
+    {
+      "x": 4,
+      "y": 2,
+      "options": [
+        "socwars:bedwars_shop_data/simple_items/sponge"
+      ]
     }
   ]
 }
