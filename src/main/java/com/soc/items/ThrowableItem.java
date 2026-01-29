@@ -9,8 +9,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.TntEntity;
+import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageType;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.DragonFireballEntity;
+import net.minecraft.entity.projectile.FireballEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
@@ -22,9 +26,13 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.explosion.Explosion;
+import net.minecraft.world.explosion.ExplosionBehavior;
 
 import java.awt.*;
 import java.util.function.Consumer;
+
+import static com.soc.lib.SocWarsLib.damageSource;
 
 public class ThrowableItem extends Item {
     public static World WORLD;
@@ -67,7 +75,7 @@ public class ThrowableItem extends Item {
         if (world instanceof ServerWorld serverWorld) {
             switch (this.fireballType) {
                 case FIREBALL -> spawnEntityWithVelocity(new BWFireballEntity(world, user, Vec3d.ZERO, 4), serverWorld, user, 1.75f);
-                case SNAIL -> spawnEntityWithVelocity(new BWFireballEntity(world, user, Vec3d.ZERO, 10), serverWorld, user, 0.2f);
+                case SNAIL -> spawnEntityWithVelocity(new BWFireballEntity(world, user, Vec3d.ZERO, 20, ThrowableItem::snailExplosion), serverWorld, user, 0.2f);
                 case DRAGON -> spawnEntityWithVelocity(new DragonFireballEntity(world, user, Vec3d.ZERO), serverWorld, user, 1.5f);
                 case TNT -> {
                     final TntEntity tnt = spawnEntityWithVelocity(new TntEntity(EntityType.TNT, world), serverWorld, user, 0.6f);
@@ -79,6 +87,15 @@ public class ThrowableItem extends Item {
 
         itemStack.decrementUnlessCreative(1, user);
         return ActionResult.SUCCESS;
+    }
+
+    private static void snailExplosion(Entity self, ServerWorld serverWorld, Vec3d pos, float explosionPower, Entity owner) {
+        serverWorld.createExplosion(self, damageSource(serverWorld, DamageTypes.EXPLOSION, owner), new ExplosionBehavior() {
+            @Override
+            public float calculateDamage(Explosion explosion, Entity entity, float amount) {
+                return super.calculateDamage(explosion, entity, amount) * 0.09f;
+            }
+        }, pos.x, pos.y, pos.z, explosionPower, true, World.ExplosionSourceType.BLOCK);
     }
 
     public static <T extends Entity> T spawnEntityWithVelocity(T entity, ServerWorld world, LivingEntity user, float speed) {
@@ -93,14 +110,9 @@ public class ThrowableItem extends Item {
     @Override
     @SuppressWarnings("deprecation")
     public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
-        final Text text = switch (this.fireballType) {
-            case FIREBALL, TNT, ENDER -> null;
-            case SNAIL -> Text.translatable("tooltip.snail_fireball").withColor(0xe6e475);
-            case DRAGON -> Text.translatable("tooltip.dragon_fireball").withColor(Color.HSBtoRGB(WORLD == null ? 0f : WORLD.getTime() / 50f, 1f, 1f));
-        };
-
-        if (text != null) {
-            textConsumer.accept(text);
+        switch (this.fireballType) {
+            case SNAIL -> textConsumer.accept(Text.translatable("tooltip.snail_fireball").withColor(0xe6e475));
+            case DRAGON -> textConsumer.accept(Text.translatable("tooltip.dragon_fireball").withColor(Color.HSBtoRGB(WORLD == null ? 0f : WORLD.getTime() / 50f, 1f, 1f)));
         }
     }
 }

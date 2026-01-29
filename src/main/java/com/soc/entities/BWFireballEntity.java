@@ -1,5 +1,6 @@
 package com.soc.entities;
 
+import com.soc.entities.util.ExplodeFunction;
 import com.soc.util.SphereExplosion;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -16,6 +17,7 @@ import static com.soc.entities.util.ModEntities.BW_FIREBALL;
 
 public class BWFireballEntity extends FireballEntity {
     private final float explosionPower;
+    private final ExplodeFunction explodeFunction;
 
     {
         this.accelerationPower = 0f;
@@ -24,13 +26,20 @@ public class BWFireballEntity extends FireballEntity {
     public BWFireballEntity(EntityType<? extends BWFireballEntity> entityType, World world) {
         super(entityType, world);
         this.explosionPower = 0;
+        this.explodeFunction = null;
+    }
+
+    public BWFireballEntity(World world, LivingEntity owner, Vec3d velocity, int explosionPower, ExplodeFunction explodeFunction) {
+        super(BW_FIREBALL, world);
+        this.setVelocity(velocity);
+        this.setOwner(owner);
+
+        this.explosionPower = explosionPower;
+        this.explodeFunction = explodeFunction;
     }
 
     public BWFireballEntity(World world, LivingEntity owner, Vec3d velocity, int explosionPower) {
-        super(BW_FIREBALL, world);
-        this.setVelocity(velocity);
-        this.explosionPower = explosionPower;
-        this.setOwner(owner);
+        this(world, owner, velocity, explosionPower, BWFireballEntity::sphereExplode);
     }
 
     @Override
@@ -42,10 +51,14 @@ public class BWFireballEntity extends FireballEntity {
     protected void onCollision(HitResult hitResult) {
         if (hitResult.getType() == HitResult.Type.ENTITY && ((EntityHitResult)hitResult).getEntity() == this.getOwner()) return;
         if (this.getWorld() instanceof ServerWorld serverWorld) {
-            final Entity owner = LazyEntityReference.resolve(super.owner, this.getWorld(), Entity.class);
-            SphereExplosion.explode(serverWorld, this.getPos(), this.explosionPower, 0.25f, 1f, owner instanceof LivingEntity ? (LivingEntity)owner : null);
-            this.discard();
+            final Entity owner = LazyEntityReference.resolve(super.owner, serverWorld, Entity.class);
+            this.explodeFunction.explode(this, serverWorld, this.getPos(), this.explosionPower, owner);
         }
+        this.discard();
+    }
+
+    private static void sphereExplode(Entity self, ServerWorld serverWorld, Vec3d pos, float explosionPower, Entity owner) {
+        SphereExplosion.explode(serverWorld, pos, explosionPower, 1.25f, 1f, owner instanceof LivingEntity ? (LivingEntity)owner : null);
     }
 }
 

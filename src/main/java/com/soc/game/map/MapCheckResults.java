@@ -106,7 +106,7 @@ public record MapCheckResults(Set<SpawnPosition> spawnPositions, Set<BlockPos> c
         results.add(
                 () -> mapType != GameType.BEDWARS,
                 Text.translatable("map_block.results.spawn_positions", this.spawnPositions.size()).formatted(Formatting.GREEN),
-                this.spawnPositions.stream().filter(spawn -> spawn.colour() < 16).map(spawn -> Text.translatable("color.minecraft." + spawn.dyeColour().toString()).formatted(formattingColourFromDye(spawn.dyeColour()))).toArray(Text[]::new), //Sort radially?
+                this.getSpawnPositionsHoverText(),
                 InfoList.InfoType.INFO
         );
 
@@ -118,7 +118,7 @@ public record MapCheckResults(Set<SpawnPosition> spawnPositions, Set<BlockPos> c
                             int islands = this.spawnPositions.size();
                             return Text.translatable("map_block.results.islands", islands).formatted(Arrays.stream(new int[]{2, 4, 8}).anyMatch(count -> count == islands) ? Formatting.DARK_GREEN : Formatting.GREEN);
                         },
-                        () -> new Text[0],
+                        this::getSpawnPositionsHoverText,
                         InfoList.InfoType.INFO
                 );
                 results.add(
@@ -185,8 +185,7 @@ public record MapCheckResults(Set<SpawnPosition> spawnPositions, Set<BlockPos> c
         return positions.stream().map(gen -> gen.subtractPos(this.getSingleCentre())).collect(Collectors.toSet());
     }
 
-    /*
-    BlockPos closestSpawnPos = spawnPositions.values().stream().min(Comparator.comparing(pos -> pos.getSquaredDistance(currentPos))).get(); //This is going to need work
-        islandGens.put(spawnPositions.inverse().get(closestSpawnPos), currentPos);
-    */
+    private Text[] getSpawnPositionsHoverText() {
+        return this.spawnPositions.stream().filter(spawn -> spawn.colour() < 16).map(spawn -> Text.translatable("color.minecraft." + spawn.dyeColour().toString()).formatted(formattingColourFromDye(spawn.dyeColour()))).toArray(Text[]::new); //Sort radially?
+    }
 }
