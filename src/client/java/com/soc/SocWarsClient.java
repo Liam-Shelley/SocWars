@@ -5,6 +5,7 @@ import com.soc.entities.util.ModEntities;
 import com.soc.game.BedwarsTeamsHUD;
 import com.soc.gui.screen.HandledScreens;
 import com.soc.items.FeatherBlockItem;
+import com.soc.lib.Coroutines;
 import com.soc.networking.S2CReceivers;
 import com.soc.renderer.*;
 import com.soc.resourcedata.deserialisation.SkywarsItemData;
@@ -41,6 +42,7 @@ import java.util.Map;
 
 import static com.soc.blocks.blockentities.ModBlockEntities.COLLECTIBLE_BLOCK_ENTITY;
 import static com.soc.blocks.blockentities.ModBlockEntities.MAP_BLOCK_ENTITY;
+import static com.soc.lib.Coroutines.getInstance;
 
 @Environment(EnvType.CLIENT)
 public class SocWarsClient implements ClientModInitializer {
@@ -62,6 +64,13 @@ public class SocWarsClient implements ClientModInitializer {
 
 		S2CReceivers.initialise();
 		HandledScreens.initialise();
+
+		ClientTickEvents.START_CLIENT_TICK.register(client -> {
+			final Coroutines instance = getInstance();
+			if (!client.isIntegratedServerRunning()) {
+				instance.runCoroutines();
+			}
+		});
 
 		KEY_BINDING = KeyBindingHelper.registerKeyBinding(new KeyBinding(
 				"key.socwars.print_held_components",
@@ -118,11 +127,11 @@ public class SocWarsClient implements ClientModInitializer {
 			if (client.player == null) return;
 
 			try {
-				WorldRenderContext context = WorldRenderContext.getInstance(client.worldRenderer);
-				MatrixStack matrices = context.matrixStack();
-				VertexConsumer consumer = context.consumers().getBuffer(RenderLayer.LINES);
+				final WorldRenderContext context = WorldRenderContext.getInstance(client.worldRenderer);
+				final MatrixStack matrices = context.matrixStack();
+				final VertexConsumer consumer = context.consumers().getBuffer(RenderLayer.LINES);
 
-				BlockPos pos = BlockPos.ofFloored(client.player.getPos());
+				final BlockPos pos = BlockPos.ofFloored(client.player.getPos());
 
 				matrices.push();
 				matrices.translate(pos.toCenterPos());
@@ -137,7 +146,6 @@ public class SocWarsClient implements ClientModInitializer {
 				);
 				matrices.pop();
 			} catch (Exception ignored) {}
-
 		});
 
 		BedwarsTeamsHUD.initialise();

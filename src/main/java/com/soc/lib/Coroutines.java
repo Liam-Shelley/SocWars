@@ -24,7 +24,7 @@ public class Coroutines {
         SocWars.LOGGER.warn("This coroutines implementation is utter garbage");
     }
 
-    private void runCoroutines() {
+    public void runCoroutines() {
         this.coroutines.removeIf(Coroutine::run);
     }
 
