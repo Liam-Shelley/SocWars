@@ -5,6 +5,8 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Hand;
 import net.minecraft.world.BlockView;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -16,12 +18,14 @@ public abstract class OnEntityLand{
     @Inject(method = "onEntityLand", at = @At("HEAD"))
     private void socwars_onEntityLand(BlockView world, Entity entity, CallbackInfo ci) {
         if (entity.getType() == EntityType.PLAYER) {
-            PlayerEntity player = (PlayerEntity)entity;
-            player.getInventory().forEach(stack -> {
+            final PlayerEntity player = (PlayerEntity)entity;
+
+            for (Hand hand : Hand.values()) {
+                final ItemStack stack = player.getStackInHand(hand);
                 if (stack.get(ModComponents.DOUBLE_JUMP) != null) {
                     stack.set(ModComponents.DOUBLE_JUMP, true);
                 }
-            });
+            }
         }
     }
 }

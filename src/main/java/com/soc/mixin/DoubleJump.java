@@ -22,15 +22,14 @@ public abstract class DoubleJump {
 
 			boolean canDoubleJump = false;
 
-			for (ItemStack stack : player.getInventory()) {
+			for (Hand hand : Hand.values()) {
+				final ItemStack stack = player.getStackInHand(hand);
 				final Boolean stackIsActive = stack.get(ModComponents.DOUBLE_JUMP);
 				final boolean unBoxed = stackIsActive != null && stackIsActive;
 				if (unBoxed) {
 					stack.set(ModComponents.DOUBLE_JUMP, false);
+					player.swingHand(hand);
 					canDoubleJump = true;
-					for (Hand hand : Hand.values()) {
-						if (player.getStackInHand(hand).get(ModComponents.DOUBLE_JUMP) != null) player.swingHand(hand);
-					}
 				}
 			}
 

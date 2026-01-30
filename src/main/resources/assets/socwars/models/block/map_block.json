@@ -1,8 +1,26 @@
 {
-	"parent": "minecraft:block/cube_bottom_top",
+	"parent": "minecraft:block/block",
 	"textures": {
-		"bottom": "socwars:block/hydrogen_bomb_bottom",
-		"side": "socwars:block/hydrogen_bomb_side",
-		"top": "socwars:block/hydrogen_bomb_top"
-	}
+		"bottom": "socwars:block/map_block",
+		"top": "socwars:block/map_block",
+		"north": "socwars:block/map_block",
+		"south": "socwars:block/map_block",
+		"west": "socwars:block/map_block",
+		"east": "socwars:block/map_block",
+		"particle": "#north"
+	},
+	"elements": [
+		{
+			"from": [ 0, 0, 0 ],
+			"to": [ 16, 16, 16 ],
+			"faces": {
+				"down":  { "uv": [ 0, 0, 16, 16 ], "texture": "#bottom", "cullface": "down" },
+				"up":    { "uv": [ 0, 0, 16, 16 ], "texture": "#top", "cullface": "up" },
+				"north": { "uv": [ 0, 0, 16, 16 ], "texture": "#north", "cullface": "north" },
+				"south": { "uv": [ 0, 0, 16, 16 ], "texture": "#south", "cullface": "south" },
+				"west":  { "uv": [ 0, 0, 16, 16 ], "texture": "#west", "cullface": "west" },
+				"east":  { "uv": [ 0, 0, 16, 16 ], "texture": "#east", "cullface": "east" }
+			}
+		}
+	]
 }
