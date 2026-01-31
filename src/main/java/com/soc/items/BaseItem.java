@@ -1,6 +1,7 @@
 package com.soc.items;
 
 import com.soc.items.components.ModComponents;
+import com.soc.items.util.AppendTooltipFunction;
 import com.soc.items.util.ItemGroups;
 import com.soc.items.util.ModItems;
 import net.minecraft.component.type.TooltipDisplayComponent;
@@ -10,13 +11,12 @@ import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Rarity;
 
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class BaseItem extends Item {
-    private final BiConsumer<ItemStack, Consumer<Text>> tooltipFunction;
+    private final AppendTooltipFunction tooltipFunction;
 
-    public BaseItem(Settings settings, BiConsumer<ItemStack, Consumer<Text>> tooltipFunction) {
+    public BaseItem(Settings settings, AppendTooltipFunction tooltipFunction) {
         super(settings);
         this.tooltipFunction = tooltipFunction;
     }
@@ -38,6 +38,6 @@ public class BaseItem extends Item {
     @Override
     @SuppressWarnings("deprecation")
     public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
-        this.tooltipFunction.accept(stack, textConsumer);
+        this.tooltipFunction.appendTooltip(stack, textConsumer);
     }
 }

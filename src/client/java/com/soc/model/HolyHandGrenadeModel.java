@@ -42,6 +42,10 @@ public class HolyHandGrenadeModel extends EntityModel<HolyHandGrenadeRenderState
 		return TexturedModelData.of(modelData, 51, 30);
 	}
 
+	public void removePin() {
+		this.pin.hidden = true;
+	}
+
 	public RenderLayer getLayer() {
 		return RenderLayer.getEntitySolid(Identifier.of(SocWars.MOD_ID, "textures/entity/holy_hand_grenade.png"));
 	}

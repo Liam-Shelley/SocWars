@@ -6,6 +6,7 @@ import com.soc.model.EntityModelLayers;
 import com.soc.model.HolyHandGrenadeModel;
 import com.soc.renderstate.HolyHandGrenadeRenderState;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BeaconBlockEntityRenderer;
 import net.minecraft.client.render.entity.EntityRenderer;
@@ -34,23 +35,24 @@ public class HolyHandGrenadeEntityRenderer extends EntityRenderer<HolyHandGrenad
         super.render(state, matrices, vertexConsumers, light);
 
         matrices.push();
-        matrices.push();
 
         matrices.translate(0d, 0.75d, 0d);
         matrices.scale(0.5f, -0.5f, -0.5f);
-        this.model.render(matrices, vertexConsumers.getBuffer(this.model.getLayer()), light, 0);
+        this.model.render(matrices, vertexConsumers.getBuffer(this.model.getLayer()), light, OverlayTexture.DEFAULT_UV);
 
         matrices.pop();
 
         if (state.getDetonationTimer() > 0f) {
+            matrices.push();
+
             final float lastTickProgress = MinecraftClient.getInstance().gameRenderer.getCamera().getLastTickProgress();
             final long time = MinecraftClient.getInstance().world.getTime();
 
             matrices.translate(-0.5d, 0.0d, -0.5d);
             BeaconBlockEntityRenderer.renderBeam(matrices, vertexConsumers, BEAM_TEXTURE, lastTickProgress, 1f, time, 0, 2048, 0xffffffff, 0.15f, 0.2f);
-        }
 
-        matrices.pop();
+            matrices.pop();
+        }
     }
 
     @Override

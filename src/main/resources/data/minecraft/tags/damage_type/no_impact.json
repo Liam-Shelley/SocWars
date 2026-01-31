@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "socwars:sphere_explosion"
+    "socwars:sphere_explosion",
+    "socwars:holy_hand_grenade"
   ]
 }

@@ -75,7 +75,7 @@ public class PotionFood extends Item {
             new EffectRecord(StatusEffects.REGENERATION, 1, 60 * 20),
             new EffectRecord(StatusEffects.ABSORPTION, 9, 60 * 20),
             new EffectRecord(StatusEffects.STRENGTH, 1, 60 * 20),
-            new EffectRecord(StatusEffects.RESISTANCE, 1, 60 * 20),
+            new EffectRecord(StatusEffects.RESISTANCE, 3, 60 * 20),
             new EffectRecord(StatusEffects.SATURATION, 9, 60 * 20),
             new EffectRecord(StatusEffects.HASTE, 2, 59 * 20)
     };

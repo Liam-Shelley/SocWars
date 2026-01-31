@@ -1,11 +1,16 @@
 package com.soc.entities;
 
-import com.mojang.serialization.Codec;
+import com.soc.util.DamageTypes;
 import com.soc.util.SphereExplosion;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.projectile.thrown.ThrownEntity;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
+import net.minecraft.server.network.EntityTrackerEntry;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
@@ -14,7 +19,7 @@ import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.world.World;
 
 public class HolyHandGrenadeEntity extends ThrownEntity {
-    private final float detonationTime;
+    private float detonationTime;
 
     private float detonationTimer = -1f;
 
@@ -35,17 +40,21 @@ public class HolyHandGrenadeEntity extends ThrownEntity {
 
     @Override
     protected void readCustomData(ReadView view) {
-        this.detonationTimer = view.read("detonation_timer", Codec.FLOAT).orElse(-1f);
+        this.detonationTime = view.getFloat("detonation_time", 0.5f);
+        this.detonationTimer = view.getFloat("detonation_timer", -1f);
     }
 
     @Override
     protected void writeCustomData(WriteView view) {
-        view.put("detonation_timer", Codec.FLOAT, this.detonationTimer);
+        view.putFloat("detonation_time", this.detonationTime);
+        view.putFloat("detonation_timer", this.detonationTimer);
     }
 
     @Override
     protected void onEntityHit(EntityHitResult entityHitResult) {
-        if (entityHitResult.getEntity().isTeammate(this.getOwner())) return;
+        final Entity other = entityHitResult.getEntity();
+        final Entity owner = this.getOwner();
+        if (other == owner || other.isTeammate(owner)) return;
 
         super.onEntityHit(entityHitResult);
         this.trigger();
@@ -80,7 +89,17 @@ public class HolyHandGrenadeEntity extends ThrownEntity {
     }
 
     private void detonate() {
-        SphereExplosion.explode(this.getWorld(), this.getPos(), 8f, 3f, 1f, false, this.getOwner(), null);
+        SphereExplosion.explode(this.getWorld(), this.getPos(), 8f, 7f, 1f, false, this.getOwner(), DamageTypes.HOLY_HAND_GRENADE);
         this.discard();
+    }
+
+    @Override
+    public void onSpawnPacket(EntitySpawnS2CPacket packet) {
+        super.onSpawnPacket(packet);
+    }
+
+    @Override
+    public Packet<ClientPlayPacketListener> createSpawnPacket(EntityTrackerEntry entityTrackerEntry) {
+        return super.createSpawnPacket(entityTrackerEntry);
     }
 }

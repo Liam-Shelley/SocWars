@@ -71,9 +71,9 @@ public class SphereExplosion {
             final Vec3d pos = entity.getPos();
             final float distance = (float)pos.distanceTo(centre);
 
-            if (distance > explosionRadius) return;
+            if (distance > explosionRadius * 2f) return;
 
-            final float intensity = Math.min(1f / (float)Math.sqrt(distance) * distance, 1.5f) * explosionRadius;
+            final float intensity = Math.min(1f / distance, 1.5f) * explosionRadius;
 
             final Vec3d knockback = pos.subtract(centre.subtract(0d, 0.5d, 0d)).normalize().multiply(intensity * knockbackFactor * 0.25f);
             if (entity instanceof ServerPlayerEntity serverPlayer) {
