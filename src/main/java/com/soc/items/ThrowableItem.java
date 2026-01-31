@@ -2,6 +2,7 @@ package com.soc.items;
 
 import com.soc.entities.BWFireballEntity;
 import com.soc.entities.EnderBeamEntity;
+import com.soc.entities.HandGrenadeEntity;
 import com.soc.entities.HolyHandGrenadeEntity;
 import com.soc.entities.util.ModEntities;
 import com.soc.items.util.AppendTooltipFunction;
@@ -56,6 +57,7 @@ public class ThrowableItem extends Item {
         ItemGroups.addItemToGroupsAndBaseItemGroup(SNAIL_FIREBALL, COMBAT);
         ItemGroups.addItemToGroupsAndBaseItemGroup(THROWABLE_TNT, COMBAT);
         ItemGroups.addItemToGroupsAndBaseItemGroup(ENDER_BEAM, COMBAT);
+        ItemGroups.addItemToGroupsAndBaseItemGroup(HAND_GRENADE, COMBAT);
         ItemGroups.addItemToGroupsAndBaseItemGroup(HOLY_HAND_GRENADE, COMBAT);
     }
 
@@ -67,11 +69,12 @@ public class ThrowableItem extends Item {
         tnt.setFuse(40);
     }), new Settings().useCooldown(0.75f));
     public static final Item ENDER_BEAM = ModItems.register("ender_beam", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new EnderBeamEntity(ModEntities.ENDER_BEAM, world), world, user, 1f)), new Settings().useCooldown(0.75f));
+    public static final Item HAND_GRENADE = ModItems.register("hand_grenade", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new HandGrenadeEntity(ModEntities.HAND_GRENADE, world, 0.5f), world, user, 0.65f), (stack, consumer) -> consumer.accept(Text.translatable("tooltip.hand_grenade"))), new Settings().useCooldown(0.75f).rarity(Rarity.UNCOMMON));
     public static final Item HOLY_HAND_GRENADE = ModItems.register("holy_hand_grenade", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new HolyHandGrenadeEntity(ModEntities.HOLY_HAND_GRENADE, world, 0.5f), world, user, 0.65f), (stack, consumer) -> {
         for (int i = 0; i < 10; i++) {
             consumer.accept(Text.translatable("tooltip.holy_hand_grenade." + i));
         }
-    }), new Settings().useCooldown(0.75f));
+    }), new Settings().useCooldown(0.75f).rarity(Rarity.RARE));
 
     @Override
     public ActionResult use(World world, PlayerEntity user, Hand hand) {
@@ -100,7 +103,7 @@ public class ThrowableItem extends Item {
     }
 
     public static <T extends Entity> T spawnEntityWithVelocity(T entity, ServerWorld world, LivingEntity user, float speed) {
-        entity.setPosition(user.getEyePos());
+        entity.setPosition(user.getEyePos().add(user.getRotationVector().multiply(0.75d)));
         entity.setVelocity(user.getRotationVector().multiply(speed));
 
         world.spawnEntity(entity);

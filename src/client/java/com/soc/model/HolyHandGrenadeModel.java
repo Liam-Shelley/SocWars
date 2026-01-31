@@ -1,7 +1,7 @@
 package com.soc.model;
 
 import com.soc.SocWars;
-import com.soc.renderstate.HolyHandGrenadeRenderState;
+import com.soc.renderstate.HandGrenadeRenderState;
 import net.minecraft.client.model.*;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.entity.model.EntityModel;
@@ -10,7 +10,7 @@ import net.minecraft.util.Identifier;
 // Made with Blockbench 5.0.7
 // Exported for Minecraft version 1.17+ for Yarn
 // Paste this class into your mod and generate all required imports
-public class HolyHandGrenadeModel extends EntityModel<HolyHandGrenadeRenderState> {
+public class HolyHandGrenadeModel extends EntityModel<HandGrenadeRenderState> {
 	private final ModelPart pin;
 	private final ModelPart mainbody;
 
