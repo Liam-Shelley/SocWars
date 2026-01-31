@@ -79,7 +79,7 @@ public class CartoonArmour extends ArmourItem implements OnHitArmour {
             final int random = world.random.nextBetween(1, 8);
             switch (random) {
                 case 1 -> { return false; }
-                case 2 -> SphereExplosion.explode(world, wearer.getPos(), 4.5f, 0.8f, 0.75f, wearer);
+                case 2 -> SphereExplosion.explode(world, wearer.getPos(), 4.5f, 0.8f, 0.75f, true, wearer, null);
                 case 3 -> {
                     iterateInPlane(wearer.getBlockPos(), 1, pos -> world.setBlockState(pos, Blocks.AIR.getDefaultState()));
                     iterateInPlane(wearer.getBlockPos().down(), 1, pos -> world.setBlockState(pos, Blocks.SLIME_BLOCK.getDefaultState()));

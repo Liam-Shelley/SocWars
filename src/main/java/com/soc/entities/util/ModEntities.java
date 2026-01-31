@@ -1,10 +1,7 @@
 package com.soc.entities.util;
 
 import com.soc.SocWars;
-import com.soc.entities.BWFireballEntity;
-import com.soc.entities.BedwarsShopEntity;
-import com.soc.entities.BigTntEntity;
-import com.soc.entities.EnderBeamEntity;
+import com.soc.entities.*;
 import com.soc.game.manager.bedwars.ShopType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -57,6 +54,12 @@ public interface ModEntities {
             .dimensions(0.6f, 1.95f)
             .maxTrackingRange(4)
             .eyeHeight(1.62f)
+    );
+    EntityType<HolyHandGrenadeEntity> HOLY_HAND_GRENADE = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "holy_hand_grenade"), EntityType.Builder.<HolyHandGrenadeEntity>create((type, world) -> new HolyHandGrenadeEntity(type, world, 0.5f), SpawnGroup.MISC)
+            .dropsNothing()
+            .dimensions(0.5f, 0.85f)
+            .maxTrackingRange(4)
+            .eyeHeight(0.6f)
     );
 
     static <T extends Entity> EntityType<T> registerType(Identifier id, EntityType.Builder<T> type) {

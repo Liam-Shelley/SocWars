@@ -2,7 +2,7 @@ package com.soc.renderstate;
 
 import net.minecraft.client.render.entity.state.BipedEntityRenderState;
 
-public class BedwarsShopEntityRenderState extends BipedEntityRenderState {
+public class BedwarsShopRenderState extends BipedEntityRenderState {
     private float rotationXZ;
 
     public float getRotationXZ() {

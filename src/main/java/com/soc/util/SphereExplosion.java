@@ -2,17 +2,16 @@ package com.soc.util;
 
 import com.soc.game.manager.AbstractGameManager;
 import com.soc.game.manager.GamesManager;
-import com.soc.game.map.AbstractGameMap;
-import com.soc.lib.SparseVoxelOctree;
 import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.ExplosionS2CPacket;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
@@ -33,11 +32,13 @@ import static com.soc.lib.SocWarsLib.iterateInSphere;
 public class SphereExplosion {
     private SphereExplosion() {}
 
-    public static void explode(World world, Vec3d centre, float explosionRadius, float explosionVariance, float damageFactor, float knockbackFactor, @Nullable LivingEntity causingEntity) {
+    public static void explode(World world, Vec3d centre, float explosionRadius, float explosionVariance, float damageFactor, float knockbackFactor, boolean blockDamage, @Nullable Entity causingEntity, @Nullable RegistryKey<DamageType> damageType) {
         final Optional<AbstractGameManager<?, ?, ?>> managerOptional = causingEntity == null ? Optional.empty() : GamesManager.getInstance().getGame(causingEntity);
 
         final Predicate<BlockPos> damage;
-        if (managerOptional.isPresent()) {
+        if (!blockDamage) {
+            damage = pos -> false;
+        } else if (managerOptional.isPresent()) {
             final AbstractGameManager<?, ?, ?> manager = managerOptional.get();
             damage = manager::isBlockUnprotected;
         } else {
@@ -55,11 +56,11 @@ public class SphereExplosion {
                 if (damage.test(pos)) world.setBlockState(pos, Blocks.AIR.getDefaultState());
         });
 
-        applyDamageAndKnockback(world, centre, explosionRadius, damageFactor, knockbackFactor, damageSource(world, DamageTypes.SPHERE_EXPLOSION, causingEntity));
+        applyDamageAndKnockback(world, centre, explosionRadius, damageFactor, knockbackFactor, damageSource(world, damageType == null ? DamageTypes.SPHERE_EXPLOSION : damageType, causingEntity));
     }
 
-    public static void explode(World world, Vec3d centre, float explosionRadius, float damageFactor, float knockbackFactor, @Nullable LivingEntity causingPlayer) {
-        explode(world, centre, explosionRadius, 1.5f, damageFactor, knockbackFactor, causingPlayer);
+    public static void explode(World world, Vec3d centre, float explosionRadius, float damageFactor, float knockbackFactor, boolean blockDamage, @Nullable Entity causingPlayer, @Nullable RegistryKey<DamageType> damageType) {
+        explode(world, centre, explosionRadius, 1.5f, damageFactor, knockbackFactor, blockDamage, causingPlayer, damageType);
     }
 
     private static void applyDamageAndKnockback(World world, Vec3d centre, float explosionRadius, float damageFactor, float knockbackFactor, DamageSource source) {
@@ -72,7 +73,7 @@ public class SphereExplosion {
 
             if (distance > explosionRadius) return;
 
-            final float intensity = Math.min(1f / (float)Math.sqrt(distance), 1.5f) * explosionRadius;
+            final float intensity = Math.min(1f / (float)Math.sqrt(distance) * distance, 1.5f) * explosionRadius;
 
             final Vec3d knockback = pos.subtract(centre.subtract(0d, 0.5d, 0d)).normalize().multiply(intensity * knockbackFactor * 0.25f);
             if (entity instanceof ServerPlayerEntity serverPlayer) {

@@ -6,6 +6,8 @@ import com.soc.game.BedwarsTeamsHUD;
 import com.soc.gui.screen.HandledScreens;
 import com.soc.items.FeatherBlockItem;
 import com.soc.lib.Coroutines;
+import com.soc.model.EntityModelLayers;
+import com.soc.model.HolyHandGrenadeModel;
 import com.soc.networking.S2CReceivers;
 import com.soc.renderer.*;
 import com.soc.resourcedata.deserialisation.SkywarsItemData;
@@ -15,11 +17,9 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.*;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.model.TexturedModelData;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.BlockRenderLayer;
@@ -27,10 +27,12 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexRendering;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
+import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -55,6 +57,7 @@ public class SocWarsClient implements ClientModInitializer {
 		EntityRendererRegistry.register(ModEntities.BW_FIREBALL, BWFireballEntityRenderer::new);
 		EntityRendererRegistry.register(ModEntities.INDIVIDUAL_BEDWARS_SHOP, BedwarsShopEntityRenderer::new);
 		EntityRendererRegistry.register(ModEntities.TEAM_BEDWARS_SHOP, BedwarsShopEntityRenderer::new);
+		EntityRendererRegistry.register(ModEntities.HOLY_HAND_GRENADE, HolyHandGrenadeEntityRenderer::new);
 
 		BlockEntityRendererFactories.register(MAP_BLOCK_ENTITY, MapBlockEntityRenderer::new);
 		BlockEntityRendererFactories.register(COLLECTIBLE_BLOCK_ENTITY, CollectibleBlockEntityRenderer::new);
@@ -149,5 +152,6 @@ public class SocWarsClient implements ClientModInitializer {
 		});
 
 		BedwarsTeamsHUD.initialise();
+		EntityModelLayers.initialise();
 	}
 }

@@ -33,7 +33,7 @@ public class BaseItem extends Item {
         ItemGroups.addItemToItemsGroup(PORTABLE_STEPPING_STOOL);
     }
 
-    public static final Item PORTABLE_STEPPING_STOOL = ModItems.register("portable_stepping_stool", settings -> new BaseItem(settings, Text.translatable("tooltip.portable_stepping_stool")), new Settings().component(ModComponents.DOUBLE_JUMP, true).rarity(Rarity.RARE));
+    public static final Item PORTABLE_STEPPING_STOOL = ModItems.register("portable_stepping_stool", settings -> new BaseItem(settings, Text.translatable("tooltip.portable_stepping_stool")), new Settings().component(ModComponents.DOUBLE_JUMP, true).rarity(Rarity.RARE).maxCount(1));
 
     @Override
     @SuppressWarnings("deprecation")

@@ -86,7 +86,7 @@ public class BigTntEntity extends Entity implements Ownable {
     }
 
     private void explode() {
-        SphereExplosion.explode(this.getWorld(), this.getPos(), this.tntType.explosionRadius, 2.5f, 1.5f, LazyEntityReference.resolve(this.igniter, this.getWorld(), LivingEntity.class));
+        SphereExplosion.explode(this.getWorld(), this.getPos(), this.tntType.explosionRadius, 2.5f, 1.5f, true, LazyEntityReference.resolve(this.igniter, this.getWorld(), LivingEntity.class), null);
     }
 
     protected void writeCustomData(WriteView view) {

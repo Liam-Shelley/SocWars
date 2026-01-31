@@ -12,6 +12,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.registry.tag.BlockTags;
@@ -114,7 +115,7 @@ public class GamesManager {
         this.games.set(gameId, null);
     }
 
-    public Optional<AbstractGameManager<?, ?, ?>> getGame(LivingEntity entity) {
+    public Optional<AbstractGameManager<?, ?, ?>> getGame(Entity entity) {
         final Integer id = this.playerGameLookup.get(entity.getUuid());
         return Optional.ofNullable(id).map(this.games::get);
     }
