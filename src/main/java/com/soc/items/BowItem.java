@@ -149,7 +149,7 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
                 @Override
                 public void usageTick(World world, LivingEntity user, ItemStack stack, int remainingUseTicks) {
                     if (super.rawDrawProgress(stack, remainingUseTicks) > 7.5f) {
-                        SphereExplosion.explode(world, user.getPos(), 6f, 2f, 3f, true, user, null);
+                        SphereExplosion.explode(world, user.getPos(), 7f, 12f, 3f, true, user, DamageTypes.CATASTROPHE_BOW_BACKFIRE);
                     }
                 }
             }, new Settings()

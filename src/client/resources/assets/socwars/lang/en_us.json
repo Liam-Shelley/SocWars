@@ -169,6 +169,7 @@
   "death.attack.gallium": "%1$s was amalgamated",
   "death.attack.catastrophe_bow": "%1$s experienced catastrophic world ending absolute pandemonium",
   "death.attack.catastrophe_bow.player": "%1$s experienced catastrophic world ending absolute pandemonium at the hands of %2$s",
+  "death.attack.catastrophe_bow_backfire": "%1$s decided they want to experience catastrophic world ending absolute pandemonium",
   "death.attack.expon": "%1$s is become floating point imprecision",
   "death.attack.expon.player": "%1$s was factorised by %2$s",
   "death.attack.full_metal_sword": "%1$s got some!",
