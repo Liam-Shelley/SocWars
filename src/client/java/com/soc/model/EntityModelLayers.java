@@ -15,4 +15,5 @@ public interface EntityModelLayers {
     }
 
     EntityModelLayer HOLY_HAND_GRENADE = registerModelLayer("holy_hand_grenade", HolyHandGrenadeModel::getTexturedModelData);
+    EntityModelLayer HAND_GRENADE = registerModelLayer("hand_grenade", HandGrenadeModel::getTexturedModelData);
 }

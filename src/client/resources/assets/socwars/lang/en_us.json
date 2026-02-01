@@ -348,6 +348,8 @@
   "entity.socwars.team_bedwars_shop": "Team Shop",
   "entity.socwars.nuclear_bomb": "Nuclear Bomb",
   "entity.socwars.hydrogen_bomb": "Hydrogen Bomb",
+  "entity.socwars.hand_grenade": "Hand Grenade",
+  "entity.socwars.holy_hand_grenade": "Holy Hand Grenade of Antioch",
   "trap.mining_fatigue": "Mining Fatigue",
   "trap.mining_fatigue.tooltip": "Applies Mining Fatigue II for §212 seconds.",
   "trap.clear_effects": "Clear Effects",

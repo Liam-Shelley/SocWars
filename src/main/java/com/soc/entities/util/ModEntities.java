@@ -57,7 +57,7 @@ public interface ModEntities {
     );
     EntityType<HandGrenadeEntity> HAND_GRENADE = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "hand_grenade"), EntityType.Builder.<HandGrenadeEntity>create((type, world) -> new HandGrenadeEntity(type, world, 0.5f), SpawnGroup.MISC)
             .dropsNothing()
-            .dimensions(0.5f, 0.85f)
+            .dimensions(0.5f, 0.625f)
             .maxTrackingRange(4)
             .eyeHeight(0.6f)
     );

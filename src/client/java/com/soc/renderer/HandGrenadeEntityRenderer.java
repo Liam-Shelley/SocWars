@@ -20,7 +20,7 @@ public class HandGrenadeEntityRenderer<T extends HandGrenadeEntity> extends Enti
 
     public HandGrenadeEntityRenderer(EntityRendererFactory.Context context) {
         super(context);
-        this.model = new HandGrenadeModel(context.getPart(EntityModelLayers.HOLY_HAND_GRENADE));
+        this.model = new HandGrenadeModel(context.getPart(EntityModelLayers.HAND_GRENADE));
     }
 
     @Override
@@ -46,7 +46,7 @@ public class HandGrenadeEntityRenderer<T extends HandGrenadeEntity> extends Enti
 
     protected void setUpMatrices(MatrixStack matrices) {
         matrices.translate(0d, 0.75d, 0d);
-        matrices.scale(0.5f, 0.5f, 0.5f);
+        matrices.scale(0.5f, -0.5f, -0.5f);
     }
 
     protected RenderLayer getRenderLayer() {
