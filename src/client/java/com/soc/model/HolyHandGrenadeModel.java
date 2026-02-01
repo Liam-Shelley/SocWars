@@ -1,11 +1,8 @@
 package com.soc.model;
 
-import com.soc.SocWars;
 import com.soc.renderstate.HandGrenadeRenderState;
 import net.minecraft.client.model.*;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.entity.model.EntityModel;
-import net.minecraft.util.Identifier;
 
 // Made with Blockbench 5.0.7
 // Exported for Minecraft version 1.17+ for Yarn
@@ -44,9 +41,5 @@ public class HolyHandGrenadeModel extends EntityModel<HandGrenadeRenderState> {
 
 	public void removePin() {
 		this.pin.hidden = true;
-	}
-
-	public RenderLayer getLayer() {
-		return RenderLayer.getEntitySolid(Identifier.of(SocWars.MOD_ID, "textures/entity/holy_hand_grenade.png"));
 	}
 }

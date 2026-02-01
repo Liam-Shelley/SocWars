@@ -7,6 +7,7 @@ import com.soc.model.HolyHandGrenadeModel;
 import com.soc.renderstate.HandGrenadeRenderState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.Model;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BeaconBlockEntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
@@ -48,5 +49,10 @@ public class HolyHandGrenadeEntityRenderer extends HandGrenadeEntityRenderer<Hol
     protected void setUpMatrices(MatrixStack matrices) {
         matrices.translate(0d, 0.75d, 0d);
         matrices.scale(0.5f, -0.5f, -0.5f);
+    }
+
+    @Override
+    protected RenderLayer getRenderLayer() {
+        return RenderLayer.getEntitySolid(Identifier.of(SocWars.MOD_ID, "textures/entity/holy_hand_grenade.png"));
     }
 }
