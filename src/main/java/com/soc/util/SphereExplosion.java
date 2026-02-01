@@ -64,7 +64,7 @@ public class SphereExplosion {
     }
 
     private static void applyDamageAndKnockback(World world, Vec3d centre, float explosionRadius, float damageFactor, float knockbackFactor, DamageSource source) {
-        final List<Entity> nearbyEntities = world.getOtherEntities(null, Box.of(centre, explosionRadius * 2f, explosionRadius * 2f, explosionRadius * 2f));
+        final List<Entity> nearbyEntities = world.getOtherEntities(null, Box.of(centre, explosionRadius * 4f, explosionRadius * 4f, explosionRadius * 4f));
         final Set<PlayerEntity> knockbackAppliedPlayers = new HashSet<>();
 
         nearbyEntities.forEach(entity -> {

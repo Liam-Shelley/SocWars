@@ -34,12 +34,16 @@ public class HandGrenadeEntityRenderer<T extends HandGrenadeEntity> extends Enti
         super.render(state, matrices, vertexConsumers, light);
 
         matrices.push();
+        this.setUpMatrices(matrices);
 
-        matrices.translate(0d, 0.75d, 0d);
-        matrices.scale(0.5f, -0.5f, -0.5f);
         this.getModel().render(matrices, vertexConsumers.getBuffer(this.model.getLayer()), light, OverlayTexture.DEFAULT_UV);
 
         matrices.pop();
+    }
+
+    protected void setUpMatrices(MatrixStack matrices) {
+        matrices.translate(0d, 0.75d, 0d);
+        matrices.scale(0.5f, 0.5f, 0.5f);
     }
 
     @Override

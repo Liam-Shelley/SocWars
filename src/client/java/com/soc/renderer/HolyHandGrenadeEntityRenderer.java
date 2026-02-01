@@ -43,4 +43,10 @@ public class HolyHandGrenadeEntityRenderer extends HandGrenadeEntityRenderer<Hol
             matrices.pop();
         }
     }
+
+    @Override
+    protected void setUpMatrices(MatrixStack matrices) {
+        matrices.translate(0d, 0.75d, 0d);
+        matrices.scale(0.5f, -0.5f, -0.5f);
+    }
 }
