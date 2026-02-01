@@ -1,9 +1,6 @@
 package com.soc.items;
 
-import com.soc.entities.BWFireballEntity;
-import com.soc.entities.EnderBeamEntity;
-import com.soc.entities.HandGrenadeEntity;
-import com.soc.entities.HolyHandGrenadeEntity;
+import com.soc.entities.*;
 import com.soc.entities.util.ModEntities;
 import com.soc.items.util.AppendTooltipFunction;
 import com.soc.items.util.ItemGroups;
@@ -59,6 +56,7 @@ public class ThrowableItem extends Item {
         ItemGroups.addItemToGroupsAndBaseItemGroup(ENDER_BEAM, COMBAT);
         ItemGroups.addItemToGroupsAndBaseItemGroup(HAND_GRENADE, COMBAT);
         ItemGroups.addItemToGroupsAndBaseItemGroup(HOLY_HAND_GRENADE, COMBAT);
+        ItemGroups.addItemToGroupsAndBaseItemGroup(MOLOTOV_COCKTAIL, COMBAT);
     }
 
     public static final Item FIREBALL = ModItems.register("fireball", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new BWFireballEntity(world, user, Vec3d.ZERO, 4), world, user, 1.75f)), new Settings().useCooldown(0.75f));
@@ -75,6 +73,7 @@ public class ThrowableItem extends Item {
             consumer.accept(Text.translatable("tooltip.holy_hand_grenade." + i));
         }
     }), new Settings().useCooldown(3f).rarity(Rarity.RARE));
+    public static final Item MOLOTOV_COCKTAIL = ModItems.register("molotov_cocktail", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new MolotovCocktailEntity(ModEntities.MOLOTOV_COCKTAIL, world), world, user, 0.7f)), new Settings().useCooldown(0.5f).rarity(Rarity.UNCOMMON));
 
     @Override
     public ActionResult use(World world, PlayerEntity user, Hand hand) {

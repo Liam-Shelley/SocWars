@@ -45,6 +45,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
@@ -174,6 +175,10 @@ public final class SocWarsLib {
         final double result = 1d / cosAngle;
 
         return result;
+    }
+
+    public static void iterateInSphere(Vec3d centre, float radius, float randomRadiusFactor, Consumer<BlockPos> function) {
+        iterateInSphere(BlockPos.ofFloored(centre), radius, randomRadiusFactor, function);
     }
 
     public static void iterateInSphere(Vec3i centre, float radius, float randomRadiusFactor, Consumer<BlockPos> function) {

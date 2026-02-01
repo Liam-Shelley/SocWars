@@ -12,5 +12,6 @@ public interface EntityRenderers {
         EntityRendererRegistry.register(ModEntities.TEAM_BEDWARS_SHOP, BedwarsShopEntityRenderer::new);
         EntityRendererRegistry.register(ModEntities.HAND_GRENADE, HandGrenadeEntityRenderer::new);
         EntityRendererRegistry.register(ModEntities.HOLY_HAND_GRENADE, HolyHandGrenadeEntityRenderer::new);
+        EntityRendererRegistry.register(ModEntities.MOLOTOV_COCKTAIL, MolotovCocktailEntityRenderer::new);
     }
 }

@@ -80,12 +80,12 @@ public class HandGrenadeEntity extends ThrownEntity {
             this.detonationTimer += 0.05f;
             if (this.detonationTimer > this.detonationTime) {
                 this.detonate();
+                this.discard();
             }
         }
     }
 
     protected void detonate() {
         SphereExplosion.explode(this.getWorld(), this.getPos(), 3f, 12f, 3f, true, this.getOwner(), DamageTypes.SPHERE_EXPLOSION);
-        this.discard();
     }
 }

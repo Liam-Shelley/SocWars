@@ -67,6 +67,12 @@ public interface ModEntities {
             .maxTrackingRange(4)
             .eyeHeight(0.6f)
     );
+    EntityType<MolotovCocktailEntity> MOLOTOV_COCKTAIL = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "molotov_cocktail"), EntityType.Builder.<MolotovCocktailEntity>create(MolotovCocktailEntity::new, SpawnGroup.MISC)
+            .dropsNothing()
+            .dimensions(0.2f, 0.5f)
+            .maxTrackingRange(4)
+            .eyeHeight(0.4f)
+    );
 
     static <T extends Entity> EntityType<T> registerType(Identifier id, EntityType.Builder<T> type) {
         RegistryKey<EntityType<?>> key = RegistryKey.of(RegistryKeys.ENTITY_TYPE, id);

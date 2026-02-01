@@ -10,6 +10,7 @@ import net.minecraft.entity.projectile.FireballEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -59,6 +60,7 @@ public class BWFireballEntity extends FireballEntity {
 
     private static void sphereExplode(Entity self, ServerWorld serverWorld, Vec3d pos, float explosionPower, Entity owner) {
         SphereExplosion.explode(serverWorld, pos, explosionPower, 1.1f, 1f, true, owner, null);
+        SphereExplosion.fireExplosion(serverWorld, BlockPos.ofFloored(pos), explosionPower, 0.2f);
     }
 }
 

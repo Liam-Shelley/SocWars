@@ -23,11 +23,15 @@ public class BWFireballEntityRenderer extends EntityRenderer<BWFireballEntity, E
     public void render(EntityRenderState state, MatrixStack matrices, VertexConsumerProvider vertexConsumerProvider, int light) {
         matrices.push();
 
-        VertexConsumer consumer = vertexConsumerProvider.getBuffer(LAYER);
+        final VertexConsumer consumer = vertexConsumerProvider.getBuffer(LAYER);
+
+        //I would love to have this scale in here but there's no elegant way to scale the fire so it kind of just looks silly if I do
+        //matrices.scale(3f, 3f, 3f);
+
         RenderHelper.renderTexturedQuad(matrices, consumer, super.dispatcher.getRotation(), light);
+        super.render(state, matrices, vertexConsumerProvider, light);
 
         matrices.pop();
-        super.render(state, matrices, vertexConsumerProvider, light);
     }
 
     @Override
