@@ -15,7 +15,19 @@ import net.minecraft.util.Identifier;
 public interface ModEntities {
     static void initialise() {}
 
-    EntityType<BWFireballEntity> BW_FIREBALL = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "bw_fireball"), EntityType.Builder.<BWFireballEntity>create(BWFireballEntity::new, SpawnGroup.MISC)
+    EntityType<BWFireballEntity> FIREBALL = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "fireball"), EntityType.Builder.<BWFireballEntity>create((type, world) -> new BWFireballEntity(type, world, 4f, BWFireballEntity::fireballExplosion), SpawnGroup.MISC)
+            .dropsNothing()
+            .dimensions(0.25f, 0.25f)
+            .maxTrackingRange(4)
+            .trackingTickInterval(1)
+    );
+    EntityType<BWFireballEntity> WATERBALL = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "waterball"), EntityType.Builder.<BWFireballEntity>create((type, world) -> new BWFireballEntity(type, world, 0f, BWFireballEntity::waterballExplosion), SpawnGroup.MISC)
+            .dropsNothing()
+            .dimensions(0.25f, 0.25f)
+            .maxTrackingRange(4)
+            .trackingTickInterval(1)
+    );
+    EntityType<BWFireballEntity> SNAIL_FIREBALL = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "snail_fireball"), EntityType.Builder.<BWFireballEntity>create((type, world) -> new BWFireballEntity(type, world, 20f, BWFireballEntity::snailExplosion), SpawnGroup.MISC)
             .dropsNothing()
             .dimensions(0.25f, 0.25f)
             .maxTrackingRange(4)

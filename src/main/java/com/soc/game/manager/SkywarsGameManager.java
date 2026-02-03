@@ -8,6 +8,7 @@ import com.soc.game.map.SpreadRules;
 import com.soc.lib.Events;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -24,8 +25,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.soc.game.map.AbstractGameMap.getRandomPlayerStack;
-import static com.soc.lib.SocWarsLib.getPlayerAttacker;
-import static com.soc.lib.SocWarsLib.multimapFromCollections;
+import static com.soc.lib.SocWarsLib.*;
 
 public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, SkywarsTable, SkywarsGameManager> {
     private final Settings settings;
@@ -158,12 +158,18 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
         }
 
         if (canRespawn) {
-            PrescheduledEvents.playCountdown(() -> super.respawnPlayer(player), this, 3, 20, SoundEvents.BLOCK_NOTE_BLOCK_GUITAR.value(), player);
+            PrescheduledEvents.playCountdown(() -> this.respawnPlayer(player), this, 3, 20, SoundEvents.BLOCK_NOTE_BLOCK_GUITAR.value(), player);
         } else {
             player.networkHandler.sendPacket(new TitleS2CPacket(Text.translatable("game.skywars.eliminate")));
         }
 
         return false;
+    }
+
+    @Override
+    protected void respawnPlayer(ServerPlayerEntity player) {
+        super.respawnPlayer(player);
+        player.giveItemStack(new ItemStack(woolItemFromColour(this.getTeam(player.getUuid())), 16));
     }
 
     @Override

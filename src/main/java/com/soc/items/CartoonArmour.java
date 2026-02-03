@@ -1,6 +1,7 @@
 package com.soc.items;
 
 import com.soc.entities.BWFireballEntity;
+import com.soc.entities.util.ModEntities;
 import com.soc.items.util.ArmourItem;
 import com.soc.items.util.ModItems;
 import com.soc.items.util.OnHitArmour;
@@ -11,6 +12,7 @@ import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.RavagerEntity;
@@ -55,7 +57,7 @@ public class CartoonArmour extends ArmourItem implements OnHitArmour {
         com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(CARTOON_BOOTS, ItemGroups.COMBAT);
     }
 
-    public static final Item CARTOON_HELMET = ModItems.register("cartoon_helmet", settings -> new CartoonArmour(settings, EquipmentSlot.HEAD, 4, (stack, wearer, world) -> {
+    public static final Item CARTOON_HELMET = ModItems.register("cartoon_helmet", settings -> new CartoonArmour(settings, EquipmentSlot.HEAD, 4, (stack, wearer, world, source) -> {
             if (world.isClient) return true;
             final int random = world.random.nextBetween(1, 8);
             switch (random) {
@@ -74,7 +76,7 @@ public class CartoonArmour extends ArmourItem implements OnHitArmour {
 
             return true;
     }), new Settings().maxDamage(325).rarity(Rarity.RARE));
-    public static final Item CARTOON_CHESTPLATE = ModItems.register("cartoon_chestplate", settings -> new CartoonArmour(settings, EquipmentSlot.CHEST, 8, (stack, wearer, world) -> {
+    public static final Item CARTOON_CHESTPLATE = ModItems.register("cartoon_chestplate", settings -> new CartoonArmour(settings, EquipmentSlot.CHEST, 8, (stack, wearer, world, source) -> {
             if (world.isClient) return true;
             final int random = world.random.nextBetween(1, 8);
             switch (random) {
@@ -89,7 +91,7 @@ public class CartoonArmour extends ArmourItem implements OnHitArmour {
 
             return true;
     }), new Settings().maxDamage(400).rarity(Rarity.RARE));
-    public static final Item CARTOON_LEGGINGS = ModItems.register("cartoon_leggings", settings -> new CartoonArmour(settings, EquipmentSlot.LEGS, 6, (stack, wearer, world) -> {
+    public static final Item CARTOON_LEGGINGS = ModItems.register("cartoon_leggings", settings -> new CartoonArmour(settings, EquipmentSlot.LEGS, 6, (stack, wearer, world, source) -> {
             if (world.isClient) return true;
             final int random = world.random.nextBetween(1, 8);
             switch (random) {
@@ -99,7 +101,7 @@ public class CartoonArmour extends ArmourItem implements OnHitArmour {
                         wearer.setStackInHand(hand, ItemStack.EMPTY);
                     }
                 }
-                case 2 -> spawnEntityWithVelocity(new BWFireballEntity(world, wearer, Vec3d.ZERO, 3), (ServerWorld)world, wearer, 0.8f);
+                case 2 -> spawnEntityWithVelocity(new BWFireballEntity(ModEntities.FIREBALL, world, wearer, Vec3d.ZERO, 3f, BWFireballEntity::fireballExplosion), (ServerWorld)world, wearer, 0.8f);
                 case 3 -> rainPositions(world, wearer.getPos(), 150, 22f, 10f, 250f, pos -> {
                     final CodEntity cod = new CodEntity(EntityType.COD, world);
 
@@ -114,7 +116,7 @@ public class CartoonArmour extends ArmourItem implements OnHitArmour {
 
             return true;
     }), new Settings().maxDamage(375).rarity(Rarity.RARE));
-    public static final Item CARTOON_BOOTS = ModItems.register("cartoon_boots", settings -> new CartoonArmour(settings, EquipmentSlot.FEET, 4, (stack, wearer, world) -> {
+    public static final Item CARTOON_BOOTS = ModItems.register("cartoon_boots", settings -> new CartoonArmour(settings, EquipmentSlot.FEET, 4, (stack, wearer, world, source) -> {
             if (world.isClient) return true;
             final int random = world.random.nextBetween(1, 8);
             switch (random) {
@@ -152,7 +154,7 @@ public class CartoonArmour extends ArmourItem implements OnHitArmour {
     }
 
     @Override
-    public boolean onHit(ItemStack stack, LivingEntity wearer, World world) {
-        return this.onHitEffect.onHit(stack, wearer, world);
+    public boolean onHit(ItemStack stack, LivingEntity wearer, World world, DamageSource source) {
+        return this.onHitEffect.onHit(stack, wearer, world, source);
     }
 }

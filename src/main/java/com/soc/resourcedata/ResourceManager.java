@@ -4,6 +4,7 @@ import com.soc.SocWars;
 import com.soc.resourcedata.listeners.BedwarsGeneratorData;
 import com.soc.resourcedata.listeners.BedwarsShopData;
 import com.soc.resourcedata.listeners.SkywarsLootData;
+import com.soc.resourcedata.listeners.SpeakerSongData;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
@@ -27,6 +28,7 @@ public class ResourceManager {
         ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(SkywarsLootData.INSTANCE);
         ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(BedwarsGeneratorData.INSTANCE);
         ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(BedwarsShopData.INSTANCE);
+        ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(SpeakerSongData.INSTANCE);
     }
 
     public static void readResources(net.minecraft.resource.ResourceManager manager, String path, Predicate<Identifier> pathPredicate, BiConsumer<BufferedReader, Identifier> resourceCallback) {

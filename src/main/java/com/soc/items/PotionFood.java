@@ -70,14 +70,14 @@ public class PotionFood extends Item {
             new EffectRecord(StatusEffects.ABSORPTION, 3, -1),
     };
     private final static EffectRecord[] JELLY_DONUT_EFFECTS = {
-            new EffectRecord(StatusEffects.JUMP_BOOST, 3, 60 * 20),
-            new EffectRecord(StatusEffects.SPEED, 1, 60 * 20),
+            new EffectRecord(StatusEffects.JUMP_BOOST, 3, 30 * 20),
+            new EffectRecord(StatusEffects.SPEED, 1, 45 * 20),
             new EffectRecord(StatusEffects.REGENERATION, 1, 60 * 20),
-            new EffectRecord(StatusEffects.ABSORPTION, 9, 60 * 20),
+            new EffectRecord(StatusEffects.ABSORPTION, 9, 30 * 20),
             new EffectRecord(StatusEffects.STRENGTH, 1, 60 * 20),
-            new EffectRecord(StatusEffects.RESISTANCE, 3, 60 * 20),
+            new EffectRecord(StatusEffects.RESISTANCE, 3, 15 * 20),
             new EffectRecord(StatusEffects.SATURATION, 9, 60 * 20),
-            new EffectRecord(StatusEffects.HASTE, 2, 59 * 20)
+            new EffectRecord(StatusEffects.HASTE, 2, 60 * 20)
     };
     private final EffectRecord[] effectList;
 

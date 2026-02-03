@@ -108,6 +108,7 @@ public class SphereExplosion {
     }
 
     public static void fireExplosion(World world, BlockPos centre, float radius, float fireChance) {
+        if (world.isClient) return;
         iterateInSphere(centre, radius, 0f, pos -> {
                 if (world.random.nextFloat() < fireChance && AbstractFireBlock.canPlaceAt(world, pos, Direction.DOWN)) {
                     world.setBlockState(pos, AbstractFireBlock.getState(world, pos));

@@ -11,22 +11,19 @@ import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
-public class BWFireballEntityRenderer extends EntityRenderer<BWFireballEntity, EntityRenderState> {
-    private static final Identifier TEXTURE = Identifier.ofVanilla("textures/item/fire_charge.png");
-    private static final RenderLayer LAYER = RenderLayer.getEntityCutoutNoCull(TEXTURE);
+public class SimpleBillboardEntityRenderer extends EntityRenderer<BWFireballEntity, EntityRenderState> {
+    private final RenderLayer layer;
 
-    public BWFireballEntityRenderer(EntityRendererFactory.Context context) {
+    public SimpleBillboardEntityRenderer(EntityRendererFactory.Context context, Identifier texture) {
         super(context);
         this.shadowRadius = 0.5F;
+        this.layer = RenderLayer.getEntityCutoutNoCull(texture);
     }
 
     public void render(EntityRenderState state, MatrixStack matrices, VertexConsumerProvider vertexConsumerProvider, int light) {
         matrices.push();
 
-        final VertexConsumer consumer = vertexConsumerProvider.getBuffer(LAYER);
-
-        //I would love to have this scale in here but there's no elegant way to scale the fire so it kind of just looks silly if I do
-        //matrices.scale(3f, 3f, 3f);
+        final VertexConsumer consumer = vertexConsumerProvider.getBuffer(this.layer);
 
         RenderHelper.renderTexturedQuad(matrices, consumer, super.dispatcher.getRotation(), light);
         super.render(state, matrices, vertexConsumerProvider, light);

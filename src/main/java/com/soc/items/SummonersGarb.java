@@ -5,6 +5,7 @@ import com.soc.items.util.ModItems;
 import com.soc.items.util.OnHitArmour;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
@@ -35,7 +36,7 @@ public class SummonersGarb extends ArmourItem implements OnHitArmour {
 
 
     @Override
-    public boolean onHit(ItemStack stack, LivingEntity wearer, World world) {
+    public boolean onHit(ItemStack stack, LivingEntity wearer, World world, DamageSource source) {
         if (!world.isClient && world instanceof ServerWorld serverWorld && world.random.nextFloat() > 0.5f) {
             final LivingEntity mob = randomHostileMob(serverWorld, wearer.getPos());
             copyTeam(world, mob, wearer);

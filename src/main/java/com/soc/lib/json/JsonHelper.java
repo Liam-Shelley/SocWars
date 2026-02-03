@@ -12,6 +12,7 @@ import com.soc.game.manager.bedwars.traps.Traps;
 import com.soc.game.map.DyeColourWithEmpty;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextCodecs;
 import net.minecraft.util.Formatting;
@@ -29,6 +30,7 @@ public class JsonHelper {
     public static final String ITEM_KEY = "item";
     public static final String ITEM_COUNT_KEY = "count";
     public static final String ITEM_ENCHANTMENTS_KEY = "enchantments";
+    public static final String TIME_KEY = "time";
 
     private JsonHelper() {}
 

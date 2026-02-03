@@ -3,7 +3,12 @@ package com.soc.lib;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import com.soc.SocWars;
+import com.soc.mixin.GetItemSettingsComponent;
+import com.soc.mixin.GetItemSettingsComponentsMap;
 import com.soc.mixin.MostRecentDamage;
+import net.minecraft.component.Component;
+import net.minecraft.component.ComponentMap;
+import net.minecraft.component.ComponentType;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.enchantment.Enchantment;
@@ -45,7 +50,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
@@ -487,5 +491,11 @@ public final class SocWarsLib {
 
     public static Vec3d randomCentredVec3d(Random random) {
         return new Vec3d(random.nextDouble() * 2d - 1d, random.nextDouble() * 2d - 1d, random.nextDouble() * 2d - 1d);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T getComponentFromSettingsBuilder(Item.Settings settings, ComponentType<T> component) {
+        final ComponentMap.Builder builder = ((GetItemSettingsComponentsMap)settings).getComponents();
+        return (T)((GetItemSettingsComponent)builder).getComponents().get(component);
     }
 }

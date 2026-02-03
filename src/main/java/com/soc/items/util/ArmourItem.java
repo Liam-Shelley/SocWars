@@ -14,6 +14,8 @@ import net.minecraft.item.equipment.EquipmentAsset;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 
+import static com.soc.lib.SocWarsLib.getComponentFromSettingsBuilder;
+
 public abstract class ArmourItem extends Item {
     protected final EquipmentSlot slot;
     protected final int armour;
@@ -23,9 +25,11 @@ public abstract class ArmourItem extends Item {
                 .component(DataComponentTypes.EQUIPPABLE, EquippableComponent.builder(slot)
                 .equipSound(ArmorMaterials.DIAMOND.equipSound())
                 .model(equipmentAsset).build())
-                .attributeModifiers(AttributeModifiersComponent.builder().add(EntityAttributes.ARMOR, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "armour." + slot.getName()), armour, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.ARMOR, AttributeModifiersComponent.Display.getHidden()).build())
                 .maxCount(1)
         );
+        final AttributeModifiersComponent modifiers = getComponentFromSettingsBuilder(settings, DataComponentTypes.ATTRIBUTE_MODIFIERS);
+        modifiers.with(EntityAttributes.ARMOR, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "armour." + slot.getName()), armour, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.ARMOR);
+
         this.slot = slot;
         this.armour = armour;
     }

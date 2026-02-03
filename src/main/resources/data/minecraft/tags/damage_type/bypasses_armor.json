@@ -2,6 +2,7 @@
   "replace": false,
   "values": [
     "socwars:lifethief",
-    "socwars:gallium"
+    "socwars:gallium",
+    "socwars:glass_armour"
   ]
 }

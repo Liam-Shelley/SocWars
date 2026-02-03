@@ -6,13 +6,11 @@ import com.soc.items.util.AppendTooltipFunction;
 import com.soc.items.util.ItemGroups;
 import com.soc.items.util.ModItems;
 import com.soc.items.util.SpawnThrowableItemFunction;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.TntEntity;
-import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.DragonFireballEntity;
 import net.minecraft.item.Item;
@@ -25,13 +23,10 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraft.world.explosion.Explosion;
-import net.minecraft.world.explosion.ExplosionBehavior;
 
 import java.awt.*;
 import java.util.function.Consumer;
 
-import static com.soc.lib.SocWarsLib.damageSource;
 import static net.minecraft.item.ItemGroups.COMBAT;
 
 public class ThrowableItem extends Item {
@@ -50,6 +45,7 @@ public class ThrowableItem extends Item {
 
     public static void initialise() {
         ItemGroups.addItemToGroupsAndBaseItemGroup(FIREBALL, COMBAT);
+        ItemGroups.addItemToGroupsAndBaseItemGroup(WATERBALL, COMBAT);
         ItemGroups.addItemToGroupsAndBaseItemGroup(DRAGON_FIREBALL, COMBAT);
         ItemGroups.addItemToGroupsAndBaseItemGroup(SNAIL_FIREBALL, COMBAT);
         ItemGroups.addItemToGroupsAndBaseItemGroup(THROWABLE_TNT, COMBAT);
@@ -59,9 +55,10 @@ public class ThrowableItem extends Item {
         ItemGroups.addItemToGroupsAndBaseItemGroup(MOLOTOV_COCKTAIL, COMBAT);
     }
 
-    public static final Item FIREBALL = ModItems.register("fireball", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new BWFireballEntity(world, user, Vec3d.ZERO, 4), world, user, 1.75f)), new Settings().useCooldown(0.75f));
+    public static final Item FIREBALL = ModItems.register("fireball", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new BWFireballEntity(ModEntities.FIREBALL, world, user, Vec3d.ZERO, 4f, BWFireballEntity::fireballExplosion), world, user, 1.75f)), new Settings().useCooldown(0.75f));
+    public static final Item WATERBALL = ModItems.register("waterball", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new BWFireballEntity(ModEntities.WATERBALL, world, user, Vec3d.ZERO, 0f, BWFireballEntity::waterballExplosion), world, user, 1.75f)), new Settings().useCooldown(0.75f));
     public static final Item DRAGON_FIREBALL = ModItems.register("dragon_fireball", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new DragonFireballEntity(world, user, Vec3d.ZERO), world, user, 1.5f), (stack, consumer) -> consumer.accept(Text.translatable("tooltip.dragon_fireball").withColor(Color.HSBtoRGB(getWorldTime() / 50f, 1f, 1f)))), new Settings().useCooldown(0.75f).rarity(Rarity.UNCOMMON));
-    public static final Item SNAIL_FIREBALL = ModItems.register("snail_fireball", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new BWFireballEntity(world, user, Vec3d.ZERO, 20, ThrowableItem::snailExplosion), world, user, 0.2f), (stack, consumer) -> consumer.accept(Text.translatable("tooltip.snail_fireball").withColor(0xe6e475))), new Settings().useCooldown(0.75f).rarity(Rarity.EPIC));
+    public static final Item SNAIL_FIREBALL = ModItems.register("snail_fireball", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new BWFireballEntity(ModEntities.SNAIL_FIREBALL, world, user, Vec3d.ZERO, 20f, BWFireballEntity::snailExplosion), world, user, 0.2f), (stack, consumer) -> consumer.accept(Text.translatable("tooltip.snail_fireball").withColor(0xe6e475))), new Settings().useCooldown(0.75f).rarity(Rarity.EPIC));
     public static final Item THROWABLE_TNT = ModItems.register("throwable_tnt", settings -> new ThrowableItem(settings, (world, user) -> {
         final TntEntity tnt = spawnEntityWithVelocity(new TntEntity(EntityType.TNT, world), world, user, 0.6f);
         tnt.setFuse(40);
@@ -90,15 +87,6 @@ public class ThrowableItem extends Item {
     private static Long getWorldTime() {
         //I'm setting this in a client mixin because I'm too lazy to think of a better way to do it
         return 0L;
-    }
-
-    private static void snailExplosion(Entity self, ServerWorld serverWorld, Vec3d pos, float explosionPower, Entity owner) {
-        serverWorld.createExplosion(self, damageSource(serverWorld, DamageTypes.EXPLOSION, owner), new ExplosionBehavior() {
-            @Override
-            public float calculateDamage(Explosion explosion, Entity entity, float amount) {
-                return super.calculateDamage(explosion, entity, amount) * 0.09f;
-            }
-        }, pos.x, pos.y, pos.z, explosionPower, true, World.ExplosionSourceType.BLOCK);
     }
 
     public static <T extends Entity> T spawnEntityWithVelocity(T entity, ServerWorld world, LivingEntity user, float speed) {

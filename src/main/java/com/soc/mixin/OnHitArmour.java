@@ -22,7 +22,7 @@ public abstract class OnHitArmour {
 			final ItemStack stack = getEquippedStack(slot);
 			final Item item = stack.getItem();
 			if (item instanceof com.soc.items.util.OnHitArmour implementer) {
-				final boolean allowDamage = implementer.onHit(stack, (LivingEntity)(Object)this);
+				final boolean allowDamage = implementer.onHit(stack, (LivingEntity)(Object)this, source);
 				if (!allowDamage) cir.setReturnValue(false);
 			}
 		}
