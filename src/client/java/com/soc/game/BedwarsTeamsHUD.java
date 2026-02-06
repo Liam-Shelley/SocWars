@@ -66,9 +66,8 @@ public class BedwarsTeamsHUD {
     }
 
     public static void render(DrawContext drawContext, RenderTickCounter renderTickCounter) {
-        //INSTANCE = new BedwarsTeamsHUD(new Teams(List.of(new TeamPlayerPair(DyeColor.PURPLE, UUID.fromString("86a8a785-8209-42c1-9c30-d219fb019db2")))));
-
         if (getInstance().isEmpty()) return;
+
         final BedwarsTeamsHUD instance = getInstance().get();
         final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 
@@ -79,14 +78,18 @@ public class BedwarsTeamsHUD {
 
         int i = 0;
         for (DyeColor team : instance.teams.keySet()) {
-            final int heightStart = height / 2 - 60 + 40 * i;
-            i++;
+            final int heightStart = height / 2 - 60 + 40 * i++;
 
             drawContext.fill(width - 130, heightStart, width, heightStart + 40, team.getSignColor() & 0x00ffffff | 0x99000000);
 
+            draw(instance, drawContext, team, textRenderer, width, heightStart - 40);
             drawTeamText(instance, drawContext, team, textRenderer, width, heightStart);
-            drawTeamHeads(drawContext, team, instance, width, heightStart);
+            drawTeamHeads(instance, drawContext, team, width, heightStart);
         }
+    }
+
+    private static void draw(BedwarsTeamsHUD instance, DrawContext drawContext, DyeColor team, TextRenderer textRenderer, int width, int heightStart) {
+
     }
 
     private static void drawTeamText(BedwarsTeamsHUD instance, DrawContext drawContext, DyeColor team, TextRenderer textRenderer, int width, int heightStart) {
@@ -102,18 +105,17 @@ public class BedwarsTeamsHUD {
         drawContext.drawText(textRenderer, Language.getInstance().get(hasBed ? "hud.tick" : "hud.cross"), width - 120 + textRenderer.getWidth(hasBedBaseString) + textRenderer.getWidth(teamBaseString), heightStart + 4, hasBed ? 0xff11ee22 : 0xffee1122, true);
     }
 
-    private static void drawTeamHeads(DrawContext drawContext, DyeColor team, BedwarsTeamsHUD instance, int width, int heightStart) {
+    private static void drawTeamHeads(BedwarsTeamsHUD instance, DrawContext drawContext, DyeColor team, int width, int heightStart) {
         final Collection<UUID> players = instance.teams.get(team);
 
         int i = 0;
         for (UUID uuid : players) {
-            final int x = width - 120 + i * 24;
+            final int x = width - 120 + i++ * 24;
             final int y = heightStart + 16;
             instance.getSkinTexture(uuid).ifPresentOrElse(
                     texture -> PlayerSkinDrawer.draw(drawContext, texture, x, y, 20, true, false, 0xffffffff),
                     () -> drawContext.fill(x, y, x + 20, y + 20, 0xffff0000)
             );
-            i++;
         }
     }
 }
