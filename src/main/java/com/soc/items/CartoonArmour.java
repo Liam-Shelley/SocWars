@@ -43,7 +43,7 @@ import static com.soc.lib.SocWarsLib.*;
 public class CartoonArmour extends ArmourItem implements OnHitArmour {
     private final OnHitArmour onHitEffect;
 
-    private static final RegistryKey<EquipmentAsset> CARTOON_MODEL_KEY = ArmourItem.register("cartoon");
+    private static final RegistryKey<EquipmentAsset> CARTOON_MODEL_KEY = ArmourItem.registerEquipmentAsset("cartoon");
 
     public CartoonArmour(Settings settings, EquipmentSlot slot, int armour, final OnHitArmour onHitEffect) {
         super(settings, slot, armour, CARTOON_MODEL_KEY);

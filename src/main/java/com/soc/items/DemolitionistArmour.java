@@ -22,7 +22,7 @@ import java.util.function.Consumer;
 import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
 
 public class DemolitionistArmour extends SetBonusArmourItem {
-    private static final RegistryKey<EquipmentAsset> DEMOLITIONIST_MODEL_KEY = ArmourItem.register("demolitionist");
+    private static final RegistryKey<EquipmentAsset> DEMOLITIONIST_MODEL_KEY = ArmourItem.registerEquipmentAsset("demolitionist");
 
     public DemolitionistArmour(Settings settings, EquipmentSlot slot, int armour) {
         super(settings, slot, armour, DEMOLITIONIST_MODEL_KEY, EntityAttributes.EXPLOSION_RESISTANCE, Identifier.of(SocWars.MOD_ID, "demolitionist"));
@@ -43,6 +43,6 @@ public class DemolitionistArmour extends SetBonusArmourItem {
     @Override
     @SuppressWarnings("deprecation")
     public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
-
+        super.appendTooltip(stack, context, displayComponent, textConsumer, type);
     }
 }

@@ -26,7 +26,7 @@ import java.util.function.Consumer;
 import static com.soc.lib.SocWarsLib.getTimeFromTicksDynColours;
 
 public class TrainingWeights extends ArmourItem {
-    private static final RegistryKey<EquipmentAsset> TRAINING_WEIGHTS_MODEL_KEY = ArmourItem.register("training_weights");
+    private static final RegistryKey<EquipmentAsset> TRAINING_WEIGHTS_MODEL_KEY = ArmourItem.registerEquipmentAsset("training_weights");
 
     public TrainingWeights(Settings settings, EquipmentSlot slot, int armour) {
         super(settings.component(ModComponents.TRAINING_WEIGHTS_COMPONENT, 0), slot, armour, TRAINING_WEIGHTS_MODEL_KEY);

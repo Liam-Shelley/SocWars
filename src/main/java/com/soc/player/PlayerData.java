@@ -1,6 +1,5 @@
 package com.soc.player;
 
-import com.soc.items.util.StatArmourBonus;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.item.Item;
 import net.minecraft.network.RegistryByteBuf;
@@ -8,9 +7,6 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.registry.entry.RegistryEntry;
 
 import java.util.HashSet;
-
-import static com.soc.lib.EntityAttributes.EXPLOSION_RESISTANCE;
-import static net.minecraft.entity.attribute.EntityAttributes.KNOCKBACK_RESISTANCE;
 
 public class PlayerData {
     //Maybe I should just replace this with a normal tuple codec
@@ -44,8 +40,6 @@ public class PlayerData {
     };
 
     private final HashSet<RegistryEntry<Item>> collectibles;
-    public final StatArmourBonus steadfastBonus = new StatArmourBonus(KNOCKBACK_RESISTANCE);
-    public final StatArmourBonus demolitionistBonus = new StatArmourBonus(EXPLOSION_RESISTANCE);
 
     public PlayerData() {
         this.collectibles = new HashSet<>();

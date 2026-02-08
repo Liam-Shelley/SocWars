@@ -19,7 +19,7 @@ import static com.soc.lib.SocWarsLib.copyTeam;
 import static com.soc.lib.SocWarsLib.randomHostileMob;
 
 public class SummonersGarb extends ArmourItem implements OnHitArmour {
-    private static final RegistryKey<EquipmentAsset> SUMMONERS_GARB_MODEL_KEY = ArmourItem.register("summoners_garb");
+    private static final RegistryKey<EquipmentAsset> SUMMONERS_GARB_MODEL_KEY = ArmourItem.registerEquipmentAsset("summoners_garb");
 
     public SummonersGarb(Settings settings, EquipmentSlot slot, int armour) {
         super(settings, slot, armour, SUMMONERS_GARB_MODEL_KEY);

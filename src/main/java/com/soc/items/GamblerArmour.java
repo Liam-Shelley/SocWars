@@ -37,7 +37,7 @@ public class GamblerArmour extends Item {
     private int protectionValue;
     private int ticksUntilChange = 0;
 
-    private static final RegistryKey<EquipmentAsset> GAMBLER_MODEL_KEY = ArmourItem.register("gambler");
+    private static final RegistryKey<EquipmentAsset> GAMBLER_MODEL_KEY = ArmourItem.registerEquipmentAsset("gambler");
 
     public GamblerArmour(final Settings settings, final int[] protectionValues, final EquipmentSlot slot) {
         super(settings.component(DataComponentTypes.EQUIPPABLE, EquippableComponent.builder(slot).equipSound(ArmorMaterials.DIAMOND.equipSound()).model(GAMBLER_MODEL_KEY).build()));

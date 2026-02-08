@@ -35,7 +35,7 @@ public abstract class ArmourItem extends Item {
         this.armour = armour;
     }
 
-    public static RegistryKey<EquipmentAsset> register(String name) {
+    public static RegistryKey<EquipmentAsset> registerEquipmentAsset(String name) {
         return RegistryKey.of(RegistryKey.ofRegistry(Identifier.ofVanilla("equipment_asset")), Identifier.of("socwars:" + name));
     }
 }
