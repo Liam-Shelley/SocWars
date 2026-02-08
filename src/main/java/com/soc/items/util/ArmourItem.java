@@ -19,6 +19,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 import static com.soc.lib.SocWarsLib.getComponentFromSettingsBuilder;
@@ -28,18 +29,22 @@ public abstract class ArmourItem extends Item {
     protected final int armour;
 
     public ArmourItem(Settings settings, final EquipmentSlot slot, final int armour, final RegistryKey<EquipmentAsset> equipmentAsset) {
-        super(settings
+        super(settingsWithArmourModifier(settings
                 .component(DataComponentTypes.EQUIPPABLE, EquippableComponent.builder(slot)
                 .equipSound(ArmorMaterials.DIAMOND.equipSound())
                 .model(equipmentAsset).build())
-                .maxCount(1)
+                .maxCount(1), slot, armour)
         );
-        final AttributeModifiersComponent modifiers = getComponentFromSettingsBuilder(settings, DataComponentTypes.ATTRIBUTE_MODIFIERS);
-        modifiers.with(EntityAttributes.ARMOR, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "armour." + slot.getName()), armour, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.ARMOR);
-        settings.attributeModifiers(modifiers);
 
         this.slot = slot;
         this.armour = armour;
+    }
+
+    private static Settings settingsWithArmourModifier(Settings settings, EquipmentSlot slot, int armour) {
+        final AttributeModifiersComponent modifiers = getComponentFromSettingsBuilder(settings, DataComponentTypes.ATTRIBUTE_MODIFIERS);
+        settings.attributeModifiers(modifiers.with(EntityAttributes.ARMOR, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "armour." + slot.getName()), armour, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.ARMOR));
+
+        return settings;
     }
 
     public static RegistryKey<EquipmentAsset> registerEquipmentAsset(String name) {

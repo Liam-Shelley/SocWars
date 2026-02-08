@@ -38,6 +38,7 @@ import net.minecraft.world.World;
 import java.util.function.Consumer;
 
 import static com.soc.items.ThrowableItem.spawnEntityWithVelocity;
+import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
 import static com.soc.lib.SocWarsLib.*;
 
 public class CartoonArmour extends ArmourItem implements OnHitArmour {
@@ -51,10 +52,10 @@ public class CartoonArmour extends ArmourItem implements OnHitArmour {
     }
 
     public static void initialise() {
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(CARTOON_HELMET, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(CARTOON_CHESTPLATE, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(CARTOON_LEGGINGS, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(CARTOON_BOOTS, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(CARTOON_HELMET, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(CARTOON_CHESTPLATE, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(CARTOON_LEGGINGS, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(CARTOON_BOOTS, ItemGroups.COMBAT);
     }
 
     public static final Item CARTOON_HELMET = ModItems.register("cartoon_helmet", settings -> new CartoonArmour(settings, EquipmentSlot.HEAD, 4, (stack, wearer, world, source) -> {

@@ -31,6 +31,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
+import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
+
 public class GamblerArmour extends Item {
     private final int[] protectionValues;
     private final EquipmentSlot slot;
@@ -47,10 +49,10 @@ public class GamblerArmour extends Item {
     }
 
     public static void initialise() {
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(GAMBLER_HELMET, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(GAMBLER_CHESTPLATE, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(GAMBLER_LEGGINGS, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(GAMBLER_BOOTS, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(GAMBLER_HELMET, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(GAMBLER_CHESTPLATE, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(GAMBLER_LEGGINGS, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(GAMBLER_BOOTS, ItemGroups.COMBAT);
     }
 
     public static final Item GAMBLER_HELMET = ModItems.register("gambler_helmet", (settings) -> new GamblerArmour(settings, new int[]{7, 5, 3, 1, 0}, EquipmentSlot.HEAD), new Settings().maxDamage(325).rarity(Rarity.RARE));
