@@ -19,8 +19,8 @@ public abstract class OnEquipArmour {
     private void socwars_onEquipArmour(EquipmentSlot slot, ItemStack incomingStack, CallbackInfoReturnable<ItemStack> cir) {
         if (slot.isArmorSlot()) {
             final ItemStack outgoingStack = this.player.getEquippedStack(slot);
-            if (outgoingStack.getItem() instanceof com.soc.items.util.OnEquipArmour outgoingOnEquip) outgoingOnEquip.unequip(this.player, slot, outgoingStack);
-            if (incomingStack.getItem() instanceof com.soc.items.util.OnEquipArmour incomingOnEquip) incomingOnEquip.equip(this.player, slot, outgoingStack);
+            if (outgoingStack.getItem() instanceof com.soc.items.util.OnEquipArmour outgoingOnEquip) outgoingOnEquip.unequip(this.player);
+            if (incomingStack.getItem() instanceof com.soc.items.util.OnEquipArmour incomingOnEquip) incomingOnEquip.equip(this.player);
         }
     }
 }

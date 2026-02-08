@@ -23,7 +23,6 @@ import java.util.function.Consumer;
 import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
 
 public class SteadfastArmour extends SetBonusArmourItem {
-
     private static final RegistryKey<EquipmentAsset> STEADFAST_MODEL_KEY = ArmourItem.registerEquipmentAsset("steadfast");
 
     public SteadfastArmour(final Settings settings, final EquipmentSlot slot, final int armour) {
@@ -41,15 +40,4 @@ public class SteadfastArmour extends SetBonusArmourItem {
     public static final Item STEADFAST_CHESTPLATE = ModItems.register("steadfast_chestplate", (settings) -> new SteadfastArmour(settings, EquipmentSlot.CHEST, 6), new Settings().maxDamage(400).rarity(Rarity.RARE));
     public static final Item STEADFAST_LEGGINGS = ModItems.register("steadfast_leggings", (settings) -> new SteadfastArmour(settings, EquipmentSlot.LEGS, 5), new Settings().maxDamage(375).rarity(Rarity.RARE));
     public static final Item STEADFAST_BOOTS = ModItems.register("steadfast_boots", (settings) -> new SteadfastArmour(settings, EquipmentSlot.FEET, 2), new Settings().maxDamage(325).rarity(Rarity.RARE));
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
-        textConsumer.accept(Text.empty());
-        textConsumer.accept(Text.translatable("item.modifiers." + this.slot.getName()).formatted(Formatting.GRAY));
-        textConsumer.accept(Text.translatable("attribute.modifier.plus.0", armour, "Armour").formatted(Formatting.BLUE));
-        textConsumer.accept(Text.translatable("steadfast_knockback_amount", 20).formatted(Formatting.BLUE));
-        textConsumer.accept(Text.translatable("full_set_worn").formatted(Formatting.GRAY));
-        textConsumer.accept(Text.translatable("steadfast_knockback_amount", 100).formatted(Formatting.DARK_GREEN));
-    }
 }

@@ -41,7 +41,6 @@ public class DemolitionistArmour extends SetBonusArmourItem {
     public static final Item DEMOLITIONIST_BOOTS = ModItems.register("demolitionist_boots", settings -> new DemolitionistArmour(settings, EquipmentSlot.FEET, 2), new Settings().maxDamage(425).rarity(Rarity.UNCOMMON));
 
     @Override
-    @SuppressWarnings("deprecation")
     public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
         super.appendTooltip(stack, context, displayComponent, textConsumer, type);
     }

@@ -5,14 +5,21 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.AttributeModifierSlot;
 import net.minecraft.component.type.AttributeModifiersComponent;
 import net.minecraft.component.type.EquippableComponent;
+import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.equipment.ArmorMaterials;
 import net.minecraft.item.equipment.EquipmentAsset;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+
+import java.util.function.Consumer;
 
 import static com.soc.lib.SocWarsLib.getComponentFromSettingsBuilder;
 
@@ -37,5 +44,15 @@ public abstract class ArmourItem extends Item {
 
     public static RegistryKey<EquipmentAsset> registerEquipmentAsset(String name) {
         return RegistryKey.of(RegistryKey.ofRegistry(Identifier.ofVanilla("equipment_asset")), Identifier.of("socwars:" + name));
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
+        super.appendTooltip(stack, context, displayComponent, textConsumer, type);
+
+        textConsumer.accept(Text.empty());
+        textConsumer.accept(Text.translatable("item.modifiers." + this.slot.getName()).formatted(Formatting.GRAY));
+        textConsumer.accept(Text.translatable("attribute.modifier.plus.0", this.armour, Text.translatable("attribute.name.armor")).formatted(Formatting.BLUE));
     }
 }

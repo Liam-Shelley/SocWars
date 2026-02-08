@@ -2,17 +2,20 @@ package com.soc.items.util;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
-import com.google.common.collect.ImmutableMultimap;
+import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.equipment.EquipmentAsset;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.NotNull;
+
+import java.util.function.Consumer;
 
 public abstract class SetBonusArmourItem extends ArmourItem implements OnEquipArmour {
     private final RegistryEntry<EntityAttribute> attribute;
@@ -48,7 +51,7 @@ public abstract class SetBonusArmourItem extends ArmourItem implements OnEquipAr
 
     @SuppressWarnings("DataFlowIssue")
     @Override
-    public final void unequip(PlayerEntity player, EquipmentSlot slot, ItemStack stack) {
+    public final void unequip(PlayerEntity player) {
         final EntityAttributeInstance attribute = player.getAttributeInstance(this.attribute);
 
         final double currentModifier = this.getCurrentModifier(attribute, this.modifierId);
@@ -66,7 +69,7 @@ public abstract class SetBonusArmourItem extends ArmourItem implements OnEquipAr
 
     @SuppressWarnings("DataFlowIssue")
     @Override
-    public final void equip(PlayerEntity player, EquipmentSlot slot, ItemStack stack) {
+    public final void equip(PlayerEntity player) {
         final EntityAttributeInstance attribute = player.getAttributeInstance(this.attribute);
 
         final double currentModifier = this.getCurrentModifier(attribute, this.modifierId);
@@ -82,5 +85,16 @@ public abstract class SetBonusArmourItem extends ArmourItem implements OnEquipAr
 
         final double newValue = this.getSetBonus(newStage);
         attribute.overwritePersistentModifier(new EntityAttributeModifier(this.modifierId, newValue, EntityAttributeModifier.Operation.ADD_VALUE));
+    }
+
+    @Override
+    public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
+        super.appendTooltip(stack, context, displayComponent, textConsumer, type);
+
+        Text attributeText = Text.translatable("attribute.name." + this.attribute.getIdAsString().split(":")[1]);
+
+        textConsumer.accept(Text.translatable("stat_bonus_modifier", this.getSetBonus(1) * 100d, attributeText).formatted(Formatting.BLUE));
+        textConsumer.accept(Text.translatable("full_set_worn").formatted(Formatting.GRAY));
+        textConsumer.accept(Text.translatable("stat_bonus_modifier", this.getSetBonus(4) * 100d, attributeText).formatted(Formatting.DARK_GREEN));
     }
 }

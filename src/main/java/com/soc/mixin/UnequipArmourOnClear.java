@@ -28,7 +28,7 @@ public abstract class UnequipArmourOnClear {
         if (maxCount == 0) return;
         Arrays.stream(EquipmentSlot.values()).filter(EquipmentSlot::isArmorSlot).forEach(slot -> {
             final ItemStack stack = equipment.get(slot);
-            if (stack.getItem() instanceof OnEquipArmour onEquipArmourItem) onEquipArmourItem.unequip(this.player, slot, stack);
+            if (stack.getItem() instanceof OnEquipArmour onEquipArmourItem) onEquipArmourItem.unequip(this.player);
         });
     }
 }
