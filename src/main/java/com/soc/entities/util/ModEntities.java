@@ -33,6 +33,12 @@ public interface ModEntities {
             .maxTrackingRange(4)
             .trackingTickInterval(1)
     );
+    EntityType<BWFireballEntity> LIGHTNING_ORB = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "lighting_orb"), EntityType.Builder.<BWFireballEntity>create((type, world) -> new BWFireballEntity(type, world, 0f, BWFireballEntity::lightningOrbExplosion), SpawnGroup.MISC)
+            .dropsNothing()
+            .dimensions(0.25f, 0.25f)
+            .maxTrackingRange(4)
+            .trackingTickInterval(1)
+    );
     EntityType<BigTntEntity> NUCLEAR_BOMB = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "nuclear_bomb"), EntityType.Builder.<BigTntEntity>create((type, world) -> new BigTntEntity(type, world, BigTntEntity.BigTntType.NUCLEAR), SpawnGroup.MISC)
             .dropsNothing()
             .makeFireImmune()

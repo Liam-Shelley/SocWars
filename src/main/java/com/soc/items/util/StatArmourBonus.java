@@ -24,7 +24,7 @@ public class StatArmourBonus {
 
     private float getBonus() {
         int count = 0;
-        for (boolean piece : piecesEquipped) {
+        for (boolean piece : this.piecesEquipped) {
             if (piece) { count++; }
         }
 
@@ -32,7 +32,7 @@ public class StatArmourBonus {
     }
 
     private Multimap<RegistryEntry<EntityAttribute>, EntityAttributeModifier> attributeMap(double value) {
-        return ImmutableMultimap.of(attribute, new EntityAttributeModifier(Identifier.ofVanilla("armour." + attribute.getIdAsString().split(":")[1]), value, EntityAttributeModifier.Operation.ADD_VALUE));
+        return ImmutableMultimap.of(this.attribute, new EntityAttributeModifier(Identifier.ofVanilla("armour." + attribute.getIdAsString().split(":")[1]), value, EntityAttributeModifier.Operation.ADD_VALUE));
     }
 
     public void setBonus(PlayerEntity playerEntity) {
@@ -41,7 +41,7 @@ public class StatArmourBonus {
         }
 
         playerEntity.getAttributes().removeModifiers(this.attributeMap(0));
-        playerEntity.getAttributes().addTemporaryModifiers(this.attributeMap(getBonus()));
+        playerEntity.getAttributes().addTemporaryModifiers(this.attributeMap(this.getBonus()));
 
         this.lastPiecesEquipped = this.piecesEquipped.clone();
     }

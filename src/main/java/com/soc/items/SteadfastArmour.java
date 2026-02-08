@@ -22,6 +22,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
+import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
+
 public class SteadfastArmour extends ArmourItem {
 
     private static final RegistryKey<EquipmentAsset> STEADFAST_MODEL_KEY = ArmourItem.register("steadfast");
@@ -31,10 +33,10 @@ public class SteadfastArmour extends ArmourItem {
     }
 
     public static void initialise() {
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(STEADFAST_HELMET, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(STEADFAST_CHESTPLATE, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(STEADFAST_LEGGINGS, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(STEADFAST_BOOTS, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(STEADFAST_HELMET, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(STEADFAST_CHESTPLATE, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(STEADFAST_LEGGINGS, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(STEADFAST_BOOTS, ItemGroups.COMBAT);
     }
 
     public static final Item STEADFAST_HELMET = ModItems.register("steadfast_helmet", (settings) -> new SteadfastArmour(settings, EquipmentSlot.HEAD, 2), new Settings().maxDamage(325).rarity(Rarity.RARE));
@@ -45,7 +47,7 @@ public class SteadfastArmour extends ArmourItem {
     @Override
     public void inventoryTick(ItemStack stack, ServerWorld world, Entity entity, @Nullable EquipmentSlot slot) {
         if (entity instanceof PlayerEntity playerEntity) {
-            StatArmourBonus armourBonus = PlayerDataManager.getPlayerData(playerEntity.getUuid()).steadfastBonus;
+            final StatArmourBonus armourBonus = PlayerDataManager.getPlayerData(playerEntity.getUuid()).steadfastBonus;
             armourBonus.setPiece(this.slot, false);
 
             if (slot != null && slot.isArmorSlot()) {
@@ -57,6 +59,7 @@ public class SteadfastArmour extends ArmourItem {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
         textConsumer.accept(Text.empty());
         textConsumer.accept(Text.translatable("item.modifiers." + this.slot.getName()).formatted(Formatting.GRAY));

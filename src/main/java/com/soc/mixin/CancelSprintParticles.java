@@ -16,15 +16,10 @@ import java.util.UUID;
 public abstract class CancelSprintParticles {
 	@Shadow public abstract UUID getUuid();
 
-	@Inject(at = @At("HEAD"), method = "spawnSprintingParticles", cancellable = true)
-	private void socwars_cancelSprintParticles(CallbackInfo info) {
-		PlayerData playerData = PlayerDataManager.getPlayerData(this.getUuid());
-		if (playerData == null) {
-			return;
-		}
+	@Shadow public abstract boolean isInvisible();
 
-		if (playerData.invisible) {
-			info.cancel();
-		}
+	@Inject(at = @At("HEAD"), method = "spawnSprintingParticles", cancellable = true)
+	private void socwars_cancelSprintParticles(CallbackInfo ci) {
+		if (this.isInvisible()) ci.cancel();
 	}
 }

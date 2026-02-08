@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "socwars:sphere_explosion",
+    "socwars:holy_hand_grenade",
+    "socwars:catastrophe_bow_backfire"
+  ]
+}

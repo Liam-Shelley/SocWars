@@ -33,6 +33,7 @@ public class ModItems {
         SteadfastArmour.initialise();
         CartoonArmour.initialise();
         GlassArmour.initialise();
+        DemolitionistArmour.initialise();
         TrainingWeights.initialise();
         SummonersGarb.initialise();
         Expon.initialise();

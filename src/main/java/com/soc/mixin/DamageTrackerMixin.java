@@ -1,9 +1,11 @@
 package com.soc.mixin;
 
 import com.soc.events.ModEvents;
+import com.soc.lib.EntityAttributes;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTracker;
+import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,11 +15,13 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(DamageTracker.class)
-public abstract class OnDamageEventTrigger {
+public abstract class DamageTrackerMixin {
 	@Shadow @Final private LivingEntity entity;
 
 	@Inject(at = @At(value = "HEAD"), method = "onDamage", cancellable = true)
 	private void socwars_onDamage(DamageSource damageSource, float damage, CallbackInfo ci) {
+		if (damageSource.isIn(DamageTypeTags.IS_EXPLOSION)) damage *= (1f - (float)this.entity.getAttributeValue(EntityAttributes.EXPLOSION_RESISTANCE));
+
 		if (this.entity instanceof ServerPlayerEntity player) {
 			final boolean result = ModEvents.ON_PLAYER_DAMAGE_TAKEN.invoker().onDamage(player, damageSource, damage);
 			if (!result) ci.cancel();

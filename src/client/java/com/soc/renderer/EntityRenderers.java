@@ -12,6 +12,7 @@ public interface EntityRenderers {
         EntityRendererRegistry.register(ModEntities.FIREBALL, context -> new SimpleBillboardEntityRenderer(context, Identifier.ofVanilla("textures/item/fire_charge.png")));
         EntityRendererRegistry.register(ModEntities.WATERBALL, context -> new SimpleBillboardEntityRenderer(context, Identifier.of(SocWars.MOD_ID, "textures/item/waterball.png")));
         EntityRendererRegistry.register(ModEntities.SNAIL_FIREBALL, context -> new SimpleBillboardEntityRenderer(context, Identifier.of(SocWars.MOD_ID, "textures/item/snail_fireball.png")));
+        EntityRendererRegistry.register(ModEntities.LIGHTNING_ORB, context -> new SimpleBillboardEntityRenderer(context, Identifier.of(SocWars.MOD_ID, "textures/item/lightning_orb.png")));
         EntityRendererRegistry.register(ModEntities.INDIVIDUAL_BEDWARS_SHOP, BedwarsShopEntityRenderer::new);
         EntityRendererRegistry.register(ModEntities.TEAM_BEDWARS_SHOP, BedwarsShopEntityRenderer::new);
         EntityRendererRegistry.register(ModEntities.HAND_GRENADE, HandGrenadeEntityRenderer::new);

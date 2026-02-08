@@ -25,7 +25,7 @@ import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
 import static com.soc.lib.SocWarsLib.damageSource;
 
 public class GlassArmour extends ArmourItem implements OnHitArmour {
-    private static final RegistryKey<EquipmentAsset> GLASS_MODEL_KEY = ArmourItem.register("model");
+    private static final RegistryKey<EquipmentAsset> GLASS_MODEL_KEY = ArmourItem.register("glass");
 
     public GlassArmour(Settings settings, EquipmentSlot slot, int armour) {
         super(settings, slot, armour, GLASS_MODEL_KEY);

@@ -6,5 +6,5 @@ import net.minecraft.util.math.Vec3d;
 
 @FunctionalInterface
 public interface ExplodeFunction {
-    void explode(Entity self, ServerWorld serverWorld, Vec3d pos, float explosionPower, Entity owner);
+    void explode(ServerWorld serverWorld, Vec3d pos, float explosionPower, Entity owner);
 }

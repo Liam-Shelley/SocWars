@@ -48,6 +48,7 @@ public class ThrowableItem extends Item {
         ItemGroups.addItemToGroupsAndBaseItemGroup(WATERBALL, COMBAT);
         ItemGroups.addItemToGroupsAndBaseItemGroup(DRAGON_FIREBALL, COMBAT);
         ItemGroups.addItemToGroupsAndBaseItemGroup(SNAIL_FIREBALL, COMBAT);
+        ItemGroups.addItemToGroupsAndBaseItemGroup(LIGHTNING_ORB, COMBAT);
         ItemGroups.addItemToGroupsAndBaseItemGroup(THROWABLE_TNT, COMBAT);
         ItemGroups.addItemToGroupsAndBaseItemGroup(ENDER_BEAM, COMBAT);
         ItemGroups.addItemToGroupsAndBaseItemGroup(HAND_GRENADE, COMBAT);
@@ -57,8 +58,9 @@ public class ThrowableItem extends Item {
 
     public static final Item FIREBALL = ModItems.register("fireball", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new BWFireballEntity(ModEntities.FIREBALL, world, user, Vec3d.ZERO, 4f, BWFireballEntity::fireballExplosion), world, user, 1.75f)), new Settings().useCooldown(0.75f));
     public static final Item WATERBALL = ModItems.register("waterball", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new BWFireballEntity(ModEntities.WATERBALL, world, user, Vec3d.ZERO, 0f, BWFireballEntity::waterballExplosion), world, user, 1.75f)), new Settings().useCooldown(0.75f));
-    public static final Item DRAGON_FIREBALL = ModItems.register("dragon_fireball", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new DragonFireballEntity(world, user, Vec3d.ZERO), world, user, 1.5f), (stack, consumer) -> consumer.accept(Text.translatable("tooltip.dragon_fireball").withColor(Color.HSBtoRGB(getWorldTime() / 50f, 1f, 1f)))), new Settings().useCooldown(0.75f).rarity(Rarity.UNCOMMON));
     public static final Item SNAIL_FIREBALL = ModItems.register("snail_fireball", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new BWFireballEntity(ModEntities.SNAIL_FIREBALL, world, user, Vec3d.ZERO, 20f, BWFireballEntity::snailExplosion), world, user, 0.2f), (stack, consumer) -> consumer.accept(Text.translatable("tooltip.snail_fireball").withColor(0xe6e475))), new Settings().useCooldown(0.75f).rarity(Rarity.EPIC));
+    public static final Item LIGHTNING_ORB = ModItems.register("lightning_orb", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new BWFireballEntity(ModEntities.LIGHTNING_ORB, world, user, Vec3d.ZERO, 0f, BWFireballEntity::lightningOrbExplosion), world, user, 2.0f)), new Settings().useCooldown(0.75f).rarity(Rarity.UNCOMMON));
+    public static final Item DRAGON_FIREBALL = ModItems.register("dragon_fireball", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new DragonFireballEntity(world, user, Vec3d.ZERO), world, user, 1.5f), (stack, consumer) -> consumer.accept(Text.translatable("tooltip.dragon_fireball").withColor(Color.HSBtoRGB(getWorldTime() / 50f, 1f, 1f)))), new Settings().useCooldown(0.75f).rarity(Rarity.UNCOMMON));
     public static final Item THROWABLE_TNT = ModItems.register("throwable_tnt", settings -> new ThrowableItem(settings, (world, user) -> {
         final TntEntity tnt = spawnEntityWithVelocity(new TntEntity(EntityType.TNT, world), world, user, 0.6f);
         tnt.setFuse(40);

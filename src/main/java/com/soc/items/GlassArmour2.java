@@ -34,7 +34,7 @@ import static com.soc.lib.SocWarsLib.damageSource;
 import static com.soc.lib.SocWarsLib.getComponentFromSettingsBuilder;
 
 public class GlassArmour2 extends ArmourItem implements OnHitArmour {
-    private static final RegistryKey<EquipmentAsset> GLASS_MODEL_KEY = ArmourItem.register("model");
+    private static final RegistryKey<EquipmentAsset> GLASS_MODEL_KEY = ArmourItem.register("glass");
 
     public GlassArmour2(Settings settings, EquipmentSlot slot, int armour) {
         super(settings.attributeModifiers(AttributeModifiersComponent.builder().add(EntityAttributes.MAX_HEALTH, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "glass_armour." + slot.getName()), -1d, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.ARMOR).build()), slot, armour, GLASS_MODEL_KEY);}

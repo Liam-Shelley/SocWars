@@ -29,6 +29,7 @@ public abstract class ArmourItem extends Item {
         );
         final AttributeModifiersComponent modifiers = getComponentFromSettingsBuilder(settings, DataComponentTypes.ATTRIBUTE_MODIFIERS);
         modifiers.with(EntityAttributes.ARMOR, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "armour." + slot.getName()), armour, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.ARMOR);
+        settings.attributeModifiers(modifiers);
 
         this.slot = slot;
         this.armour = armour;

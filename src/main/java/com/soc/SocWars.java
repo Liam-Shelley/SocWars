@@ -13,6 +13,7 @@ import com.soc.game.manager.bedwars.traps.Traps;
 import com.soc.items.components.ModComponents;
 import com.soc.items.util.ModItems;
 import com.soc.lib.Coroutines;
+import com.soc.lib.EntityAttributes;
 import com.soc.lib.Events;
 import com.soc.networking.C2SPayloads;
 import com.soc.networking.C2SReceivers;
@@ -33,7 +34,7 @@ public class SocWars implements ModInitializer {
 	// This logger is used to write text to the console and the log file.
 	// It is considered best practice to use your mod id as the logger's name.
 	// That way, it's clear which mod wrote info, warnings, and errors.
-	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+	public static final Logger LOGGER = LoggerFactory.getLogger("SocWars");
 
 	@Override
 	public void onInitialize() {
@@ -61,6 +62,7 @@ public class SocWars implements ModInitializer {
 		ResourceManager.initialise();
 		ModCommands.initialise();
 		ScreenHandlers.initialise();
+		EntityAttributes.initialise();
 
 		BlockTags.initialise();
 

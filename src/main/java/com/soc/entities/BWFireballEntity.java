@@ -1,12 +1,10 @@
 package com.soc.entities;
 
 import com.soc.entities.util.ExplodeFunction;
+import com.soc.lib.Events;
 import com.soc.util.SphereExplosion;
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LazyEntityReference;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.*;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.projectile.FireballEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -49,20 +47,20 @@ public class BWFireballEntity extends FireballEntity {
     @Override
     protected void onCollision(HitResult hitResult) {
         if (hitResult.getType() == HitResult.Type.ENTITY && ((EntityHitResult)hitResult).getEntity() == this.getOwner()) return;
-        if (this.getWorld() instanceof ServerWorld serverWorld) {
-            final Entity owner = LazyEntityReference.resolve(super.owner, serverWorld, Entity.class);
-            this.explodeFunction.explode(this, serverWorld, this.getPos(), this.explosionPower, owner);
+        if (this.getWorld() instanceof ServerWorld world) {
+            final Entity owner = LazyEntityReference.resolve(super.owner, world, Entity.class);
+            this.explodeFunction.explode(world, this.getPos(), this.explosionPower, owner);
         }
         this.discard();
     }
 
-    public static void fireballExplosion(Entity self, ServerWorld serverWorld, Vec3d pos, float explosionPower, Entity owner) {
-        SphereExplosion.explode(serverWorld, pos, explosionPower, 1.1f, 1f, true, owner, null);
-        SphereExplosion.fireExplosion(serverWorld, BlockPos.ofFloored(pos), explosionPower, 0.2f);
+    public static void fireballExplosion(ServerWorld world, Vec3d pos, float explosionPower, Entity owner) {
+        SphereExplosion.explode(world, pos, explosionPower, 1.1f, 1f, true, owner, null);
+        SphereExplosion.fireExplosion(world, BlockPos.ofFloored(pos), explosionPower, 0.2f);
     }
 
-    public static void snailExplosion(Entity self, ServerWorld serverWorld, Vec3d pos, float explosionPower, Entity owner) {
-        serverWorld.createExplosion(self, damageSource(serverWorld, DamageTypes.EXPLOSION, owner), new ExplosionBehavior() {
+    public static void snailExplosion(ServerWorld world, Vec3d pos, float explosionPower, Entity owner) {
+        world.createExplosion(owner, damageSource(world, DamageTypes.EXPLOSION, owner), new ExplosionBehavior() {
             @Override
             public float calculateDamage(Explosion explosion, Entity entity, float amount) {
                 return super.calculateDamage(explosion, entity, amount) * 0.09f;
@@ -70,8 +68,17 @@ public class BWFireballEntity extends FireballEntity {
         }, pos.x, pos.y, pos.z, explosionPower, true, World.ExplosionSourceType.BLOCK);
     }
 
-    public static void waterballExplosion(Entity self, ServerWorld serverWorld, Vec3d pos, float explosionPower, Entity owner) {
-        serverWorld.setBlockState(BlockPos.ofFloored(pos), Blocks.WATER.getDefaultState());
+    public static void waterballExplosion(ServerWorld world, Vec3d pos, float explosionPower, Entity owner) {
+        world.setBlockState(BlockPos.ofFloored(pos), Blocks.WATER.getDefaultState());
+    }
+
+    public static void lightningOrbExplosion(ServerWorld world, Vec3d pos, float explosionPower, Entity owner) {
+        final Events events = Events.getInstance();
+        for (int i = 0; i < 20; i++) {
+            final Entity entity = new LightningEntity(EntityType.LIGHTNING_BOLT, world);
+            entity.setPosition(pos);
+            events.scheduleEvent(() -> world.spawnEntity(entity), i * 3);
+        }
     }
 
     @Override
