@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "socwars:glass"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "socwars:glass"
+      }
+    ]
+  }
+}

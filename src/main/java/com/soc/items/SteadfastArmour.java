@@ -4,21 +4,14 @@ import com.soc.SocWars;
 import com.soc.items.util.ArmourItem;
 import com.soc.items.util.ModItems;
 import com.soc.items.util.SetBonusArmourItem;
-import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.equipment.EquipmentAsset;
-import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
-
-import java.util.function.Consumer;
 
 import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
 

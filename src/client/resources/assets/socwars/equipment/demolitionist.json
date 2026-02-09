@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "socwars:demolitionist"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "socwars:demolitionist"
+      }
+    ]
+  }
+}

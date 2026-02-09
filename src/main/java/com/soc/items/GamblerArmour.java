@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import com.soc.items.util.ArmourItem;
 import com.soc.items.util.ModItems;
+import com.soc.items.util.OnEquipArmour;
 import com.soc.util.Random;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.EquippableComponent;
@@ -33,7 +34,7 @@ import java.util.function.Consumer;
 
 import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
 
-public class GamblerArmour extends Item {
+public class GamblerArmour extends Item implements OnEquipArmour {
     private final int[] protectionValues;
     private final EquipmentSlot slot;
     private int protectionValue;
@@ -62,11 +63,11 @@ public class GamblerArmour extends Item {
 
     @Override
     public void inventoryTick(ItemStack stack, ServerWorld world, Entity entity, @Nullable EquipmentSlot slot) {
-        String slotName = "gambler." + this.slot.getName();
+        final String slotName = "gambler." + this.slot.getName();
         this.randomiseArmour();
 
         if (entity instanceof PlayerEntity playerEntity) {
-            Multimap<RegistryEntry<EntityAttribute>, EntityAttributeModifier> map = ImmutableMultimap.of(EntityAttributes.ARMOR, new EntityAttributeModifier(Identifier.ofVanilla(slotName), this.protectionValue, EntityAttributeModifier.Operation.ADD_VALUE));
+            final Multimap<RegistryEntry<EntityAttribute>, EntityAttributeModifier> map = ImmutableMultimap.of(EntityAttributes.ARMOR, new EntityAttributeModifier(Identifier.ofVanilla(slotName), this.protectionValue, EntityAttributeModifier.Operation.ADD_VALUE));
             playerEntity.getAttributes().removeModifiers(map);
 
             if (slot != null && slot.isArmorSlot()) {
@@ -98,6 +99,16 @@ public class GamblerArmour extends Item {
 
         textConsumer.accept(Text.empty());
         textConsumer.accept(Text.translatable("item.modifiers." + this.slot.getName()).formatted(Formatting.GRAY));
-        textConsumer.accept(Text.translatable("gambler_armour_amount", new Object[]{this.protectionValue}).formatted(formatting));
+        textConsumer.accept(Text.translatable("gambler_armour_amount", this.protectionValue).formatted(formatting));
     }
+
+    @Override
+    public void unequip(PlayerEntity player) {
+        final String slotName = "gambler." + this.slot.getName();
+        final Multimap<RegistryEntry<EntityAttribute>, EntityAttributeModifier> map = ImmutableMultimap.of(EntityAttributes.ARMOR, new EntityAttributeModifier(Identifier.ofVanilla(slotName), this.protectionValue, EntityAttributeModifier.Operation.ADD_VALUE));
+        player.getAttributes().removeModifiers(map);
+    }
+
+    @Override
+    public void equip(PlayerEntity player) {}
 }

@@ -150,11 +150,6 @@ public class CartoonArmour extends ArmourItem implements OnHitArmour {
     }), new Settings().maxDamage(325).rarity(Rarity.RARE));
 
     @Override
-    @SuppressWarnings("deprecation")
-    public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
-    }
-
-    @Override
     public boolean onHit(ItemStack stack, LivingEntity wearer, World world, DamageSource source) {
         return this.onHitEffect.onHit(stack, wearer, world, source);
     }

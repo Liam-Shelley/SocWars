@@ -3,7 +3,6 @@ package com.soc.items;
 import com.soc.entities.*;
 import com.soc.entities.util.ModEntities;
 import com.soc.items.util.AppendTooltipFunction;
-import com.soc.items.util.ItemGroups;
 import com.soc.items.util.ModItems;
 import com.soc.items.util.SpawnThrowableItemFunction;
 import net.minecraft.component.type.TooltipDisplayComponent;
@@ -27,6 +26,7 @@ import net.minecraft.world.World;
 import java.awt.*;
 import java.util.function.Consumer;
 
+import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
 import static net.minecraft.item.ItemGroups.COMBAT;
 
 public class ThrowableItem extends Item {
@@ -44,16 +44,16 @@ public class ThrowableItem extends Item {
     }
 
     public static void initialise() {
-        ItemGroups.addItemToGroupsAndBaseItemGroup(FIREBALL, COMBAT);
-        ItemGroups.addItemToGroupsAndBaseItemGroup(WATERBALL, COMBAT);
-        ItemGroups.addItemToGroupsAndBaseItemGroup(DRAGON_FIREBALL, COMBAT);
-        ItemGroups.addItemToGroupsAndBaseItemGroup(SNAIL_FIREBALL, COMBAT);
-        ItemGroups.addItemToGroupsAndBaseItemGroup(LIGHTNING_ORB, COMBAT);
-        ItemGroups.addItemToGroupsAndBaseItemGroup(THROWABLE_TNT, COMBAT);
-        ItemGroups.addItemToGroupsAndBaseItemGroup(ENDER_BEAM, COMBAT);
-        ItemGroups.addItemToGroupsAndBaseItemGroup(HAND_GRENADE, COMBAT);
-        ItemGroups.addItemToGroupsAndBaseItemGroup(HOLY_HAND_GRENADE, COMBAT);
-        ItemGroups.addItemToGroupsAndBaseItemGroup(MOLOTOV_COCKTAIL, COMBAT);
+        addItemToGroupsAndBaseItemGroup(FIREBALL, COMBAT);
+        addItemToGroupsAndBaseItemGroup(WATERBALL, COMBAT);
+        addItemToGroupsAndBaseItemGroup(DRAGON_FIREBALL, COMBAT);
+        addItemToGroupsAndBaseItemGroup(SNAIL_FIREBALL, COMBAT);
+        addItemToGroupsAndBaseItemGroup(LIGHTNING_ORB, COMBAT);
+        addItemToGroupsAndBaseItemGroup(THROWABLE_TNT, COMBAT);
+        addItemToGroupsAndBaseItemGroup(ENDER_BEAM, COMBAT);
+        addItemToGroupsAndBaseItemGroup(HAND_GRENADE, COMBAT);
+        addItemToGroupsAndBaseItemGroup(HOLY_HAND_GRENADE, COMBAT);
+        addItemToGroupsAndBaseItemGroup(MOLOTOV_COCKTAIL, COMBAT);
     }
 
     public static final Item FIREBALL = ModItems.register("fireball", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new BWFireballEntity(ModEntities.FIREBALL, world, user, Vec3d.ZERO, 4f, BWFireballEntity::fireballExplosion), world, user, 1.75f)), new Settings().useCooldown(0.75f));
