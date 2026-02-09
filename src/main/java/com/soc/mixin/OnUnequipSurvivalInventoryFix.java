@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Slot.class)
-public abstract class OnUnequipSurvivalFix {
+public abstract class OnUnequipSurvivalInventoryFix {
     @Shadow public abstract int getIndex();
 
     @Shadow @Final public Inventory inventory;
