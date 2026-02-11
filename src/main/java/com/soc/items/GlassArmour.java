@@ -3,6 +3,7 @@ package com.soc.items;
 import com.soc.items.util.ArmourItem;
 import com.soc.items.util.ModItems;
 import com.soc.items.util.OnHitArmour;
+import com.soc.items.util.TransparentArmour;
 import com.soc.util.DamageTypes;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -19,7 +20,7 @@ import net.minecraft.world.World;
 import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
 import static com.soc.lib.SocWarsLib.damageSource;
 
-public class GlassArmour extends ArmourItem implements OnHitArmour {
+public class GlassArmour extends ArmourItem implements OnHitArmour, TransparentArmour {
     private static final RegistryKey<EquipmentAsset> GLASS_MODEL_KEY = ArmourItem.registerEquipmentAsset("glass");
 
     public GlassArmour(Settings settings, EquipmentSlot slot, int armour) {
@@ -31,8 +32,6 @@ public class GlassArmour extends ArmourItem implements OnHitArmour {
         addItemToGroupsAndBaseItemGroup(GLASS_CHESTPLATE, ItemGroups.COMBAT);
         addItemToGroupsAndBaseItemGroup(GLASS_LEGGINGS, ItemGroups.COMBAT);
         addItemToGroupsAndBaseItemGroup(GLASS_BOOTS, ItemGroups.COMBAT);
-
-        GlassArmour2.initialise();
     }
 
     public static final Item GLASS_HELMET = ModItems.register("glass_helmet", settings -> new GlassArmour(settings, EquipmentSlot.HEAD, 1), new Settings().maxDamage(325).rarity(Rarity.RARE));

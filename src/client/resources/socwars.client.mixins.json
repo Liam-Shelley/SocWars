@@ -5,12 +5,13 @@
   "client": [
     "KeyboardInputModifier",
     "MouseInputModifier",
-    "OpenMapBlockScreen"
+    "OpenMapBlockScreen",
+    "TransparentGlassArmour",
+    "DragonFireballTooltip"
   ],
   "injectors": {
     "defaultRequire": 1
   },
   "mixins": [
-    "DragonFireballTooltip"
   ]
 }
