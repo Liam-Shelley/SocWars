@@ -50,6 +50,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
@@ -497,5 +498,18 @@ public final class SocWarsLib {
     public static <T> T getComponentFromSettingsBuilder(Item.Settings settings, ComponentType<T> component) {
         final ComponentMap.Builder builder = ((GetItemSettingsComponentsMap)settings).getComponents();
         return (T)((GetItemSettingsComponent)builder).getComponents().get(component);
+    }
+
+    public static <T> void enumerate(Iterable<T> iterable, BiConsumer<Integer, T> function) {
+        int i = 0;
+        for (T t : iterable) {
+            function.accept(i++, t);
+        }
+    }
+
+    public static <T> void enumerate(T[] array, BiConsumer<Integer, T> function) {
+        for (int i = 0; i < array.length; i++) {
+            function.accept(i, array[i]);
+        }
     }
 }
