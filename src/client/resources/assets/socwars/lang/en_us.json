@@ -166,7 +166,7 @@
   "item.socwars.lightning_orb": "Lightning Orb",
   "stat_bonus_modifier": "+%s%% %s",
   "attribute.name.explosion_resistance": "Explosion Damage Resistance",
-  "full_set_worn": "When Worn as a Full Set:",
+  "full_set_worn": "When worn as a full set:",
   "item_group.socwars.items": "SocWars Items",
   "item_group.socwars.blocks": "SocWars Blocks",
   "item_group.socwars.map_making_tools": "SocWars Map Making Tools",
@@ -382,5 +382,6 @@
   "trap.postura": "Postura",
   "trap.postura.tooltip": "Locks §4the enemy§r's knees for §210 seconds.",
   "trap.speed": "Hyperspeed",
-  "trap.speed.tooltip": "Gives §4the enemy§r warp speed for §22 seconds."
+  "trap.speed.tooltip": "Gives §4the enemy§r warp speed for §22 seconds.",
+  "summoners_garb.spawn_chance": "+%s%% Chance to summon"
 }

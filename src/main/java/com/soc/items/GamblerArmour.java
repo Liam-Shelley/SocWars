@@ -86,8 +86,9 @@ public class GamblerArmour extends Item implements OnEquipArmour {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
-        Formatting formatting = switch(this.protectionValue) {
+        final Formatting formatting = switch(this.protectionValue) {
             case 0 -> Formatting.DARK_RED;
             case 1 -> Formatting.RED;
             case 2,3 -> Formatting.GOLD;
@@ -98,7 +99,7 @@ public class GamblerArmour extends Item implements OnEquipArmour {
         };
 
         textConsumer.accept(Text.empty());
-        textConsumer.accept(Text.translatable("item.modifiers." + this.slot.getName()).formatted(Formatting.GRAY));
+        textConsumer.accept(Text.translatable("item.modifiers.armor").formatted(Formatting.GRAY));
         textConsumer.accept(Text.translatable("gambler_armour_amount", this.protectionValue).formatted(formatting));
     }
 

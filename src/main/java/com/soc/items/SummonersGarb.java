@@ -15,6 +15,7 @@ import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Rarity;
 import net.minecraft.world.World;
 
@@ -40,7 +41,6 @@ public class SummonersGarb extends ArmourItem implements OnHitArmour {
             .maxDamage(400)
     );
 
-
     @Override
     public boolean onHit(ItemStack stack, LivingEntity wearer, World world, DamageSource source) {
         if (!world.isClient && world instanceof ServerWorld serverWorld && world.random.nextFloat() > 0.5f) {
@@ -53,5 +53,8 @@ public class SummonersGarb extends ArmourItem implements OnHitArmour {
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {}
+    @SuppressWarnings("deprecation")
+    public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
+        textConsumer.accept(Text.translatable("summoners_garb.spawn_chance", 50).formatted(Formatting.GOLD));
+    }
 }

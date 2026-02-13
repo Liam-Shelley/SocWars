@@ -72,6 +72,7 @@ public class TrainingWeights extends ArmourItem {
         final int value = Math.max(0, stack.getOrDefault(ModComponents.TRAINING_WEIGHTS_COMPONENT, 0) - 1);
 
         final boolean over1min = value >= 60;
+        textConsumer.accept(Text.empty());
         textConsumer.accept(Text.translatable("tooltip.training_weights.stored_time", getTimeFromTicksDynColours(value, false, minutes -> minutes > 0 ? 0xff14992c : 0xff1d59c2, seconds -> {
             if (over1min) return 0xff14992c;
             if (seconds > 30) return 0xff14992c;

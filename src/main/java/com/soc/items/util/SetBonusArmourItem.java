@@ -15,6 +15,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
+import java.text.NumberFormat;
 import java.util.function.Consumer;
 
 public abstract class SetBonusArmourItem extends ArmourItem implements OnEquipArmour {
@@ -88,13 +89,18 @@ public abstract class SetBonusArmourItem extends ArmourItem implements OnEquipAr
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
         super.appendTooltip(stack, context, displayComponent, textConsumer, type);
 
-        Text attributeText = Text.translatable("attribute.name." + this.attribute.getIdAsString().split(":")[1]);
+        final Text attributeText = Text.translatable("attribute.name." + this.attribute.getIdAsString().split(":")[1]);
 
-        textConsumer.accept(Text.translatable("stat_bonus_modifier", this.getSetBonus(1) * 100d, attributeText).formatted(Formatting.BLUE));
+        final NumberFormat numberFormat = NumberFormat.getInstance();
+        numberFormat.setMaximumFractionDigits(0);
+
+        textConsumer.accept(Text.translatable("stat_bonus_modifier", numberFormat.format(this.getSetBonus(1) * 100d), attributeText).formatted(Formatting.BLUE));
+        textConsumer.accept(Text.empty());
         textConsumer.accept(Text.translatable("full_set_worn").formatted(Formatting.GRAY));
-        textConsumer.accept(Text.translatable("stat_bonus_modifier", this.getSetBonus(4) * 100d, attributeText).formatted(Formatting.DARK_GREEN));
+        textConsumer.accept(Text.translatable("stat_bonus_modifier", numberFormat.format(this.getSetBonus(4) * 100d), attributeText).formatted(Formatting.DARK_GREEN));
     }
 }
