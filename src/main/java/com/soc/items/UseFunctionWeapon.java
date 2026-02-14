@@ -6,6 +6,7 @@ import com.soc.items.util.UseFunction;
 import com.soc.lib.Coroutine;
 import com.soc.lib.Coroutines;
 import com.soc.materials.ToolMaterials;
+import com.soc.util.Sounds;
 import net.minecraft.block.Blocks;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.TooltipDisplayComponent;
@@ -41,6 +42,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 import static com.soc.items.BowItem.playBowSound;
+import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
 import static com.soc.lib.SocWarsLib.*;
 
 public class UseFunctionWeapon extends Item {
@@ -52,21 +54,22 @@ public class UseFunctionWeapon extends Item {
     }
 
     public static void initialise() {
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(DASHREND, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(VELOCITY_STAFF, ItemGroups.TOOLS);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(VEXING_STAFF, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(YELLOW_SWORD, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(GRAVITY_ORB, ItemGroups.TOOLS);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(GOD_COMPLEX, ItemGroups.TOOLS);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(SCROLL_OF_EAU, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(SCROLL_OF_HELLFIRE, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(C_U_E_B, ItemGroups.TOOLS);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(SHRINK_RAY, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(BIGGENING_RAY, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(THE_LINE, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(WHEATENATOR, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(DEATH_RAIN, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(ALPHA_BOW, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(DASHREND, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(VELOCITY_STAFF, ItemGroups.TOOLS);
+        addItemToGroupsAndBaseItemGroup(VEXING_STAFF, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(YELLOW_SWORD, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(GRAVITY_ORB, ItemGroups.TOOLS);
+        addItemToGroupsAndBaseItemGroup(GOD_COMPLEX, ItemGroups.TOOLS);
+        addItemToGroupsAndBaseItemGroup(SCROLL_OF_EAU, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(SCROLL_OF_HELLFIRE, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(C_U_E_B, ItemGroups.TOOLS);
+        addItemToGroupsAndBaseItemGroup(SHRINK_RAY, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(BIGGENING_RAY, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(THE_LINE, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(WHEATENATOR, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(DEATH_RAIN, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(ALPHA_BOW, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(SNIPER_RIFLE, ItemGroups.COMBAT);
     }
 
     public static final Item DASHREND = ModItems.register("dashrend", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
@@ -119,7 +122,7 @@ public class UseFunctionWeapon extends Item {
             .rarity(Rarity.RARE)
     );
     public static final Item YELLOW_SWORD = ModItems.register("yellow_sword", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
-                ItemStack itemStack = user.getStackInHand(hand);
+                final ItemStack itemStack = user.getStackInHand(hand);
 
                 if (world instanceof ServerWorld serverWorld) {
                     SpectralArrowEntity arrow = ProjectileEntity.spawn(new SpectralArrowEntity(world, user, Items.AIR.getDefaultStack(), itemStack), serverWorld, itemStack);
@@ -260,7 +263,7 @@ public class UseFunctionWeapon extends Item {
                 final Vec3d rotationVec = user.getRotationVector();
                 final double rotationAngle = Math.atan2(rotationVec.z, rotationVec.x);
 
-                BlockPos[] positions = findAdjacentBlocksFromViewAngle(BlockPos.ofFloored(user.getPos().add(rotationVec.getHorizontal().normalize().multiply(0.5f))), rotationAngle);
+                final BlockPos[] positions = findAdjacentBlocksFromViewAngle(BlockPos.ofFloored(user.getPos().add(rotationVec.getHorizontal().normalize().multiply(0.5f))), rotationAngle);
                 for (int y: new int[] {0, 1}) {
                     for (BlockPos position : positions) {
                         BlockPos currentPos = position.add(0, y, 0);
@@ -292,10 +295,10 @@ public class UseFunctionWeapon extends Item {
             .rarity(Rarity.RARE)
     );
     public static final Item ALPHA_BOW = ModItems.register("alpha_bow", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
-                ItemStack itemStack = user.getStackInHand(hand);
+                final ItemStack itemStack = user.getStackInHand(hand);
 
                 if (world instanceof ServerWorld serverWorld) {
-                    ArrowEntity arrow = new ArrowEntity(world, user, Items.AIR.getDefaultStack(), itemStack);
+                    final ArrowEntity arrow = new ArrowEntity(world, user, Items.AIR.getDefaultStack(), itemStack);
                     arrow.setPosition(user.getEyePos());
                     arrow.setVelocity(user.getRotationVector().multiply(1.75f));
                     arrow.setPitch(-user.getPitch());
@@ -312,6 +315,19 @@ public class UseFunctionWeapon extends Item {
             }), new Settings()
             .maxDamage(256)
             .rarity(Rarity.RARE)
+    );
+    public static final Item SNIPER_RIFLE = ModItems.register("sniper_rifle", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+                final ItemStack itemStack = user.getStackInHand(hand);
+
+                user.getWorld().playSound(null, user.getX(), user.getY(), user.getZ(), Sounds.AIR_HORN, SoundCategory.PLAYERS);
+
+                itemStack.damage(1, user, hand);
+
+                return ActionResult.SUCCESS;
+            }), new Settings()
+            .maxDamage(30)
+            .useCooldown(2)
+            .rarity(Rarity.EPIC)
     );
 
     @Override

@@ -87,6 +87,7 @@ public class EatFunctionFood extends Item { //rewrite all of this as consumable 
         switch (stack.getItem().toString()) {
             case "socwars:shrinking_pills" -> textConsumer.accept(Text.translatable("tooltip.shrinking_pills"));
             case "socwars:biggening_pills" -> textConsumer.accept(Text.translatable("tooltip.biggening_pills"));
+            case "socwars:red_shell" -> textConsumer.accept(Text.translatable("tooltip.red_shell"));
         }
     }
 }

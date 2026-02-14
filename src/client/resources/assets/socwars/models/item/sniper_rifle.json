@@ -1,0 +1,28 @@
+{
+  "parent": "minecraft:item/bow",
+  "textures": {
+    "layer0": "socwars:item/sniper_rifle"
+  },
+  "display": {
+    "firstperson_righthand": {
+      "rotation": [0, 81, 2],
+      "translation": [-2, 2, -5],
+      "scale": [1.2, 1.2, 1.2]
+    },
+    "firstperson_lefthand": {
+      "rotation": [0, -93, -2],
+      "translation": [-2, 2, -5],
+      "scale": [1.2, 1.2, 1.2]
+    },
+    "thirdperson_righthand": {
+      "rotation": [0, 85, 0],
+      "translation": [0, 1, -1.5],
+      "scale": [1.6, 1.6, 1.6]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [0, -95, 0],
+      "translation": [0, 1, -1.5],
+      "scale": [1.6, 1.6, 1.6]
+    }
+  }
+}
