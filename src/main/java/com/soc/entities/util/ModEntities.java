@@ -91,7 +91,7 @@ public interface ModEntities {
             .maxTrackingRange(4)
             .eyeHeight(0.4f)
     );
-    EntityType<RedShellEntity> RED_SHELL = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "red_shell"), EntityType.Builder.create(RedShellEntity::new, SpawnGroup.MISC)
+    EntityType<RedShellEntity> RED_SHELL = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "red_shell"), EntityType.Builder.<RedShellEntity>create(RedShellEntity::new, SpawnGroup.MISC)
             .dropsNothing()
             .dimensions(0.2f, 0.2f)
             .maxTrackingRange(8)

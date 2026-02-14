@@ -1,10 +1,9 @@
 package com.soc.entities;
 
+import com.soc.entities.util.ModEntities;
 import com.soc.util.SphereExplosion;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.MovementType;
+import net.minecraft.entity.*;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.server.world.ServerWorld;
@@ -21,20 +20,29 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class RedShellEntity extends Entity {
+public class RedShellEntity extends Entity implements Ownable {
     private Entity target;
-    @Nullable
-    private Direction direction = null;
-    private boolean overshoot;
+    @Nullable private Direction direction = null;
+    private boolean overshoot = false;
+
+    private LazyEntityReference<Entity> owner = null;
 
     public RedShellEntity(EntityType<?> type, World world) {
         super(type, world);
     }
 
-    @Override
-    protected void initDataTracker(DataTracker.Builder builder) {
-
+    public RedShellEntity(World world, Vec3d pos, @Nullable Entity owner) {
+        this(ModEntities.RED_SHELL, world);
+        this.setPosition(pos);
+        this.setOwner(owner);
     }
+
+    private void setOwner(@Nullable Entity owner) {
+        this.owner = owner == null ? null : new LazyEntityReference<>(owner);
+    }
+
+    @Override
+    protected void initDataTracker(DataTracker.Builder builder) {}
 
     @Override
     public boolean damage(ServerWorld world, DamageSource source, float amount) {
@@ -43,19 +51,19 @@ public class RedShellEntity extends Entity {
 
     @Override
     protected void readCustomData(ReadView view) {
-
+        this.owner = LazyEntityReference.fromData(view, "owner");
     }
 
     @Override
     protected void writeCustomData(WriteView view) {
-
+        LazyEntityReference.writeData(this.owner, view, "owner");
     }
 
     @Override
     public void tick() {
         if (this.getWorld().isClient) return;
 
-        this.target = this.getWorld().getClosestPlayer(this, 250d);
+        this.target = this.getWorld().getClosestPlayer(this.getX(), this.getY(), this.getZ(), 250d, entity -> !entity.isTeammate(this.getOwner()));
         if (this.target == null) return;
 
         if (this.getWorld().getTime() % 8 == 0 && this.getWorld().random.nextFloat() < 0.75f) {
@@ -108,5 +116,10 @@ public class RedShellEntity extends Entity {
 
     private double getAxisDistance(Direction.Axis axis) {
         return this.target.getPos().getComponentAlongAxis(axis) - this.getPos().getComponentAlongAxis(axis);
+    }
+
+    @Override
+    public @Nullable Entity getOwner() {
+        return this.owner == null ? null : this.owner.resolve(this.getWorld(), Entity.class);
     }
 }

@@ -67,9 +67,7 @@ public class EatFunctionFood extends Item { //rewrite all of this as consumable 
     public static final Item RED_SHELL = ModItems.register("red_shell", settings -> new EatFunctionFood(settings, (stack, world, user) -> {
         if (world.isClient) return null;
 
-        final RedShellEntity redShell = new RedShellEntity(ModEntities.RED_SHELL, world);
-        redShell.setPosition(user.getPos());
-        world.spawnEntity(redShell);
+        world.spawnEntity(new RedShellEntity(world, user.getPos(), user));
 
         return null;
             }, new FoodComponent(6, 4, true)), new Settings()
