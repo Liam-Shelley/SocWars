@@ -2,7 +2,6 @@ package com.soc.entities;
 
 import com.soc.entities.util.ModEntities;
 import com.soc.util.SphereExplosion;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
@@ -19,6 +18,9 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
+
+// If anyone is reading this code to learn or using it as an example; please, I beg you, go look at literally any other class;
+// this class is complete and utter garbage I wrote it in like an hour it barely functions and I really need to rewrite it from scratch at some point
 
 public class RedShellEntity extends Entity implements Ownable {
     private Entity target;
