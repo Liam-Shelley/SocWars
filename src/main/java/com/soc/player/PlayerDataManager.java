@@ -1,6 +1,5 @@
 package com.soc.player;
 
-import com.soc.SocWars;
 import com.soc.networking.s2c.PlayerDataPayload;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
@@ -23,19 +22,19 @@ public class PlayerDataManager {
         });
     }
 
-    private static final HashMap<UUID, PlayerData> playerDataMap = HashMap.newHashMap(10);
+    private static final HashMap<UUID, PlayerData> PLAYER_DATA_MAP = HashMap.newHashMap(10);
 
-    public static HashMap<UUID, PlayerData> getPlayerDataMap() { return playerDataMap; }
+    public static HashMap<UUID, PlayerData> getPlayerDataMap() { return PLAYER_DATA_MAP; }
 
     public static PlayerData getPlayerData(UUID uuid) {
-        return playerDataMap.get(uuid);
+        return PLAYER_DATA_MAP.get(uuid);
     }
     public static PlayerData getPlayerData(PlayerEntity player) {
         return getPlayerData(player.getUuid());
     }
 
     public static void setPlayerData(UUID uuid, PlayerData playerData) {
-        playerDataMap.put(uuid, playerData);
+        PLAYER_DATA_MAP.put(uuid, playerData);
     }
 
     public static void setPlayerData(PlayerEntity player, PlayerData playerData) {
@@ -43,7 +42,7 @@ public class PlayerDataManager {
     }
 
     public static boolean collectDoubloons(PlayerEntity player, int doubloons) {
-        ScoreboardObjective objective = player.getScoreboard().getNullableObjective("Doubloons");
+        final ScoreboardObjective objective = player.getScoreboard().getNullableObjective("Doubloons");
         if (objective == null) return false;
 
         player.getScoreboard().getOrCreateScore(ScoreHolder.fromProfile(player.getGameProfile()), objective).incrementScore(doubloons);

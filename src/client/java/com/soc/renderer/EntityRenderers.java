@@ -18,5 +18,6 @@ public interface EntityRenderers {
         EntityRendererRegistry.register(ModEntities.HAND_GRENADE, HandGrenadeEntityRenderer::new);
         EntityRendererRegistry.register(ModEntities.HOLY_HAND_GRENADE, HolyHandGrenadeEntityRenderer::new);
         EntityRendererRegistry.register(ModEntities.MOLOTOV_COCKTAIL, MolotovCocktailEntityRenderer::new);
+        EntityRendererRegistry.register(ModEntities.RED_SHELL, context -> new SimpleBillboardEntityRenderer(context, Identifier.of(SocWars.MOD_ID, "textures/item/red_shell.png")));
     }
 }

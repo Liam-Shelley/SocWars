@@ -18,10 +18,10 @@ import static com.soc.entities.util.ModEntities.NUCLEAR_BOMB;
 
 public class BigTntEntity extends Entity implements Ownable {
     public enum BigTntType {
-        NUCLEAR(14f, 6 * 20),
-        HYDROGEN(24f, 9 * 20);
+        NUCLEAR(10.5f, 6 * 20),
+        HYDROGEN(15f, 9 * 20);
 
-        public float explosionRadius;
+        public final float explosionRadius;
         public final int fuse;
 
         BigTntType(float explosionRadius, int fuse) {
@@ -86,19 +86,17 @@ public class BigTntEntity extends Entity implements Ownable {
     }
 
     private void explode() {
-        SphereExplosion.explode(this.getWorld(), this.getPos(), this.tntType.explosionRadius, 10f, 2f, true, LazyEntityReference.resolve(this.igniter, this.getWorld(), LivingEntity.class), null);
+        SphereExplosion.explode(this.getWorld(), this.getPos(), this.tntType.explosionRadius, 2f, 10f, 2f, true, LazyEntityReference.resolve(this.igniter, this.getWorld(), LivingEntity.class), null);
     }
 
     protected void writeCustomData(WriteView view) {
         view.putInt("fuse", this.getFuse());
-        view.putFloat("explosion_radius", this.tntType.explosionRadius);
 
         if (this.igniter != null) LazyEntityReference.writeData(this.igniter, view, "igniter");
     }
 
     protected void readCustomData(ReadView view) {
         this.setFuse(view.getInt("fuse", 10 * 20));
-        this.tntType.explosionRadius = view.getFloat("explosion_radius", 13f);
         this.igniter = LazyEntityReference.fromData(view, "igniter");
     }
 

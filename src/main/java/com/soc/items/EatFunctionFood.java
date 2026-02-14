@@ -1,5 +1,7 @@
 package com.soc.items;
 
+import com.soc.entities.RedShellEntity;
+import com.soc.entities.util.ModEntities;
 import com.soc.items.util.FinishUsingFunction;
 import com.soc.items.util.ModItems;
 import net.minecraft.component.type.FoodComponent;
@@ -16,9 +18,10 @@ import net.minecraft.world.World;
 
 import java.util.function.Consumer;
 
+import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
 import static com.soc.lib.SocWarsLib.*;
 
-public class EatFunctionFood extends Item { //rewrite all of this as consumable components
+public class EatFunctionFood extends Item { //rewrite all of this as consumable components because this is just gross and dirty and I hate it
     public static final int CHORUS_SALAD_TRIES = 50;
 
     private final FinishUsingFunction finishUsingFunction;
@@ -32,21 +35,21 @@ public class EatFunctionFood extends Item { //rewrite all of this as consumable 
     }
 
     public static void initialise() {
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(SHRINKING_PILLS, ItemGroups.FOOD_AND_DRINK);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(BIGGENING_PILLS, ItemGroups.FOOD_AND_DRINK);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(CHORUS_FRUIT_SALAD, ItemGroups.FOOD_AND_DRINK);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(RED_SHELL, ItemGroups.FOOD_AND_DRINK);
+        addItemToGroupsAndBaseItemGroup(SHRINKING_PILLS, ItemGroups.FOOD_AND_DRINK);
+        addItemToGroupsAndBaseItemGroup(BIGGENING_PILLS, ItemGroups.FOOD_AND_DRINK);
+        addItemToGroupsAndBaseItemGroup(CHORUS_FRUIT_SALAD, ItemGroups.FOOD_AND_DRINK);
+        addItemToGroupsAndBaseItemGroup(RED_SHELL, ItemGroups.FOOD_AND_DRINK);
     }
 
     public static final Item SHRINKING_PILLS = ModItems.register("shrinking_pills", settings -> new EatFunctionFood(settings, (stack, world, user) -> {
-                scaleEntity(user, SQRT2 * 0.5f);
-                return null;
+        scaleEntity(user, SQRT2 * 0.5f);
+        return null;
             }), new Settings()
             .rarity(Rarity.UNCOMMON)
     );
     public static final Item BIGGENING_PILLS = ModItems.register("biggening_pills", settings -> new EatFunctionFood(settings, (stack, world, user) -> {
-                scaleEntity(user, SQRT2);
-                return null;
+        scaleEntity(user, SQRT2);
+        return null;
             }), new Settings()
             .rarity(Rarity.UNCOMMON)
     );
@@ -62,16 +65,16 @@ public class EatFunctionFood extends Item { //rewrite all of this as consumable 
             .rarity(Rarity.RARE)
     );
     public static final Item RED_SHELL = ModItems.register("red_shell", settings -> new EatFunctionFood(settings, (stack, world, user) -> {
-                if (world.isClient) return null;
+        if (world.isClient) return null;
 
-                if (user instanceof PlayerEntity player) {
-                    player.sendMessage(Text.of("wahoo!"), false);
-                }
+        final RedShellEntity redShell = new RedShellEntity(ModEntities.RED_SHELL, world);
+        redShell.setPosition(user.getPos());
+        world.spawnEntity(redShell);
 
-                return null;
+        return null;
             }, new FoodComponent(6, 4, true)), new Settings()
-                    .useCooldown(5f)
-                    .rarity(Rarity.RARE)
+            .useCooldown(5f)
+            .rarity(Rarity.RARE)
     );
 
     @Override

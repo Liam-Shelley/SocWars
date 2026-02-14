@@ -85,11 +85,17 @@ public interface ModEntities {
             .maxTrackingRange(4)
             .eyeHeight(0.6f)
     );
-    EntityType<MolotovCocktailEntity> MOLOTOV_COCKTAIL = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "molotov_cocktail"), EntityType.Builder.<MolotovCocktailEntity>create(MolotovCocktailEntity::new, SpawnGroup.MISC)
+    EntityType<MolotovCocktailEntity> MOLOTOV_COCKTAIL = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "molotov_cocktail"), EntityType.Builder.create(MolotovCocktailEntity::new, SpawnGroup.MISC)
             .dropsNothing()
             .dimensions(0.2f, 0.5f)
             .maxTrackingRange(4)
             .eyeHeight(0.4f)
+    );
+    EntityType<RedShellEntity> RED_SHELL = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "red_shell"), EntityType.Builder.create(RedShellEntity::new, SpawnGroup.MISC)
+            .dropsNothing()
+            .dimensions(0.2f, 0.2f)
+            .maxTrackingRange(8)
+            .eyeHeight(0.1f)
     );
 
     static <T extends Entity> EntityType<T> registerType(Identifier id, EntityType.Builder<T> type) {

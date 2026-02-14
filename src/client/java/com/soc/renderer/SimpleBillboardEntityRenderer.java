@@ -1,7 +1,7 @@
 package com.soc.renderer;
 
-import com.soc.entities.BWFireballEntity;
 import com.soc.lib.RenderHelper;
+import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -9,9 +9,10 @@ import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 
-public class SimpleBillboardEntityRenderer extends EntityRenderer<BWFireballEntity, EntityRenderState> {
+public class SimpleBillboardEntityRenderer extends EntityRenderer<Entity, EntityRenderState> {
     private final RenderLayer layer;
 
     public SimpleBillboardEntityRenderer(EntityRendererFactory.Context context, Identifier texture) {
@@ -37,7 +38,12 @@ public class SimpleBillboardEntityRenderer extends EntityRenderer<BWFireballEnti
     }
 
     @Override
-    public void updateRenderState(BWFireballEntity entity, EntityRenderState state, float tickProgress) {
+    public void updateRenderState(Entity entity, EntityRenderState state, float tickProgress) {
         super.updateRenderState(entity, state, tickProgress);
+    }
+
+    @Override
+    public boolean shouldRender(Entity entity, Frustum frustum, double x, double y, double z) {
+        return true;
     }
 }
