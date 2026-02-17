@@ -3,6 +3,7 @@ package com.soc.renderer;
 import com.soc.SocWars;
 import com.soc.entities.util.ModEntities;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.Identifier;
 
 public interface EntityRenderers {
@@ -19,5 +20,6 @@ public interface EntityRenderers {
         EntityRendererRegistry.register(ModEntities.HOLY_HAND_GRENADE, HolyHandGrenadeEntityRenderer::new);
         EntityRendererRegistry.register(ModEntities.MOLOTOV_COCKTAIL, MolotovCocktailEntityRenderer::new);
         EntityRendererRegistry.register(ModEntities.RED_SHELL, context -> new SimpleBillboardEntityRenderer(context, Identifier.of(SocWars.MOD_ID, "textures/item/red_shell.png")));
+        EntityRendererRegistry.register(ModEntities.POCKET_SAND, context -> new SimpleCubeEntityRenderer(context, Blocks.SAND.getDefaultState(), 0.3f));
     }
 }

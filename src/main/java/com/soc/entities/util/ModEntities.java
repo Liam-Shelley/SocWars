@@ -97,6 +97,12 @@ public interface ModEntities {
             .maxTrackingRange(8)
             .eyeHeight(0.1f)
     );
+    EntityType<PocketSandEntity> POCKET_SAND = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "pocket_sand"), EntityType.Builder.create(PocketSandEntity::new, SpawnGroup.MISC)
+            .dropsNothing()
+            .dimensions(0.3f, 0.3f)
+            .maxTrackingRange(8)
+            .eyeHeight(0.1f)
+    );
 
     static <T extends Entity> EntityType<T> registerType(Identifier id, EntityType.Builder<T> type) {
         RegistryKey<EntityType<?>> key = RegistryKey.of(RegistryKeys.ENTITY_TYPE, id);

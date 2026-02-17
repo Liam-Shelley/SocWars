@@ -54,6 +54,7 @@ public class ThrowableItem extends Item {
         addItemToGroupsAndBaseItemGroup(HAND_GRENADE, COMBAT);
         addItemToGroupsAndBaseItemGroup(HOLY_HAND_GRENADE, COMBAT);
         addItemToGroupsAndBaseItemGroup(MOLOTOV_COCKTAIL, COMBAT);
+        addItemToGroupsAndBaseItemGroup(POCKET_SAND, COMBAT);
     }
 
     public static final Item FIREBALL = ModItems.register("fireball", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new BWFireballEntity(ModEntities.FIREBALL, world, user, Vec3d.ZERO, 4f, BWFireballEntity::fireballExplosion), world, user, 1.75f)), new Settings().useCooldown(0.75f));
@@ -73,6 +74,7 @@ public class ThrowableItem extends Item {
         }
     }), new Settings().useCooldown(3f).rarity(Rarity.RARE));
     public static final Item MOLOTOV_COCKTAIL = ModItems.register("molotov_cocktail", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new MolotovCocktailEntity(ModEntities.MOLOTOV_COCKTAIL, world), world, user, 0.7f)), new Settings().useCooldown(0.5f).rarity(Rarity.UNCOMMON));
+    public static final Item POCKET_SAND = ModItems.register("pocket_sand", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new PocketSandEntity(ModEntities.POCKET_SAND, world), world, user, 0.9f), ((stack, consumer) -> consumer.accept(Text.translatable("tooltip.pocket_sand")))), new Settings().useCooldown(0.5f));
 
     @Override
     public ActionResult use(World world, PlayerEntity user, Hand hand) {
