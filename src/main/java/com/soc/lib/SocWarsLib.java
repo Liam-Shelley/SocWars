@@ -6,7 +6,6 @@ import com.soc.SocWars;
 import com.soc.mixin.GetItemSettingsComponent;
 import com.soc.mixin.GetItemSettingsComponentsMap;
 import com.soc.mixin.MostRecentDamage;
-import net.minecraft.component.Component;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.ComponentType;
 import net.minecraft.component.DataComponentTypes;
@@ -194,6 +193,10 @@ public final class SocWarsLib {
         iterateInCube(centre, intRadius, pos -> {
             if (sphereCheckFunction.test(pos)) function.accept(pos);
         });
+    }
+
+    public static void iterateInCube(IntBox box, Consumer<BlockPos> function) {
+        iterateInCube(box.getMin(), box.getMax(), function);
     }
 
     public static void iterateInCube(Vec3i centre, int radius, Consumer<BlockPos> function) {
@@ -490,8 +493,12 @@ public final class SocWarsLib {
         }
     }
 
+    public static Vec3d randomCentredVec3d(Random random, double size) {
+        return new Vec3d(random.nextDouble() * 2 * size - size, random.nextDouble() * 2 * size - size, random.nextDouble() * 2 * size - size);
+    }
+
     public static Vec3d randomCentredVec3d(Random random) {
-        return new Vec3d(random.nextDouble() * 2d - 1d, random.nextDouble() * 2d - 1d, random.nextDouble() * 2d - 1d);
+        return randomCentredVec3d(random, 1d);
     }
 
     @SuppressWarnings("unchecked")
@@ -511,5 +518,29 @@ public final class SocWarsLib {
         for (int i = 0; i < array.length; i++) {
             function.accept(i, array[i]);
         }
+    }
+
+    public static double sqrDistanceToUnitVector(Vec3d origin, Vec3d unitDirection, Vec3d point) {
+        final Vec3d rebasedPoint = point.subtract(origin);
+        final double sqrPointMagnitude = rebasedPoint.lengthSquared();
+        final double pointDotOrigin = rebasedPoint.dotProduct(unitDirection);
+
+        return sqrPointMagnitude * (1d - pointDotOrigin * pointDotOrigin / sqrPointMagnitude);
+    }
+
+    public static boolean isPointWithinDistanceOfUnitVector(Vec3d origin, Vec3d unitDirection, Vec3d point, double maxDistance) {
+        return sqrDistanceToUnitVector(origin, unitDirection, point) <= maxDistance * maxDistance;
+    }
+
+    public static double sqrDistanceToVector(Vec3d origin, Vec3d direction, Vec3d point) {
+        return sqrDistanceToUnitVector(origin, direction.normalize(), point);
+    }
+
+    public static double distanceToUnitVector(Vec3d origin, Vec3d direction, Vec3d point) {
+        return Math.sqrt(sqrDistanceToUnitVector(origin, direction, point));
+    }
+
+    public static double distanceToVector(Vec3d origin, Vec3d direction, Vec3d point) {
+        return Math.sqrt(sqrDistanceToVector(origin, direction, point));
     }
 }

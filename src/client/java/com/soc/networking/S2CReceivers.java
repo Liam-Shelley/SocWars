@@ -104,5 +104,10 @@ public class S2CReceivers {
                 return currentTime > 80;
             }));
         });
+        ClientPlayNetworking.registerGlobalReceiver(BatchParticlePayload.ID, ((payload, context) -> {
+            final World world = context.player().getWorld();
+            final Vec3d velocity = payload.velocity();
+            payload.positions().forEach(pos -> world.addParticleClient(payload.particleType(), pos.x, pos.y, pos.z, velocity.x, velocity.y, velocity.z));
+        }));
     }
 }

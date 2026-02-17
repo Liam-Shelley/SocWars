@@ -93,7 +93,7 @@ public class SocWarsClient implements ClientModInitializer {
 			if (!mainHandCheck && !offHandCheck) return;
 
 			final float tickProgress = renderContext.tickCounter().getTickProgress(true);
-			final Vec3d lookOffset = client.player.getRotationVec(tickProgress).multiply(client.player.getBlockInteractionRange());
+			final Vec3d lookOffset = client.player.getRotationVec(tickProgress).multiply(client.player.getBlockInteractionRange() - 1d);
 
 			final BlockPos pos = BlockPos.ofFloored(client.player.getEyePos().add(lookOffset));
 			if (client.crosshairTarget.getType() == HitResult.Type.BLOCK) return;

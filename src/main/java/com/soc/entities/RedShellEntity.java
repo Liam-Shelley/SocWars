@@ -65,7 +65,7 @@ public class RedShellEntity extends Entity implements Ownable {
     public void tick() {
         if (this.getWorld().isClient) return;
 
-        this.target = this.getWorld().getClosestPlayer(this.getX(), this.getY(), this.getZ(), 250d, entity -> !entity.isTeammate(this.getOwner()));
+        this.target = this.getWorld().getClosestPlayer(this.getX(), this.getY(), this.getZ(), 250d, entity -> !entity.isTeammate(this.getOwner()) && !entity.isSpectator());
         if (this.target == null) return;
 
         if (this.getWorld().getTime() % 8 == 0 && this.getWorld().random.nextFloat() < 0.75f) {

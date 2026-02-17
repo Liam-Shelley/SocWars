@@ -5,11 +5,17 @@ import com.soc.items.util.ModItems;
 import com.soc.items.util.UseFunction;
 import com.soc.lib.Coroutine;
 import com.soc.lib.Coroutines;
+import com.soc.lib.IntBox;
 import com.soc.materials.ToolMaterials;
+import com.soc.networking.s2c.BatchParticlePayload;
+import com.soc.util.DamageTypes;
 import com.soc.util.Sounds;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.Blocks;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.TooltipDisplayComponent;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.TntEntity;
@@ -25,6 +31,9 @@ import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.tooltip.TooltipType;
+import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -34,10 +43,14 @@ import net.minecraft.util.*;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -318,21 +331,60 @@ public class UseFunctionWeapon extends Item {
     );
     public static final Item SNIPER_RIFLE = ModItems.register("sniper_rifle", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 final ItemStack itemStack = user.getStackInHand(hand);
-
-                user.getWorld().playSound(null, user.getX(), user.getY(), user.getZ(), Sounds.AIR_HORN, SoundCategory.PLAYERS);
-
                 itemStack.damage(1, user, hand);
+                world.playSound(null, user.getX(), user.getY(), user.getZ(), Sounds.SNIPER_RIFLE_SHOT, SoundCategory.PLAYERS);
+
+                //actually technical stuff setup
+                final double maxDistance = 20d;
+
+                final Vec3d eyePos = user.getEyePos();
+                final Vec3d direction = user.getRotationVector();
+                final Vec3d eyeDirectionEnd = eyePos.add(direction.multiply(maxDistance));
+                final Box checkBox = new Box(eyePos, eyeDirectionEnd).expand(2d);
+
+                //block damage and particles
+                final List<Vec3d> positions = new ArrayList<>();
+                iterateInCube(new IntBox(checkBox), pos -> {
+                    if (isPointWithinDistanceOfUnitVector(eyePos, direction, pos.toCenterPos(), 1.75d) && !world.isAir(pos)) {
+                        world.setBlockState(pos, Blocks.AIR.getDefaultState());
+                        if (world.random.nextFloat() < 0.3f) positions.add(pos.toCenterPos());
+                    }
+                });
+
+                if (world instanceof ServerWorld serverWorld) {
+                    final Collection<ServerPlayerEntity> nearbyPlayers = PlayerLookup.around(serverWorld, eyePos, 250d);
+
+                    //particles 2: electric boogaloo
+                    final Vec3d velocity = direction.multiply(-0.05d).add(0d, 0.025d, 0d);
+                    final Vec3d mainParticePosition = eyePos.add(direction);
+                    nearbyPlayers.forEach(player -> {
+                        ServerPlayNetworking.send(player, new BatchParticlePayload(ParticleTypes.LARGE_SMOKE, positions, velocity));
+                        player.networkHandler.sendPacket(new ParticleS2CPacket(ParticleTypes.FLAME, true, true, mainParticePosition.x, mainParticePosition.y, mainParticePosition.z, 0.07f, 0.07f, 0.07f, 0.1f, 16));
+                    });
+
+                    //entity damage
+                    final List<Entity> entities = new ArrayList<>();
+                    EntityHitResult hitResult;
+                    do {
+                        hitResult = ProjectileUtil.raycast(user, eyePos, eyeDirectionEnd, checkBox, entity -> !entities.contains(entity), maxDistance * maxDistance);
+                        if (hitResult != null) {
+                            entities.add(hitResult.getEntity());
+                        }
+                    } while (hitResult != null && hitResult.getEntity().squaredDistanceTo(user.getPos()) <= maxDistance * maxDistance);
+
+                    entities.forEach(entity -> entity.damage(serverWorld, damageSource(serverWorld, DamageTypes.SNIPER_RIFLE, user), 12f));
+                }
 
                 return ActionResult.SUCCESS;
             }), new Settings()
             .maxDamage(30)
-            .useCooldown(2)
+            .useCooldown(2f)
             .rarity(Rarity.EPIC)
     );
 
     @Override
     public ActionResult use(World world, PlayerEntity user, Hand hand) {
-        return useFunction.use(world, user, hand);
+        return this.useFunction.use(world, user, hand);
     }
 
     @Override
@@ -349,9 +401,9 @@ public class UseFunctionWeapon extends Item {
     public static void shootEntity(PlayerEntity user, Hand hand, int missDamage, int hitDamage, int hitCooldown, Consumer<LivingEntity> effect) {
         final EntityHitResult hit = ProjectileUtil.raycast(
                 user,
-                user.getCameraPosVec(0),
-                user.getCameraPosVec(0).add(user.getRotationVector().multiply(250f)),
-                user.getBoundingBox().stretch(user.getRotationVector().multiply(250)),
+                user.getEyePos(),
+                user.getEyePos().add(user.getRotationVector().multiply(250d)),
+                user.getBoundingBox().stretch(user.getRotationVector().multiply(250d)),
                 entity -> entity instanceof LivingEntity,
                 250f * 250f
         );

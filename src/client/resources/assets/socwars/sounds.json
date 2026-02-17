@@ -40,5 +40,11 @@
     "sounds": [
       "socwars:get_some"
     ]
+  },
+  "sniper_rifle_shot": {
+    "subtitle": "sound.socwars.sniper_rifle_shot",
+    "sounds": [
+      "socwars:sniper_rifle_shot"
+    ]
   }
 }

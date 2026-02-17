@@ -1,5 +1,7 @@
 package com.soc.lib;
 
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3i;
 
 public class IntBox {
@@ -42,6 +44,10 @@ public class IntBox {
     public IntBox(Vec3i size) {
         this.min = Vec3i.ZERO;
         this.max = size;
+    }
+
+    public IntBox(Box box) {
+        this((int)box.minX, (int)box.minY, (int)box.minZ, (int)box.maxX, (int)box.maxY, (int)box.maxZ);
     }
 
     public Vec3i getSize() {
@@ -95,5 +101,9 @@ public class IntBox {
         }
 
         return split;
+    }
+
+    public Box asDoubleBox() {
+        return new Box(this.min.getX(), this.min.getY(), this.min.getZ(), this.max.getX(), this.max.getY(), this.max.getZ());
     }
 }

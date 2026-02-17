@@ -30,7 +30,7 @@ public class FeatherBlockItem extends BlockItem {
     public ActionResult use(World world, PlayerEntity user, Hand hand) {
         if (user.getGameMode() == GameMode.ADVENTURE) return ActionResult.PASS;
 
-        final BlockPos pos = BlockPos.ofFloored(user.getEyePos().add(user.getRotationVector().multiply(user.getBlockInteractionRange())));
+        final BlockPos pos = BlockPos.ofFloored(user.getEyePos().add(user.getRotationVector().multiply(user.getBlockInteractionRange() - 1d)));
         world.setBlockState(pos, ModBlocks.FEATHER_BLOCK.getDefaultState());
         user.getStackInHand(hand).decrementUnlessCreative(1, user);
         return ActionResult.SUCCESS;
