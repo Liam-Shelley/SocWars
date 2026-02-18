@@ -10,6 +10,7 @@
     "DepositableChest",
     "DepositableEnderChest",
     "DisableAdvancementNotifications",
+    "DisableEntityDismount",
     "DisableSleepingInBeds",
     "DoubleJump",
     "DropItemEvent",

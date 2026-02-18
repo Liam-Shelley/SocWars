@@ -58,6 +58,8 @@ public class ModBlocks {
     public static final Block MAP_BLOCK = ModBlocks.register("map_block", MapBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.IRON), true, ItemGroups.BLOCKS_KEY);
     public static final Block JOIN_QUEUE_BLOCK = ModBlocks.register("join_queue_block", JoinQueueBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).hardness(1000000f).resistance(1000000f).nonOpaque().pistonBehavior(PistonBehavior.BLOCK), true, ItemGroups.BLOCKS_KEY);
 
+    public static final Block PASSABLE_INVISIBLE_BLOCK = ModBlocks.register("passable_invisible_block", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.STONE).hardness(1000000f).resistance(1000000f).nonOpaque().noCollision().pistonBehavior(PistonBehavior.BLOCK), true, ItemGroups.BLOCKS_KEY);
+
     /*
     public static final Block SOC_HEAD = ModBlocks.register(
             "soc_head",

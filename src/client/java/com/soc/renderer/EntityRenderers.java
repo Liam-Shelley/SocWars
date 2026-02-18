@@ -21,5 +21,6 @@ public interface EntityRenderers {
         EntityRendererRegistry.register(ModEntities.MOLOTOV_COCKTAIL, MolotovCocktailEntityRenderer::new);
         EntityRendererRegistry.register(ModEntities.RED_SHELL, context -> new SimpleBillboardEntityRenderer(context, Identifier.of(SocWars.MOD_ID, "textures/item/red_shell.png")));
         EntityRendererRegistry.register(ModEntities.POCKET_SAND, context -> new SimpleCubeEntityRenderer(context, Blocks.SAND.getDefaultState(), 0.3f));
+        EntityRendererRegistry.register(ModEntities.JET_SHOPPING_TROLLEY, JetShoppingTrolleyEntityRenderer::new);
     }
 }

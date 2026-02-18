@@ -1,5 +1,6 @@
 {
   "values": [
-    "#socwars:map_placeholder_without_beds"
+    "#socwars:map_placeholder_without_beds",
+    "socwars:passable_invisible_block"
   ]
 }

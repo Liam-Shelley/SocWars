@@ -103,6 +103,12 @@ public interface ModEntities {
             .maxTrackingRange(8)
             .eyeHeight(0.1f)
     );
+    EntityType<JetShoppingTrolleyEntity> JET_SHOPPING_TROLLEY = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "jet_shopping_trolley"), EntityType.Builder.<JetShoppingTrolleyEntity>create(JetShoppingTrolleyEntity::new, SpawnGroup.MISC)
+            .dropsNothing()
+            .dimensions(0.3f, 0.3f)
+            .maxTrackingRange(8)
+            .eyeHeight(0.1f)
+    );;
 
     static <T extends Entity> EntityType<T> registerType(Identifier id, EntityType.Builder<T> type) {
         RegistryKey<EntityType<?>> key = RegistryKey.of(RegistryKeys.ENTITY_TYPE, id);

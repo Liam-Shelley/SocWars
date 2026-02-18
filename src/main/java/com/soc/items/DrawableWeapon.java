@@ -27,6 +27,7 @@ import net.minecraft.world.explosion.AdvancedExplosionBehavior;
 import java.util.Optional;
 import java.util.function.Function;
 
+import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
 import static com.soc.lib.SocWarsLib.*;
 
 public class DrawableWeapon extends Item {
@@ -38,9 +39,9 @@ public class DrawableWeapon extends Item {
     }
 
     public static void initialise() {
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(ENDER_STAFF, ItemGroups.TOOLS);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(WIND_STAFF, ItemGroups.TOOLS);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(MOBBING_STAFF, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(ENDER_STAFF, ItemGroups.TOOLS);
+        addItemToGroupsAndBaseItemGroup(WIND_STAFF, ItemGroups.TOOLS);
+        addItemToGroupsAndBaseItemGroup(MOBBING_STAFF, ItemGroups.COMBAT);
     }
 
     public static final Item ENDER_STAFF = ModItems.register("ender_staff", settings -> new DrawableWeapon(settings, (stack, world, user, progress) -> {

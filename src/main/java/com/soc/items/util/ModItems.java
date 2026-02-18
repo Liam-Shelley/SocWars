@@ -42,6 +42,7 @@ public class ModItems {
         BlockItems.initialise();
         BaseTool.initialise();
         BaseItem.initialise();
+        JetShoppingTrolley.initialise();
     }
 
     public static Item register(String name, Function<Item.Settings, Item> itemFactory, Item.Settings settings) {
