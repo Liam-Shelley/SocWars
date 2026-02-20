@@ -1,7 +1,6 @@
 package com.soc.util;
 
 import com.soc.game.manager.AbstractGameManager;
-import com.soc.game.manager.GamesManager;
 import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -16,9 +15,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.*;
-import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
@@ -34,7 +31,7 @@ public class SphereExplosion {
     private SphereExplosion() {}
 
     public static void explode(World world, Vec3d centre, float explosionRadius, float explosionVariance, float damageFactor, float knockbackFactor, boolean blockDamage, @Nullable Entity causingEntity, @Nullable RegistryKey<DamageType> damageType) {
-        final Predicate<BlockPos> damage = getBlockDamagePredicate(world, blockDamage, causingEntity);
+        final Predicate<BlockPos> damage = AbstractGameManager.getBlockDamagePredicate(world, blockDamage, causingEntity);
 
         iterateInSphere(BlockPos.ofFloored(centre), explosionRadius, explosionVariance, pos -> {
                 final BlockState currentState = world.getBlockState(pos);
@@ -108,21 +105,5 @@ public class SphereExplosion {
 
     public static void fireExplosion(World world, BlockPos centre, float radius) {
         fireExplosion(world, centre, radius, 0.1f);
-    }
-
-    public static Predicate<BlockPos> getBlockDamagePredicate(World world, boolean blockDamage, @Nullable Entity causingEntity) {
-        final Optional<AbstractGameManager<?, ?, ?>> managerOptional = causingEntity == null ? Optional.empty() : GamesManager.getInstance().getGame(causingEntity);
-
-        final Predicate<BlockPos> damage;
-        if (!blockDamage) {
-            damage = pos -> false;
-        } else if (managerOptional.isPresent()) {
-            final AbstractGameManager<?, ?, ?> manager = managerOptional.get();
-            damage = manager::isBlockUnprotected;
-        } else {
-            final boolean def = world instanceof ServerWorld serverWorld && serverWorld.getGameRules().getBoolean(GameRules.TNT_EXPLODES);
-            damage = pos -> def;
-        }
-        return damage;
     }
 }

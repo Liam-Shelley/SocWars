@@ -39,6 +39,7 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -48,6 +49,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static com.soc.lib.SocWarsLib.*;
@@ -497,5 +499,21 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
             SocWars.LOGGER.warn("Failed to retrieve top killers as a player was null");
             return List.of();
         }
+    }
+
+    public static Predicate<BlockPos> getBlockDamagePredicate(World world, boolean blockDamage, @Nullable Entity causingEntity) {
+        final Optional<AbstractGameManager<?, ?, ?>> managerOptional = causingEntity == null ? Optional.empty() : GamesManager.getInstance().getGame(causingEntity);
+
+        final Predicate<BlockPos> damage;
+        if (!blockDamage) {
+            damage = pos -> false;
+        } else if (managerOptional.isPresent()) {
+            final AbstractGameManager<?, ?, ?> manager = managerOptional.get();
+            damage = manager::isBlockUnprotected;
+        } else {
+            final boolean def = world instanceof ServerWorld serverWorld && serverWorld.getGameRules().getBoolean(GameRules.TNT_EXPLODES);
+            damage = pos -> def;
+        }
+        return damage;
     }
 }

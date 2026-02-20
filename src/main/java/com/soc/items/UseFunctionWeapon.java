@@ -59,7 +59,7 @@ import java.util.function.Predicate;
 import static com.soc.items.BowItem.playBowSound;
 import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
 import static com.soc.lib.SocWarsLib.*;
-import static com.soc.util.SphereExplosion.getBlockDamagePredicate;
+import static com.soc.game.manager.AbstractGameManager.getBlockDamagePredicate;
 
 public class UseFunctionWeapon extends Item {
     private final UseFunction useFunction;
