@@ -32,7 +32,7 @@ public class ModBlocks {
     public static final Block UNOBTANIUM_BLOCK = ModBlocks.register("unobtanium_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(120f, 1200f), settings -> settings.rarity(Rarity.RARE), ItemGroups.BLOCKS_KEY);
     public static final Block NEAR_INFINITE_DENSITY_BLOCK = ModBlocks.register("near_infinite_density_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(250f, 1200f), settings -> settings.rarity(Rarity.EPIC), ItemGroups.BLOCKS_KEY);
     public static final Block LIAM_BLOCK = ModBlocks.register("liam_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(500f, 1200f), settings -> settings.rarity(Rarity.EPIC), ItemGroups.BLOCKS_KEY);
-    public static final ManyBedsBlock MANY_BEDS_BLOCK = ModBlocks.register("many_beds_block", ManyBedsBlock::new, AbstractBlock.Settings.create().requiresTool().strength(2f, 1200f).sounds(BlockSoundGroup.WOOD).nonOpaque(), settings -> settings.rarity(Rarity.UNCOMMON), ItemGroups.BLOCKS_KEY);
+    public static final ManyBedsBlock MANY_BEDS_BLOCK = ModBlocks.register("many_beds_block", ManyBedsBlock::new, AbstractBlock.Settings.create().requiresTool().strength(2f, 1200f).sounds(BlockSoundGroup.WOOD).nonOpaque(), false, ItemGroups.BLOCKS_KEY);
     public static final Block FEATHER_BLOCK = ModBlocks.register("feather_block", Block::new, AbstractBlock.Settings.create().breakInstantly(), FeatherBlockItem::new, ItemGroups.BLOCKS_KEY);
     public static final Block GALLIUM_BLOCK = ModBlocks.register("gallium_block", GalliumBlock::new, AbstractBlock.Settings.create().requiresTool().strength(0.35f, 2.5f).noCollision(), settings -> settings.rarity(Rarity.UNCOMMON), ItemGroups.BLOCKS_KEY);
 

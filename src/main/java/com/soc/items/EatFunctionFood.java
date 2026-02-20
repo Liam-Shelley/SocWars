@@ -38,7 +38,6 @@ public class EatFunctionFood extends Item { //rewrite all of this as consumable 
         addItemToGroupsAndBaseItemGroup(SHRINKING_PILLS, ItemGroups.FOOD_AND_DRINK);
         addItemToGroupsAndBaseItemGroup(BIGGENING_PILLS, ItemGroups.FOOD_AND_DRINK);
         addItemToGroupsAndBaseItemGroup(CHORUS_FRUIT_SALAD, ItemGroups.FOOD_AND_DRINK);
-        addItemToGroupsAndBaseItemGroup(RED_SHELL, ItemGroups.FOOD_AND_DRINK);
     }
 
     public static final Item SHRINKING_PILLS = ModItems.register("shrinking_pills", settings -> new EatFunctionFood(settings, (stack, world, user) -> {
@@ -58,16 +57,6 @@ public class EatFunctionFood extends Item { //rewrite all of this as consumable 
 
         final boolean success = randomTeleport(world, user, CHORUS_SALAD_TRIES, 50, 15f);
         if (!success && user instanceof PlayerEntity player) player.sendMessage(Text.translatable("chorus_fruit_salad.fail"), false);
-
-        return null;
-            }, new FoodComponent(6, 4, true)), new Settings()
-            .useCooldown(5f)
-            .rarity(Rarity.RARE)
-    );
-    public static final Item RED_SHELL = ModItems.register("red_shell", settings -> new EatFunctionFood(settings, (stack, world, user) -> {
-        if (world.isClient) return null;
-
-        world.spawnEntity(new RedShellEntity(world, user.getPos(), user));
 
         return null;
             }, new FoodComponent(6, 4, true)), new Settings()

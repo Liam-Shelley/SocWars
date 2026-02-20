@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "socwars:block/invisible_passable_block"
+    }
+  }
+}

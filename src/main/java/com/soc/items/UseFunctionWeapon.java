@@ -1,6 +1,7 @@
 package com.soc.items;
 
 import com.soc.effects.util.ModEffects;
+import com.soc.entities.RedShellEntity;
 import com.soc.items.util.ModItems;
 import com.soc.items.util.UseFunction;
 import com.soc.lib.Coroutine;
@@ -53,10 +54,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import static com.soc.items.BowItem.playBowSound;
 import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
 import static com.soc.lib.SocWarsLib.*;
+import static com.soc.util.SphereExplosion.getBlockDamagePredicate;
 
 public class UseFunctionWeapon extends Item {
     private final UseFunction useFunction;
@@ -83,6 +86,7 @@ public class UseFunctionWeapon extends Item {
         addItemToGroupsAndBaseItemGroup(DEATH_RAIN, ItemGroups.COMBAT);
         addItemToGroupsAndBaseItemGroup(ALPHA_BOW, ItemGroups.COMBAT);
         addItemToGroupsAndBaseItemGroup(SNIPER_RIFLE, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(RED_SHELL, ItemGroups.COMBAT);
     }
 
     public static final Item DASHREND = ModItems.register("dashrend", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
@@ -344,9 +348,11 @@ public class UseFunctionWeapon extends Item {
 
                 //block damage and particles
                 final List<Vec3d> positions = new ArrayList<>();
+                final Predicate<BlockPos> damage = getBlockDamagePredicate(world, true, user);
+
                 iterateInCube(new IntBox(checkBox), pos -> {
                     if (isPointWithinDistanceOfUnitVector(eyePos, direction, pos.toCenterPos(), 1.75d) && !world.isAir(pos)) {
-                        world.setBlockState(pos, Blocks.AIR.getDefaultState());
+                        if (damage.test(pos)) world.setBlockState(pos, Blocks.AIR.getDefaultState());
                         if (world.random.nextFloat() < 0.3f) positions.add(pos.toCenterPos());
                     }
                 });
@@ -380,6 +386,16 @@ public class UseFunctionWeapon extends Item {
             .maxDamage(30)
             .useCooldown(2f)
             .rarity(Rarity.EPIC)
+    );
+    public static final Item RED_SHELL = ModItems.register("red_shell", settings -> new UseFunctionWeapon(settings, (world, player, hand) -> {
+                if (world.isClient) return null;
+
+                world.spawnEntity(new RedShellEntity(world, player.getPos(), player));
+
+                return ActionResult.SUCCESS;
+            }), new Settings()
+            .useCooldown(5f)
+            .rarity(Rarity.RARE)
     );
 
     @Override

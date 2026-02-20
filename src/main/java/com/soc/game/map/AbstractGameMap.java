@@ -43,12 +43,15 @@ public abstract class AbstractGameMap {
     private static final int XZ_CLEARING_BUFFER = 64;
 
     protected final StructureTemplate structure;
+    public final float size;
+
     protected final BlockPos centrePos;
     protected final BlockPos absoluteCentrePos;
     protected final Map<DyeColor, BlockPos> spawnPositions;
     protected final SparseVoxelOctree<Boolean> blockProtectionOverlay;
 
     protected final ServerWorld world;
+
     protected int tick;
 
     public AbstractGameMap(
@@ -60,6 +63,7 @@ public abstract class AbstractGameMap {
             ServerWorld world
     ) {
         this.structure = structure;
+        this.size = structure.getSize().getChebyshevDistance(Vec3i.ZERO);
         this.spawnPositions = spawnPositions.stream().collect(Collectors.toMap(SpawnPosition::dyeColour, SpawnPosition::pos));
         this.centrePos = centrePos.toImmutable();
         this.absoluteCentrePos = absoluteCentrePos;

@@ -23,6 +23,7 @@
     "LivingEntityAttributesMixin",
     "ModifyAppliedDamageMixin",
     "MostRecentDamage",
+    "NoBlockDropTag",
     "OnBlockPlacedEventTrigger",
     "OnChestOpenedEventTrigger",
     "OnCraftingTableOpenEventTrigger",

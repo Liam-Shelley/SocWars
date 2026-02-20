@@ -198,14 +198,12 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     public ActionResult onBlockPlaced(ServerPlayerEntity player, BlockPos pos, ItemUsageContext context) {
         final boolean allow = this.isBlockUnprotected(player, pos);
         if (allow) {
-            if (!pos.isWithinDistance(this.map.getCentrePos(), 10d)) {
-                ServerWorld world = player.getWorld();
-
-                world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), SoundCategory.MASTER);
+            if (!pos.isWithinDistance(this.map.getCentrePos(), this.map.size * 1.35f)) {
+                this.world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), SoundCategory.MASTER);
                 player.sendMessage(Text.translatable("game.warning.placed_out_of_bounds"));
                 player.networkHandler.sendPacket(new TitleS2CPacket(Text.translatable("game.warning.placed_out_of_bounds.title")));
 
-                Events.getInstance().scheduleEvent(() -> world.setBlockState(pos, Blocks.AIR.getDefaultState()), 100);
+                Events.getInstance().scheduleEvent(() -> this.world.setBlockState(pos, Blocks.AIR.getDefaultState()), 50);
             }
             return ActionResult.PASS;
         } else {

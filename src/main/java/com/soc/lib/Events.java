@@ -30,10 +30,10 @@ public class Events {
     }
 
     public <T> void scheduleEvent(Consumer<T> function, T context, long time) {
-        this.events.add(new Event<>(function, context, world.getTime() + time));
+        this.events.add(new Event<>(function, context, this.world.getTime() + time));
     }
 
     public <T> void scheduleEvent(Runnable function, long time) {
-        this.events.add(new Event<>(function, world.getTime() + time));
+        this.events.add(new Event<>(function, this.world.getTime() + time));
     }
 }

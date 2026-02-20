@@ -273,6 +273,8 @@
   "item.socwars.itsevocat_skull": "Itsevocat's Skull",
   "block.socwars.protected_air": "Protected Air",
   "item.socwars.protected_air": "Protected Air",
+  "block.socwars.passable_invisible_block": "Passable Invisible Block",
+  "item.socwars.passable_invisible_block": "Passable Invisible Block",
   "text.map_block.enter_name_field": "Map Name:",
   "text.map_block.enter_x_field": "X Size: ",
   "text.map_block.enter_y_field": "Y Size: ",

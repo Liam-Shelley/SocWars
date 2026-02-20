@@ -105,7 +105,7 @@ public interface ModEntities {
     );
     EntityType<JetShoppingTrolleyEntity> JET_SHOPPING_TROLLEY = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "jet_shopping_trolley"), EntityType.Builder.<JetShoppingTrolleyEntity>create(JetShoppingTrolleyEntity::new, SpawnGroup.MISC)
             .dropsNothing()
-            .dimensions(0.3f, 0.3f)
+            .dimensions(0.7f, 0.7f)
             .maxTrackingRange(8)
             .eyeHeight(0.1f)
     );;

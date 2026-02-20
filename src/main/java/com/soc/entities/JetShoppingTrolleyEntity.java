@@ -20,9 +20,15 @@ public class JetShoppingTrolleyEntity extends Entity implements AllowsDismount {
         this.setPosition(user.getPos());
         this.setAngles(user.getYaw(), user.getPitch());
         user.startRiding(this);
-        
+
 
         this.setVelocity(this.getRotationVector());
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        this.move(MovementType.SELF, this.getVelocity());
     }
 
     @Override

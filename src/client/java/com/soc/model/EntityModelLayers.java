@@ -17,4 +17,5 @@ public interface EntityModelLayers {
     EntityModelLayer HOLY_HAND_GRENADE = registerModelLayer("holy_hand_grenade", HolyHandGrenadeModel::getTexturedModelData);
     EntityModelLayer HAND_GRENADE = registerModelLayer("hand_grenade", HandGrenadeModel::getTexturedModelData);
     EntityModelLayer MOLOTOV_COCKTAIL = registerModelLayer("molotov_cocktail", MolotovCocktailModel::getTexturedModelData);
+    EntityModelLayer JET_SHOPPING_TROLLEY = registerModelLayer("jet_shopping_trolley", JetShoppingTrolleyModel::getTexturedModelData);
 }

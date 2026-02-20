@@ -11,6 +11,7 @@ public interface BlockTags {
     TagKey<Block> NO_BREAK_FROM_WATER = from_string("no_break_from_water");
     TagKey<Block> MAP_PLACEHOLDER = from_string("map_placeholder");
     TagKey<Block> MAP_PLACEHOLDER_WITHOUT_BEDS = from_string("map_placeholder_without_beds");
+    TagKey<Block> NO_BLOCK_DROP = from_string("no_block_drop");
 
     private static TagKey<Block> from_string(String id) {
         return TagKey.of(RegistryKeys.BLOCK, Identifier.of(SocWars.MOD_ID, id));
