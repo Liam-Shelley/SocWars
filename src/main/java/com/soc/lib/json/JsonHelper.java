@@ -1,6 +1,7 @@
 package com.soc.lib.json;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
@@ -12,16 +13,16 @@ import com.soc.game.manager.bedwars.traps.Traps;
 import com.soc.game.map.DyeColourWithEmpty;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
-import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextCodecs;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.Arrays;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -74,8 +75,37 @@ public class JsonHelper {
     }
 
     public static <T> T getDefaultedObject(JsonObject json, String key, Function<JsonObject, T> constructor, T def) {
-        final JsonObject timeJson = json.getAsJsonObject(key);
-        return timeJson == null ? def : constructor.apply(timeJson);
+        if (!json.get(key).isJsonObject()) return def;
+
+        final JsonObject objectJson = json.getAsJsonObject(key);
+        return objectJson == null ? def : constructor.apply(objectJson);
+    }
+
+    @Nullable
+    public static <T> T getDefaultedObject(JsonObject json, String key, Function<JsonObject, T> constructor) {
+        return getDefaultedObject(json, key, constructor, null);
+    }
+
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    public static <T> List<T> getDefaultedObjectList(JsonObject json, String key, Function<JsonObject, T> constructor, @NotNull Optional<T> def) {
+        if (!json.get(key).isJsonArray()) return List.of();
+
+        final JsonArray jsonList = json.getAsJsonArray(key);
+        final List<T> destList = new ArrayList<>();
+        jsonList.forEach(element -> {
+            if (!element.isJsonObject()) {
+                SocWars.LOGGER.warn("Failed to deserialise element: {} from JsonObject: {}", element, json);
+                def.ifPresent(destList::add);
+            } else {
+                destList.add(constructor.apply(element.getAsJsonObject()));
+            }
+        });
+
+        return destList;
+    }
+
+    public static <T> List<T> getDefaultedObjectList(JsonObject json, String key, Function<JsonObject, T> constructor) {
+        return getDefaultedObjectList(json, key, constructor, Optional.empty());
     }
 
     public static void runFunctionOverArray(Reader reader, Consumer<JsonObject> function) {

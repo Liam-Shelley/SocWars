@@ -55,7 +55,7 @@ public interface ModEntities {
             .maxTrackingRange(10)
             .trackingTickInterval(10)
     );
-    EntityType<EnderBeamEntity> ENDER_BEAM = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "ender_beam"), EntityType.Builder.create(EnderBeamEntity::new, SpawnGroup.MISC)
+    EntityType<EnderBeamEntity> ENDER_BEAM = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "ender_beam"), EntityType.Builder.<EnderBeamEntity>create(EnderBeamEntity::new, SpawnGroup.MISC)
             .dropsNothing()
             .dimensions(0.25f, 0.25f)
             .maxTrackingRange(4)
