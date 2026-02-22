@@ -68,7 +68,7 @@ public class SocWars implements ModInitializer {
 
 		SimpleShopItem.initialise();
 		UpgradeableShopItem.initialise();
-		TeamUpgradeItem.initialise();
+		EnchantmentUpgradeShopItem.initialise();
 		TeamShopItem.initialise();
 		TrapShopItem.initialise();
 		DisplayShopItem.initialise();

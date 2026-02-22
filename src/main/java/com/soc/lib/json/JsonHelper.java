@@ -187,9 +187,9 @@ public class JsonHelper {
 
         final JsonElement element = json.get(key);
 
-        Text text = Text.literal("hello this should be blue").formatted(Formatting.BLUE);
+        final Text text = Text.literal("hello this should be blue").formatted(Formatting.BLUE);
 
-        DataResult<JsonElement> a = TextCodecs.CODEC.encodeStart(JsonOps.INSTANCE, text);
+        final DataResult<JsonElement> a = TextCodecs.CODEC.encodeStart(JsonOps.INSTANCE, text);
 
         a.ifSuccess(success -> {
             String asString = new Gson().toJson(success);
