@@ -13,6 +13,7 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -23,7 +24,7 @@ import static net.minecraft.util.JsonHelper.deserialize;
 
 public class TeamUpgradeItem implements ShopItem<TeamUpgradeItem> {
     public static final int ID = 6;
-    private static final PacketCodec<RegistryByteBuf, TeamUpgradeItem> PACKET_CODEC = PacketCodec.tuple(Cost.PACKET_CODEC, TeamUpgradeItem::getCost, PacketCodecs.optional(ItemStack.PACKET_CODEC), TeamUpgradeItem::getOptionalIcon, PacketCodecs.INTEGER, TeamUpgradeItem::getTier, TeamUpgradeItem::new);
+    private static final PacketCodec<RegistryByteBuf, TeamUpgradeItem> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.optional(ItemStack.PACKET_CODEC), TeamUpgradeItem::getOptionalIcon, PacketCodecs.collection(ArrayList::new, Cost.PACKET_CODEC), TeamUpgradeItem::getCosts, PacketCodecs.INTEGER, TeamUpgradeItem::getTier, TeamUpgradeItem::new);
 
     public static final String COSTS_KEY = "costs";
 
@@ -31,6 +32,7 @@ public class TeamUpgradeItem implements ShopItem<TeamUpgradeItem> {
     private final List<Cost> costs;
 
     private int tier;
+
 
     public static void initialise() {
         ShopItem.DECODER_MAP.put(ID, PACKET_CODEC::decode);
@@ -40,6 +42,11 @@ public class TeamUpgradeItem implements ShopItem<TeamUpgradeItem> {
         this.icon = icon;
         this.costs = costs;
         this.tier = tier;
+    }
+
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    public TeamUpgradeItem(Optional<ItemStack> itemStack, List<Cost> costs, Integer tier) {
+        this(itemStack.orElse(ItemStack.EMPTY), costs, tier);
     }
 
     public TeamUpgradeItem(JsonObject object) {
@@ -82,6 +89,10 @@ public class TeamUpgradeItem implements ShopItem<TeamUpgradeItem> {
     @Override
     public Cost getCost() {
         return this.tier < this.costs.size() ? this.costs.get(this.tier) : this.costs.getLast();
+    }
+
+    private List<Cost> getCosts() {
+        return this.costs;
     }
 
     @Override
