@@ -7,10 +7,12 @@ import com.soc.game.manager.bedwars.traps.Traps;
 import com.soc.resourcedata.deserialisation.Cost;
 import com.soc.screenhandler.AbstractShopScreenHandler;
 import com.soc.screenhandler.BedwarsTeamShopScreenHandler;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextCodecs;
@@ -86,6 +88,9 @@ public class TrapShopItem implements ShopItem<TrapShopItem> {
     public int id() {
         return ID;
     }
+
+    @Override
+    public void enchant(RegistryEntry<Enchantment> enchantment, int tier) {}
 
     @Override
     public TrapShopItem lazyClone() {

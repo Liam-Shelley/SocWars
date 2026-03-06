@@ -6,12 +6,14 @@ import com.soc.items.components.ModComponents;
 import com.soc.resourcedata.deserialisation.Cost;
 import com.soc.resourcedata.deserialisation.CostStack;
 import com.soc.screenhandler.AbstractShopScreenHandler;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.JsonHelper;
@@ -154,6 +156,11 @@ public class UpgradeableShopItem implements ShopItem<UpgradeableShopItem> {
     @Override
     public int id() {
         return ID;
+    }
+
+    @Override
+    public void enchant(RegistryEntry<Enchantment> enchantment, int tier) {
+        this.stacks.forEach(costStack -> ShopItem.applyEnchantmentIfApplicable(costStack.stack(), enchantment, tier));
     }
 
     public int getSlotTrackingId() {

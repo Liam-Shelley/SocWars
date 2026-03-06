@@ -6,6 +6,8 @@ import com.soc.game.manager.bedwars.traps.TrapManager;
 import com.soc.networking.s2c.bedwars.BedwarsTeamShopDataPayload;
 import com.soc.resourcedata.containers.BedwarsShopDataContainer;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.Vec3d;
@@ -79,6 +81,10 @@ public class TeamStats {
 
     public boolean buyAbility(Trap ability, World world) {
         return this.trapManager.buyAbility(ability);
+    }
+
+    public void buyEnchantmentUpgrade(RegistryEntry<Enchantment> enchantment, World world, int tier) {
+        this.playerStatsMap.forEach(((uuid, playerStats) -> playerStats.buyEnchantmentUpgrade(enchantment, world, tier)));
     }
 
     //Goddamn this stupid visual bug

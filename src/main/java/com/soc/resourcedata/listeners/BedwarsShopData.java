@@ -1,9 +1,6 @@
 package com.soc.resourcedata.listeners;
 import com.soc.SocWars;
-import com.soc.game.manager.bedwars.shopitems.SimpleShopItem;
-import com.soc.game.manager.bedwars.shopitems.TeamShopItem;
-import com.soc.game.manager.bedwars.shopitems.TrapShopItem;
-import com.soc.game.manager.bedwars.shopitems.UpgradeableShopItem;
+import com.soc.game.manager.bedwars.shopitems.*;
 import com.soc.resourcedata.containers.BedwarsShopDataContainer;
 import com.soc.resourcedata.deserialisation.PreSelectionBedwarsShopCategory;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
@@ -37,6 +34,7 @@ public class BedwarsShopData implements SimpleSynchronousResourceReloadListener 
         readResources(manager, "bedwars_shop_data/upgradeable_items", BASE_PATH_PREDICATE, (reader, id) -> BedwarsShopDataContainer.INSTANCE.addSlotResource(id, new UpgradeableShopItem(reader)));
         readResources(manager, "bedwars_shop_data/team_items", BASE_PATH_PREDICATE, (reader, id) -> BedwarsShopDataContainer.INSTANCE.addSlotResource(id, new TeamShopItem(reader)));
         readResources(manager, "bedwars_shop_data/trap_items", BASE_PATH_PREDICATE, (reader, id) -> BedwarsShopDataContainer.INSTANCE.addSlotResource(id, new TrapShopItem(reader)));
+        readResources(manager, "bedwars_shop_data/enchantment_upgrade_items", BASE_PATH_PREDICATE, (reader, id) -> BedwarsShopDataContainer.INSTANCE.addSlotResource(id, new EnchantmentUpgradeShopItem(reader)));
 
         BedwarsShopDataContainer.INSTANCE.cache();
     }

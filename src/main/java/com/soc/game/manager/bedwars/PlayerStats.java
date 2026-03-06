@@ -1,11 +1,14 @@
 package com.soc.game.manager.bedwars;
 
+import com.soc.game.manager.bedwars.shopitems.SimpleShopItem;
 import com.soc.items.components.ModComponents;
 import com.soc.resourcedata.containers.BedwarsShopDataContainer;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
@@ -75,5 +78,22 @@ public class PlayerStats {
 
     public BedwarsShopContents getShopContents() {
         return this.shopContents;
+    }
+
+    public void buyEnchantmentUpgrade(RegistryEntry<Enchantment> enchantment, World world, int tier) {
+        this.shopContents.forEach(category -> category.forEach(item -> {
+            if (enchantment.value().isAcceptableItem(item.getIcon())) {
+                item.enchant(enchantment, tier); //Change this to an enchant method on the ShopItem interface?
+            }
+        }));
+
+        final PlayerEntity player = world.getPlayerByUuid(this.player);
+        if (player != null) {
+            player.getInventory().forEach(stack -> {
+                if (enchantment.value().isAcceptableItem(stack)) {
+                    stack.addEnchantment(enchantment, tier);
+                }
+            });
+        }
     }
 }

@@ -10,6 +10,7 @@ import net.minecraft.network.codec.PacketCodecs;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public record BedwarsShopContents(List<BedwarsShopCategory> contents) {
     public static final PacketCodec<RegistryByteBuf, BedwarsShopContents> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.collection(ArrayList::new, BedwarsShopCategory.PACKET_CODEC), BedwarsShopContents::contents, BedwarsShopContents::new);
@@ -52,5 +53,9 @@ public record BedwarsShopContents(List<BedwarsShopCategory> contents) {
         } else {
             this.contents.set(index, category);
         }
+    }
+
+    public void forEach(Consumer<BedwarsShopCategory> function) {
+        this.contents.forEach(function);
     }
 }

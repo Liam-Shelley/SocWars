@@ -5,14 +5,17 @@ import com.soc.resourcedata.deserialisation.Cost;
 import com.soc.screenhandler.AbstractShopScreenHandler;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.EquippableComponent;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.encoding.VarInts;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 
 import java.util.*;
@@ -89,6 +92,18 @@ public interface ShopItem<INHERITOR> {
                 }
                 return false;
             }
+        }
+    }
+
+    default void enchant(RegistryEntry<Enchantment> enchantment, int tier) {
+        if (enchantment.value().isAcceptableItem(this.getIcon())) {
+            this.getIcon().addEnchantment(enchantment, tier);
+        }
+    }
+
+    static void applyEnchantmentIfApplicable(ItemStack stack, RegistryEntry<Enchantment> enchantment, int tier) {
+        if (enchantment.value().isAcceptableItem(stack)) {
+            stack.addEnchantment(enchantment, tier);
         }
     }
 

@@ -6,12 +6,14 @@ import com.soc.game.map.DyeColourWithEmpty;
 import com.soc.resourcedata.deserialisation.Cost;
 import com.soc.screenhandler.AbstractShopScreenHandler;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 
@@ -106,6 +108,12 @@ public class TeamShopItem implements ShopItem<TeamShopItem> {
     @Override
     public int id() {
         return ID;
+    }
+
+    @Override
+    public void enchant(RegistryEntry<Enchantment> enchantment, int tier) {
+        this.stackMap.ifLeft(stack -> ShopItem.applyEnchantmentIfApplicable(stack, enchantment, tier));
+        this.stackMap.ifRight(map -> map.values().forEach(stack -> ShopItem.applyEnchantmentIfApplicable(stack, enchantment, tier)));
     }
 
     /// Should only be called before {@link TeamShopItem#setTeam} has been called

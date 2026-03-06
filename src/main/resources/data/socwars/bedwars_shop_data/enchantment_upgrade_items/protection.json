@@ -1,0 +1,18 @@
+{
+  "icon": "minecraft:diamond_chestplate",
+  "costs": [
+    {
+      "diamonds": 5
+    },
+    {
+      "diamonds": 10
+    },
+    {
+      "diamonds": 20
+    },
+    {
+      "diamonds": 30
+    }
+  ],
+  "enchantment": "minecraft:protection"
+}

@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 public class BedwarsShopCategory {
     public static final PacketCodec<RegistryByteBuf, BedwarsShopCategory> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.BOOLEAN, BedwarsShopCategory::isQuickBuy, new PacketCodec<>() {
@@ -78,6 +79,10 @@ public class BedwarsShopCategory {
     public void setShopItem(int slot, ShopItem<?> item) {
         if (slot < 0 || slot >= this.items.size()) return;
         this.items.set(slot, item);
+    }
+
+    public void forEach(Consumer<ShopItem<?>> function) {
+        this.items.forEach(function);
     }
 
     public void forEachEnumerate(BiConsumer<Integer, ShopItem<?>> function) {

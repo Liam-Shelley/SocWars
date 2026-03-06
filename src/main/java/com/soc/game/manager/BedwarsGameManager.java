@@ -17,6 +17,7 @@ import com.soc.resourcedata.containers.BedwarsGeneratorDataContainer;
 import com.soc.resourcedata.deserialisation.ResourceGeneratorUpgrade;
 import com.soc.util.Sounds;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
@@ -24,6 +25,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -403,5 +405,9 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
     public boolean buyAbility(ServerPlayerEntity player, Trap ability) {
         return this.teamStatsMap.get(this.getTeam(player)).buyAbility(ability, super.world);
+    }
+
+    public void buyEnchantmentUpgrade(ServerPlayerEntity player, RegistryEntry<Enchantment> enchantment, int tier) {
+        this.teamStatsMap.get(this.getTeam(player)).buyEnchantmentUpgrade(enchantment, super.world, tier);
     }
 }
