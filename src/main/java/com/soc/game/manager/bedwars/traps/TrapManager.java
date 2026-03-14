@@ -18,8 +18,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.soc.game.manager.AbstractGameManager.mapUuidsToPlayers;
-import static com.soc.screenhandler.BedwarsTeamShopScreenHandler.ABILITIES_DISPLAY_SIZE;
-import static com.soc.screenhandler.BedwarsTeamShopScreenHandler.TRAPS_DISPLAY_SIZE;
+import static com.soc.screenhandler.BedwarsTeamShopScreenHandler.DISPLAY_SIZE;
 
 public class TrapManager {
     public static final double TRAP_DETECTION_RANGE = 8d;
@@ -73,14 +72,14 @@ public class TrapManager {
     }
 
     public boolean buyTrap(Trap trap) {
-        if (this.traps.size() >= TRAPS_DISPLAY_SIZE) return false;
+        if (this.traps.size() >= DISPLAY_SIZE) return false;
 
         this.traps.add(trap);
         return true;
     }
 
     public boolean buyAbility(Trap trap) {
-        if (this.abilities.size() >= ABILITIES_DISPLAY_SIZE) return false;
+        if (this.abilities.size() >= DISPLAY_SIZE) return false;
 
         this.abilities.add(trap);
         return true;
@@ -96,11 +95,11 @@ public class TrapManager {
     }
 
     public BedwarsShopCategory getTrapsDisplay() {
-        return this.getDisplayFromList(this.traps, TRAPS_DISPLAY_SIZE);
+        return this.getDisplayFromList(this.traps, DISPLAY_SIZE);
     }
 
     public BedwarsShopCategory getAbilitiesDisplay() {
-        return this.getDisplayFromList(this.abilities, ABILITIES_DISPLAY_SIZE);
+        return this.getDisplayFromList(this.abilities, DISPLAY_SIZE);
     }
 
     private BedwarsShopCategory getDisplayFromList(Collection<Trap> list, int padSize) {

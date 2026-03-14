@@ -10,6 +10,7 @@ import com.soc.resourcedata.deserialisation.PreSelectionBedwarsShopCategory;
 import com.soc.screenhandler.BedwarsIndividualShopScreenHandler;
 import com.soc.screenhandler.BedwarsTeamShopScreenHandler;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
@@ -17,7 +18,6 @@ import net.minecraft.util.math.random.Random;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class BedwarsShopDataContainer implements CachedData {
 
@@ -27,7 +27,7 @@ public class BedwarsShopDataContainer implements CachedData {
 
     private final Map<Identifier, ShopItem<?>> resourceItemMap = new HashMap<>();
     private final Map<Identifier, PreSelectionBedwarsShopCategory> categoryStockSlotsMap = new TreeMap<>();
-    private PreSelectionBedwarsShopCategory[] teamStockCategories = new PreSelectionBedwarsShopCategory[2];
+    private PreSelectionBedwarsShopCategory[] teamStockCategories = new PreSelectionBedwarsShopCategory[3];
 
     public final void addSlotResource(Identifier id, ShopItem<?> shopItem) {
         this.resourceItemMap.put(id, shopItem);
@@ -59,8 +59,9 @@ public class BedwarsShopDataContainer implements CachedData {
     public final BedwarsShopContents getTeamBedwarsShop(long shopSeed, DyeColor team) {
         final Random random = Random.create(shopSeed);
         final List<BedwarsShopCategory> categories = new ArrayList<>();
-        categories.add(new BedwarsShopCategory(this.resolveItems(this.teamStockCategories[0], random, team, BedwarsTeamShopScreenHandler.TRAPS_WIDTH, BedwarsTeamShopScreenHandler.TRAPS_HEIGHT), ItemStack.EMPTY, Text.of("Traps")));
-        categories.add(new BedwarsShopCategory(this.resolveItems(this.teamStockCategories[1], random, team, BedwarsTeamShopScreenHandler.ABILITIES_WIDTH, BedwarsTeamShopScreenHandler.ABILITIES_HEIGHT), ItemStack.EMPTY, Text.of("Abilitise")));
+        categories.add(new BedwarsShopCategory(this.resolveItems(this.teamStockCategories[0], random, team, BedwarsTeamShopScreenHandler.STOCK_WIDTH, BedwarsTeamShopScreenHandler.STOCK_HEIGHT), Items.TRIPWIRE_HOOK.getDefaultStack(), Text.of("Traps")));
+        categories.add(new BedwarsShopCategory(this.resolveItems(this.teamStockCategories[1], random, team, BedwarsTeamShopScreenHandler.STOCK_WIDTH, BedwarsTeamShopScreenHandler.STOCK_HEIGHT), Items.ANVIL.getDefaultStack(), Text.of("Abilities")));
+        categories.add(new BedwarsShopCategory(this.resolveItems(this.teamStockCategories[2], random, team, BedwarsTeamShopScreenHandler.STOCK_WIDTH, BedwarsTeamShopScreenHandler.STOCK_HEIGHT), Items.ARROW.getDefaultStack(), Text.of("Upgrades")));
 
         return new BedwarsShopContents(categories);
     }
@@ -110,6 +111,6 @@ public class BedwarsShopDataContainer implements CachedData {
     public void clear() {
         this.resourceItemMap.clear();
         this.categoryStockSlotsMap.clear();
-        this.teamStockCategories = new PreSelectionBedwarsShopCategory[2];
+        this.teamStockCategories = new PreSelectionBedwarsShopCategory[3];
     }
 }

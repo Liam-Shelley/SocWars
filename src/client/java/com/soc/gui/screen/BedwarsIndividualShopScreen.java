@@ -35,12 +35,6 @@ public class BedwarsIndividualShopScreen extends AbstractShopScreen<BedwarsIndiv
     }
 
     @Override
-    protected void drawCategoryTooltip(DrawContext context, int x, int y, BedwarsShopCategory category) {
-        TooltipBackgroundRenderer.render(context, x + 12, y - 12, super.textRenderer.getWidth(category.getName()), 8, null);
-        context.drawText(super.textRenderer, category.getName(), x + 12, y - 12, 0xffffffff, true);
-    }
-
-    @Override
     protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
         super.drawForeground(context, mouseX, mouseY);
         context.drawText(this.textRenderer, CATEGORIES_TITLE, CATEGORIES_TITLE_X, CATEGORIES_TITLE_Y, Colors.DARK_GRAY, false);

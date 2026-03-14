@@ -1,13 +1,14 @@
 package com.soc.screenhandler.slots;
 
+import com.soc.screenhandler.AbstractCategoriesShopScreenHandler;
 import com.soc.screenhandler.BedwarsIndividualShopScreenHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundEvents;
 
-public class CategorySlot extends ShopSlot<BedwarsIndividualShopScreenHandler> {
-    public CategorySlot(Inventory inventory, int index, int x, int y, PlayerEntity player, BedwarsIndividualShopScreenHandler context) {
+public class CategorySlot extends ShopSlot<AbstractCategoriesShopScreenHandler> {
+    public CategorySlot(Inventory inventory, int index, int x, int y, PlayerEntity player, AbstractCategoriesShopScreenHandler context) {
         super(inventory, index, x, y, player, context);
     }
 

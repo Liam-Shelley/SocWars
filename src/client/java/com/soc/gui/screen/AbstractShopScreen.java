@@ -5,8 +5,8 @@ import com.soc.game.manager.bedwars.shopitems.DisplayShopItem;
 import com.soc.game.manager.bedwars.shopitems.ShopItem;
 import com.soc.gui.ShopResourceDisplay;
 import com.soc.resourcedata.deserialisation.Cost;
+import com.soc.screenhandler.AbstractCategoriesShopScreenHandler;
 import com.soc.screenhandler.AbstractShopScreenHandler;
-import com.soc.screenhandler.BedwarsIndividualShopScreenHandler;
 import com.soc.screenhandler.slots.ShopSlot;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
@@ -46,7 +46,7 @@ public abstract class AbstractShopScreen<T extends AbstractShopScreenHandler> ex
         if (super.focusedSlot instanceof ShopSlot<?> shopSlot && super.focusedSlot.hasStack()) {
             switch(shopSlot.getSlotType()) {
                 case STOCK -> this.drawCostTooltip(context, x, y, this.handler.getShopItem(shopSlot));
-                case CATEGORY -> this.drawCategoryTooltip(context, x, y, ((BedwarsIndividualShopScreenHandler)this.handler).getShopCategory(super.focusedSlot));
+                case CATEGORY -> this.drawCategoryTooltip(context, x, y, ((AbstractCategoriesShopScreenHandler)this.handler).getShopCategory(super.focusedSlot));
                 case DISPLAY -> {
                     final ShopItem<?> shopItem = this.handler.getShopItem(shopSlot);
                     if (shopItem instanceof DisplayShopItem displayShopItem) {
@@ -97,9 +97,12 @@ public abstract class AbstractShopScreen<T extends AbstractShopScreenHandler> ex
         context.getMatrices().popMatrix();
     }
 
-    //Yeah maybe I fix these some time later ey
-    protected void drawCategoryTooltip(DrawContext context, int x, int y, BedwarsShopCategory category) {}
+    private void drawCategoryTooltip(DrawContext context, int x, int y, BedwarsShopCategory category) {
+        TooltipBackgroundRenderer.render(context, x + 12, y - 12, super.textRenderer.getWidth(category.getName()), 8, null);
+        context.drawText(super.textRenderer, category.getName(), x + 12, y - 12, 0xffffffff, true);
+    }
 
+    //Yeah maybe I fix this some time later ey
     protected void drawDisplayTooltip(DrawContext context, int x, int y, DisplayShopItem shopItem) {}
 
     protected abstract Identifier getTexture();

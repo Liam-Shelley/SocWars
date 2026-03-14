@@ -15,7 +15,6 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.text.TextCodecs;
 import net.minecraft.util.Identifier;
 
 import java.io.Reader;
@@ -61,10 +60,10 @@ public class TrapShopItem implements ShopItem<TrapShopItem> {
         if (!this.cost.canAfford(player)) return false;
         final BedwarsGameManager manager = context.getManager();
 
-        final boolean queueHasSpace = player.getWorld().isClient ? context instanceof BedwarsTeamShopScreenHandler teamHandler && teamHandler.hasRoomInTrapDisplay() : manager.buyTrap((ServerPlayerEntity) player, this.trap);
+        final boolean queueHasSpace = player.getWorld().isClient ? context instanceof BedwarsTeamShopScreenHandler teamHandler && teamHandler.hasRoomInTraps() : manager.buyTrap((ServerPlayerEntity)player, this.trap);
         if (queueHasSpace) {
             this.takeItems(player);
-            if (context instanceof BedwarsTeamShopScreenHandler teamShopScreenHandler) teamShopScreenHandler.buyTrap(this);
+            if (context instanceof BedwarsTeamShopScreenHandler teamShopScreenHandler) teamShopScreenHandler.onBuyTrap(this);
         }
         return queueHasSpace;
     }

@@ -48,7 +48,8 @@ public class BedwarsShopCategory {
 
     private final boolean isQuickBuy;
 
-    public static final BedwarsShopCategory DEFAULT_QUICK_BUY = new BedwarsShopCategory(true, null, Items.NETHER_STAR.getDefaultStack(), Text.translatable("game.bedwars.shop.category.quick_buy"));
+    public static final BedwarsShopCategory DEFAULT_QUICK_BUY = new BedwarsShopCategory(true, List.of(), Items.NETHER_STAR.getDefaultStack(), Text.translatable("game.bedwars.shop.category.quick_buy"));
+    public static final BedwarsShopCategory EMPTY = new BedwarsShopCategory(false, List.of(), ItemStack.EMPTY, Text.empty());
 
     public BedwarsShopCategory(boolean isQuickBuy, List<ShopItem<?>> items, ItemStack icon, Text name) {
         this.items = isQuickBuy ? List.of() : items;
@@ -125,5 +126,12 @@ public class BedwarsShopCategory {
         this.items.forEach(item -> {
             if (item instanceof UpgradeableShopItem upgradeableItem) upgradeableItem.downgrade();
         });
+    }
+
+    public boolean hasEmptySlot() {
+        for (ShopItem<?> item : this.items) {
+            if (item.getIcon().isEmpty()) return true;  //Should probably make some actual way to check if a shop item is empty but this should do for now
+        }
+        return false;
     }
 }

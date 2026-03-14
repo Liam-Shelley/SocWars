@@ -27,6 +27,7 @@ public class BedwarsShopData implements SimpleSynchronousResourceReloadListener 
             switch(id.toString()) {
                 case "socwars:bedwars_shop_data/shops/traps.json" -> BedwarsShopDataContainer.INSTANCE.setTeamStockCategory(0, new PreSelectionBedwarsShopCategory(reader));
                 case "socwars:bedwars_shop_data/shops/abilities.json" -> BedwarsShopDataContainer.INSTANCE.setTeamStockCategory(1, new PreSelectionBedwarsShopCategory(reader));
+                case "socwars:bedwars_shop_data/shops/upgrades.json" -> BedwarsShopDataContainer.INSTANCE.setTeamStockCategory(2, new PreSelectionBedwarsShopCategory(reader));
                 default -> BedwarsShopDataContainer.INSTANCE.addCategorySlot(id, new PreSelectionBedwarsShopCategory(reader));
             }
         });

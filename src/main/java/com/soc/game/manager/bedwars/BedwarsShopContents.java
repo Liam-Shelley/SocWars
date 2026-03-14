@@ -58,4 +58,8 @@ public record BedwarsShopContents(List<BedwarsShopCategory> contents) {
     public void forEach(Consumer<BedwarsShopCategory> function) {
         this.contents.forEach(function);
     }
+
+    public int getCategoryIndex(BedwarsShopCategory category) {
+        return this.contents.indexOf(category);
+    }
 }

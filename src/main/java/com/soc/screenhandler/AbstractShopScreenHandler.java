@@ -16,6 +16,8 @@ public abstract class AbstractShopScreenHandler extends ScreenHandler {
     protected final PlayerInventory playerInventory;
     protected final BedwarsGameManager manager;
 
+    protected BedwarsShopContents shopContents;
+
     protected AbstractShopScreenHandler(@Nullable ScreenHandlerType<?> type, int syncId, PlayerInventory playerInventory, PlayerEntity player) {
         super(type, syncId);
         this.player = player;

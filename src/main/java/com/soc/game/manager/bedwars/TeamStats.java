@@ -64,8 +64,8 @@ public class TeamStats {
     }
 
     public BedwarsShopContents getShopContents() {
-        this.teamShopContents.setCategory(2, this.trapManager.getTrapsDisplay());
-        this.teamShopContents.setCategory(3, this.trapManager.getAbilitiesDisplay());
+        this.teamShopContents.setCategory(3, this.trapManager.getTrapsDisplay());
+        this.teamShopContents.setCategory(4, this.trapManager.getAbilitiesDisplay());
         return this.teamShopContents;
     }
 

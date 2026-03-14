@@ -48,7 +48,7 @@ public class BedwarsTeamShopScreen extends AbstractShopScreen<BedwarsTeamShopScr
     @Override
     protected void drawBackground(DrawContext context, float deltaTicks, int mouseX, int mouseY) {
         final World world = super.client.world;
-        super.handler.getTrapProgress(world);
+        float a = super.handler.getTrapProgress(world);
     }
 
     @Override
