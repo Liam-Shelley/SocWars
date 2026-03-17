@@ -75,7 +75,7 @@ public class S2CReceivers {
         ClientPlayNetworking.registerGlobalReceiver(UseTrapPayload.ID, (payload, context) -> {
             final ScreenHandler screenHandler = context.player().currentScreenHandler;
             if (screenHandler instanceof BedwarsTeamShopScreenHandler shopScreenHandler) {
-                shopScreenHandler.useTrap();
+                shopScreenHandler.useTrap(payload.nextTime(), payload.duration());
             }
         });
         ClientPlayNetworking.registerGlobalReceiver(SmokescreenPayload.ID, (payload, context) -> {

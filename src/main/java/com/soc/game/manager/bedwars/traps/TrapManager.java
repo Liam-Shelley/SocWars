@@ -18,10 +18,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.soc.game.manager.AbstractGameManager.mapUuidsToPlayers;
-import static com.soc.screenhandler.BedwarsTeamShopScreenHandler.DISPLAY_SIZE;
 
 public class TrapManager {
     public static final double TRAP_DETECTION_RANGE = 8d;
+    public static final int TRAP_CAPACITY = 5;
+    public static final int ABILITY_CAPACITY = 3;
 
     private final Set<UUID> team;
     private final World world;
@@ -48,7 +49,7 @@ public class TrapManager {
         final List<ServerPlayerEntity> team = mapUuidsToPlayers(this.world, this.team);
 
         trap.trigger(pos, team, players);
-        team.forEach(player -> ServerPlayNetworking.send(player, new UseTrapPayload()));
+        team.forEach(player -> ServerPlayNetworking.send(player, new UseTrapPayload(this.world.getTime() + trap.getCooldownTime(), trap.getCooldownTime())));
 
         final Text teamsText = players.stream().map(manager::getTeam).distinct().map(SocWarsLib::colouredTextFromColour).reduce((a, b) -> a.append(", ").append(b)).get();
         mapUuidsToPlayers(this.world, this.team).forEach(player -> {
@@ -65,21 +66,21 @@ public class TrapManager {
         final List<ServerPlayerEntity> team = mapUuidsToPlayers(this.world, this.team);
 
         ability.trigger(pos, team, players);
-        //team.forEach(player -> ServerPlayNetworking.send(player, new UseAbilityPayload()));
+        //team.forEach(player -> ServerPlayNetworking.send(player, new UseAbilityPayload(this.world.getTime() + ability.getCooldownTime(), ability.getCooldownTime())));
 
         this.nextAbilityTriggerTime = this.world.getTime() + ability.getCooldownTime();
         this.currentAbilityDuration = ability.getCooldownTime();
     }
 
     public boolean buyTrap(Trap trap) {
-        if (this.traps.size() >= DISPLAY_SIZE) return false;
+        if (this.traps.size() >= TRAP_CAPACITY) return false;
 
         this.traps.add(trap);
         return true;
     }
 
     public boolean buyAbility(Trap trap) {
-        if (this.abilities.size() >= DISPLAY_SIZE) return false;
+        if (this.abilities.size() >= ABILITY_CAPACITY) return false;
 
         this.abilities.add(trap);
         return true;
@@ -95,11 +96,11 @@ public class TrapManager {
     }
 
     public BedwarsShopCategory getTrapsDisplay() {
-        return this.getDisplayFromList(this.traps, DISPLAY_SIZE);
+        return this.getDisplayFromList(this.traps, TRAP_CAPACITY);
     }
 
     public BedwarsShopCategory getAbilitiesDisplay() {
-        return this.getDisplayFromList(this.abilities, DISPLAY_SIZE);
+        return this.getDisplayFromList(this.abilities, ABILITY_CAPACITY);
     }
 
     private BedwarsShopCategory getDisplayFromList(Collection<Trap> list, int padSize) {

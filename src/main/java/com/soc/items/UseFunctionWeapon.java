@@ -411,6 +411,7 @@ public class UseFunctionWeapon extends Item {
             case "socwars:shrink_ray" -> textConsumer.accept(Text.translatable("tooltip.shrink_ray"));
             case "socwars:scroll_of_eau" -> textConsumer.accept(Text.translatable("tooltip.scroll_of_eau"));
             case "socwars:scroll_of_hellfire" -> textConsumer.accept(Text.translatable("tooltip.scroll_of_hellfire"));
+            case "socwars:wheatenator" -> textConsumer.accept(Text.translatable("tooltip.wheatenator"));
         }
     }
 

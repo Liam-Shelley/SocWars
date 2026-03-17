@@ -3,11 +3,11 @@
   "package": "com.soc.mixin.client",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "DragonFireballTooltip",
     "KeyboardInputModifier",
     "MouseInputModifier",
     "OpenMapBlockScreen",
-    "TransparentGlassArmour",
-    "DragonFireballTooltip"
+    "TransparentGlassArmour"
   ],
   "injectors": {
     "defaultRequire": 1

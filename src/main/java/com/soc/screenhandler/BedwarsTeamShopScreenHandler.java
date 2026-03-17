@@ -13,13 +13,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.screen.ArrayPropertyDelegate;
-import net.minecraft.screen.PropertyDelegate;
 import net.minecraft.world.World;
 
 public class BedwarsTeamShopScreenHandler extends AbstractCategoriesShopScreenHandler {
-
-    public static final int STOCK_WIDTH = 5;
+    public static final int STOCK_WIDTH = 6;
     public static final int STOCK_HEIGHT = 2;
     public static final int STOCK_SIZE = STOCK_WIDTH * STOCK_HEIGHT;
     public static final int DISPLAY_WIDTH = 5;
@@ -27,44 +24,32 @@ public class BedwarsTeamShopScreenHandler extends AbstractCategoriesShopScreenHa
     public static final int DISPLAY_SIZE = DISPLAY_WIDTH * DISPLAY_HEIGHT;
     public static final int CATEGORIES_WIDTH = 1;
     public static final int CATEGORIES_HEIGHT = 3;
-    private static final int[] CATEGORY_SIZES = {STOCK_SIZE, DISPLAY_SIZE};
 
     private final Inventory stock;
     private final Inventory display;
+    private final Inventory displayOffset;
 
-    private int[] trapProgressStats = new int[4];
+    private long nextTrapTime;
+    private int trapDuration;
+    private long nextAbilityTime;
+    private int abilityDuration;
+
+    private BedwarsShopCategory displayCategory;
 
     public BedwarsTeamShopScreenHandler(int syncId, PlayerInventory playerInventory) {
         this(syncId, playerInventory, playerInventory.player);
-        this.addProperties(new ArrayPropertyDelegate(4));
     }
 
     public BedwarsTeamShopScreenHandler(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
         super(ScreenHandlers.BEDWARS_TEAM_SHOP_SCREEN_HANDLER, syncId, playerInventory, player);
         this.stock = new SimpleInventory(STOCK_SIZE);
         this.display = new SimpleInventory(DISPLAY_SIZE);
+        this.displayOffset = new SimpleInventory(DISPLAY_SIZE - 1);
 
         this.shopContents = super.manager == null ? null : super.manager.getTeamShopContents(player.getUuid());
+        this.currentCategory = this.shopContents == null ? null : this.shopContents.getFirstCategory();
 
         this.makeSlots();
-
-        final int[] trapProgressStats = super.manager == null ? new int[4] : super.manager.getTrapProgressStats(player.getUuid());
-        this.addProperties(new PropertyDelegate() {
-            @Override
-            public int get(int index) {
-                return trapProgressStats[index];
-            }
-
-            @Override
-            public void set(int index, int value) {
-                BedwarsTeamShopScreenHandler.this.trapProgressStats[index] = value;
-            }
-
-            @Override
-            public int size() {
-                return 4;
-            }
-        });
     }
 
     @Override
@@ -76,19 +61,24 @@ public class BedwarsTeamShopScreenHandler extends AbstractCategoriesShopScreenHa
     private void makeSlots() {
         for (int y = 0; y < STOCK_HEIGHT; y++) {
             for (int x = 0; x < STOCK_WIDTH; x++) {
-                this.addSlot(new StockSlot(this.stock, x + STOCK_WIDTH * y, x * 18 + 76, y * 18 + 24, this.player, this));
+                this.addSlot(new StockSlot(this.stock, x + STOCK_WIDTH * y, x * 18 + 88, y * 18 + 24, this.player, this));
             }
         }
 
         for (int y = 0; y < DISPLAY_HEIGHT; y++) {
             for (int x = 0; x < DISPLAY_WIDTH; x++) {
-                this.addSlot(new DisplaySlot(this.display, x + DISPLAY_WIDTH * y, x * 18 + 76, y * 18 + 74, this.player, this));
+                this.addSlot(new DisplaySlot(this.display, x + DISPLAY_WIDTH * y, x * 18 + 97, y * 18 + 74, this.player, this));
+            }
+        }
+        for (int y = 0; y < DISPLAY_HEIGHT; y++) {
+            for (int x = 0; x < DISPLAY_WIDTH - 1; x++) {
+                this.addSlot(new DisplaySlot(this.displayOffset, x + DISPLAY_WIDTH * y, x * 18 + 106, y * 18 + 74, this.player, this));
             }
         }
 
         for (int y = 0; y < CATEGORIES_HEIGHT; y++) {
             for (int x = 0; x < CATEGORIES_WIDTH; x++) {
-                this.addSlot(new CategorySlot(this.categories, x + CATEGORIES_WIDTH * y, x * 18 + 26, y * 18 + 24, this.player, this));
+                this.addSlot(new CategorySlot(this.categories, x + CATEGORIES_WIDTH * y, x * 18 + 66, y * 18 + 24, this.player, this));
             }
         }
 
@@ -100,29 +90,41 @@ public class BedwarsTeamShopScreenHandler extends AbstractCategoriesShopScreenHa
 
     @Override
     public void refreshItems() {
-        int i = 0;
-        for (int j = 0; j < this.stock.size(); j++, i++) {
-            this.stock.setStack(j, this.getShopItem(i).getIcon());
+        for (int i = 0; i < this.stock.size(); i++) {
+            this.stock.setStack(i, this.getShopItem(i).getIcon());
         }
-        for (int j = 0; j < this.display.size(); j++, i++) {
-            this.display.setStack(j, this.getShopItem(i).getIcon());
+
+        //I should make this whole thing more elegant; maybe even make a StaggeredInventory class or something and some method to automatically build out the slots
+        final int stacksInDisplay = this.getStacksInDisplay();
+        final int stackOffset = 2 - (stacksInDisplay >> 1);
+
+        if (stacksInDisplay % 2 == 1) {
+            for (int i = 0; i < this.display.size() - stackOffset; i++) {
+                this.display.setStack(i + stackOffset, this.getDisplayItem(i).getIcon());
+            }
+            this.displayOffset.clear();
+        } else {
+            for (int i = 0; i < this.displayOffset.size() - stackOffset; i++) {
+                this.displayOffset.setStack(i + stackOffset, this.getDisplayItem(i).getIcon());
+            }
+            this.display.clear();
         }
     }
 
-    public ShopItem<?> getShopItem(final int slot) {
-        if (this.shopContents == null) return SimpleShopItem.EMPTY;
-
-        int slotMut = slot;
-
-        for (int i = 0; i < CATEGORY_SIZES.length; i++) {
-            if (slotMut >= CATEGORY_SIZES[i]) {
-                slotMut -= CATEGORY_SIZES[i];
-                continue;
-            }
-            return this.shopContents.getCategory(i).getShopItem(slotMut);
+    private int getStacksInDisplay() {
+        if (this.displayCategory == null) return 0;
+        for (int i = 0; i < this.displayCategory.getItems().size(); i++) {
+            if (this.displayCategory.getShopItem(i).getIcon().isEmpty()) return i;
         }
+        return this.displayCategory.getItems().size();
+    }
 
-        throw new IndexOutOfBoundsException(slot);
+    public ShopItem<?> getShopItem(final int slot) {
+        return this.currentCategory == null ? SimpleShopItem.EMPTY : this.currentCategory.getShopItem(slot);
+    }
+
+    public ShopItem<?> getDisplayItem(final int slot) {
+        return this.displayCategory == null ? SimpleShopItem.EMPTY : this.displayCategory.getShopItem(slot);
     }
 
     @Override
@@ -133,11 +135,11 @@ public class BedwarsTeamShopScreenHandler extends AbstractCategoriesShopScreenHa
     }
 
     public float getTrapProgress(World world) {
-        return this.trapProgressStats[0] < world.getTime() ? 1f : (float)(this.trapProgressStats[0] - world.getTime()) / this.trapProgressStats[1];
+        return this.nextTrapTime < world.getTime() ? 1f : (float)(world.getTime() - this.nextTrapTime) / this.trapDuration + 1f;
     }
 
     public float getAbilityProgress(World world) {
-        return this.trapProgressStats[2] < world.getTime() ? 1f : (float)(this.trapProgressStats[2] - world.getTime()) / this.trapProgressStats[3];
+        return this.nextAbilityTime < world.getTime() ? 1f : (float)(world.getTime() - this.nextAbilityTime) / this.abilityDuration + 1f;
     }
 
     @Override
@@ -155,9 +157,12 @@ public class BedwarsTeamShopScreenHandler extends AbstractCategoriesShopScreenHa
         return this.shopContents.getCategory(4).hasEmptySlot();
     }
 
-    public void useTrap() {
+    public void useTrap(long nextTime, int duration) {
         this.shiftCategory(3);
         if (this.currentCategory == this.shopContents.getCategory(0)) this.refreshItems();
+
+        this.nextTrapTime = nextTime;
+        this.trapDuration = duration;
     }
 
     public void useAbility() {
@@ -175,9 +180,9 @@ public class BedwarsTeamShopScreenHandler extends AbstractCategoriesShopScreenHa
 
     @SuppressWarnings("DataFlowIssue")
     public void onBuyTrap(TrapShopItem trapShopItem) {
-        final BedwarsShopCategory trapsCategory = this.shopContents.getCategory(2);
+        final BedwarsShopCategory trapsCategory = this.shopContents.getCategory(3);
         trapsCategory.forEachEnumerate((i, item) -> {
-            if (!(item instanceof DisplayShopItem display && !display.isEmpty())) {
+            if (!(item instanceof DisplayShopItem displayItem && !displayItem.isEmpty())) {
                 trapsCategory.setShopItem(i, trapShopItem.getDisplayCopy());
                 return false;
             }
@@ -191,7 +196,7 @@ public class BedwarsTeamShopScreenHandler extends AbstractCategoriesShopScreenHa
     private void refreshCategory(TrapShopItem trapShopItem) {
         final BedwarsShopCategory trapsCategory = this.shopContents.getCategory(2);
         trapsCategory.forEachEnumerate((i, item) -> {
-            if (!(item instanceof DisplayShopItem display && !display.isEmpty())) {
+            if (!(item instanceof DisplayShopItem displayItem && !displayItem.isEmpty())) {
                 trapsCategory.setShopItem(i, trapShopItem.getDisplayCopy());
                 return false;
             }
@@ -200,15 +205,12 @@ public class BedwarsTeamShopScreenHandler extends AbstractCategoriesShopScreenHa
     }
 
     @Override
-    @SuppressWarnings("DataFlowIssue")
     public void setCurrentCategory(int slot) {
-        super.setCurrentCategory(slot);
         if (slot < 2) {
-            this.shopContents.getCategory(slot + 3).forEachEnumerate((i, shopItem) -> {
-                this.display.setStack(i, shopItem.getIcon());
-            });
+            this.displayCategory = this.shopContents.getCategory(slot + 3);
         } else {
-            this.display.clear();
+            this.displayCategory = null;
         }
+        super.setCurrentCategory(slot);
     }
 }

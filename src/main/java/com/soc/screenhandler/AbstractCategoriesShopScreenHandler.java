@@ -46,4 +46,8 @@ public abstract class AbstractCategoriesShopScreenHandler extends AbstractShopSc
     public BedwarsShopCategory getShopCategory(int slot) {
         return this.shopContents.getCategory(slot);
     }
+
+    public BedwarsShopCategory getCurrentCategory() {
+        return this.currentCategory;
+    }
 }

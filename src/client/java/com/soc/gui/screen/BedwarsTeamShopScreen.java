@@ -7,7 +7,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipBackgroundRenderer;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
@@ -20,12 +19,11 @@ import java.util.List;
 public class BedwarsTeamShopScreen extends AbstractShopScreen<BedwarsTeamShopScreenHandler> {
     private static final Identifier TEXTURE = Identifier.of(SocWars.MOD_ID, "textures/gui/container/bedwars_team_shop_base.png");
     private static final int MAX_TOOLTIP_WIDTH = 240;
-    private static final Text TRAPS_TITLE = Text.translatable("shop.title.traps");
-    private static final int TRAPS_TITLE_X = 26;
-    private static final int TRAPS_TITLE_Y = 12;
-    private static final Text ABILITIES_TITLE = Text.translatable("shop.title.abilities");
-    private static final int ABILITIES_TITLE_X = 140;
-    private static final int ABILITIES_TITLE_Y = 12;
+    private static final Text PAGE_TITLE = Text.translatable("shop.title.pages");
+    private static final int PAGE_TITLE_X = 62;
+    private static final int PAGE_TITLE_Y = 12;
+    private static final int STOCK_TITLE_X = 150;
+    private static final int STOCK_TITLE_Y = 12;
 
     public BedwarsTeamShopScreen(BedwarsTeamShopScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
@@ -48,14 +46,20 @@ public class BedwarsTeamShopScreen extends AbstractShopScreen<BedwarsTeamShopScr
     @Override
     protected void drawBackground(DrawContext context, float deltaTicks, int mouseX, int mouseY) {
         final World world = super.client.world;
-        float a = super.handler.getTrapProgress(world);
+        this.drawFillBar(context, deltaTicks, 14, super.handler.getTrapProgress(world), 0xff22ee22);
+        this.drawFillBar(context, deltaTicks, 36, super.handler.getAbilityProgress(world), 0xffeeee22);
+    }
+
+    private void drawFillBar(DrawContext context, float deltaTicks, int x, float fill, int colour) {
+        if (fill >= 1f) deltaTicks = 0f;
+        context.fill(super.x + x, super.y + 90, super.x + x + 16, super.y + 90 - (int)(86 * fill + deltaTicks), colour);
     }
 
     @Override
     protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
         super.drawForeground(context, mouseX, mouseY);
-        context.drawText(this.textRenderer, TRAPS_TITLE, TRAPS_TITLE_X, TRAPS_TITLE_Y, Colors.DARK_GRAY, false);
-        context.drawText(this.textRenderer, ABILITIES_TITLE, ABILITIES_TITLE_X, ABILITIES_TITLE_Y, Colors.DARK_GRAY, false);
+        context.drawText(super.textRenderer, PAGE_TITLE, PAGE_TITLE_X, PAGE_TITLE_Y, Colors.DARK_GRAY, false);
+        context.drawText(super.textRenderer, super.handler.getCurrentCategory().getName(), STOCK_TITLE_X, STOCK_TITLE_Y, Colors.DARK_GRAY, false);
     }
 
     @Override
