@@ -1,6 +1,7 @@
 {
   "cost": {
-    "iron": 48
+    "iron": 64,
+	"gold": 8
   },
   "item": "socwars:velocity_staff"
 }

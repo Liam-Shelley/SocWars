@@ -1,7 +1,7 @@
 {
   "cost": {
-    "iron": 64,
-    "emeralds": 1
+    "iron": 128,
+    "emeralds": 2
   },
   "item": "socwars:catastrophe_bow"
 }

@@ -1,7 +1,7 @@
 {
   "cost": {
-    "diamonds": 6,
-    "emeralds": 6
+    "diamonds": 12,
+    "emeralds": 8
   },
   "item": "socwars:ender_staff"
 }

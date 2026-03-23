@@ -1,7 +1,7 @@
 {
   "cost": {
-    "gold": 4,
-    "emeralds": 1
+    "gold": 8,
+    "emeralds": 2
   },
   "item": "socwars:invisibility_ring"
 }

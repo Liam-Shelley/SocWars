@@ -1,6 +1,8 @@
 package com.soc.game.map;
 
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 import com.soc.SocWars;
 import com.soc.lib.Coroutine;
 import com.soc.lib.Coroutines;
@@ -30,7 +32,6 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
 
 import static com.soc.lib.SocWarsLib.iterateInCube;
 
@@ -47,7 +48,7 @@ public abstract class AbstractGameMap {
 
     protected final BlockPos centrePos;
     protected final BlockPos absoluteCentrePos;
-    protected final Map<DyeColor, BlockPos> spawnPositions;
+    protected final Multimap<DyeColor, BlockPos> spawnPositions;
     protected final SparseVoxelOctree<Boolean> blockProtectionOverlay;
 
     protected final ServerWorld world;
@@ -64,7 +65,7 @@ public abstract class AbstractGameMap {
     ) {
         this.structure = structure;
         this.size = structure.getSize().getChebyshevDistance(Vec3i.ZERO);
-        this.spawnPositions = spawnPositions.stream().collect(Collectors.toMap(SpawnPosition::dyeColour, SpawnPosition::pos));
+        this.spawnPositions = spawnPositions.stream().collect(Multimaps.toMultimap(SpawnPosition::dyeColour, SpawnPosition::pos, HashMultimap::create));
         this.centrePos = centrePos.toImmutable();
         this.absoluteCentrePos = absoluteCentrePos;
         this.blockProtectionOverlay = blockProtectionOverlay;
@@ -82,25 +83,31 @@ public abstract class AbstractGameMap {
                 structure,
                 spawnPositions,
                 centrePos.toImmutable(),
-                new BlockPos(0, 0, 0), blockProtectionOverlay,
+                BlockPos.ORIGIN, blockProtectionOverlay,
                 null
         );
     }
 
     public abstract void tick();
 
-    public final void spreadPlayers(Multimap<DyeColor, UUID> teams) {
+    public void spreadPlayers(Multimap<DyeColor, UUID> teams) {
         teams.forEach((team, uuid) -> {
             final ServerPlayerEntity player = (ServerPlayerEntity)this.world.getPlayerByUuid(uuid);
-            final BlockPos rawPos = this.spawnPositions.get(team);
-            if (rawPos == null) {
-                player.sendMessage(Text.literal("Go yell at Liam for screwing up the spreadPlayers() method"));
-            } else {
-                final BlockPos pos = this.pos(rawPos);
+            if (player == null) return;
 
-                player.requestTeleport(pos.getX() + 0.5d, pos.getY(), pos.getZ() + 0.5d);
-            }
+            final Optional<BlockPos> pos = this.getSpawnPosition(team);
+            pos.ifPresentOrElse(
+                    destPos -> player.requestTeleport(destPos.getX() + 0.5d, destPos.getY(), destPos.getZ() + 0.5d),
+                    () -> player.sendMessage(Text.literal("Go yell at Liam for screwing up the spreadPlayers method"))
+            );
         });
+    }
+
+    public final Optional<BlockPos> getSpawnPosition(DyeColor team) {
+        final List<BlockPos> positions = this.spawnPositions.get(team).stream().toList();
+        if (positions.isEmpty()) return Optional.empty();
+
+        return Optional.of(this.pos(positions.get(this.world.random.nextBetween(0, positions.size() - 1))));
     }
 
     public NbtCompound toNbt(NbtCompound compound) {
@@ -114,7 +121,7 @@ public abstract class AbstractGameMap {
     }
 
     private NbtList getSpawnsAsNbt() {
-        NbtList spawns = new NbtList();
+        final NbtList spawns = new NbtList();
         this.spawnPositions.forEach((colour, pos) -> spawns.add(new SpawnPosition(pos, colour.getIndex()).toNbt()));
         return spawns;
     }
@@ -134,7 +141,7 @@ public abstract class AbstractGameMap {
     }
 
     public static File[] getMaps(String fileExtension) {
-        final var files = getMapDirectory().listFiles(file -> file.toString().endsWith("." + fileExtension));
+        final File[] files = getMapDirectory().listFiles(file -> file.toString().endsWith("." + fileExtension));
 
         return (files != null) ? files : new File[0];
     }
@@ -206,13 +213,6 @@ public abstract class AbstractGameMap {
         }
 
         this.world.getOtherEntities(null, new Box(minPos.toCenterPos(), maxPos.toCenterPos()), entity -> entity.getType() != EntityType.PLAYER).forEach(entity -> entity.kill(this.world));
-    }
-
-    public final BlockPos getSpawnPosition(DyeColor team) {
-        final BlockPos pos = this.spawnPositions.get(team);
-        if (pos == null) throw new IllegalStateException("Tried to access spawn position for team that does not exist");
-
-        return this.pos(pos);
     }
 
     public final BlockPos getCentrePos() {

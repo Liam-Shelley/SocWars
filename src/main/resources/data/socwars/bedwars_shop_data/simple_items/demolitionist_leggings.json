@@ -1,6 +1,7 @@
 {
   "cost": {
-    "iron": 48
+    "iron": 96,
+	"gold": 12
   },
   "item": "socwars:demolitionist_leggings"
 }

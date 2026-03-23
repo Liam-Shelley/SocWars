@@ -89,7 +89,7 @@ public class SkywarsGameMap extends AbstractGameMap {
         }
 
         if (tier == 1) {
-            final Optional<DyeColor> colour = this.spawnPositions.entrySet().stream().min(Map.Entry.comparingByValue((a, b) -> {
+            final Optional<DyeColor> colour = this.spawnPositions.entries().stream().min(Map.Entry.comparingByValue((a, b) -> {
                 final double distA = super.pos(a).getSquaredDistance(pos);
                 final double distB = super.pos(b).getSquaredDistance(pos);
                 if (distA == distB) return 0;

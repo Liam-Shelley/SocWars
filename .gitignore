@@ -51,3 +51,4 @@ run/usercache.json
 /logs
 /out
 *.bbmodel
+/src/main/resources/data/socwars/bedwars_shop_data_old

@@ -1,6 +1,8 @@
 {
   "cost": {
-    "iron": 48
+    "iron": 96,
+	"gold": 8,
+	"emeralds": 3
   },
   "item": "socwars:alchemism"
 }

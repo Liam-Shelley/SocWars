@@ -1,6 +1,7 @@
 {
   "cost": {
-    "gold": 8
+    "gold": 24,
+	"emeralds": 2
   },
   "item": "socwars:pink_sword"
 }

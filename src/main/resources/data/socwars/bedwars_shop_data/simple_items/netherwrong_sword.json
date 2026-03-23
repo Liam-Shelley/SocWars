@@ -1,7 +1,8 @@
 {
   "cost": {
-    "iron": 128,
-    "gold": 12
+    "iron": 256,
+    "gold": 24,
+	"emeralds": 8
   },
   "item": "socwars:netherwrong_sword"
 }

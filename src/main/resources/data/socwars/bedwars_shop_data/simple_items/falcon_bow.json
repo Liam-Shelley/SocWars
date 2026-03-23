@@ -1,7 +1,7 @@
 {
   "cost": {
-    "gold": 20,
-    "emeralds": 4
+    "gold": 32,
+    "emeralds": 6
   },
   "item": "socwars:falcon_bow"
 }

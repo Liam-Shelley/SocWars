@@ -2,6 +2,7 @@ package com.soc.database;
 
 import com.soc.SocWars;
 import com.soc.database.stats.BedwarsTable;
+import com.soc.database.stats.HideAndSeekTable;
 import com.soc.database.stats.LobbyTable;
 import com.soc.database.stats.SkywarsTable;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
@@ -50,6 +51,7 @@ public final class Database {
         new LobbyTable().createSqlTable(STATEMENT);
         new SkywarsTable().createSqlTable(STATEMENT);
         new BedwarsTable().createSqlTable(STATEMENT);
+        new HideAndSeekTable().createSqlTable(STATEMENT);
 
         ServerPlayerEvents.JOIN.register(player -> {
                 if (player.getPermissionLevel() >= 2) {
@@ -60,6 +62,7 @@ public final class Database {
                 new LobbyTable(player.getUuid()).blankInsert(STATEMENT);
                 new SkywarsTable(player.getUuid()).blankInsert(STATEMENT);
                 new BedwarsTable(player.getUuid()).blankInsert(STATEMENT);
+                new HideAndSeekTable(player.getUuid()).blankInsert(STATEMENT);
         });
     }
 }

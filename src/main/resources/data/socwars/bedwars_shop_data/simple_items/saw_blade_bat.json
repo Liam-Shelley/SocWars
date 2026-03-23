@@ -1,7 +1,8 @@
 {
   "cost": {
-    "iron": 50,
-    "gold": 5
+    "iron": 100,
+    "gold": 12,
+	"emeralds": 2
   },
   "item": "socwars:saw_blade_bat"
 }

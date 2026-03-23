@@ -1,7 +1,7 @@
 {
   "cost": {
-    "gold": 20,
-    "emeralds": 1
+    "gold": 40,
+    "emeralds": 2
   },
   "item": "socwars:devastator_prime"
 }

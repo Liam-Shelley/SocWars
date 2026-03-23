@@ -89,15 +89,17 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     private Map<DyeColor, Team> buildScoreboardTeams() {
         return this.teams.keySet().stream().collect(Collectors.toMap(Function.identity(), this::addTeamFromColour));
     }
-    protected abstract @Nullable EventQueue<EVENT> buildEventQueue();
+    protected @Nullable EventQueue<EVENT> buildEventQueue() {
+        return null;
+    }
 
     protected abstract Function<UUID, TABLE> dbTableBuilder();
     protected final TABLE getDbTable(Entity player) {
         return player == null ? null : this.dbTables.get(player.getUuid());
     }
 
-    protected abstract void sendJoinGamePayload(ServerPlayerEntity player);
-    protected abstract void sendLeaveGamePayload(ServerPlayerEntity player);
+    protected void sendJoinGamePayload(ServerPlayerEntity player) {}
+    protected void sendLeaveGamePayload(ServerPlayerEntity player) {}
 
     protected void sendPayloadToPlayers(CustomPayload payload) {
         this.getPlayers().forEach(player -> ServerPlayNetworking.send(player, payload));
@@ -169,7 +171,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
 
     protected abstract boolean canRespawn(ServerPlayerEntity player);
 
-    protected abstract void trackDeathStats(ServerPlayerEntity player, DamageSource source);
+    protected void trackDeathStats(ServerPlayerEntity player, DamageSource source) {}
 
     public boolean onPlayerDamage(ServerPlayerEntity player, DamageSource source, float amount) {
         final BaseTable targetTable = this.getDbTable(player);
@@ -316,7 +318,11 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     }
 
     public final BlockPos getSpawnPosition(ServerPlayerEntity player) {
-        return this.map.getSpawnPosition(this.getTeam(player));
+        return this.map.getSpawnPosition(this.getTeam(player)).orElseGet(() -> {
+            player.sendMessage(Text.literal("Liam screwed up somewhere and your spawn position did not exist\nGet sent to (0, 0, 0) idiot"));
+
+            return BlockPos.ORIGIN;
+        });
     }
 
     protected void broadcast(Text text, final boolean overlay) {

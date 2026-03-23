@@ -1,6 +1,7 @@
 {
   "cost": {
-    "gold": 32
+	"iron": 64,
+    "gold": 24
   },
   "item": "socwars:gambler_chestplate"
 }

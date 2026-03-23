@@ -180,6 +180,7 @@ public class GamesManager {
             case SKYWARS -> new SkywarsGameManager(this.world, players, null, gameId, SkywarsGameManager.Settings.DEFAULT);
             case BEDWARS -> new BedwarsGameManager(this.world, players, new SpreadRules(4), gameId);
             case PROP_HUNT -> null; //Maybe get around to writing some of the game logic for prop hunt
+            case HIDE_AND_SEEK -> new HideAndSeekGameManager(this.world, players, null, gameId);
         };
 
         final boolean startedGame = this.startGame(game);

@@ -1,6 +1,7 @@
 {
   "cost": {
-    "iron": 48
+    "iron": 64,
+	"gold": 2
   },
   "item": "socwars:lightning_orb"
 }

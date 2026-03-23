@@ -1,7 +1,7 @@
 {
   "cost": {
-    "iron": 24,
-    "gold": 6
+    "iron": 36,
+    "gold": 10
   },
   "item": "socwars:greater_speed_ring"
 }

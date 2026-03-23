@@ -6,10 +6,7 @@ import com.soc.blocks.ModifiableColourStateBlock;
 import com.soc.blocks.TierBlock;
 import com.soc.blocks.util.ModBlocks;
 import com.soc.game.manager.GameType;
-import com.soc.game.map.AbstractGameMap;
-import com.soc.game.map.BedwarsGameMap;
-import com.soc.game.map.MapCheckResults;
-import com.soc.game.map.SkywarsGameMap;
+import com.soc.game.map.*;
 import com.soc.lib.CubicList;
 import com.soc.lib.InfoList;
 import com.soc.lib.SparseVoxelOctree;
@@ -223,6 +220,12 @@ public class MapBlockEntity extends BlockEntity {
                     this.mapCheckResults.getRelative(this.mapCheckResults.teamShops())
             );
             case PROP_HUNT -> throw new IllegalArgumentException("prop hunt map saving not yet implemented, please try again later (or yell at Liam)");
+            case HIDE_AND_SEEK -> new HideAndSeekGameMap(
+                    structure,
+                    this.mapCheckResults.getRelativeGeneric(this.mapCheckResults.spawnPositions()),
+                    centrePos,
+                    blockProtectionOverlay
+            );
         };
 
         final NbtCompound mapNbt = map.toNbt(new NbtCompound());

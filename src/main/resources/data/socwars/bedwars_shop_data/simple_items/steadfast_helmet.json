@@ -1,7 +1,7 @@
 {
   "cost": {
-    "iron": 16,
-    "gold": 8
+    "iron": 64,
+    "gold": 24
   },
   "item": "socwars:steadfast_helmet"
 }

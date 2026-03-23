@@ -1,7 +1,7 @@
 {
   "cost": {
-    "iron": 32,
-    "gold": 2
+    "iron": 48,
+    "gold": 4
   },
   "item": "socwars:blue_sword"
 }

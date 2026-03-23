@@ -1,6 +1,7 @@
 {
   "cost": {
-    "gold": 12
+    "gold": 24,
+	"emeralds": 2
   },
   "item": "socwars:mobbing_staff"
 }

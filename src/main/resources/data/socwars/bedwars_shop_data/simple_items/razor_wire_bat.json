@@ -1,7 +1,7 @@
 {
   "cost": {
-    "iron": 40,
-    "gold": 3
+    "iron": 80,
+    "gold": 6
   },
   "item": "socwars:razor_wire_bat"
 }

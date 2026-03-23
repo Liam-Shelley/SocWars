@@ -1,7 +1,7 @@
 {
   "cost": {
-    "iron": 8,
-    "gold": 2
+    "iron": 24,
+    "gold": 6
   },
   "item": "socwars:corrupted_sword"
 }

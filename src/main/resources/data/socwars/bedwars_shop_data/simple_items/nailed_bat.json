@@ -1,7 +1,7 @@
 {
   "cost": {
-    "iron": 30,
-    "gold": 1
+    "iron": 60,
+    "gold": 4
   },
   "item": "socwars:nailed_bat"
 }

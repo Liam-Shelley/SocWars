@@ -1,7 +1,7 @@
 {
   "cost": {
-    "iron": 40,
-    "gold": 10
+    "iron": 64,
+    "gold": 18
   },
   "item": "socwars:greater_jump_ring"
 }

@@ -1,6 +1,7 @@
 {
   "cost": {
-    "iron": 32
+    "iron": 64,
+	"gold": 2
   },
   "item": "socwars:firestorm"
 }

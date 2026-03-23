@@ -1,6 +1,7 @@
 {
   "cost": {
-    "iron": 48
+    "iron": 96,
+	"gold": 8
   },
   "item": "socwars:gambler_sword"
 }
