@@ -59,7 +59,7 @@ public class BedwarsTeamShopScreen extends AbstractShopScreen<BedwarsTeamShopScr
     protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
         super.drawForeground(context, mouseX, mouseY);
         context.drawText(super.textRenderer, PAGE_TITLE, PAGE_TITLE_X, PAGE_TITLE_Y, Colors.DARK_GRAY, false);
-        context.drawText(super.textRenderer, super.handler.getCurrentCategory().getName(), STOCK_TITLE_X, STOCK_TITLE_Y, Colors.DARK_GRAY, false);
+        context.drawText(super.textRenderer, super.handler.getCurrentCategoryName(), STOCK_TITLE_X, STOCK_TITLE_Y, Colors.DARK_GRAY, false);
     }
 
     @Override

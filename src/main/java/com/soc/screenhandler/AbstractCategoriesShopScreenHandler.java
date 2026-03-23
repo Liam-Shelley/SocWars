@@ -7,6 +7,7 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractCategoriesShopScreenHandler extends AbstractShopScreenHandler {
@@ -49,5 +50,9 @@ public abstract class AbstractCategoriesShopScreenHandler extends AbstractShopSc
 
     public BedwarsShopCategory getCurrentCategory() {
         return this.currentCategory;
+    }
+
+    public Text getCurrentCategoryName() {
+        return this.currentCategory != null ? this.currentCategory.getName() : Text.empty();
     }
 }
