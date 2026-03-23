@@ -14,9 +14,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(DisplayBlock.class)
+@Mixin(value = DisplayBlock.class, remap = false)
 public abstract class DisplayBlockOutline {
-    @Inject(method = "getOutlineShape", at = @At("HEAD"), remap = false, cancellable = true)
+    @Inject(method = "getOutlineShapeForMixin", at = @At("HEAD"), cancellable = true)
     private void socwars_displayBlockOutline(BlockState state, BlockView world, BlockPos pos, ShapeContext context, CallbackInfoReturnable<VoxelShape> cir) {
         final ClientPlayerEntity player = MinecraftClient.getInstance().player;
         if (player != null && !player.isCreative()) {

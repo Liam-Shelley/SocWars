@@ -8,7 +8,6 @@ import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -53,6 +52,11 @@ public class DisplayBlock extends BlockWithEntity {
 
     @Override
     protected VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return this.getOutlineShapeForMixin(state, world, pos, context);
+    }
+
+    //God this is so ugly but it's easier than figuring out refmaps and whatnot
+    private VoxelShape getOutlineShapeForMixin(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return super.getOutlineShape(state, world, pos, context);
     }
 }
