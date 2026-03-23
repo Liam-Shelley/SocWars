@@ -42,8 +42,7 @@ import org.lwjgl.glfw.GLFW;
 import java.awt.*;
 import java.util.Map;
 
-import static com.soc.blocks.blockentities.ModBlockEntities.COLLECTIBLE_BLOCK_ENTITY;
-import static com.soc.blocks.blockentities.ModBlockEntities.MAP_BLOCK_ENTITY;
+import static com.soc.blocks.blockentities.ModBlockEntities.*;
 import static com.soc.lib.Coroutines.getInstance;
 
 @Environment(EnvType.CLIENT)
@@ -54,6 +53,7 @@ public class SocWarsClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		BlockEntityRendererFactories.register(MAP_BLOCK_ENTITY, MapBlockEntityRenderer::new);
 		BlockEntityRendererFactories.register(COLLECTIBLE_BLOCK_ENTITY, CollectibleBlockEntityRenderer::new);
+		BlockEntityRendererFactories.register(DISPLAY_BLOCK_ENTITY, DisplayBlockEntityRenderer::new);
 
 		BlockRenderLayerMap.putBlock(ModBlocks.SPAWN_PLACEHOLDER, BlockRenderLayer.TRANSLUCENT);
 		BlockRenderLayerMap.putBlock(ModBlocks.ITSEVOCAT_SKULL, BlockRenderLayer.TRANSLUCENT);

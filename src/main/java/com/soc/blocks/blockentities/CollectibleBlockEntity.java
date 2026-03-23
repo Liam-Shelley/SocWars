@@ -53,6 +53,6 @@ public class CollectibleBlockEntity extends BlockEntity {
 
     @Override
     public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registryLookup) {
-        return createNbt(registryLookup);
+        return this.createNbt(registryLookup);
     }
 }

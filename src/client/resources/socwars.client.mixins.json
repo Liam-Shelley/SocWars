@@ -7,7 +7,8 @@
     "KeyboardInputModifier",
     "MouseInputModifier",
     "OpenMapBlockScreen",
-    "TransparentGlassArmour"
+    "TransparentGlassArmour",
+    "DisplayBlockOutline"
   ],
   "injectors": {
     "defaultRequire": 1

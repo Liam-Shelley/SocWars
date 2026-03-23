@@ -245,6 +245,8 @@
   "item.socwars.feather_block": "Feather Block",
   "block.socwars.gallium_block": "Block of Gallium",
   "item.socwars.gallium_block": "Block of Gallium",
+  "block.socwars.display_block": "Display Block",
+  "item.socwars.display_block": "Display Block",
   "block.socwars.chest_placeholder": "Skywars Chest Placeholder",
   "item.socwars.chest_placeholder_tier_0": "Tier 1 Skywars Chest Placeholder",
   "item.socwars.chest_placeholder_tier_1": "Tier 2 Skywars Chest Placeholder",
