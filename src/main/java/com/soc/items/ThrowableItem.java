@@ -88,7 +88,7 @@ public class ThrowableItem extends Item {
         return ActionResult.SUCCESS;
     }
 
-    private static Long getWorldTime() {
+    public static Long getWorldTime() { //Refactor this at some point because it also gets used in AttackFunctionWeapon
         //I'm setting this in a client mixin because I'm too lazy to think of a better way to do it
         return 0L;
     }

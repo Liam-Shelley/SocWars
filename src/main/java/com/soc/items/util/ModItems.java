@@ -43,6 +43,7 @@ public class ModItems {
         BaseTool.initialise();
         BaseItem.initialise();
         JetShoppingTrolley.initialise();
+        SeekingStick.initialise();
     }
 
     public static Item register(String name, Function<Item.Settings, Item> itemFactory, Item.Settings settings) {

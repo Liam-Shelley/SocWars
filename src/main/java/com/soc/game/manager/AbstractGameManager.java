@@ -7,7 +7,6 @@ import com.soc.database.stats.BaseTable;
 import com.soc.database.stats.CombatTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.SpreadRules;
-import com.soc.lib.Coroutines;
 import com.soc.lib.Events;
 import com.soc.networking.s2c.UpdateHotbarPayload;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -89,11 +88,15 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     private Map<DyeColor, Team> buildScoreboardTeams() {
         return this.teams.keySet().stream().collect(Collectors.toMap(Function.identity(), this::addTeamFromColour));
     }
+
     protected @Nullable EventQueue<EVENT> buildEventQueue() {
         return null;
     }
 
     protected abstract Function<UUID, TABLE> dbTableBuilder();
+    protected final TABLE getDbTable(UUID player) {
+        return player == null ? null : this.dbTables.get(player);
+    }
     protected final TABLE getDbTable(Entity player) {
         return player == null ? null : this.dbTables.get(player.getUuid());
     }
@@ -111,10 +114,9 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
 
     @MustBeInvokedByOverriders
     public void startGame() {
-        final MAP map = this.map;
-        map.placeMap();
-        map.spawnCages(true);
-        map.spreadPlayers(this.teams);
+        this.map.placeMap();
+        this.map.spawnCages(true);
+        this.map.spreadPlayers(this.teams);
 
         this.removePlayersVelocity();
 
@@ -124,12 +126,14 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         this.clearPlayerInventoriesAndEnderChests();
         this.removePlayersAttributes();
 
-        PrescheduledEvents.playCountdown(() -> {
-            map.spawnCages(false);
-            this.setGameMode(GameMode.SURVIVAL);
-        }, this, 5, 20, 50, SoundEvents.BLOCK_NOTE_BLOCK_GUITAR.value(), null);
+        PrescheduledEvents.playCountdown(this::onFinishCountdown, this, 5, 20, 50, SoundEvents.BLOCK_NOTE_BLOCK_GUITAR.value(), null);
 
         this.getPlayers().forEach(this::sendJoinGamePayload);
+    }
+
+    protected void onFinishCountdown() {
+        this.map.spawnCages(false);
+        this.setGameMode(GameMode.SURVIVAL);
     }
 
     @MustBeInvokedByOverriders
@@ -144,9 +148,8 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
             Events.getInstance().scheduleEvent(this::sendPlayersToLobby, 20 * 10);
         }
 
-
         Database.getStatement().ifPresent(statement -> this.dbTables.values().forEach(table -> {
-            SocWars.LOGGER.info("Saving db table for {}", this.gameId);
+            SocWars.LOGGER.info("Saving db table for {}, in game {}", table.getPlayer(), this.gameId);
             table.updateSql(statement);
         }));
 
@@ -163,13 +166,15 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
 
         this.makePlayerSpectator(player);
 
-        player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.ENTITY_PLAYER_DEATH, SoundCategory.PLAYERS, 1, 1);
-        player.getWorld().playSound(null, BlockPos.ofFloored(this.map.getRespawnSpectatorPos()), SoundEvents.ENTITY_PLAYER_DEATH, SoundCategory.PLAYERS, 1, 1);
+        player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.ENTITY_PLAYER_DEATH, SoundCategory.PLAYERS, 1f, 1f);
+        player.getWorld().playSound(null, BlockPos.ofFloored(this.map.getRespawnSpectatorPos()), SoundEvents.ENTITY_PLAYER_DEATH, SoundCategory.PLAYERS, 1f, 1f);
 
         return true;
     }
 
-    protected abstract boolean canRespawn(ServerPlayerEntity player);
+    protected boolean canRespawn(ServerPlayerEntity player) {
+        return true;
+    }
 
     protected void trackDeathStats(ServerPlayerEntity player, DamageSource source) {}
 
@@ -414,6 +419,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
 
         player.changeGameMode(GameMode.ADVENTURE);
         healPlayer(player);
+        resetScale(player);
         player.getInventory().clear();
     }
 

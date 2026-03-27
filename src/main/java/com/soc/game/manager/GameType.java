@@ -14,7 +14,7 @@ public enum GameType implements QueueProgress, StringIdentifiable {
     SKYWARS(1, 8, "skywars", SkywarsGameMap.FILE_EXTENSION),
     BEDWARS(1, 16, "bedwars", BedwarsGameMap.FILE_EXTENSION),
     PROP_HUNT(2, 8, "prop_hunt", "phmap"),
-    HIDE_AND_SEEK(2, 8, "hide_and_seek", HideAndSeekGameMap.FILE_EXTENSION);
+    HIDE_AND_SEEK(1, 8, "hide_and_seek", HideAndSeekGameMap.FILE_EXTENSION);
 
     public static final PacketCodec<RegistryByteBuf, GameType> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.INTEGER, GameType::ordinal, GameType::fromOrdinal);
     private final int minPlayers;

@@ -84,13 +84,21 @@ public abstract class AbstractShopScreen<T extends AbstractShopScreenHandler> ex
 
                 context.drawItem(costItem.getDefaultStack(), xStart, yStart);
 
-                if (!canAfford) {
+                if (!canAfford || costAmount == 0) {
                     context.fill(xStart, yStart, xStart + 16, yStart + 16, 0xaa000000);
                 }
             }
             {
-                String costString = String.valueOf(costAmount);
-                context.drawText(super.textRenderer, costString, x + i * 20 + 34 - costString.length() * 6, y + 16, canAfford ? 0xefffffff : 0xefdf1020, true);
+                final String costString = String.valueOf(costAmount);
+                final int colour;
+                if (costAmount == 0) {
+                    colour = 0xef444444;
+                } else if (canAfford) {
+                    colour = 0xef10df20;
+                } else {
+                    colour = 0xefdf1020;
+                }
+                context.drawText(super.textRenderer, costString, x + i * 20 + 34 - costString.length() * 6, y + 16, colour, true);
             }
         });
 

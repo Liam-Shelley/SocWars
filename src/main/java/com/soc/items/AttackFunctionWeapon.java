@@ -42,12 +42,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
+import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
 import static com.soc.lib.SocWarsLib.*;
 import static com.soc.util.SphereExplosion.fireExplosion;
 
 public class AttackFunctionWeapon extends Item {
     private final AttackFunction attackFunction;
-    private static World WORLD;
 
     private static final EquipmentSlot[] ARMOUR_SLOTS = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
     private static @NotNull Item leatherArmour(EquipmentSlot slot) {
@@ -73,26 +73,24 @@ public class AttackFunctionWeapon extends Item {
     }
 
     public static void initialise() {
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(LIFETHIEF, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(DEVASTATOR_PRIME, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(NETHERWRONG_SWORD, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(ORANGE_SWORD, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(BLUE_SWORD, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(PINK_SWORD, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(KNOCKFORWARD_SWORD, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(TRANSPORTAS, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(STORMAGEDDON, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(DETONATOR, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(SHATTERSTAR, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(LEATHERER, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(SPRING_SWORD, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(FLESHY_BLADE, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(FIRESTORM, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(CORRUPTED_SWORD, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(POSTURA, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(FULL_METAL_SWORD, ItemGroups.COMBAT);
-
-        net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents.LOAD.register((a, b) -> WORLD = b);
+        addItemToGroupsAndBaseItemGroup(LIFETHIEF, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(DEVASTATOR_PRIME, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(NETHERWRONG_SWORD, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(ORANGE_SWORD, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(BLUE_SWORD, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(PINK_SWORD, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(KNOCKFORWARD_SWORD, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(TRANSPORTAS, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(STORMAGEDDON, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(DETONATOR, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(SHATTERSTAR, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(LEATHERER, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(SPRING_SWORD, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(FLESHY_BLADE, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(FIRESTORM, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(CORRUPTED_SWORD, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(POSTURA, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(FULL_METAL_SWORD, ItemGroups.COMBAT);
     }
 
     public static final Item LIFETHIEF = ModItems.register("lifethief", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
@@ -116,7 +114,7 @@ public class AttackFunctionWeapon extends Item {
                 target.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 3 * 20, 2));
             }), new Settings()
             .rarity(Rarity.EPIC)
-            .sword(ToolMaterials.DEVASTATOR, 9f, -3.5f)
+            .sword(ToolMaterials.DEVASTATOR, 14f, -1.8f)
             .component(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true)
     );
     public static final Item NETHERWRONG_SWORD = ModItems.register("netherwrong_sword", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
@@ -227,7 +225,6 @@ public class AttackFunctionWeapon extends Item {
             .rarity(Rarity.RARE)
     );
     public static final Item FLESHY_BLADE = ModItems.register("fleshy_blade", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
-                WORLD = target.getWorld(); // Horrible gross disgusting code
                 attacker.getWorld().playSound(null, target.getBlockPos(), Sounds.FLESH, SoundCategory.MASTER, 1f, 1f);
             }), new Settings()
             .sword(ToolMaterials.BASE, 6f, -2.2f)
@@ -313,7 +310,7 @@ public class AttackFunctionWeapon extends Item {
             }
             case "socwars:stormageddon" -> textConsumer.accept(Text.translatable("tooltip.stormageddon"));
             case "socwars:spring_sword" -> textConsumer.accept(Text.translatable("tooltip.spring_sword").formatted(Formatting.YELLOW));
-            case "socwars:fleshy_blade" -> textConsumer.accept(Text.translatable(WORLD == null || WORLD.getTime() % 25 > 2 ? "tooltip.fleshy_blade" : "tooltip.fleshy_blade.wet").formatted(Formatting.RED));
+            case "socwars:fleshy_blade" -> textConsumer.accept(Text.translatable(ThrowableItem.getWorldTime() % 25 > 2 ? "tooltip.fleshy_blade" : "tooltip.fleshy_blade.wet").formatted(Formatting.RED));
             case "socwars:postura" -> textConsumer.accept(Text.translatable("tooltip.postura"));
             case "socwars:full_metal_sword" -> textConsumer.accept(Text.translatable("tooltip.full_metal_sword"));
         }

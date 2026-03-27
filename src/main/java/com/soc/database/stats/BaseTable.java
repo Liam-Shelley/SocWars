@@ -91,4 +91,8 @@ public abstract class BaseTable implements GetFields, TableName {
         return builder.toString();
 
     }
+
+    public final UUID getPlayer() {
+        return this.player;
+    }
 }

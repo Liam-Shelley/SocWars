@@ -17,12 +17,14 @@ public class EventQueue<T extends AbstractGameManager<?, ?, ?>> {
         this.events = new TreeSet<>();
     }
 
-    public void addEvent(int time, Consumer<T> event, Text name) {
-        events.add(new Event<>(time, event, name));
+    public EventQueue<T> addEvent(int time, Consumer<T> event, Text name) {
+        this.events.add(new Event<>(time, event, name));
+        return this;
     }
 
-    public void addEvent(Time time, Consumer<T> event, Text name) {
-        events.add(new Event<>(time.ticks(), event, name));
+    public EventQueue<T> addEvent(Time time, Consumer<T> event, Text name) {
+        this.events.add(new Event<>(time.ticks(), event, name));
+        return this;
     }
 
     public int peekTime() {

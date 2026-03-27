@@ -6,6 +6,7 @@ import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.SkywarsGameMap;
 import com.soc.game.map.SpreadRules;
 import com.soc.lib.Events;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.item.ItemStack;
@@ -29,7 +30,7 @@ import static com.soc.lib.SocWarsLib.*;
 
 public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, SkywarsTable, SkywarsGameManager> {
     private final Settings settings;
-    private final Map<ServerPlayerEntity, PlayerStats> playerMap;
+    private final Map<UUID, PlayerStats> playerMap;
 
     public static class Settings {
         public static final Settings DEFAULT = new Settings(5);
@@ -66,7 +67,7 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
     ) {
         super(world, players, spreadRules, gameId);
         this.settings = settings;
-        this.playerMap = players.stream().collect(Collectors.toMap(Function.identity(), key -> new PlayerStats()));
+        this.playerMap = players.stream().collect(Collectors.toMap(Entity::getUuid,key -> new PlayerStats()));
     }
 
     @Override
@@ -85,10 +86,10 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
 
     @Override
     public void endGame(boolean immediate) {
-        this.playerMap.forEach((player, stats) -> {
+        this.playerMap.forEach((uuid, stats) -> {
             final Text message;
             final SoundEvent sound;
-            final SkywarsTable dbTable = this.getDbTable(player);
+            final SkywarsTable dbTable = this.getDbTable(uuid);
             if (stats.isAlive()) {
                 message = Text.translatable("game.skywars.win");
                 sound = SoundEvents.ENTITY_PLAYER_LEVELUP;
@@ -100,9 +101,11 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
             }
 
             Events.getInstance().scheduleEvent(() -> {
-                player.networkHandler.sendPacket(new TitleS2CPacket(message));
+                if (this.world.getPlayerByUuid(uuid) instanceof ServerPlayerEntity player) {
+                    player.networkHandler.sendPacket(new TitleS2CPacket(message));
 
-                player.playSoundToPlayer(sound, SoundCategory.PLAYERS, 1, 1);
+                    player.playSoundToPlayer(sound, SoundCategory.PLAYERS, 1, 1);
+                }
             }, 10);
         });
 
@@ -132,7 +135,7 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
     public boolean onPlayerDeath(ServerPlayerEntity player, DamageSource source, float amount) {
         super.onPlayerDeath(player, source, amount);
 
-        this.playerMap.get(player).kill();
+        this.playerMap.get(player.getUuid()).kill();
 
         final boolean canRespawn = this.canRespawn(player);
         this.broadcastDeath(player, source, !canRespawn);
@@ -159,7 +162,7 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
 
     @Override
     protected boolean canRespawn(ServerPlayerEntity player) {
-        return this.playerMap.get(player).isAlive();
+        return this.playerMap.get(player.getUuid()).isAlive();
     }
 
     @Override
@@ -184,7 +187,7 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
         });
     }
 
-    private List<ServerPlayerEntity> getAlivePlayers() {
+    private List<UUID> getAlivePlayers() {
         return this.playerMap.entrySet().stream().filter(entry -> entry.getValue().isAlive()).map(Map.Entry::getKey).toList();
     }
 }

@@ -31,7 +31,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import static com.soc.lib.SocWarsLib.iterateInCube;
 
@@ -42,6 +42,8 @@ public abstract class AbstractGameMap {
 
     private static final int Y_CLEARING_BUFFER = 64;
     private static final int XZ_CLEARING_BUFFER = 64;
+
+    private static final Direction[] HORIZONTAL_DIRECTIONS = {Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
 
     protected final StructureTemplate structure;
     public final float size;
@@ -91,7 +93,11 @@ public abstract class AbstractGameMap {
     public abstract void tick();
 
     public void spreadPlayers(Multimap<DyeColor, UUID> teams) {
-        teams.forEach((team, uuid) -> {
+        teams.keySet().forEach(team -> this.spreadTeam(teams, team));
+    }
+
+    protected void spreadTeam(Multimap<DyeColor, UUID> teams, DyeColor team) {
+        teams.get(team).forEach(uuid -> {
             final ServerPlayerEntity player = (ServerPlayerEntity)this.world.getPlayerByUuid(uuid);
             if (player == null) return;
 
@@ -223,22 +229,26 @@ public abstract class AbstractGameMap {
         return this.absoluteCentrePos.up(this.structure.getSize().getY() + 15).toCenterPos();
     }
 
-    public void spawnCages(boolean place) {
-        final BiConsumer<Direction, BlockPos> function = place ? (direction, pos) -> {
-                final BlockPos currentPos = pos.offset(direction);
-                if (this.world.isAir(currentPos)) this.world.setBlockState(currentPos, Blocks.BARRIER.getDefaultState());
-        } : (direction, pos) -> {
-                final BlockPos currentPos = pos.offset(direction);
-                if (this.world.getBlockState(currentPos).isOf(Blocks.BARRIER)) this.world.setBlockState(currentPos, Blocks.AIR.getDefaultState());
+    public void spawnCages(boolean place, DyeColor... teams) {
+        final Consumer<BlockPos> function = place ? pos -> {
+                if (this.world.isAir(pos)) this.world.setBlockState(pos, Blocks.BARRIER.getDefaultState());
+        } : pos -> {
+                if (this.world.getBlockState(pos).isOf(Blocks.BARRIER)) this.world.setBlockState(pos, Blocks.AIR.getDefaultState());
         };
 
-        this.spawnPositions.values().forEach(position -> Arrays.stream(Direction.values()).filter(direction -> direction.getAxis().isHorizontal()).forEach(direction -> {
-            function.accept(direction, this.pos(position));
-            function.accept(direction, this.pos(position).up());
-        }));
+        this.spawnPositions.entries().forEach(position -> {
+            if (teams.length == 0 || Arrays.stream(teams).anyMatch(team -> team == position.getKey())) {
+                final BlockPos pos = this.pos(position.getValue());
+                for (Direction direction : HORIZONTAL_DIRECTIONS) {
+                    final BlockPos offset = pos.offset(direction);
+                    function.accept(offset);
+                    function.accept(offset.up());
+                }
+            }
+        });
     }
 
-    public final boolean isBlockProtected(BlockPos pos) {
+    public boolean isBlockProtected(BlockPos pos) {
         return this.blockProtectionOverlay != null && this.blockProtectionOverlay.get(pos, this.getOrigin());
     }
 }
