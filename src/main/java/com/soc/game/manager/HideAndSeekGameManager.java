@@ -161,9 +161,11 @@ public class HideAndSeekGameManager extends AbstractGameManager<HideAndSeekGameM
         hider.changeGameMode(GameMode.SPECTATOR);
         hider.networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(hider.getId(), hider.getPos().subtract(seeker.getPos()).normalize().multiply(2.5d)));
         hider.networkHandler.sendPacket(new TitleS2CPacket(Text.translatable("game.hide_and_seek.found", seeker.getDisplayName())));
+        this.getDbTable(hider).grantFound();
 
         if (seeker instanceof ServerPlayerEntity seekerEntity) {
             seekerEntity.networkHandler.sendPacket(new TitleS2CPacket(Text.translatable("game.hide_and_seek.find", hider.getDisplayName())));
+            this.getDbTable(seeker).grantFind();
         }
 
         super.teams.remove(HIDER_COLOUR, hider.getUuid());
