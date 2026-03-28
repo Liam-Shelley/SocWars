@@ -81,7 +81,7 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
     @Override
     public void startGame() {
         super.startGame();
-        super.map.placeLootChests();
+        this.map.placeLootChests();
     }
 
     @Override

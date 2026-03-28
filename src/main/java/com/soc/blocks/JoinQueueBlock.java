@@ -38,7 +38,7 @@ public class JoinQueueBlock extends Block {
     @Override
     protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         if (player.isCreativeLevelTwoOp() && player.isSneaking()) {
-            GameType newQueue = QUEUE_TYPES[(state.get(QUEUE).ordinal() + 1) % QUEUE_TYPES.length];
+            final GameType newQueue = QUEUE_TYPES[(state.get(QUEUE).ordinal() + 1) % QUEUE_TYPES.length];
             world.setBlockState(pos, state.with(QUEUE, newQueue));
             if (world.isClient) player.sendMessage(Text.translatable("queue_block.set_queue", newQueue), false);
             return ActionResult.SUCCESS;
@@ -46,12 +46,12 @@ public class JoinQueueBlock extends Block {
 
         if (world.isClient) return ActionResult.SUCCESS;
 
-        GameType queue = world.getBlockState(pos).get(QUEUE);
+        final GameType queue = world.getBlockState(pos).get(QUEUE);
 
-        if (!player.isSneaking()) {
-            GamesManager.getInstance().queuePlayer((ServerPlayerEntity)player, queue);
+        if (player.isSneaking()) {
+            GamesManager.getInstance().unqueuePlayer((ServerPlayerEntity)player);
         } else {
-            GamesManager.getInstance().unqueuePlayer((ServerPlayerEntity)player, queue);
+            GamesManager.getInstance().queuePlayer((ServerPlayerEntity)player, queue);
         }
 
         return ActionResult.SUCCESS;

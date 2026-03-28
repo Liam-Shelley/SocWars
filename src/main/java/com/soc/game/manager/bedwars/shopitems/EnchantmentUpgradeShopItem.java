@@ -1,7 +1,6 @@
 package com.soc.game.manager.bedwars.shopitems;
 
 import com.google.gson.JsonObject;
-import com.mojang.datafixers.util.Either;
 import com.soc.SocWars;
 import com.soc.resourcedata.deserialisation.Cost;
 import com.soc.screenhandler.AbstractShopScreenHandler;
@@ -39,7 +38,7 @@ public class EnchantmentUpgradeShopItem implements ShopItem<EnchantmentUpgradeSh
     private final ItemStack icon;
     private final List<Cost> costs;
 
-    private Either<Identifier, RegistryEntry<Enchantment>> enchantment;
+    private final Identifier enchantment;
 
     private int tier;
 
@@ -50,7 +49,7 @@ public class EnchantmentUpgradeShopItem implements ShopItem<EnchantmentUpgradeSh
     public EnchantmentUpgradeShopItem(ItemStack icon, List<Cost> costs, Identifier enchantment, int tier) {
         this.icon = icon;
         this.costs = costs;
-        this.enchantment = Either.left(enchantment);
+        this.enchantment = enchantment;
         this.tier = tier;
     }
 
@@ -77,26 +76,23 @@ public class EnchantmentUpgradeShopItem implements ShopItem<EnchantmentUpgradeSh
     public boolean buy(PlayerEntity player, AbstractShopScreenHandler context) {
         if (this.tier == this.costs.size() || !this.getCost().canAfford(player)) return false;
 
-        this.resolveEnchantment(player.getWorld());
-        if (this.enchantment.left().isPresent()) {
-            SocWars.LOGGER.warn("Attempted to buy enchantment upgrade but no enchantment was found for id: {}", this.enchantment.left().get());
+        return this.resolveEnchantment(player.getWorld()).map(enchantment -> {
+            this.takeItems(player);
+            context.refreshItems();
+            this.tier++;
+
+            if (player instanceof ServerPlayerEntity serverPlayer) context.getManager().buyEnchantmentUpgrade(serverPlayer, enchantment, this.tier);
+
+            return true;
+        }).orElseGet(() -> {
+            SocWars.LOGGER.warn("Attempted to buy enchantment upgrade but no enchantment was found for id: {}", this.enchantment);
             return false;
-        }
-
-        final RegistryEntry<Enchantment> enchantment = this.enchantment.right().get();
-
-        this.takeItems(player);
-        context.refreshItems();
-        this.tier++;
-
-        if (player instanceof ServerPlayerEntity serverPlayer) context.getManager().buyEnchantmentUpgrade(serverPlayer, enchantment, this.tier);
-
-        return true;
+        });
     }
 
-    private void resolveEnchantment(World world) {
+    private Optional<RegistryEntry.Reference<Enchantment>> resolveEnchantment(World world) {
         final Registry<Enchantment> enchantmentRegistry = world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT);
-        this.enchantment.ifLeft(id -> enchantmentRegistry.getEntry(id).ifPresentOrElse(enchantment -> this.enchantment = Either.right(enchantment), () -> SocWars.LOGGER.warn("Failed to resolve enchantment for shopItem with ID: {}", id)));
+        return enchantmentRegistry.getEntry(this.enchantment);
     }
 
     @Override
@@ -132,7 +128,7 @@ public class EnchantmentUpgradeShopItem implements ShopItem<EnchantmentUpgradeSh
     public void enchant(RegistryEntry<Enchantment> enchantment, int tier) {}
 
     private Identifier getEnchantment() {
-        return this.enchantment.map(Function.identity(), entry -> entry.getKey().get().getValue());
+        return this.enchantment;
     }
 
     private Optional<ItemStack> getOptionalIcon() {

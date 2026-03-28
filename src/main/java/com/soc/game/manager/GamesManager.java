@@ -191,7 +191,7 @@ public class GamesManager {
         this.queue.queuePlayer(player, queue);
     }
 
-    public void unqueuePlayer(ServerPlayerEntity player, GameType queue) {
-        if (!this.queue.isPlayerInQueue(player, queue)) this.queue.unqueuePlayer(player);
+    public void unqueuePlayer(ServerPlayerEntity player) {
+        this.queue.unqueuePlayer(player);
     }
 }
