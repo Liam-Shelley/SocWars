@@ -85,7 +85,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
 
     protected abstract MAP buildMap();
     protected abstract Multimap<DyeColor, UUID> buildTeams(Set<ServerPlayerEntity> players, SpreadRules spreadRules);
-    private Map<DyeColor, Team> buildScoreboardTeams() {
+    protected Map<DyeColor, Team> buildScoreboardTeams() {
         return this.teams.keySet().stream().collect(Collectors.toMap(Function.identity(), this::addTeamFromColour));
     }
 

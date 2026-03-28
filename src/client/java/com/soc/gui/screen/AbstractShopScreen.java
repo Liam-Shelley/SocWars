@@ -90,7 +90,7 @@ public abstract class AbstractShopScreen<T extends AbstractShopScreenHandler> ex
             }
             {
                 final String costString = String.valueOf(costAmount);
-                final int colour;
+                final int colour; //I was tempted to do a nested ternary, but I decided that I should be responsible and write something readable for once
                 if (costAmount == 0) {
                     colour = 0xef444444;
                 } else if (canAfford) {
