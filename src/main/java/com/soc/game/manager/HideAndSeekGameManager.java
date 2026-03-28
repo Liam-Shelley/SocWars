@@ -56,7 +56,7 @@ public class HideAndSeekGameManager extends AbstractGameManager<HideAndSeekGameM
         this.map.spawnCages(false, HIDER_COLOUR);
         this.getPlayers(HIDER_COLOUR).forEach(hider -> {
             hider.changeGameMode(GameMode.SURVIVAL);
-            scaleEntity(hider, 0.5f);
+            scaleEntity(hider, 0.75f);
         });
 
         final TitleS2CPacket youAreSeekingPacket = new TitleS2CPacket(Text.translatable("game.hide_and_seek.you_are_seeking"));
@@ -85,15 +85,18 @@ public class HideAndSeekGameManager extends AbstractGameManager<HideAndSeekGameM
 
     private void endGame(boolean immediate, DyeColor winningTeam) {
         this.getPlayers().forEach(player -> {
+            final DyeColor playerTeam = this.getTeam(player);
+            final String playerTeamSuffix = playerTeam == SEEKER_COLOUR ? "seeker" : "hider";
+
             final Text message;
             final SoundEvent sound;
             final HideAndSeekTable dbTable = this.getDbTable(player);
-            if (this.getTeam(player) == winningTeam) {
-                message = Text.translatable("game.hide_and_seek.win");
+            if (playerTeam == winningTeam) {
+                message = Text.translatable("game.hide_and_seek.win." + playerTeamSuffix);
                 sound = SoundEvents.ENTITY_PLAYER_LEVELUP;
                 dbTable.win();
             } else {
-                message = Text.translatable("game.hide_and_seek.lose");
+                message = Text.translatable("game.hide_and_seek.lose." + playerTeamSuffix);
                 sound = SoundEvents.BLOCK_BELL_USE;
                 dbTable.lose();
             }
@@ -114,14 +117,12 @@ public class HideAndSeekGameManager extends AbstractGameManager<HideAndSeekGameM
 
     @Override
     public boolean onPlayerDeath(ServerPlayerEntity player, DamageSource source, float amount) {
-        this.trackDeathStats(player, source);
-
         healPlayer(player);
         //resetScale(player);
 
         this.map.getSpawnPosition(this.getTeam(player.getUuid())).ifPresent(pos -> player.requestTeleport(pos.getX(), pos.getY(), pos.getZ()));
 
-        return true;
+        return false;
     }
 
     @Override

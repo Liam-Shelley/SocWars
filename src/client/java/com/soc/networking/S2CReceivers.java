@@ -3,12 +3,17 @@ package com.soc.networking;
 import com.soc.game.BedwarsTeamsHUD;
 import com.soc.lib.Coroutine;
 import com.soc.lib.Coroutines;
+import com.soc.mixin.client.GetLoadedModelGroups;
 import com.soc.networking.s2c.*;
 import com.soc.networking.s2c.bedwars.*;
 import com.soc.player.PlayerDataManager;
 import com.soc.screenhandler.BedwarsIndividualShopScreenHandler;
 import com.soc.screenhandler.BedwarsTeamShopScreenHandler;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
@@ -32,6 +37,11 @@ public class S2CReceivers {
     public static void initialise() {
         ClientPlayNetworking.registerGlobalReceiver(JoinQueuePayload.ID, (payload, context) -> {
                 context.player().sendMessage(Text.translatable("queue.join", payload.queue()), false);
+
+                //Some horrific stuff I was testing
+                //final Object2IntMap<BlockState> blockStateMap = ((GetLoadedModelGroups)MinecraftClient.getInstance().getBakedModelManager()).getModelGroups();
+                //final int greyWoolState = blockStateMap.getInt(Blocks.GRAY_BANNER.getDefaultState());
+                //blockStateMap.put(Blocks.RED_BANNER.getDefaultState(), greyWoolState);
         });
         ClientPlayNetworking.registerGlobalReceiver(LeaveQueuePayload.ID, (payload, context) -> {
                 context.player().sendMessage(Text.translatable("queue.leave", payload.queue()), false);
