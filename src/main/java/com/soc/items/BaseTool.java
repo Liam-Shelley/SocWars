@@ -17,6 +17,8 @@ import net.minecraft.registry.tag.BlockTags;
 
 import java.util.List;
 
+import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
+
 public class BaseTool extends Item {
 
     public BaseTool(Settings settings) {
@@ -24,33 +26,33 @@ public class BaseTool extends Item {
     }
 
     public static void initialise() {
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(STONE_SHEARS, ItemGroups.TOOLS);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(DIAMOND_SHEARS, ItemGroups.TOOLS);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(EMERALD_PICKAXE, ItemGroups.TOOLS);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(EMERALD_AXE, ItemGroups.TOOLS);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(UNOBTANIUM_PICKAXE, ItemGroups.TOOLS);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(UNOBTANIUM_AXE, ItemGroups.TOOLS);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(UNOBTANIUM_SHEARS, ItemGroups.TOOLS);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(BEDROCK_PICKAXE, ItemGroups.TOOLS);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(BEDROCK_AXE, ItemGroups.TOOLS);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(FISH_PICKAXE, ItemGroups.TOOLS);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(FISH_AXE, ItemGroups.TOOLS);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(FISH_SHEARS, ItemGroups.TOOLS);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(MULTI_TOOL, ItemGroups.TOOLS);
+        addItemToGroupsAndBaseItemGroup(STONE_SHEARS, ItemGroups.TOOLS);
+        addItemToGroupsAndBaseItemGroup(DIAMOND_SHEARS, ItemGroups.TOOLS);
+        addItemToGroupsAndBaseItemGroup(EMERALD_PICKAXE, ItemGroups.TOOLS);
+        addItemToGroupsAndBaseItemGroup(EMERALD_AXE, ItemGroups.TOOLS);
+        addItemToGroupsAndBaseItemGroup(UNOBTANIUM_PICKAXE, ItemGroups.TOOLS);
+        addItemToGroupsAndBaseItemGroup(UNOBTANIUM_AXE, ItemGroups.TOOLS);
+        addItemToGroupsAndBaseItemGroup(UNOBTANIUM_SHEARS, ItemGroups.TOOLS);
+        addItemToGroupsAndBaseItemGroup(BEDROCK_PICKAXE, ItemGroups.TOOLS);
+        addItemToGroupsAndBaseItemGroup(BEDROCK_AXE, ItemGroups.TOOLS);
+        addItemToGroupsAndBaseItemGroup(FISH_PICKAXE, ItemGroups.TOOLS);
+        addItemToGroupsAndBaseItemGroup(FISH_AXE, ItemGroups.TOOLS);
+        addItemToGroupsAndBaseItemGroup(FISH_SHEARS, ItemGroups.TOOLS);
+        addItemToGroupsAndBaseItemGroup(MULTI_TOOL, ItemGroups.TOOLS);
     }
 
-    public static final Item STONE_SHEARS = ModItems.register("stone_shears", BaseTool::new, new Settings().component(DataComponentTypes.TOOL, createShearsComponent(ToolMaterial.STONE)));
-    public static final Item DIAMOND_SHEARS = ModItems.register("diamond_shears", BaseTool::new, new Settings().component(DataComponentTypes.TOOL, createShearsComponent(ToolMaterial.DIAMOND)));
+    public static final Item STONE_SHEARS = ModItems.register("stone_shears", BaseTool::new, new Settings().component(DataComponentTypes.TOOL, createShearsComponent(ToolMaterial.STONE)).enchantable(5));
+    public static final Item DIAMOND_SHEARS = ModItems.register("diamond_shears", BaseTool::new, new Settings().component(DataComponentTypes.TOOL, createShearsComponent(ToolMaterial.DIAMOND)).enchantable(10));
     public static final Item EMERALD_PICKAXE = ModItems.register("emerald_pickaxe", BaseTool::new, new Settings().pickaxe(ToolMaterials.EMERALD, 1f, -2.8f));
     public static final Item EMERALD_AXE = ModItems.register("emerald_axe", BaseTool::new, new Settings().axe(ToolMaterials.EMERALD, 5f, -3f));
     public static final Item UNOBTANIUM_PICKAXE = ModItems.register("unobtanium_pickaxe", BaseTool::new, new Settings().pickaxe(ToolMaterials.UNOBTANIUM, 1f, -2.8f));
     public static final Item UNOBTANIUM_AXE = ModItems.register("unobtanium_axe", BaseTool::new, new Settings().axe(ToolMaterials.UNOBTANIUM, 5f, -3f));
-    public static final Item UNOBTANIUM_SHEARS = ModItems.register("unobtanium_shears", BaseTool::new, new Settings().component(DataComponentTypes.TOOL, createShearsComponent(ToolMaterials.UNOBTANIUM)));
+    public static final Item UNOBTANIUM_SHEARS = ModItems.register("unobtanium_shears", BaseTool::new, new Settings().component(DataComponentTypes.TOOL, createShearsComponent(ToolMaterials.UNOBTANIUM)).enchantable(30));
     public static final Item BEDROCK_PICKAXE = ModItems.register("bedrock_pickaxe", BaseTool::new, new Settings().pickaxe(ToolMaterials.BEDROCK, 1f, -2.8f));
     public static final Item BEDROCK_AXE = ModItems.register("bedrock_axe", BaseTool::new, new Settings().axe(ToolMaterials.BEDROCK, 5f, -3f));
     public static final Item FISH_PICKAXE = ModItems.register("fish_pickaxe", BaseTool::new, new Settings().pickaxe(ToolMaterials.FISH, 1f, -2.8f));
     public static final Item FISH_AXE = ModItems.register("fish_axe", BaseTool::new, new Settings().axe(ToolMaterials.FISH, 5f, -3f));
-    public static final Item FISH_SHEARS = ModItems.register("fish_shears", BaseTool::new, new Settings().component(DataComponentTypes.TOOL, createShearsComponent(ToolMaterials.FISH)));
+    public static final Item FISH_SHEARS = ModItems.register("fish_shears", BaseTool::new, new Settings().component(DataComponentTypes.TOOL, createShearsComponent(ToolMaterials.FISH)).enchantable(50));
     public static final Item MULTI_TOOL = ModItems.register("multi_tool", BaseTool::new, new Settings()
             .component(DataComponentTypes.TOOL, new ToolComponent(List.of(
                     ToolComponent.Rule.ofNeverDropping(Registries.createEntryLookup(Registries.BLOCK).getOrThrow(BlockTags.INCORRECT_FOR_NETHERITE_TOOL)),
@@ -60,6 +62,7 @@ public class BaseTool extends Item {
                     ToolComponent.Rule.ofAlwaysDropping(Registries.createEntryLookup(Registries.BLOCK).getOrThrow(BlockTags.HOE_MINEABLE), ToolMaterials.FISH.speed())
             ), ToolMaterials.FISH.speed(), 1, true))
             .component(DataComponentTypes.WEAPON, new WeaponComponent(1, 2.5f))
+            .enchantable(50)
             .maxDamage(ToolMaterials.FISH.durability() * 3/2)
     );
 

@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "socwars:gambler_helmet",
+    "socwars:steadfast_helmet",
+    "socwars:cartoon_helmet",
+    "socwars:glass_helmet",
+    "socwars:demolitionist_helmet"
+  ]
+}

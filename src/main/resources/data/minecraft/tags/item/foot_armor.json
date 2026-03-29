@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "socwars:gambler_boots",
+    "socwars:steadfast_boots",
+    "socwars:cartoon_boots",
+    "socwars:glass_boots",
+    "socwars:demolitionist_boots",
+    "socwars:training_weights"
+  ]
+}

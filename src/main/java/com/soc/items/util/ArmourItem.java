@@ -34,6 +34,7 @@ public abstract class ArmourItem extends Item {
                 .equipSound(ArmorMaterials.DIAMOND.equipSound())
                 .model(equipmentAsset).build())
                 .maxCount(1), slot, armour)
+                .enchantable(10)
         );
 
         this.slot = slot;

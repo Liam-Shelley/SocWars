@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "socwars:gambler_chestplate",
+    "socwars:steadfast_chestplate",
+    "socwars:cartoon_chestplate",
+    "socwars:glass_chestplate",
+    "socwars:demolitionist_chestplate",
+    "socwars:summoners_garb"
+  ]
+}

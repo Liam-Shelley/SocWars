@@ -331,6 +331,7 @@ public class UseFunctionWeapon extends Item {
                 return ActionResult.FAIL;
             }), new Settings()
             .maxDamage(256)
+            .enchantable(2)
             .rarity(Rarity.RARE)
     );
     public static final Item SNIPER_RIFLE = ModItems.register("sniper_rifle", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {

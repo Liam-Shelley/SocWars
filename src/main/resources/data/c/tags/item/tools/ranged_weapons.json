@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:bows",
+    "socwars:sniper_rifle"
+  ]
+}

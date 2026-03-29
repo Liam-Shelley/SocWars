@@ -1,6 +1,6 @@
 {
   "replace": false,
   "values": [
-    "socwars:protected_air"
+    "#c:tools/shears"
   ]
 }

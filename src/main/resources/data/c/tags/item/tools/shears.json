@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "socwars:stone_shears",
+    "socwars:diamond_shears",
+    "socwars:unobtanium_shears",
+    "socwars:fish_shears"
+  ]
+}

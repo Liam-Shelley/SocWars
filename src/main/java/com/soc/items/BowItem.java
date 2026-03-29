@@ -30,6 +30,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.soc.items.EatFunctionFood.CHORUS_SALAD_TRIES;
+import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
 import static com.soc.lib.SocWarsLib.*;
 import static com.soc.util.SphereExplosion.fireExplosion;
 
@@ -39,19 +40,19 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
     private final Function<ItemStack, Float> speed;
 
     public BowItem(Settings settings, ArrowFactory<? extends ArrowEntity> arrowFactory, Function<ItemStack, Float> drawTime, Function<ItemStack, Float> speed) {
-        super(settings);
+        super(settings.enchantable(2));
         this.arrowFactory = arrowFactory;
         this.drawTime = drawTime;
         this.speed = speed;
     }
 
     public static void initialise() {
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(BOOM_BOW, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(MEGABOOM_BOW, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(FALCON_BOW, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(HEATER_BOW, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(CHORUS_BOW, ItemGroups.COMBAT);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(CATASTROPHE_BOW, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(BOOM_BOW, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(MEGABOOM_BOW, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(FALCON_BOW, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(HEATER_BOW, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(CHORUS_BOW, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(CATASTROPHE_BOW, ItemGroups.COMBAT);
     }
 
     public static final Item BOOM_BOW = ModItems.register("boom_bow", settings -> new BowItem(settings, (world, user, projectileStack,weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {

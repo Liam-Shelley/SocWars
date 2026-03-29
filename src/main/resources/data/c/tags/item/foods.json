@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "socwars:iron_apple",
+    "socwars:copper_apple",
+    "socwars:diamond_apple",
+    "socwars:emerald_apple",
+    "socwars:netherite_apple",
+    "socwars:jelly_donut",
+    "socwars:shrinking_pills",
+    "socwars:biggening_pills",
+    "socwars:chorus_fruit_salad"
+  ]
+}

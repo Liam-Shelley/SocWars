@@ -42,7 +42,7 @@ public class MapBlockEntity extends BlockEntity {
     public static final int Y_COLOUR = 0xdf1ff24d;
     public static final int Z_COLOUR = 0xdf1f3ff2;
 
-    public static final List<Block> IGNORED_BLOCKS = List.of(
+    public static final List<Block> IGNORED_BLOCKS = List.of( //Maybe do something with the map_placeholder tag
             SPAWN_PLACEHOLDER,
             CENTRE_PLACEHOLDER,
             DIAMOND_GEN_PLACEHOLDER,
