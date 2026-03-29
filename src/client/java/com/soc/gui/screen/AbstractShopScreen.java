@@ -55,6 +55,8 @@ public abstract class AbstractShopScreen<T extends AbstractShopScreenHandler> ex
                 }
                 default -> super.drawMouseoverTooltip(context, x, y);
             }
+        } else {
+            super.drawMouseoverTooltip(context, x, y);
         }
     }
 
