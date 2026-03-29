@@ -9,6 +9,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.equipment.trim.ArmorTrim;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.encoding.VarInts;
@@ -79,6 +80,7 @@ public interface ShopItem<INHERITOR> {
             if (ItemStack.areItemsEqual(player.getEquippedStack(equippableComponent.slot()), stack)) return false;
 
             if (!stack.isOf(TrainingWeights.TRAINING_WEIGHTS)) stack.addEnchantment(enchantment(player.getWorld(), Enchantments.BINDING_CURSE), 1);
+
             player.equipStack(equippableComponent.slot(), stack);
             return true;
         } else {

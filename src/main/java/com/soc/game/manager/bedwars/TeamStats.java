@@ -29,7 +29,7 @@ public class TeamStats {
         this.team = team;
         this.playerStatsMap = playerStatsCollection.stream().collect(PlayerStats.MAP_COLLECTOR);
         this.trapManager = new TrapManager(this.playerStatsMap.keySet(), world);
-        this.teamShopContents = BedwarsShopDataContainer.INSTANCE.getTeamBedwarsShop(shopSeed, team);
+        this.teamShopContents = BedwarsShopDataContainer.INSTANCE.getTeamBedwarsShop(shopSeed, team, world);
     }
 
     public boolean hasBed() {

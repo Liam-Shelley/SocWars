@@ -1,17 +1,13 @@
 package com.soc.game.manager.bedwars;
 
-import com.soc.game.manager.bedwars.shopitems.SimpleShopItem;
 import com.soc.items.components.ModComponents;
 import com.soc.resourcedata.containers.BedwarsShopDataContainer;
-import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.DyeColor;
-import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
 import java.util.*;
@@ -30,7 +26,7 @@ public class PlayerStats {
 
     public PlayerStats(ServerPlayerEntity player, DyeColor team, long shopSeed) {
         this.player = player.getUuid();
-        this.shopContents = BedwarsShopDataContainer.INSTANCE.getIndividualBedwarsShop(shopSeed, team);
+        this.shopContents = BedwarsShopDataContainer.INSTANCE.getIndividualBedwarsShop(shopSeed, team, player.getWorld());
     }
 
     public void onDeath(boolean canRespawn, World world) {

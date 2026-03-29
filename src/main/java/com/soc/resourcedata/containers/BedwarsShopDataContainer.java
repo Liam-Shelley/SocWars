@@ -15,6 +15,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.world.World;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -41,10 +42,10 @@ public class BedwarsShopDataContainer implements CachedData {
         this.teamStockCategories[index] = stockSlots;
     }
 
-    public final BedwarsShopContents getIndividualBedwarsShop(long shopSeed, DyeColor team) {
+    public final BedwarsShopContents getIndividualBedwarsShop(long shopSeed, DyeColor team, World world) {
         final Random random = Random.create(shopSeed);
         final List<BedwarsShopCategory> categories = this.categoryStockSlotsMap.entrySet().stream().map(entry -> new BedwarsShopCategory(
-                this.resolveItems(entry.getValue(), random, team, BedwarsIndividualShopScreenHandler.STOCK_WIDTH, BedwarsIndividualShopScreenHandler.STOCK_HEIGHT),
+                this.resolveItems(entry.getValue(), random, team, BedwarsIndividualShopScreenHandler.STOCK_WIDTH, BedwarsIndividualShopScreenHandler.STOCK_HEIGHT, world),
                 entry.getValue().icon(),
                 entry.getValue().name()
         ))
@@ -56,17 +57,17 @@ public class BedwarsShopDataContainer implements CachedData {
         return new BedwarsShopContents(categories);
     }
 
-    public final BedwarsShopContents getTeamBedwarsShop(long shopSeed, DyeColor team) {
+    public final BedwarsShopContents getTeamBedwarsShop(long shopSeed, DyeColor team, World world) {
         final Random random = Random.create(shopSeed);
         final List<BedwarsShopCategory> categories = new ArrayList<>();
-        categories.add(new BedwarsShopCategory(this.resolveItems(this.teamStockCategories[0], random, team, BedwarsTeamShopScreenHandler.STOCK_WIDTH, BedwarsTeamShopScreenHandler.STOCK_HEIGHT), Items.TRIPWIRE_HOOK.getDefaultStack(), Text.of("Traps")));
-        categories.add(new BedwarsShopCategory(this.resolveItems(this.teamStockCategories[1], random, team, BedwarsTeamShopScreenHandler.STOCK_WIDTH, BedwarsTeamShopScreenHandler.STOCK_HEIGHT), Items.ANVIL.getDefaultStack(), Text.of("Abilities")));
-        categories.add(new BedwarsShopCategory(this.resolveItems(this.teamStockCategories[2], random, team, BedwarsTeamShopScreenHandler.STOCK_WIDTH, BedwarsTeamShopScreenHandler.STOCK_HEIGHT), Items.ARROW.getDefaultStack(), Text.of("Upgrades")));
+        categories.add(new BedwarsShopCategory(this.resolveItems(this.teamStockCategories[0], random, team, BedwarsTeamShopScreenHandler.STOCK_WIDTH, BedwarsTeamShopScreenHandler.STOCK_HEIGHT, world), Items.TRIPWIRE_HOOK.getDefaultStack(), Text.of("Traps")));
+        categories.add(new BedwarsShopCategory(this.resolveItems(this.teamStockCategories[1], random, team, BedwarsTeamShopScreenHandler.STOCK_WIDTH, BedwarsTeamShopScreenHandler.STOCK_HEIGHT, world), Items.ANVIL.getDefaultStack(), Text.of("Abilities")));
+        categories.add(new BedwarsShopCategory(this.resolveItems(this.teamStockCategories[2], random, team, BedwarsTeamShopScreenHandler.STOCK_WIDTH, BedwarsTeamShopScreenHandler.STOCK_HEIGHT, world), Items.ARROW.getDefaultStack(), Text.of("Upgrades")));
 
         return new BedwarsShopContents(categories);
     }
 
-    private List<ShopItem<?>> resolveItems(PreSelectionBedwarsShopCategory preSelectionCategory, Random random, DyeColor team, int width, int height) {
+    private List<ShopItem<?>> resolveItems(PreSelectionBedwarsShopCategory preSelectionCategory, Random random, DyeColor team, int width, int height, World world) {
         final BedwarsShopSlot[][] preSelection = preSelectionCategory.contents();
         final int itemsSize = width * height;
         final List<ShopItem<?>> items = new ArrayList<>(itemsSize);
@@ -79,14 +80,14 @@ public class BedwarsShopDataContainer implements CachedData {
                 final BedwarsShopSlot shopSlot = preSelection[i][j];
                 final int index = i + j * width;
 
-                if (shopSlot != null) items.set(index, this.resolveRandomItem(shopSlot, random, team));
+                if (shopSlot != null) items.set(index, this.resolveRandomItem(shopSlot, random, team, world));
             }
         }
 
         return items;
     }
 
-    private ShopItem<?> resolveRandomItem(BedwarsShopSlot slot, Random random, DyeColor team) {
+    private ShopItem<?> resolveRandomItem(BedwarsShopSlot slot, Random random, DyeColor team, World world) {
         final List<Identifier> options = slot.options();
         if (options.isEmpty()) {
             SocWars.LOGGER.warn("Skipping loading slot as the options pool was empty");
@@ -97,6 +98,9 @@ public class BedwarsShopDataContainer implements CachedData {
             final ShopItem<?> lazilyClonedItem = item == null ? SimpleShopItem.EMPTY : (ShopItem<?>)item.lazyClone();
             if (lazilyClonedItem instanceof TeamShopItem teamItem) {
                 teamItem.setTeam(team);
+            }
+            if (lazilyClonedItem instanceof SimpleShopItem simpleShopItem) {
+                simpleShopItem.trim(team, world);
             }
             return lazilyClonedItem;
         }

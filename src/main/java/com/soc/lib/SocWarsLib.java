@@ -29,6 +29,8 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.equipment.trim.ArmorTrimMaterial;
+import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
@@ -124,6 +126,28 @@ public final class SocWarsLib {
             case RED -> Items.RED_WOOL;
             case BLACK -> Items.BLACK_WOOL;
             case PINK -> Items.PINK_WOOL;
+        };
+    }
+
+    //TODO: Make new armour trim materials
+    public static RegistryKey<ArmorTrimMaterial> armourTrimFromColour(DyeColor colour) {
+        return switch (colour) {
+            case WHITE -> ArmorTrimMaterials.QUARTZ;
+            case ORANGE -> ArmorTrimMaterials.RESIN;
+            case MAGENTA -> ArmorTrimMaterials.AMETHYST; //Three whole amethyst ones oh baby make I should make a new one
+            case LIGHT_BLUE -> ArmorTrimMaterials.DIAMOND; //Maybe make a new one for this instead of cyan? I don't know which one is closer
+            case YELLOW -> ArmorTrimMaterials.GOLD;
+            case LIME -> ArmorTrimMaterials.EMERALD; //Make a new one
+            case GRAY -> ArmorTrimMaterials.IRON; //Make something between iron and netherite
+            case LIGHT_GRAY -> ArmorTrimMaterials.IRON;
+            case CYAN -> ArmorTrimMaterials.DIAMOND;
+            case PURPLE -> ArmorTrimMaterials.AMETHYST;
+            case BLUE -> ArmorTrimMaterials.LAPIS;
+            case BROWN -> ArmorTrimMaterials.COPPER; //Maybe make a new one since it's close to copper
+            case GREEN -> ArmorTrimMaterials.EMERALD;
+            case RED -> ArmorTrimMaterials.REDSTONE;
+            case BLACK -> ArmorTrimMaterials.NETHERITE;
+            case PINK -> ArmorTrimMaterials.AMETHYST; //Make a new one
         };
     }
 
@@ -399,7 +423,7 @@ public final class SocWarsLib {
     }
 
     public static String romanNumerals(int input) {
-        //Rewrite this in options procedural and not stupid way
+        //Rewrite this in a procedural and not stupid way
         return switch(input) {
             case 1 -> "I";
             case 2 -> "II";

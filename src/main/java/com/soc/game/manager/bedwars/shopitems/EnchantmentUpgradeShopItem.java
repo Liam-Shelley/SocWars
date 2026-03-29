@@ -89,6 +89,7 @@ public class EnchantmentUpgradeShopItem implements ShopItem<EnchantmentUpgradeSh
             return true;
         }).orElseGet(() -> {
             SocWars.LOGGER.warn("Attempted to buy enchantment upgrade but no enchantment was found for id: {}", this.enchantment);
+            player.sendMessage(Text.literal("Something went wrong while purchasing; your resources have not been taken"), false); //Maybe translate this
             return false;
         });
     }
@@ -150,7 +151,7 @@ public class EnchantmentUpgradeShopItem implements ShopItem<EnchantmentUpgradeSh
     //maybe cache this since it's a bit gross
     @Override
     public Text getDisplayName() {
-        final Text oldLevel = Text.translatable("enchantment.level." + this.tier).formatted(Formatting.GREEN);
+        final Text oldLevel = Text.translatable("enchantment.level." + this.tier).formatted(this.tier == this.costs.size() ? Formatting.BLUE : Formatting.GREEN);
         final Text newLevel = Text.translatable("enchantment.level." + (this.tier + 1)).formatted(Formatting.BLUE);
         final Text suffix = this.tier == this.costs.size() ? oldLevel : Text.translatable("hud.a_to_b", oldLevel, newLevel).formatted(Formatting.AQUA);
         return Text.translatable(this.enchantment.toTranslationKey("enchantment")).append(" ").append(suffix);
