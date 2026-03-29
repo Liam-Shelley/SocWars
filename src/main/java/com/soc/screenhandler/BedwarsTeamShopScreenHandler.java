@@ -13,6 +13,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public class BedwarsTeamShopScreenHandler extends AbstractCategoriesShopScreenHandler {
@@ -42,7 +43,13 @@ public class BedwarsTeamShopScreenHandler extends AbstractCategoriesShopScreenHa
 
     public BedwarsTeamShopScreenHandler(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
         super(ScreenHandlers.BEDWARS_TEAM_SHOP_SCREEN_HANDLER, syncId, playerInventory, player);
-        this.stock = new SimpleInventory(STOCK_SIZE);
+        this.stock = new SimpleInventory(STOCK_SIZE) { //Little hack to stop unstackable icons having their counts reverted. Pleasantly surprised that it doesn't cause any issues with packets
+            @Override
+            public void setStack(int slot, ItemStack stack) {
+                this.heldStacks.set(slot, stack);
+                this.markDirty();
+            }
+        };
         this.display = new SimpleInventory(DISPLAY_SIZE);
         this.displayOffset = new SimpleInventory(DISPLAY_SIZE - 1);
 
@@ -165,9 +172,12 @@ public class BedwarsTeamShopScreenHandler extends AbstractCategoriesShopScreenHa
         this.trapDuration = duration;
     }
 
-    public void useAbility() {
+    public void useAbility(long nextTime, int duration) {
         this.shiftCategory(4);
         if (this.currentCategory == this.shopContents.getCategory(1)) this.refreshItems();
+
+        this.nextAbilityTime = nextTime;
+        this.abilityDuration = duration;
     }
 
     @SuppressWarnings("DataFlowIssue") //I know that this will be valid because it can only ever be invalid before the shop has loaded, in which case you cannot buy a trap

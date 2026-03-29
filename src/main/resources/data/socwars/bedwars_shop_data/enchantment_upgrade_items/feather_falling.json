@@ -1,0 +1,18 @@
+{
+  "icon": "minecraft:feather",
+  "costs": [
+    {
+      "diamonds": 2
+    },
+    {
+      "diamonds": 5
+    },
+    {
+      "diamonds": 6
+    },
+    {
+      "diamonds": 10
+    }
+  ],
+  "enchantment": "minecraft:feather_falling"
+}

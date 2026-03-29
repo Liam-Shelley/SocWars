@@ -1,0 +1,15 @@
+{
+  "icon": "minecraft:diamond_sword",
+  "costs": [
+    {
+      "diamonds": 8
+    },
+    {
+      "diamonds": 16
+    },
+    {
+      "diamonds": 32
+    }
+  ],
+  "enchantment": "minecraft:sharpness"
+}

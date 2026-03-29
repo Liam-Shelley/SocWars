@@ -4,7 +4,35 @@
       "x": 0,
       "y": 0,
       "options": [
-        "socwars:bedwars_shop_data/trap_items/launch"
+        "socwars:bedwars_shop_data/enchantment_upgrade_items/protection"
+      ]
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "options": [
+        "socwars:bedwars_shop_data/enchantment_upgrade_items/efficiency"
+      ]
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "options": [
+        "socwars:bedwars_shop_data/enchantment_upgrade_items/feather_falling"
+      ]
+    },
+    {
+      "x": 3,
+      "y": 0,
+      "options": [
+        "socwars:bedwars_shop_data/enchantment_upgrade_items/sharpness"
+      ]
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "options": [
+        "socwars:bedwars_shop_data/enchantment_upgrade_items/aqua_affinity"
       ]
     }
   ]

@@ -16,6 +16,8 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
@@ -80,6 +82,7 @@ public class EnchantmentUpgradeShopItem implements ShopItem<EnchantmentUpgradeSh
             this.takeItems(player);
             context.refreshItems();
             this.tier++;
+            this.icon.setCount(Math.min(this.tier + 1, this.costs.size()));
 
             if (player instanceof ServerPlayerEntity serverPlayer) context.getManager().buyEnchantmentUpgrade(serverPlayer, enchantment, this.tier);
 
@@ -102,7 +105,7 @@ public class EnchantmentUpgradeShopItem implements ShopItem<EnchantmentUpgradeSh
 
     @Override
     public Cost getCost() {
-        return this.tier < this.costs.size() ? this.costs.get(this.tier) : this.costs.getLast();
+        return this.tier < this.costs.size() ? this.costs.get(this.tier) : Cost.DEFAULT;
     }
 
     private List<Cost> getCosts() {
@@ -137,5 +140,19 @@ public class EnchantmentUpgradeShopItem implements ShopItem<EnchantmentUpgradeSh
 
     private Integer getTier() {
         return this.tier;
+    }
+
+    @Override
+    public Text affordabilitySuffix(PlayerEntity player) {
+        return this.tier < this.costs.size() ? ShopItem.super.affordabilitySuffix(player) : Text.translatable("game.bedwars.shop.item.max_tier").formatted(Formatting.YELLOW, Formatting.BOLD);
+    }
+
+    //maybe cache this since it's a bit gross
+    @Override
+    public Text getDisplayName() {
+        final Text oldLevel = Text.translatable("enchantment.level." + this.tier).formatted(Formatting.GREEN);
+        final Text newLevel = Text.translatable("enchantment.level." + (this.tier + 1)).formatted(Formatting.BLUE);
+        final Text suffix = this.tier == this.costs.size() ? oldLevel : Text.translatable("hud.a_to_b", oldLevel, newLevel).formatted(Formatting.AQUA);
+        return Text.translatable(this.enchantment.toTranslationKey("enchantment")).append(" ").append(suffix);
     }
 }

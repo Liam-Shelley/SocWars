@@ -389,6 +389,8 @@
   "hud.bedwars.team": "%s Team",
   "hud.tick": "✔",
   "hud.cross": "✘",
+  "hud.a_to_b": "%s → %s",
+  "enchantment.level.0": "0",
   "gui.enabled": "Enabled",
   "gui.disabled": "Disabled",
   "screen.map_block": "Map Creator",

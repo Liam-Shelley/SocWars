@@ -49,10 +49,11 @@ public class TrapManager {
         final List<ServerPlayerEntity> team = mapUuidsToPlayers(this.world, this.team);
 
         trap.trigger(pos, team, players);
-        team.forEach(player -> ServerPlayNetworking.send(player, new UseTrapPayload(this.world.getTime() + trap.getCooldownTime(), trap.getCooldownTime())));
-
         final Text teamsText = players.stream().map(manager::getTeam).distinct().map(SocWarsLib::colouredTextFromColour).reduce((a, b) -> a.append(", ").append(b)).get();
-        mapUuidsToPlayers(this.world, this.team).forEach(player -> {
+
+        team.forEach(player -> {
+            ServerPlayNetworking.send(player, new UseTrapPayload(this.world.getTime() + trap.getCooldownTime(), trap.getCooldownTime(), false));
+
             player.networkHandler.sendPacket(new TitleS2CPacket(Text.translatable("game.bedwars.trap_triggered.title")));
             player.networkHandler.sendPacket(new SubtitleS2CPacket(Text.translatable("game.bedwars.trap_triggered.subtitle", trap.getName(), teamsText)));
         });

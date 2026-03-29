@@ -80,4 +80,12 @@ public record Cost(int iron, int gold, int diamonds, int emeralds) {
         function.accept(Items.DIAMOND, this.diamonds, 2);
         function.accept(Items.EMERALD, this.emeralds, 3);
     }
+
+    public boolean isFree() {
+        return
+                this.iron == 0 &&
+                this.gold == 0 &&
+                this.diamonds == 0 &&
+                this.emeralds == 0;
+    }
 }

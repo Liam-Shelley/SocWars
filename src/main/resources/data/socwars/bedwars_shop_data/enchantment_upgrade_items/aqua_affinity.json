@@ -1,0 +1,9 @@
+{
+  "icon": "minecraft:heart_of_the_sea",
+  "costs": [
+    {
+      "diamonds": 2
+    }
+  ],
+  "enchantment": "minecraft:aqua_affinity"
+}

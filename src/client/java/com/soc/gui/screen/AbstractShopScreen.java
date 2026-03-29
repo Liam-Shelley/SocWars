@@ -65,11 +65,11 @@ public abstract class AbstractShopScreen<T extends AbstractShopScreenHandler> ex
             name.append(item.affordabilitySuffix(this.playerInventory.player));
             int nameWidth = super.textRenderer.getWidth(name);
 
-            TooltipBackgroundRenderer.render(context, x + 12, y - 12, Math.max(nameWidth, 65), 31, icon.get(DataComponentTypes.TOOLTIP_STYLE));
+            TooltipBackgroundRenderer.render(context, x + 12, y - 12, Math.max(nameWidth, 65), item.getCost().isFree() ? 8 : 31, icon.get(DataComponentTypes.TOOLTIP_STYLE));
 
             context.drawText(super.textRenderer, name, x + 12, y - 12, 0xffffffff, true);
 
-            this.drawCostIcons(context, x, y, item.getCost());
+            if (!item.getCost().isFree()) this.drawCostIcons(context, x, y, item.getCost());
         }
     }
 

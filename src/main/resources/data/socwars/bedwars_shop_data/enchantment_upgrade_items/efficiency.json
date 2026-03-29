@@ -1,0 +1,21 @@
+{
+  "icon": "minecraft:diamond_pickaxe",
+  "costs": [
+    {
+      "diamonds": 5
+    },
+    {
+      "diamonds": 10
+    },
+    {
+      "diamonds": 15
+    },
+    {
+      "diamonds": 20
+    },
+    {
+      "diamonds": 30
+    }
+  ],
+  "enchantment": "minecraft:efficiency"
+}
