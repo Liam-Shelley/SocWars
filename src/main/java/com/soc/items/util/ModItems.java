@@ -44,6 +44,7 @@ public class ModItems {
         BaseItem.initialise();
         JetShoppingTrolley.initialise();
         SeekingStick.initialise();
+        TauntStick.initialise();
     }
 
     public static Item register(String name, Function<Item.Settings, Item> itemFactory, Item.Settings settings) {

@@ -23,6 +23,7 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.SlimeEntity;
 import net.minecraft.item.*;
 import net.minecraft.item.tooltip.TooltipType;
+import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -153,10 +154,10 @@ public class AttackFunctionWeapon extends Item {
             .maxDamage(1000)
     );
     public static final Item KNOCKFORWARD_SWORD = ModItems.register("knockforward_sword", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
-                final Vec3d velocity = attacker.getRotationVector().multiply(-0.75f);
+                final Vec3d velocity = attacker.getRotationVector().multiply(-1.25f);
 
                 if (target instanceof ServerPlayerEntity serverPlayer) {
-                    ServerPlayNetworking.send(serverPlayer, new AddVelocityPayload(velocity));
+                    serverPlayer.networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(serverPlayer.getId(), serverPlayer.getVelocity().add(velocity)));
                 } else {
                     target.addVelocity(velocity);
                 }

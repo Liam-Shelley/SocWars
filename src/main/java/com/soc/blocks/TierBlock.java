@@ -14,8 +14,8 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class TierBlock extends HorizontalFacingBlock {
-    public static final MapCodec<TierBlock> CODEC = createCodec(settings -> new TierBlock(settings, 1));
-    public static final IntProperty TIER = IntProperty.of("tier", 1, 4);
+    public static final MapCodec<TierBlock> CODEC = createCodec(settings -> new TierBlock(settings, 0));
+    public static final IntProperty TIER = IntProperty.of("tier", 0, 3);
 
     public TierBlock(Settings settings, int tier) {
         super(settings);

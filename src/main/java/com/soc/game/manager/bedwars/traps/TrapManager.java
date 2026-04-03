@@ -27,8 +27,8 @@ public class TrapManager {
     private final Set<UUID> team;
     private final World world;
 
-    private final Queue<Trap> traps = new LinkedList<>();
-    private final Queue<Trap> abilities = new LinkedList<>();
+    private final Queue<AbstractTrap> traps = new LinkedList<>();
+    private final Queue<AbstractTrap> abilities = new LinkedList<>();
     private long nextTrapTriggerTime;
     private int currentTrapDuration;
     private long nextAbilityTriggerTime;
@@ -45,7 +45,7 @@ public class TrapManager {
     }
 
     public void trigger(AbstractGameManager<?, ?, ?> manager, Vec3d pos, List<ServerPlayerEntity> players) {
-        final Trap trap = this.traps.remove();
+        final AbstractTrap trap = this.traps.remove();
         final List<ServerPlayerEntity> team = mapUuidsToPlayers(this.world, this.team);
 
         trap.trigger(pos, team, players);
@@ -63,7 +63,7 @@ public class TrapManager {
     }
 
     private void triggerAbility(Vec3d pos, List<ServerPlayerEntity> players) {
-        final Trap ability = this.traps.remove();
+        final AbstractTrap ability = this.traps.remove();
         final List<ServerPlayerEntity> team = mapUuidsToPlayers(this.world, this.team);
 
         ability.trigger(pos, team, players);
@@ -73,14 +73,14 @@ public class TrapManager {
         this.currentAbilityDuration = ability.getCooldownTime();
     }
 
-    public boolean buyTrap(Trap trap) {
+    public boolean buyTrap(AbstractTrap trap) {
         if (this.traps.size() >= TRAP_CAPACITY) return false;
 
         this.traps.add(trap);
         return true;
     }
 
-    public boolean buyAbility(Trap trap) {
+    public boolean buyAbility(AbstractTrap trap) {
         if (this.abilities.size() >= ABILITY_CAPACITY) return false;
 
         this.abilities.add(trap);
@@ -104,8 +104,8 @@ public class TrapManager {
         return this.getDisplayFromList(this.abilities, ABILITY_CAPACITY);
     }
 
-    private BedwarsShopCategory getDisplayFromList(Collection<Trap> list, int padSize) {
-        final List<ShopItem<?>> displayItems = list.stream().map(Trap::getDisplayShopItem).collect(Collectors.toList());
+    private BedwarsShopCategory getDisplayFromList(Collection<AbstractTrap> list, int padSize) {
+        final List<ShopItem<?>> displayItems = list.stream().map(AbstractTrap::getDisplayShopItem).collect(Collectors.toList());
 
         while (displayItems.size() < padSize) displayItems.add(SimpleShopItem.EMPTY);
 

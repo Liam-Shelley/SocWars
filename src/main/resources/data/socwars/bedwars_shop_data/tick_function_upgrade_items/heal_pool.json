@@ -1,0 +1,12 @@
+{
+  "icon": "minecraft:golden_apple",
+  "costs": [
+    {
+      "diamonds": 3
+    },
+    {
+      "diamonds": 6
+    }
+  ],
+  "tick_function": "socwars:heal_pool"
+}

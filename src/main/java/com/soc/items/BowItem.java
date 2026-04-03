@@ -14,12 +14,15 @@ import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.*;
 import net.minecraft.item.consume.UseAction;
 import net.minecraft.item.tooltip.TooltipType;
+import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.*;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -71,7 +74,7 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
                 }
     }, stack -> 1.5f, stack -> 2.75f), new Settings()
             .rarity(Rarity.UNCOMMON)
-            .maxDamage(300)
+            .maxDamage(20)
     );
     public static final Item MEGABOOM_BOW = ModItems.register("megaboom_bow", settings -> new BowItem(settings, (world, user, projectileStack,weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
                 @Override
@@ -89,18 +92,24 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
                 }
     }, stack -> 2f, stack -> 2.25f), new Settings()
             .rarity(Rarity.RARE)
-            .maxDamage(30)
+            .maxDamage(8)
     );
     public static final Item FALCON_BOW = ModItems.register("falcon_bow", settings -> new BowItem(settings, (world, user, projectileStack,weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
                 @Override
                 protected void onHit(LivingEntity target) {
                     super.onHit(target);
                     this.discard();
-                    target.addVelocity(this.getVelocity().getHorizontal().multiply(1.25f).add(0d, 0.5d, 0d));
+
+                    final Vec3d knockback = this.getVelocity().getHorizontal().multiply(2d).add(0d, 0.5d, 0d);
+                    if (target instanceof ServerPlayerEntity serverPlayer) {
+                        serverPlayer.networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(serverPlayer.getId(), serverPlayer.getVelocity().add(knockback)));
+                    } else {
+                        target.addVelocity(knockback);
+                    }
                 }
             }, stack -> 0.75f, stack -> 4f), new Settings()
             .rarity(Rarity.EPIC)
-            .maxDamage(50)
+            .maxDamage(20)
     );
     public static final Item HEATER_BOW = ModItems.register("heater_bow", settings -> new BowItem(settings, (world, user, projectileStack,weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
                 @Override

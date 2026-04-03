@@ -8,7 +8,9 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import com.soc.SocWars;
-import com.soc.game.manager.bedwars.traps.Trap;
+import com.soc.game.manager.bedwars.tickfunctions.AbstractTickFunction;
+import com.soc.game.manager.bedwars.tickfunctions.TickFunctions;
+import com.soc.game.manager.bedwars.traps.AbstractTrap;
 import com.soc.game.manager.bedwars.traps.Traps;
 import com.soc.game.map.DyeColourWithEmpty;
 import net.minecraft.item.ItemStack;
@@ -174,15 +176,22 @@ public class JsonHelper {
         return Registries.ITEM.containsId(id) ? new ItemStack(Registries.ITEM.get(id), count) : def;
     }
 
-    public static Trap getDefaultedTrap(JsonObject json, String key) {
+    public static AbstractTrap getDefaultedTrap(JsonObject json, String key) {
         final JsonElement element = json.get(key);
         final Identifier id = Identifier.of(element.getAsString());
 
         return Traps.REGISTRY.containsId(id) ? Traps.REGISTRY.get(id) : null; //I know that this is currently useless but I will put an empty trapitem here at some point
     }
 
+    public static AbstractTickFunction getDefaultedTickFunction(JsonObject json, String key) {
+        final JsonElement element = json.get(key);
+        final Identifier id = Identifier.of(element.getAsString());
+
+        return TickFunctions.REGISTRY.containsId(id) ? TickFunctions.REGISTRY.get(id) : null; //Ditto
+    }
+
     public static Text getDefaultedText(JsonObject json, String key, Text def) {
-        //Maybe write this function at some point instead of it being a bunch of experimental garbage
+        //TODO: Maybe write this function at some point instead of it being a bunch of experimental garbage
         ((JsonElement)null).isJsonObject(); //Deliberately causing an error so that I remember to fix this at some point instead of wondering why something is weird
 
         final JsonElement element = json.get(key);

@@ -36,6 +36,7 @@ public class BedwarsShopData implements SimpleSynchronousResourceReloadListener 
         readResources(manager, "bedwars_shop_data/team_items", BASE_PATH_PREDICATE, (reader, id) -> BedwarsShopDataContainer.INSTANCE.addSlotResource(id, new TeamShopItem(reader)));
         readResources(manager, "bedwars_shop_data/trap_items", BASE_PATH_PREDICATE, (reader, id) -> BedwarsShopDataContainer.INSTANCE.addSlotResource(id, new TrapShopItem(reader)));
         readResources(manager, "bedwars_shop_data/enchantment_upgrade_items", BASE_PATH_PREDICATE, (reader, id) -> BedwarsShopDataContainer.INSTANCE.addSlotResource(id, new EnchantmentUpgradeShopItem(reader)));
+        readResources(manager, "bedwars_shop_data/tick_function_upgrade_items", BASE_PATH_PREDICATE, (reader, id) -> BedwarsShopDataContainer.INSTANCE.addSlotResource(id, new TickFunctionUpgradeItem(reader)));
 
         BedwarsShopDataContainer.INSTANCE.cache();
     }

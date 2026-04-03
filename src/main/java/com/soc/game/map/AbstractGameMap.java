@@ -110,10 +110,14 @@ public abstract class AbstractGameMap {
     }
 
     public final Optional<BlockPos> getSpawnPosition(DyeColor team) {
-        final List<BlockPos> positions = this.spawnPositions.get(team).stream().toList();
+        final List<BlockPos> positions = new ArrayList<>(this.spawnPositions.get(team));
         if (positions.isEmpty()) return Optional.empty();
 
         return Optional.of(this.pos(positions.get(this.world.random.nextBetween(0, positions.size() - 1))));
+    }
+
+    public final Collection<BlockPos> getSpawnPositions(DyeColor team) {
+        return this.spawnPositions.get(team);
     }
 
     public NbtCompound toNbt(NbtCompound compound) {
@@ -175,16 +179,22 @@ public abstract class AbstractGameMap {
         }
     }
 
-    public static Stack<UUID> getRandomPlayerStack(Collection<UUID> players) {
+    public static Stack<UUID> getRandomPlayerStack(Collection<ServerPlayerEntity> players) {
         final Stack<UUID> playerStack = new Stack<>();
-        Collections.shuffle((ArrayList<?>) new ArrayList<>(players).clone());
-        playerStack.addAll(players);
+        Collections.shuffle(new ArrayList<>(players));
+        for (ServerPlayerEntity player : players) {
+            playerStack.add(player.getUuid());
+        }
 
         return playerStack;
     }
 
     public final BlockPos pos(BlockPos pos) {
         return pos.add(this.absoluteCentrePos);
+    }
+
+    public final List<BlockPos> poss(Collection<BlockPos> poss) {
+        return poss.stream().map(pos -> pos.add(this.absoluteCentrePos)).toList();
     }
 
     public final BlockPos getOrigin() {

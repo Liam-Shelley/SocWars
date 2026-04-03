@@ -23,6 +23,6 @@ public abstract class HungerTweaks {
 
     @ModifyConstant(method = "update", constant = @Constant(intValue = 10))
     private int socwars_nerfDefaultHungerRegeneration(int constant) {
-        return 20;
+        return 30;
     }
 }

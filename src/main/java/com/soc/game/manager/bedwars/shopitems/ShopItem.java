@@ -33,6 +33,10 @@ public interface ShopItem<INHERITOR> {
 
     ItemStack getIcon();
 
+    default Optional<ItemStack> getOptionalIcon() {
+        return this.getIcon().isEmpty() ? Optional.empty() : Optional.of(this.getIcon());
+    }
+
     Cost getCost();
 
     PacketCodec<RegistryByteBuf, INHERITOR> getPacketCodec();

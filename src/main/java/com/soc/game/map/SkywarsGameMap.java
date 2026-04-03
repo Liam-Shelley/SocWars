@@ -75,12 +75,12 @@ public class SkywarsGameMap extends AbstractGameMap {
     private void populateInventory(Inventory inventory, int tier, BlockPos pos) {
         inventory.clear();
         for (int i = 0; i < inventory.size(); i++) {
-            final float random = this.world.random.nextFloat(); //Redo all of this code because it's awful; probably take from data
-            if (random > 0.75f + tier * 0.02f) {
+            final float random = this.world.random.nextFloat(); //TODO: Redo all of this code because it's awful; probably take from data
+            if (random > 0.8f + tier * 0.02f) {
                 final float random2 = this.world.random.nextFloat();
                 final int pool = random2 < 0.55f + tier * 0.04f ? 0 : 1;
 
-                final Pair<Item, Integer> item = SkywarsLootData.INSTANCE.getSkywarsItemData().getRandomItem(pool, tier - 1, this.world.random);
+                final Pair<Item, Integer> item = SkywarsLootData.INSTANCE.getSkywarsItemData().getRandomItem(pool, tier, this.world.random);
                 final ItemStack stack = new ItemStack(item.getLeft(), item.getRight());
 
                 if (stack.isIn(ItemTags.BOW_ENCHANTABLE)) stack.addEnchantment(this.world.getRegistryManager().getEntryOrThrow(Enchantments.INFINITY), 1);
@@ -88,7 +88,7 @@ public class SkywarsGameMap extends AbstractGameMap {
             }
         }
 
-        if (tier == 1) {
+        if (tier == 0) {
             final Optional<DyeColor> colour = this.spawnPositions.entries().stream().min(Map.Entry.comparingByValue((a, b) -> {
                 final double distA = super.pos(a).getSquaredDistance(pos);
                 final double distB = super.pos(b).getSquaredDistance(pos);

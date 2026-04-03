@@ -10,20 +10,20 @@ import net.minecraft.util.math.Vec3d;
 
 import java.util.List;
 
-public abstract class Trap {
+public abstract class AbstractTrap {
     public static final String KEY = "trap";
 
     private final Identifier id;
     private final ItemStack icon;
     private final int cooldownTime;
 
-    public Trap(Identifier id, ItemStack icon, int time) {
+    public AbstractTrap(Identifier id, ItemStack icon, int time) {
         this.id = id;
         this.icon = icon;
         this.cooldownTime = time;
     }
 
-    public Trap(String id, ItemStack icon, int time) {
+    public AbstractTrap(String id, ItemStack icon, int time) {
         this(Identifier.of(SocWars.MOD_ID, id), icon, time);
     }
 

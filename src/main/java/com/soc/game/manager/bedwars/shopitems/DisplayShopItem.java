@@ -51,10 +51,6 @@ public class DisplayShopItem implements ShopItem<DisplayShopItem> {
         return false;
     }
 
-    private Optional<ItemStack> getOptionalIcon() {
-        return this.icon.isEmpty() ? Optional.empty() : Optional.of(this.icon);
-    }
-
     @Override
     public ItemStack getIcon() {
         return this.icon;

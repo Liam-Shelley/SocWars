@@ -18,8 +18,6 @@ import static com.soc.resourcedata.ResourceManager.readResources;
 public class SpeakerSongData implements SimpleSynchronousResourceReloadListener {
     public static final SpeakerSongData INSTANCE = new SpeakerSongData();
 
-    public static final String ITEM_ID_KEY = "id";
-
     private final SpeakerSongDataContainer speakerSongData = new SpeakerSongDataContainer();
     public List<SpeakerSong> getPlaylist(Identifier id) { return this.speakerSongData.getPlaylist(id); }
 

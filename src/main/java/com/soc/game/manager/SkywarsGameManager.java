@@ -118,7 +118,7 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
 
     @Override
     public Multimap<DyeColor, UUID> buildTeams(Set<ServerPlayerEntity> players, @Nullable SpreadRules spreadRules) {
-        final Stack<UUID> playerStack = getRandomPlayerStack(players.stream().map(ServerPlayerEntity::getUuid).toList());
+        final Stack<UUID> playerStack = getRandomPlayerStack(players);
 
         final List<DyeColor> teamColoursList = new ArrayList<>(super.map.getTeamColours());
         Collections.shuffle(teamColoursList);

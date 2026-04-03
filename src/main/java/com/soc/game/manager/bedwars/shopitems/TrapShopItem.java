@@ -2,7 +2,7 @@ package com.soc.game.manager.bedwars.shopitems;
 
 import com.google.gson.JsonObject;
 import com.soc.game.manager.BedwarsGameManager;
-import com.soc.game.manager.bedwars.traps.Trap;
+import com.soc.game.manager.bedwars.traps.AbstractTrap;
 import com.soc.game.manager.bedwars.traps.Traps;
 import com.soc.resourcedata.deserialisation.Cost;
 import com.soc.screenhandler.AbstractShopScreenHandler;
@@ -31,23 +31,22 @@ public class TrapShopItem implements ShopItem<TrapShopItem> {
     }
 
     private final Cost cost;
-    private final Trap trap;
+    private final AbstractTrap trap;
 
-    public TrapShopItem(Cost cost, Trap trap) {
+    public TrapShopItem(Cost cost, AbstractTrap trap) {
         this.cost = cost;
         this.trap = trap;
     }
 
     public TrapShopItem(Cost cost, Identifier id) {
         this.cost = cost;
-        if(!Traps.REGISTRY.containsId(id)) throw new IllegalStateException("No trap registered on the client for id: " + id + ". Possible registry mismatch?");
-        this.trap = Traps.REGISTRY.get(id);
+        this.trap = Traps.getOrThrow(id);
     }
 
     public TrapShopItem(JsonObject object) {
         this(
                 getDefaultedObject(object, Cost.KEY, Cost::new, Cost.ERROR_SIGNAL),
-                getDefaultedTrap(object, Trap.KEY)
+                getDefaultedTrap(object, AbstractTrap.KEY)
         );
     }
 

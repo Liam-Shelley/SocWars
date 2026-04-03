@@ -175,7 +175,7 @@ public class MapBlockEntity extends BlockEntity {
             }
         }
         //endregion
-        this.mapCheckResults = new MapCheckResults(spawnPositions, centrePositions, flaggedFaces, diamondGens, emeraldGens, islandGens, bedPositions,  individualShops, teamShops,lootChests);
+        this.mapCheckResults = new MapCheckResults(spawnPositions, centrePositions, flaggedFaces, diamondGens, emeraldGens, islandGens, bedPositions, individualShops, teamShops, lootChests);
         this.mapCheckInfo = this.mapCheckResults.generateInfo(this.mapType);
     }
 

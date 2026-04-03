@@ -7,7 +7,8 @@ import com.soc.game.manager.bedwars.BedwarsShopContents;
 import com.soc.game.manager.bedwars.PlayerStats;
 import com.soc.game.manager.bedwars.ShopType;
 import com.soc.game.manager.bedwars.TeamStats;
-import com.soc.game.manager.bedwars.traps.Trap;
+import com.soc.game.manager.bedwars.tickfunctions.AbstractTickFunction;
+import com.soc.game.manager.bedwars.traps.AbstractTrap;
 import com.soc.game.map.*;
 import com.soc.items.components.ModComponents;
 import com.soc.lib.Events;
@@ -67,7 +68,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
         final long shopSeed = world.random.nextLong();
         this.playerStatsMap = players.stream().collect(Collectors.toMap(ServerPlayerEntity::getUuid, player -> new PlayerStats(player, this.getTeam(player), shopSeed)));
-        this.teamStatsMap = super.teams.keySet().stream().collect(Collectors.toMap(Function.identity(), team -> new TeamStats(team, super.teams.get(team).stream().map(this.playerStatsMap::get).collect(Collectors.toSet()), world, shopSeed)));
+        this.teamStatsMap = super.teams.keySet().stream().collect(Collectors.toMap(Function.identity(), team -> new TeamStats(team, super.teams.get(team).stream().map(this.playerStatsMap::get).collect(Collectors.toSet()), world, shopSeed, this.map.poss(this.map.getSpawnPositions(team)))));
     }
 
     @Override
@@ -133,7 +134,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
     public Multimap<DyeColor, UUID> buildTeams(Set<ServerPlayerEntity> players, SpreadRules spreadRules) {
         //Probably rewrite this at some point it's a bit gross
 
-        final Stack<UUID> playerStack = getRandomPlayerStack(players.stream().map(ServerPlayerEntity::getUuid).toList());
+        final Stack<UUID> playerStack = getRandomPlayerStack(players);
 
         final Set<DyeColor> teamColours = super.map.getTeamColours();
         final int numTeams = Math.min(spreadRules.numTeams(), teamColours.size());
@@ -387,6 +388,8 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
     public void tick() {
         super.tick();
         this.checkTraps();
+
+        this.teamStatsMap.values().forEach(stats -> stats.tick(this.time, this.world));
     }
 
     public void checkTraps() {
@@ -399,15 +402,19 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         });
     }
 
-    public boolean buyTrap(ServerPlayerEntity player, Trap trap) {
+    public boolean buyTrap(ServerPlayerEntity player, AbstractTrap trap) {
         return this.teamStatsMap.get(this.getTeam(player)).buyTrap(trap, super.world);
     }
 
-    public boolean buyAbility(ServerPlayerEntity player, Trap ability) {
+    public boolean buyAbility(ServerPlayerEntity player, AbstractTrap ability) {
         return this.teamStatsMap.get(this.getTeam(player)).buyAbility(ability, super.world);
     }
 
     public void buyEnchantmentUpgrade(ServerPlayerEntity player, RegistryEntry<Enchantment> enchantment, int tier) {
         this.teamStatsMap.get(this.getTeam(player)).buyEnchantmentUpgrade(enchantment, super.world, tier);
+    }
+
+    public void buyTickFunctionUpgrade(ServerPlayerEntity player, AbstractTickFunction function, int tier) {
+        this.teamStatsMap.get(this.getTeam(player)).buyTickFunctionUpgrade(function, tier);
     }
 }

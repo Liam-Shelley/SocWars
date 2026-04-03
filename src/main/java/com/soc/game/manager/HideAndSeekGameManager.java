@@ -28,6 +28,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.soc.game.map.AbstractGameMap.getRandomPlayerStack;
 import static com.soc.game.map.HideAndSeekGameMap.*;
@@ -127,7 +128,7 @@ public class HideAndSeekGameManager extends AbstractGameManager<HideAndSeekGameM
 
     @Override
     public Multimap<DyeColor, UUID> buildTeams(Set<ServerPlayerEntity> players, @Nullable SpreadRules spreadRules) {
-        final Stack<UUID> playerStack = getRandomPlayerStack(players.stream().map(ServerPlayerEntity::getUuid).toList());
+        final Stack<UUID> playerStack = getRandomPlayerStack(players);
 
         final HashMultimap<DyeColor, UUID> map = HashMultimap.create();
 
@@ -155,7 +156,17 @@ public class HideAndSeekGameManager extends AbstractGameManager<HideAndSeekGameM
 
     @Override
     protected EventQueue<HideAndSeekGameManager> buildEventQueue() {
-        return new EventQueue<HideAndSeekGameManager>().addEvent(60 * 20, manager -> manager.endGame(false, HIDER_COLOUR), Text.of("end game"));
+        final EventQueue<HideAndSeekGameManager> hideAndSeekGameManagerEventQueue = new EventQueue<>();
+
+        for (int i = 1; i < 5; i++) {
+            hideAndSeekGameManagerEventQueue.addEvent(i * 60 * 20, manager -> manager.getPlayers(HIDER_COLOUR).forEach(player -> {
+                this.world.playSound(null, player.getBlockPos(), SoundEvents.BLOCK_NOTE_BLOCK_FLUTE.value(), SoundCategory.MASTER, 5, 1);
+                player.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, 10, 0, false, false));
+            }), Text.of("ping " + i));
+        }
+        hideAndSeekGameManagerEventQueue.addEvent(5 * 60 * 20, manager -> manager.endGame(false, HIDER_COLOUR), Text.of("end game"));
+
+        return hideAndSeekGameManagerEventQueue;
     }
 
     public void findPlayer(LivingEntity seeker, ServerPlayerEntity hider) {

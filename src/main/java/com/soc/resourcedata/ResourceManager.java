@@ -25,10 +25,11 @@ public class ResourceManager {
     }
 
     public static void initialise() {
-        ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(SkywarsLootData.INSTANCE);
-        ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(BedwarsGeneratorData.INSTANCE);
-        ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(BedwarsShopData.INSTANCE);
-        ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(SpeakerSongData.INSTANCE);
+        final ResourceManagerHelper resourceManagerHelper = ResourceManagerHelper.get(ResourceType.SERVER_DATA);
+        resourceManagerHelper.registerReloadListener(SkywarsLootData.INSTANCE);
+        resourceManagerHelper.registerReloadListener(BedwarsGeneratorData.INSTANCE);
+        resourceManagerHelper.registerReloadListener(BedwarsShopData.INSTANCE);
+        resourceManagerHelper.registerReloadListener(SpeakerSongData.INSTANCE);
     }
 
     public static void readResources(net.minecraft.resource.ResourceManager manager, String path, Predicate<Identifier> pathPredicate, BiConsumer<BufferedReader, Identifier> resourceCallback) {
