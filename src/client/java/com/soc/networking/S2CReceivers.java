@@ -123,5 +123,8 @@ public class S2CReceivers {
             final Vec3d velocity = payload.velocity();
             payload.positions().forEach(pos -> world.addParticleClient(payload.particleType(), pos.x, pos.y, pos.z, velocity.x, velocity.y, velocity.z));
         }));
+        ClientPlayNetworking.registerGlobalReceiver(BlockProtectionPayload.ID, ((payload, context) -> {
+            var a = payload.blockProtectionOverlay();
+        }));
     }
 }

@@ -4,8 +4,8 @@
       "diamonds": 4
     },
     {
-      "diamonds": 10
+      "diamonds": 6
     }
   ],
-  "tick_function": "socwars:heal_pool"
+  "tick_function": "socwars:maniac_miner"
 }

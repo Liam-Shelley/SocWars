@@ -41,6 +41,13 @@
       "options": [
         "socwars:bedwars_shop_data/tick_function_upgrade_items/heal_pool"
       ]
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "options": [
+        "socwars:bedwars_shop_data/tick_function_upgrade_items/maniac_miner"
+      ]
     }
   ]
 }

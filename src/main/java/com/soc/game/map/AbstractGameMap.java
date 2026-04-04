@@ -8,6 +8,7 @@ import com.soc.lib.Coroutine;
 import com.soc.lib.Coroutines;
 import com.soc.lib.SparseVoxelOctree;
 import com.soc.nbt.SpawnPosition;
+import com.soc.networking.s2c.BlockProtectionPayload;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -52,6 +53,7 @@ public abstract class AbstractGameMap {
     protected final BlockPos absoluteCentrePos;
     protected final Multimap<DyeColor, BlockPos> spawnPositions;
     protected final SparseVoxelOctree<Boolean> blockProtectionOverlay;
+    protected final BlockProtectionPayload blockProtectionPacket; //Cache me outside how bout dat
 
     protected final ServerWorld world;
 
@@ -71,6 +73,7 @@ public abstract class AbstractGameMap {
         this.centrePos = centrePos.toImmutable();
         this.absoluteCentrePos = absoluteCentrePos;
         this.blockProtectionOverlay = blockProtectionOverlay;
+        this.blockProtectionPacket = blockProtectionOverlay == null ? null : new BlockProtectionPayload(blockProtectionOverlay);
         this.world = world;
     }
 
@@ -85,7 +88,8 @@ public abstract class AbstractGameMap {
                 structure,
                 spawnPositions,
                 centrePos.toImmutable(),
-                BlockPos.ORIGIN, blockProtectionOverlay,
+                BlockPos.ORIGIN,
+                blockProtectionOverlay,
                 null
         );
     }
@@ -260,5 +264,9 @@ public abstract class AbstractGameMap {
 
     public boolean isBlockProtected(BlockPos pos) {
         return this.blockProtectionOverlay != null && this.blockProtectionOverlay.get(pos, this.getOrigin());
+    }
+
+    public BlockProtectionPayload getBlockProtectionPacket() {
+        return this.blockProtectionPacket;
     }
 }

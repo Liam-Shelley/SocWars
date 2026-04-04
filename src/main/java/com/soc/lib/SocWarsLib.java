@@ -48,6 +48,7 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -566,5 +567,9 @@ public final class SocWarsLib {
 
     public static double distanceToVector(Vec3d origin, Vec3d direction, Vec3d point) {
         return Math.sqrt(sqrDistanceToVector(origin, direction, point));
+    }
+
+    public static <T> void ifNotNull(@Nullable T o, Consumer<T> f) {
+        if (o != null) f.accept(o);
     }
 }

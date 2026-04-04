@@ -188,6 +188,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
     @Override
     protected void sendJoinGamePayload(ServerPlayerEntity player) {
+        super.sendJoinGamePayload(player);
         ServerPlayNetworking.send(player, new JoinBedwarsPayload(super.getGameId(), new Teams(super.teams, this.teamStatsMap)));
     }
 

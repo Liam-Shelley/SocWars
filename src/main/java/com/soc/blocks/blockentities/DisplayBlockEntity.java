@@ -29,7 +29,7 @@ public class DisplayBlockEntity extends BlockEntity {
 
     @Override
     protected void writeData(WriteView view) {
-        if (this.displayItem != null) view.put("display_item", ItemStack.CODEC, this.displayItem);
+        if (this.displayItem != null && !this.displayItem.isEmpty()) view.put("display_item", ItemStack.CODEC, this.displayItem);
         if (this.direction != null) view.put("direction", Direction.CODEC, this.direction);
         view.put("rotation", Codec.INT, this.rotation);
 

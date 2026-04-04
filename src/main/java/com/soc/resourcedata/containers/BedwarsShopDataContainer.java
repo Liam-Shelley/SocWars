@@ -80,6 +80,11 @@ public class BedwarsShopDataContainer implements CachedData {
                 final BedwarsShopSlot shopSlot = preSelection[i][j];
                 final int index = i + j * width;
 
+                if (index >= items.size()) {
+                    SocWars.LOGGER.warn("Skipped loading shop item {}, {} as it is out of bounds", i, j);
+                    continue;
+                }
+
                 if (shopSlot != null) items.set(index, this.resolveRandomItem(shopSlot, random, team, world));
             }
         }

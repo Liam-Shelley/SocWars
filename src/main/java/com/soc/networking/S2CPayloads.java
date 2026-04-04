@@ -19,5 +19,6 @@ public class S2CPayloads {
         PayloadTypeRegistry.playS2C().register(UseTrapPayload.ID, UseTrapPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(SmokescreenPayload.ID, SmokescreenPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(BatchParticlePayload.ID, BatchParticlePayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(BlockProtectionPayload.ID, BlockProtectionPayload.CODEC);
     }
 }

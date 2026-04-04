@@ -27,7 +27,7 @@ public class SimpleTickFunction extends AbstractTickFunction {
     public static final AbstractTickFunction HEAL_POOL = register(new SimpleTickFunction("heal_pool", PotionContentsComponent.createStack(Items.POTION, Potions.HEALING), (pos, team, tier, world) -> {
         final List<Vec3d> positions = new ArrayList<>(); //Optimise this garbage at some point hey //nvm the managers take up like 0.5% of the tick time I don't need to optimise this
         for (int i = 0; i < (tier << 2); i++) {
-            positions.add(pos.add(randomCentredVec3d(world.random, 20)));
+            positions.add(pos.add(randomCentredVec3d(world.random, 25)));
         }
 
         for (ServerPlayerEntity player : team) {
@@ -36,9 +36,14 @@ public class SimpleTickFunction extends AbstractTickFunction {
 
     }, (pos, team, tier, world) -> {
         for (ServerPlayerEntity player : team) {
-            if (player.getPos().isInRange(pos, 20)) {
+            if (player.getPos().isInRange(pos, 25)) {
                 player.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 50, tier - 1, false, false));
             }
+        }
+    }));
+    public static final AbstractTickFunction MANIAC_MINER = register(new SimpleTickFunction("maniac_miner", Items.GOLDEN_PICKAXE.getDefaultStack(), TickFunction::noOp, (pos, team, tier, world) -> {
+        for (ServerPlayerEntity player : team) {
+            player.addStatusEffect(new StatusEffectInstance(StatusEffects.HASTE, 30, tier - 1, false, false));
         }
     }));
 

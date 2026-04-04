@@ -386,6 +386,7 @@
   "game.warning.placed_out_of_bounds": "You placed a block out of bounds! It will disappear in 5 seconds",
   "game.warning.placed_out_of_bounds.title": "Out of bounds!",
   "tick_function.heal_pool": "Heal Pool",
+  "tick_function.maniac_miner": "Maniac Miner",
   "hud.bedwars.has_bed": "  ||  Bed: ",
   "hud.bedwars.team": "%s Team",
   "hud.tick": "✔",

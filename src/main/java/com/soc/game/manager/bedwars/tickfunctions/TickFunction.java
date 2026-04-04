@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface TickFunction {
     void tick(Vec3d pos, List<ServerPlayerEntity> team, int tier, World world);
+
+    static void noOp(Vec3d pos, List<ServerPlayerEntity> team, int tier, World world) {}
 }

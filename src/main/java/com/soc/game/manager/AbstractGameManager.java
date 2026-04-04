@@ -101,7 +101,10 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         return player == null ? null : this.dbTables.get(player.getUuid());
     }
 
-    protected void sendJoinGamePayload(ServerPlayerEntity player) {}
+    protected void sendJoinGamePayload(ServerPlayerEntity player) {
+        ifNotNull(this.map.getBlockProtectionPacket(), packet -> ServerPlayNetworking.send(player, packet));
+    }
+
     protected void sendLeaveGamePayload(ServerPlayerEntity player) {}
 
     protected void sendPayloadToPlayers(CustomPayload payload) {

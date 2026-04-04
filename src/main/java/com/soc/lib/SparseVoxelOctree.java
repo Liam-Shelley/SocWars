@@ -1,9 +1,11 @@
 package com.soc.lib;
 
-import net.minecraft.nbt.NbtByte;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.encoding.VarInts;
 import net.minecraft.util.math.Vec3i;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
@@ -18,6 +20,44 @@ public class SparseVoxelOctree<T> implements OctreeNode {
 
     private final int nodeSize; //Must always be some natural 2^n
     private final OctreeNode[] nodes = new OctreeNode[8];
+
+    public static <T, B extends ByteBuf> PacketCodec<B, SparseVoxelOctree<T>> packetCodec(PacketCodec<B, T> elementCodec) {
+        return new PacketCodec<>() {
+            @Override
+            public SparseVoxelOctree<T> decode(B buf) {
+                if (buf.getChar(buf.readerIndex()) == 'N') {
+                    buf.readChar();
+                }
+
+                int size = VarInts.read(buf);
+                final SparseVoxelOctree<T> tree = new SparseVoxelOctree<>(size);
+                for (int i = 0; i < tree.nodes.length; i++) {
+                    if (buf.getChar(buf.readerIndex()) == 'N') {
+                        buf.readChar();
+                        tree.nodes[i] = this.decode(buf);
+                    } else {
+                        tree.nodes[i] = new Homogeneous<>(elementCodec.decode(buf));
+                    }
+                }
+
+                return tree;
+            }
+
+            @Override
+            @SuppressWarnings("unchecked")
+            public void encode(B buf, SparseVoxelOctree<T> value) {
+                buf.writeChar('N');
+                VarInts.write(buf, value.getNodeSize());
+                for (OctreeNode node : value.nodes) {
+                    if (node.isLeaf()) {
+                        elementCodec.encode(buf, ((OctreeNode.Homogeneous<T>)node).get());
+                    } else {
+                        this.encode(buf, (SparseVoxelOctree<T>)node);
+                    }
+                }
+            }
+        };
+    }
 
     private SparseVoxelOctree(int nodeSize) {
         this.nodeSize = nodeSize;
@@ -48,6 +88,18 @@ public class SparseVoxelOctree<T> implements OctreeNode {
                 }
             }
         }
+    }
+
+    private static Vec3i pad(Vec3i unpadded) {
+        int size = Math.max(Math.max(unpadded.getX(), unpadded.getY()), unpadded.getZ());
+
+        size--;
+        for (int i = 0; i < 5; i++) {
+            size |= size >> (1 << i);
+        }
+        size++;
+
+        return new Vec3i(size, size, size);
     }
 
     private static <T> boolean isHomogeneous(CubicList<T> data, IntBox window) {
@@ -88,29 +140,11 @@ public class SparseVoxelOctree<T> implements OctreeNode {
     private OctreeNode getNode(int x, int y, int z) {
         final int halfNodeSize = this.nodeSize >> 1;
 
-        final int internalX = x % this.nodeSize;
-        final int internalY = y % this.nodeSize;
-        final int internalZ = z % this.nodeSize;
-
-        final boolean topHalfX = internalX >= halfNodeSize;
-        final boolean topHalfY = internalY >= halfNodeSize;
-        final boolean topHalfZ = internalZ >= halfNodeSize;
-
         return this.nodes[
-                (topHalfX ? 1 : 0) +
-                (topHalfY ? 2 : 0) +
-                (topHalfZ ? 4 : 0)
+                ((x % this.nodeSize) >= halfNodeSize ? 1 : 0) +
+                ((y % this.nodeSize) >= halfNodeSize ? 2 : 0) +
+                ((z % this.nodeSize) >= halfNodeSize ? 4 : 0)
         ];
-
-        /*
-        final int halfNodeSize = this.nodeSize >> 1;
-
-        return this.nodes[
-                (x % this.nodeSize < halfNodeSize ? 0 : 1) +
-                (y % this.nodeSize < halfNodeSize ? 0 : 2) +
-                (z % this.nodeSize < halfNodeSize ? 0 : 4)
-        ];
-         */
     }
 
     @Override
@@ -142,18 +176,6 @@ public class SparseVoxelOctree<T> implements OctreeNode {
         compound.put(key, svoCompound);
     }
 
-    private static Vec3i pad(Vec3i unpadded) {
-        int size = Math.max(Math.max(unpadded.getX(), unpadded.getY()), unpadded.getZ());
-
-        size--;
-        for (int i = 0; i < 5; i++) {
-            size |= size >> (1 << i);
-        }
-        size++;
-
-        return new Vec3i(size, size, size);
-    }
-
     @Nullable
     public static SparseVoxelOctree<Boolean> fromNbtBooleanOnly(String key, NbtCompound compound) {
         final Optional<NbtCompound> svoCompoundOptional = compound.getCompound(key);
@@ -179,7 +201,7 @@ public class SparseVoxelOctree<T> implements OctreeNode {
             }
             final Optional<NbtList> maybeList = element.asNbtList();
             if (maybeList.isPresent()) {
-                base.nodes[i] = fromNbtBooleanOnly(size / 2, maybeList.get());
+                base.nodes[i] = fromNbtBooleanOnly(size >> 1, maybeList.get());
                 continue;
             }
         }
