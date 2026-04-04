@@ -24,7 +24,7 @@ public class SparseVoxelOctree<T> implements OctreeNode {
     public static <T, B extends ByteBuf> PacketCodec<B, SparseVoxelOctree<T>> packetCodec(PacketCodec<B, T> elementCodec) {
         return new PacketCodec<>() {
             @Override
-            public SparseVoxelOctree<T> decode(B buf) {
+            public SparseVoxelOctree<T> decode(B buf) { //TODO: Fix this garbage
                 if (buf.getChar(buf.readerIndex()) == 'N') {
                     buf.readChar();
                 }

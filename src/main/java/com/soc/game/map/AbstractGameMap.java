@@ -73,7 +73,7 @@ public abstract class AbstractGameMap {
         this.centrePos = centrePos.toImmutable();
         this.absoluteCentrePos = absoluteCentrePos;
         this.blockProtectionOverlay = blockProtectionOverlay;
-        this.blockProtectionPacket = blockProtectionOverlay == null ? null : new BlockProtectionPayload(blockProtectionOverlay);
+        this.blockProtectionPacket = blockProtectionOverlay == null ? null : new BlockProtectionPayload(blockProtectionOverlay, this.getOrigin());
         this.world = world;
     }
 

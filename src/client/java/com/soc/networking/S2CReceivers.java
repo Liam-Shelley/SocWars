@@ -1,6 +1,7 @@
 package com.soc.networking;
 
 import com.soc.game.BedwarsTeamsHUD;
+import com.soc.game.BlockProtectionManager;
 import com.soc.lib.Coroutine;
 import com.soc.lib.Coroutines;
 import com.soc.mixin.client.GetLoadedModelGroups;
@@ -124,7 +125,7 @@ public class S2CReceivers {
             payload.positions().forEach(pos -> world.addParticleClient(payload.particleType(), pos.x, pos.y, pos.z, velocity.x, velocity.y, velocity.z));
         }));
         ClientPlayNetworking.registerGlobalReceiver(BlockProtectionPayload.ID, ((payload, context) -> {
-            var a = payload.blockProtectionOverlay();
+            BlockProtectionManager.INSTANCE.setBlockProtection(payload);
         }));
     }
 }

@@ -3,6 +3,8 @@
   "package": "com.soc.mixin.client",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "BlockProtectionOnBreak",
+    "BlockProtectionRenderOutline",
     "DisplayBlockOutline",
     "DragonFireballTooltip",
     "GetLoadedModelGroups",
@@ -15,5 +17,6 @@
     "defaultRequire": 1
   },
   "mixins": [
+    "BlockProtectionOnPlace"
   ]
 }

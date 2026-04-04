@@ -7,11 +7,12 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 
-public record BlockProtectionPayload(SparseVoxelOctree<Boolean> blockProtectionOverlay) implements CustomPayload {
+public record BlockProtectionPayload(SparseVoxelOctree<Boolean> blockProtectionOverlay, BlockPos origin) implements CustomPayload {
     public static final Identifier BLOCK_PROTECTION_PAYLOAD_ID = Identifier.of(SocWars.MOD_ID, "block_protection");
     public static final Id<BlockProtectionPayload> ID = new Id<>(BLOCK_PROTECTION_PAYLOAD_ID);
-    public static final PacketCodec<RegistryByteBuf, BlockProtectionPayload> CODEC = PacketCodec.tuple(SparseVoxelOctree.packetCodec(PacketCodecs.BOOLEAN), BlockProtectionPayload::blockProtectionOverlay, BlockProtectionPayload::new);
+    public static final PacketCodec<RegistryByteBuf, BlockProtectionPayload> CODEC = PacketCodec.tuple(SparseVoxelOctree.packetCodec(PacketCodecs.BOOLEAN), BlockProtectionPayload::blockProtectionOverlay, BlockPos.PACKET_CODEC, BlockProtectionPayload::origin, BlockProtectionPayload::new);
 
     @Override
     public Id<? extends CustomPayload> getId() {
