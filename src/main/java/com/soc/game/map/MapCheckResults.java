@@ -140,12 +140,12 @@ public record MapCheckResults(Set<SpawnPosition> spawnPositions, Set<BlockPos> c
                 );
             }
             case SKYWARS -> {
-                for (int i = 1; i < 4; i++) {
+                for (int i = 0; i < 3; i++) {
                     int finalI = i;
                     results.add(
                             () -> this.lootChests.stream().anyMatch(chest -> chest.tier() == finalI),
                             InfoList.InfoType.INFO,
-                            Text.translatable("map_block.results.tier_" + finalI + "_chests", this.lootChests.stream().filter(chest -> chest.tier() == finalI).count()).formatted(Formatting.GREEN)
+                            Text.translatable("map_block.results.tier_" + (finalI + 1) + "_chests", this.lootChests.stream().filter(chest -> chest.tier() == finalI).count()).formatted(Formatting.GREEN)
                     );
                 }
             }

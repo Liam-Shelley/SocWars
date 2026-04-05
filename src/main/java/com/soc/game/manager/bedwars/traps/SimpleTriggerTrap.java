@@ -1,9 +1,12 @@
 package com.soc.game.manager.bedwars.traps;
 
+import com.soc.SocWars;
 import com.soc.effects.util.ModEffects;
 import com.soc.items.BaseWeapon;
 import com.soc.items.EatFunctionFood;
 import com.soc.lib.Events;
+import com.soc.networking.s2c.JumpscarePayload;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerInventory;
@@ -11,7 +14,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,6 +54,7 @@ public class SimpleTriggerTrap extends AbstractTrap {
     public static final AbstractTrap GLOWING = register(new SimpleTriggerTrap("glowing", Items.TORCH.getDefaultStack(), 8 * 20, player -> player.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, 8 * 20, 0, false, true, true))));
     public static final AbstractTrap POSTURA = register(new SimpleTriggerTrap("postura", BaseWeapon.BAT.getDefaultStack(), 10 * 20, player -> player.addStatusEffect(new StatusEffectInstance(ModEffects.ARTHRODESIS, 10 * 20, 0, false, true, true))));
     public static final AbstractTrap SPEED = register(new SimpleTriggerTrap("speed", Items.BLUE_ICE.getDefaultStack(), 2 * 20, player -> player.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 2 * 20, 9, false, true, true))));
+    public static final AbstractTrap JUMPSCARE = register(new SimpleTriggerTrap("jumpscare", Items.CREEPER_HEAD.getDefaultStack(), 2 * 20, player -> ServerPlayNetworking.send(player, new JumpscarePayload(SoundEvents.ENTITY_ENDERMAN_DEATH, Identifier.of(SocWars.MOD_ID, "")))));
 
     private final Consumer<ServerPlayerEntity> enemyTriggerFunction;
 
@@ -57,7 +64,7 @@ public class SimpleTriggerTrap extends AbstractTrap {
     }
 
     @Override
-    public void trigger(Vec3d pos, List<ServerPlayerEntity> team, List<ServerPlayerEntity> enemies) {
+    public void trigger(Vec3d pos, List<ServerPlayerEntity> team, List<ServerPlayerEntity> enemies, World world) {
         enemies.forEach(this.enemyTriggerFunction);
     }
 }

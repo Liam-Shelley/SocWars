@@ -7,6 +7,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 import java.util.List;
 
@@ -27,7 +28,7 @@ public abstract class AbstractTrap {
         this(Identifier.of(SocWars.MOD_ID, id), icon, time);
     }
 
-    public abstract void trigger(Vec3d pos, List<ServerPlayerEntity> team, List<ServerPlayerEntity> enemies);
+    public abstract void trigger(Vec3d pos, List<ServerPlayerEntity> team, List<ServerPlayerEntity> enemies, World world);
 
     public final int getCooldownTime() {
         return this.cooldownTime;

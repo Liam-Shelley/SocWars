@@ -65,8 +65,8 @@ public class TeamStats {
         return this.trapManager.hasActiveTrap();
     }
 
-    public void onPlayerInTrapRange(AbstractGameManager<?, ?, ?> manager, Vec3d pos, List<ServerPlayerEntity> players) {
-        this.trapManager.trigger(manager, pos, players);
+    public void onPlayerInTrapRange(AbstractGameManager<?, ?, ?> manager, Vec3d pos, List<ServerPlayerEntity> players, World world) {
+        this.trapManager.trigger(manager, pos, players, world);
     }
 
     public BedwarsShopContents getShopContents() {

@@ -11,12 +11,10 @@
     "KeyboardInputModifier",
     "MouseInputModifier",
     "OpenMapBlockScreen",
-    "TransparentGlassArmour"
+    "TransparentGlassArmour",
+    "BlockProtectionOnPlace"
   ],
   "injectors": {
     "defaultRequire": 1
-  },
-  "mixins": [
-    "BlockProtectionOnPlace"
-  ]
+  }
 }

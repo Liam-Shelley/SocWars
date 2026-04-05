@@ -272,19 +272,6 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
             receiver.giveItemStack(stack);
 
             if (count > 0) receiver.sendMessage(Text.translatable("game.bedwars.receive_items", count, resource.getDefaultStack().toHoverableText().copy().formatted(RESOURCE_TO_COLOUR_MAP.get(resource))).formatted(Formatting.DARK_GREEN), false);
-
-            //Some very special code I wrote for the sake of writing bad code
-            //
-            //int stacks = count >> 6;
-            //int remainder = count % 64;
-
-            //do {
-            //    final ItemStack stack = new ItemStack(resource, remainder);
-            //    stack.set(ModComponents.RESOURCE_COUNTED, Unit.INSTANCE);
-            //    receiver.giveItemStack(stack);
-
-            //    remainder = 64;
-            //} while (stacks-- > 0);
         }
     }
 
@@ -398,8 +385,8 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
             if (!stats.hasActiveTrap()) return;
 
             final Vec3d pos = this.map.getBedPosition(team).toCenterPos();
-            final List<ServerPlayerEntity> enemiesInRange = this.getPlayers().stream().filter(player -> this.getTeam(player) != team && player.getPos().isInRange(pos, TRAP_DETECTION_RANGE)).toList();
-            if(!enemiesInRange.isEmpty()) stats.onPlayerInTrapRange(this, pos, enemiesInRange);
+            final List<ServerPlayerEntity> enemiesInRange = this.getPlayers().stream().filter(player -> true || this.getTeam(player) != team && player.getPos().isInRange(pos, TRAP_DETECTION_RANGE)).toList();
+            if(!enemiesInRange.isEmpty()) stats.onPlayerInTrapRange(this, pos, enemiesInRange, this.world);
         });
     }
 

@@ -20,5 +20,6 @@ public class S2CPayloads {
         PayloadTypeRegistry.playS2C().register(SmokescreenPayload.ID, SmokescreenPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(BatchParticlePayload.ID, BatchParticlePayload.CODEC);
         PayloadTypeRegistry.playS2C().register(BlockProtectionPayload.ID, BlockProtectionPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(JumpscarePayload.ID, JumpscarePayload.CODEC);
     }
 }

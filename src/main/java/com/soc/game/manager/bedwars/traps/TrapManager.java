@@ -44,11 +44,11 @@ public class TrapManager {
         return !this.traps.isEmpty() && this.nextTrapTriggerTime < this.world.getTime();
     }
 
-    public void trigger(AbstractGameManager<?, ?, ?> manager, Vec3d pos, List<ServerPlayerEntity> players) {
+    public void trigger(AbstractGameManager<?, ?, ?> manager, Vec3d pos, List<ServerPlayerEntity> players, World world) {
         final AbstractTrap trap = this.traps.remove();
         final List<ServerPlayerEntity> team = mapUuidsToPlayers(this.world, this.team);
 
-        trap.trigger(pos, team, players);
+        trap.trigger(pos, team, players, world);
         final Text teamsText = players.stream().map(manager::getTeam).distinct().map(SocWarsLib::colouredTextFromColour).reduce((a, b) -> a.append(", ").append(b)).get();
 
         team.forEach(player -> {
@@ -66,7 +66,7 @@ public class TrapManager {
         final AbstractTrap ability = this.traps.remove();
         final List<ServerPlayerEntity> team = mapUuidsToPlayers(this.world, this.team);
 
-        ability.trigger(pos, team, players);
+        ability.trigger(pos, team, players, world);
         //team.forEach(player -> ServerPlayNetworking.send(player, new UseAbilityPayload(this.world.getTime() + ability.getCooldownTime(), ability.getCooldownTime())));
 
         this.nextAbilityTriggerTime = this.world.getTime() + ability.getCooldownTime();

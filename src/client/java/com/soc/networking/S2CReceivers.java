@@ -127,5 +127,10 @@ public class S2CReceivers {
         ClientPlayNetworking.registerGlobalReceiver(BlockProtectionPayload.ID, ((payload, context) -> {
             BlockProtectionManager.INSTANCE.setBlockProtection(payload);
         }));
+        ClientPlayNetworking.registerGlobalReceiver(JumpscarePayload.ID, ((payload, context) -> {
+             context.player().sendMessage(Text.of("Boo!"), false);
+
+
+        }));
     }
 }
