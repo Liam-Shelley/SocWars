@@ -6,6 +6,7 @@ import com.soc.items.components.ModComponents;
 import com.soc.resourcedata.deserialisation.Cost;
 import com.soc.resourcedata.deserialisation.CostStack;
 import com.soc.screenhandler.AbstractShopScreenHandler;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -17,6 +18,7 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.JsonHelper;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Reader;
 import java.util.ArrayList;
@@ -27,7 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static com.soc.lib.json.JsonHelper.getDefaultedBoolean;
 import static net.minecraft.util.JsonHelper.deserialize;
 
-public class UpgradeableShopItem implements ShopItem<UpgradeableShopItem> {
+public class UpgradeableShopItem implements ShopItem<UpgradeableShopItem>, TooltipProvider {
     public static final int ID = 2;
     private static final PacketCodec<RegistryByteBuf, UpgradeableShopItem> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.collection(ArrayList::new, CostStack.PACKET_CODEC), UpgradeableShopItem::getStacks, PacketCodecs.BOOLEAN, UpgradeableShopItem::downgradeOnDeath, PacketCodecs.BOOLEAN, UpgradeableShopItem::retainBaseTier, PacketCodecs.INTEGER, UpgradeableShopItem::getTier, UpgradeableShopItem::new);
 
@@ -183,5 +185,11 @@ public class UpgradeableShopItem implements ShopItem<UpgradeableShopItem> {
     @Override
     public UpgradeableShopItem lazyClone() {
         return new UpgradeableShopItem(this.stacks, this.downgradeOnDeath, this.retainBaseTier, 0);
+    }
+
+    @Override
+    @Nullable
+    public Text getTooltip() {
+        return TooltipProvider.getEnchantmentTooltip(this.getIcon().get(DataComponentTypes.ENCHANTMENTS));
     }
 }

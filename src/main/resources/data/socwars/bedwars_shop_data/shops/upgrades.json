@@ -32,6 +32,13 @@
       "x": 4,
       "y": 0,
       "options": [
+        "socwars:bedwars_shop_data/enchantment_upgrade_items/power"
+      ]
+    },
+    {
+      "x": 5,
+      "y": 0,
+      "options": [
         "socwars:bedwars_shop_data/enchantment_upgrade_items/aqua_affinity"
       ]
     },
@@ -47,6 +54,13 @@
       "y": 1,
       "options": [
         "socwars:bedwars_shop_data/tick_function_upgrade_items/maniac_miner"
+      ]
+    },
+    {
+      "x": 2,
+      "y": 1,
+      "options": [
+        "socwars:bedwars_shop_data/tick_function_upgrade_items/invisibility"
       ]
     }
   ]

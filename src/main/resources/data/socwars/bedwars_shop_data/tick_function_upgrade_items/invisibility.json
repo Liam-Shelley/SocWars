@@ -1,0 +1,8 @@
+{
+  "costs": [
+    {
+      "diamonds": 128
+    }
+  ],
+  "tick_function": "socwars:invisibility"
+}

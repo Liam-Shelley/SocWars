@@ -1,6 +1,6 @@
 {
   "cost": {
-    "diamonds": 1
+    "diamonds": 3
   },
   "trap": "socwars:launch"
 }

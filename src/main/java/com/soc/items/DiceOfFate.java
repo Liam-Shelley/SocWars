@@ -60,7 +60,7 @@ public class DiceOfFate extends Item {
     }
 
     private static final Item[] RANDOM_RINGS = {
-        InvisibilityRing.INVISIBILITY_RING,
+        PotionRing.INVISIBILITY_RING,
         PotionRing.LESSER_SPEED_RING,
         PotionRing.GREATER_SPEED_RING,
         PotionRing.LESSER_JUMP_RING,

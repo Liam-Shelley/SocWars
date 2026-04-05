@@ -1,6 +1,6 @@
 {
   "cost": {
-    "diamonds": 1
+    "diamonds": 2
   },
   "trap": "socwars:mining_fatigue"
 }

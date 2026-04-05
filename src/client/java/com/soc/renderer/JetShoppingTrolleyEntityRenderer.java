@@ -30,7 +30,7 @@ public class JetShoppingTrolleyEntityRenderer extends EntityRenderer<JetShopping
 
         matrices.multiply(state.getRotation());
 
-        matrices.translate(0f, 1.85f, 1.2f);
+        matrices.translate(0f, 2.5f, -0.1f);
         matrices.scale(-1.6f, -1.6f, 1.6f);
         this.model.render(matrices, vertexConsumers.getBuffer(RENDER_LAYER), light, OverlayTexture.DEFAULT_UV);
 

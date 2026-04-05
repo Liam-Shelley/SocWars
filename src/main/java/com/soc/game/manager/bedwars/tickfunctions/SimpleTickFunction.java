@@ -33,7 +33,6 @@ public class SimpleTickFunction extends AbstractTickFunction {
         for (ServerPlayerEntity player : team) {
             ServerPlayNetworking.send(player, new BatchParticlePayload(ParticleTypes.HAPPY_VILLAGER, positions, UP_ONE_TENTH));
         }
-
     }, (pos, team, tier, world) -> {
         for (ServerPlayerEntity player : team) {
             if (player.getPos().isInRange(pos, 25)) {
@@ -44,6 +43,11 @@ public class SimpleTickFunction extends AbstractTickFunction {
     public static final AbstractTickFunction MANIAC_MINER = register(new SimpleTickFunction("maniac_miner", Items.GOLDEN_PICKAXE.getDefaultStack(), TickFunction::noOp, (pos, team, tier, world) -> {
         for (ServerPlayerEntity player : team) {
             player.addStatusEffect(new StatusEffectInstance(StatusEffects.HASTE, 30, tier - 1, false, false));
+        }
+    }));
+    public static final AbstractTickFunction INVSIBILITY = register(new SimpleTickFunction("invisibility", Items.GOLDEN_CARROT.getDefaultStack(), TickFunction::noOp, (pos, team, tier, world) -> {
+        for (ServerPlayerEntity player : team) {
+            player.addStatusEffect(new StatusEffectInstance(StatusEffects.INVISIBILITY, 30, tier - 1, false, false));
         }
     }));
 

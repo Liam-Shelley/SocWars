@@ -134,4 +134,8 @@ public class BedwarsShopCategory {
         }
         return false;
     }
+
+    public int size() {
+        return this.items.size();
+    }
 }

@@ -1,0 +1,12 @@
+{
+  "icon": "socwars:falcon_bow",
+  "costs": [
+    {
+      "diamonds": 12
+    },
+    {
+      "diamonds": 24
+    }
+  ],
+  "enchantment": "minecraft:power"
+}

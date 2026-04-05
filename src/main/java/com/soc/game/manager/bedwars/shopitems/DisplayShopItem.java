@@ -2,20 +2,18 @@ package com.soc.game.manager.bedwars.shopitems;
 
 import com.soc.resourcedata.deserialisation.Cost;
 import com.soc.screenhandler.AbstractShopScreenHandler;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextCodecs;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public class DisplayShopItem implements ShopItem<DisplayShopItem> {
+public class DisplayShopItem implements ShopItem<DisplayShopItem>, TooltipProvider {
     public static final int ID = 4;
     private static final PacketCodec<RegistryByteBuf, DisplayShopItem> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.optional(ItemStack.PACKET_CODEC), DisplayShopItem::getOptionalIcon, TextCodecs.OPTIONAL_PACKET_CODEC, DisplayShopItem::getOptionalName, TextCodecs.OPTIONAL_PACKET_CODEC, DisplayShopItem::getOptionalTooltip, DisplayShopItem::new);
 
@@ -81,6 +79,7 @@ public class DisplayShopItem implements ShopItem<DisplayShopItem> {
         return this.name == null ? this.icon.toHoverableText() : this.name;
     }
 
+    @Override
     @Nullable
     public Text getTooltip() {
         return this.tooltip;

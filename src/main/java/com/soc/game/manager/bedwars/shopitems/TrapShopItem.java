@@ -16,13 +16,14 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.Reader;
 
 import static com.soc.lib.json.JsonHelper.*;
 import static net.minecraft.util.JsonHelper.deserialize;
 
-public class TrapShopItem implements ShopItem<TrapShopItem> {
+public class TrapShopItem implements ShopItem<TrapShopItem>, TooltipProvider {
     public static final int ID = 5;
     private static final PacketCodec<RegistryByteBuf, TrapShopItem> PACKET_CODEC = PacketCodec.tuple(Cost.PACKET_CODEC, TrapShopItem::getCost, Identifier.PACKET_CODEC, TrapShopItem::getTrapId, TrapShopItem::new);
 
@@ -106,5 +107,10 @@ public class TrapShopItem implements ShopItem<TrapShopItem> {
 
     public DisplayShopItem getDisplayCopy() {
         return this.trap.getDisplayShopItem();
+    }
+
+    @Override
+    public @Nullable Text getTooltip() {
+        return this.trap.getTooltip();
     }
 }

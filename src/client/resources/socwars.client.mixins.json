@@ -4,15 +4,17 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "BlockProtectionOnBreak",
+    "BlockProtectionOnPlace",
     "BlockProtectionRenderOutline",
     "DisplayBlockOutline",
     "DragonFireballTooltip",
+    "FinishGamesOnSaveAndQuit",
     "GetLoadedModelGroups",
     "KeyboardInputModifier",
     "MouseInputModifier",
     "OpenMapBlockScreen",
     "TransparentGlassArmour",
-    "BlockProtectionOnPlace"
+    "TrueInvisibility"
   ],
   "injectors": {
     "defaultRequire": 1

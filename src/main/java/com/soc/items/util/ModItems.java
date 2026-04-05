@@ -22,7 +22,6 @@ public class ModItems {
         DrawableWeapon.initialise();
         BowItem.initialise();
         GreenSword.initialise();
-        InvisibilityRing.initialise();
         PotionRing.initialise();
         DiceOfFate.initialise();
         PotionFood.initialise();

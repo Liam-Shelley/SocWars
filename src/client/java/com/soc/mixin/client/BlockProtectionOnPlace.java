@@ -1,6 +1,7 @@
 package com.soc.mixin.client;
 
 import com.soc.game.BlockProtectionManager;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.util.ActionResult;
@@ -13,6 +14,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 abstract class BlockProtectionOnPlace {
     @Inject(method = "place(Lnet/minecraft/item/ItemPlacementContext;)Lnet/minecraft/util/ActionResult;", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/BlockItem;getPlacementState(Lnet/minecraft/item/ItemPlacementContext;)Lnet/minecraft/block/BlockState;"), cancellable = true)
     private void socwars_blockProtectionOnPlace(ItemPlacementContext context, CallbackInfoReturnable<ActionResult> cir) {
-        if (BlockProtectionManager.INSTANCE.isBlockProtected(context.getBlockPos())) cir.setReturnValue(ActionResult.FAIL);
+        if (BlockProtectionManager.INSTANCE.isBlockProtected(context.getBlockPos()) && !MinecraftClient.getInstance().player.isCreative()) cir.setReturnValue(ActionResult.FAIL);
     }
 }

@@ -55,9 +55,7 @@ public class GamesManager {
 
     public void initialiseEvents() {
         ServerLifecycleEvents.SERVER_STARTED.register(server -> this.world = server.getOverworld());
-        ServerLifecycleEvents.SERVER_STOPPING.register(server -> this.games.forEach(game -> {
-                if (game != null) game.endGame(true);
-        }));
+        ServerLifecycleEvents.SERVER_STOPPING.register(server -> this.endAllGames());
         ServerTickEvents.START_SERVER_TICK.register(this::tick);
 
         ServerLivingEntityEvents.ALLOW_DEATH.register((entity, source, amount) ->
@@ -87,6 +85,18 @@ public class GamesManager {
         ModEvents.ON_FURNACE_OPENED.register((player, pos) ->
                 this.getGame(player).map(game -> game.onFurnaceOpened(player, pos)).orElse(true)
         );
+    }
+
+    private void endAllGames() {
+        this.games.forEach(game -> {
+                if (game != null) game.endGame(true);
+        });
+    }
+
+    public void returnAllPlayersToLobby() {
+        this.games.forEach(game -> {
+            if (game != null) game.sendPlayersToLobby();
+        });
     }
 
     public boolean startGame(AbstractGameManager<?, ?, ?> game) {

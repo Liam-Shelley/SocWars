@@ -572,4 +572,13 @@ public final class SocWarsLib {
     public static <T> void ifNotNull(@Nullable T o, Consumer<T> f) {
         if (o != null) f.accept(o);
     }
+
+    public static int max(int... ints) {
+        int max = Integer.MIN_VALUE;
+        for (int i : ints) {
+            if (i > max) max = i;
+        }
+
+        return max;
+    }
 }

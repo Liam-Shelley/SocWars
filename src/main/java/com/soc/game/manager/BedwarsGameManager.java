@@ -166,16 +166,14 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
     protected EventQueue<BedwarsGameManager> buildEventQueue() {
         final EventQueue<BedwarsGameManager> queue = new EventQueue<>();
 
-        {
-            final BedwarsGeneratorDataContainer bedwarsGeneratorDataContainer = BedwarsGeneratorDataContainer.INSTANCE;
-            for (int i = 0; i < bedwarsGeneratorDataContainer.getDiamondGeneratorUpgrades().size(); i++) {
-                final ResourceGeneratorUpgrade upgrade = bedwarsGeneratorDataContainer.getDiamondGeneratorUpgrades().get(i);
-                queue.addEvent(upgrade.time(), manager -> manager.upgradeDiamondGens(upgrade.getStats()), Text.translatable("events.bedwars.diamond.tier", romanNumerals(i)));
-            }
-            for (int i = 0; i < bedwarsGeneratorDataContainer.getEmeraldGeneratorUpgrades().size(); i++) {
-                final ResourceGeneratorUpgrade upgrade = bedwarsGeneratorDataContainer.getEmeraldGeneratorUpgrades().get(i);
-                queue.addEvent(upgrade.time(), manager -> manager.upgradeEmeraldGens(upgrade.getStats()), Text.translatable("events.bedwars.emerald.tier", romanNumerals(i)));
-            }
+        final BedwarsGeneratorDataContainer bedwarsGeneratorDataContainer = BedwarsGeneratorDataContainer.INSTANCE;
+        for (int i = 0; i < bedwarsGeneratorDataContainer.getDiamondGeneratorUpgrades().size(); i++) {
+            final ResourceGeneratorUpgrade upgrade = bedwarsGeneratorDataContainer.getDiamondGeneratorUpgrades().get(i);
+            queue.addEvent(upgrade.time(), manager -> manager.upgradeDiamondGens(upgrade.getStats()), Text.translatable("events.bedwars.diamond.tier", romanNumerals(i)));
+        }
+        for (int i = 0; i < bedwarsGeneratorDataContainer.getEmeraldGeneratorUpgrades().size(); i++) {
+            final ResourceGeneratorUpgrade upgrade = bedwarsGeneratorDataContainer.getEmeraldGeneratorUpgrades().get(i);
+            queue.addEvent(upgrade.time(), manager -> manager.upgradeEmeraldGens(upgrade.getStats()), Text.translatable("events.bedwars.emerald.tier", romanNumerals(i)));
         }
 
         return queue;
@@ -385,7 +383,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
             if (!stats.hasActiveTrap()) return;
 
             final Vec3d pos = this.map.getBedPosition(team).toCenterPos();
-            final List<ServerPlayerEntity> enemiesInRange = this.getPlayers().stream().filter(player -> true || this.getTeam(player) != team && player.getPos().isInRange(pos, TRAP_DETECTION_RANGE)).toList();
+            final List<ServerPlayerEntity> enemiesInRange = this.getPlayers().stream().filter(player -> this.getTeam(player) != team && player.getPos().isInRange(pos, TRAP_DETECTION_RANGE)).toList();
             if(!enemiesInRange.isEmpty()) stats.onPlayerInTrapRange(this, pos, enemiesInRange, this.world);
         });
     }

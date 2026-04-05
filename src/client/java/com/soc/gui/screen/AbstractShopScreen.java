@@ -4,6 +4,7 @@ import com.soc.game.manager.bedwars.BedwarsShopCategory;
 import com.soc.game.manager.bedwars.shopitems.DisplayShopItem;
 import com.soc.game.manager.bedwars.shopitems.ShopItem;
 import com.soc.gui.ShopResourceDisplay;
+import com.soc.gui.screen.util.SplitText;
 import com.soc.resourcedata.deserialisation.Cost;
 import com.soc.screenhandler.AbstractCategoriesShopScreenHandler;
 import com.soc.screenhandler.AbstractShopScreenHandler;
@@ -18,15 +19,20 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.soc.lib.SocWarsLib.max;
+
 public abstract class AbstractShopScreen<T extends AbstractShopScreenHandler> extends HandledScreen<T> {
     protected static final Item[] RESOURCE_DISPLAY_ITEMS = new Item[] {Items.IRON_INGOT, Items.GOLD_INGOT, Items.DIAMOND, Items.EMERALD};
     protected final List<ShopResourceDisplay> resourceDisplays = new ArrayList<>(RESOURCE_DISPLAY_ITEMS.length);
+    private static final int MAX_TOOLTIP_WIDTH = 180;
 
     protected final PlayerInventory playerInventory;
 
@@ -62,17 +68,16 @@ public abstract class AbstractShopScreen<T extends AbstractShopScreenHandler> ex
 
     protected void drawCostTooltip(DrawContext context, int x, int y, ShopItem<?> item) {
         final ItemStack icon = item.getIcon();
-        {
-            final MutableText name = item.getDisplayName().copy();
-            name.append(item.affordabilitySuffix(this.playerInventory.player));
-            int nameWidth = super.textRenderer.getWidth(name);
+        final MutableText name = item.getDisplayName().copy().append(item.affordabilitySuffix(this.playerInventory.player));
+        int nameWidth = this.textRenderer.getWidth(name);
 
-            TooltipBackgroundRenderer.render(context, x + 12, y - 12, Math.max(nameWidth, 65), item.getCost().isFree() ? 8 : 31, icon.get(DataComponentTypes.TOOLTIP_STYLE));
+        final SplitText splitText = SplitText.split(item, MAX_TOOLTIP_WIDTH, super.textRenderer);
 
-            context.drawText(super.textRenderer, name, x + 12, y - 12, 0xffffffff, true);
+        TooltipBackgroundRenderer.render(context, x + 12, y - 12, max(nameWidth, splitText.width(), 65), item.getCost().isFree() ? 8 : 31 + splitText.height(), icon.get(DataComponentTypes.TOOLTIP_STYLE));
+        context.drawText(this.textRenderer, name, x + 12, y - 12, 0xffffffff, true);
+        splitText.draw(context, this.textRenderer, x + 20, y + 2);
 
-            if (!item.getCost().isFree()) this.drawCostIcons(context, x, y, item.getCost());
-        }
+        if (!item.getCost().isFree()) this.drawCostIcons(context, x, y + splitText.height(), item.getCost());
     }
 
     protected void drawCostIcons(DrawContext context, int x, int y, Cost cost) {
@@ -112,8 +117,15 @@ public abstract class AbstractShopScreen<T extends AbstractShopScreenHandler> ex
         context.drawText(super.textRenderer, category.getName(), x + 12, y - 12, 0xffffffff, true);
     }
 
-    //Yeah maybe I fix this some time later ey
-    protected void drawDisplayTooltip(DrawContext context, int x, int y, DisplayShopItem shopItem) {}
+    protected void drawDisplayTooltip(DrawContext context, int x, int y, DisplayShopItem shopItem) {
+        final Text name = shopItem.getDisplayName();
+
+        final SplitText splitText = SplitText.split(shopItem.getTooltip(), MAX_TOOLTIP_WIDTH, this.textRenderer);
+
+        TooltipBackgroundRenderer.render(context, x + 12, y - 12, max(super.textRenderer.getWidth(name), splitText.width(), 65), Math.max(24, splitText.height() + 12), /*shopItem.get(DataComponentTypes.TOOLTIP_STYLE)*/null);
+        context.drawText(super.textRenderer, name, x + 12, y - 12, 0xffffffff, true);
+        splitText.draw(context, super.textRenderer, x + 20, y + 2);
+    }
 
     protected abstract Identifier getTexture();
 
