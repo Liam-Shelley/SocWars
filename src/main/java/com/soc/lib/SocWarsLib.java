@@ -52,10 +52,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
+import java.util.function.*;
 import java.util.stream.Collectors;
 
 public final class SocWarsLib {
@@ -571,6 +568,11 @@ public final class SocWarsLib {
 
     public static <T> void ifNotNull(@Nullable T o, Consumer<T> f) {
         if (o != null) f.accept(o);
+    }
+
+    public static <T, U> U mapIfNotNull(@Nullable T o, Function<T, U> mapper, U def) {
+        if (o != null) return mapper.apply(o);
+        return def;
     }
 
     public static int max(int... ints) {

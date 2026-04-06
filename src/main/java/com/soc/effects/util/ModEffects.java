@@ -16,4 +16,5 @@ public interface ModEffects {
     RegistryEntry<StatusEffect> FLIGHT = Registry.registerReference(Registries.STATUS_EFFECT, Identifier.of(SocWars.MOD_ID, "flight"), new Flight());
     RegistryEntry<StatusEffect> ARTHRODESIS = Registry.registerReference(Registries.STATUS_EFFECT, Identifier.of(SocWars.MOD_ID, "arthrodesis"), new Arthrodesis());
     RegistryEntry<StatusEffect> PERPLEXITY = Registry.registerReference(Registries.STATUS_EFFECT, Identifier.of(SocWars.MOD_ID, "perplexity"), new Perplexity());
+    RegistryEntry<StatusEffect> LIGHTWEIGHT = Registry.registerReference(Registries.STATUS_EFFECT, Identifier.of(SocWars.MOD_ID, "lightweight"), new Perplexity());
 }

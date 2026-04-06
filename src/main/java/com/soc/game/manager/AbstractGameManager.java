@@ -54,7 +54,7 @@ import java.util.stream.Collectors;
 import static com.soc.lib.SocWarsLib.*;
 
 public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE extends BaseTable, EVENT extends AbstractGameManager<?, ?, ?>> {
-    public static final int KILLZONE_Y_OFFSET = -25;
+    public static final int KILLZONE_Y_OFFSET = -35;
 
     private final int gameId;
 
@@ -325,7 +325,11 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         return this.teams.entries().stream().filter(entry -> entry.getValue().equals(uuid)).findAny().map(Map.Entry::getKey).orElse(null);
     }
 
-    public final BlockPos getSpawnPosition(ServerPlayerEntity player) {
+    public Optional<BlockPos> getSpawnPosition(DyeColor team) {
+        return this.map.getSpawnPosition(team);
+    }
+
+    public BlockPos getSpawnPosition(ServerPlayerEntity player) {
         return this.map.getSpawnPosition(this.getTeam(player)).orElseGet(() -> {
             player.sendMessage(Text.literal("Liam screwed up somewhere and your spawn position did not exist\nGet sent to (0, 0, 0) idiot"));
 
@@ -333,7 +337,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         });
     }
 
-    protected void broadcast(Text text, final boolean overlay) {
+    public void broadcast(Text text, final boolean overlay) {
         this.getPlayers().forEach(player -> player.sendMessage(text, overlay));
     }
 
@@ -530,5 +534,9 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
             damage = pos -> def;
         }
         return damage;
+    }
+
+    public World getWorld() {
+        return this.world;
     }
 }

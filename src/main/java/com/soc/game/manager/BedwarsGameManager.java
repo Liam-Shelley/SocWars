@@ -1,7 +1,6 @@
 package com.soc.game.manager;
 
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
+import com.google.common.collect.*;
 import com.soc.database.stats.BedwarsTable;
 import com.soc.game.manager.bedwars.BedwarsShopContents;
 import com.soc.game.manager.bedwars.PlayerStats;
@@ -383,8 +382,12 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
             if (!stats.hasActiveTrap()) return;
 
             final Vec3d pos = this.map.getBedPosition(team).toCenterPos();
-            final List<ServerPlayerEntity> enemiesInRange = this.getPlayers().stream().filter(player -> this.getTeam(player) != team && player.getPos().isInRange(pos, TRAP_DETECTION_RANGE)).toList();
-            if(!enemiesInRange.isEmpty()) stats.onPlayerInTrapRange(this, pos, enemiesInRange, this.world);
+            final Multimap<DyeColor, ServerPlayerEntity> enemiesInRange = this.getPlayers()
+                    .stream()
+                    .filter(player -> this.getTeam(player) != team && player.getPos().isInRange(pos, TRAP_DETECTION_RANGE))
+                    .collect(Multimaps.toMultimap(this::getTeam, Function.identity(), HashMultimap::create));
+
+            if(!enemiesInRange.isEmpty()) stats.onPlayerInTrapRange(pos, this, enemiesInRange);
         });
     }
 

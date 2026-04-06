@@ -21,6 +21,7 @@
     "GetItemSettingsComponent",
     "GetItemSettingsComponentsMap",
     "HungerTweaks",
+    "LightweightKnockbackModifier",
     "LivingEntityAttributesMixin",
     "ModifyAppliedDamageMixin",
     "MostRecentDamage",

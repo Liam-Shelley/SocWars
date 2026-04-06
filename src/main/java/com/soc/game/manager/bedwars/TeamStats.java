@@ -1,5 +1,6 @@
 package com.soc.game.manager.bedwars;
 
+import com.google.common.collect.Multimap;
 import com.soc.game.manager.AbstractGameManager;
 import com.soc.game.manager.bedwars.tickfunctions.AbstractTickFunction;
 import com.soc.game.manager.bedwars.traps.AbstractTrap;
@@ -10,6 +11,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -65,8 +67,8 @@ public class TeamStats {
         return this.trapManager.hasActiveTrap();
     }
 
-    public void onPlayerInTrapRange(AbstractGameManager<?, ?, ?> manager, Vec3d pos, List<ServerPlayerEntity> players, World world) {
-        this.trapManager.trigger(manager, pos, players, world);
+    public void onPlayerInTrapRange(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Multimap<DyeColor, ServerPlayerEntity> enemiesInRange) {
+        this.trapManager.trigger(pos, manager, enemiesInRange, team);
     }
 
     public BedwarsShopContents getShopContents() {

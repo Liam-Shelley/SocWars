@@ -58,7 +58,6 @@ public class JetShoppingTrolleyEntity extends Entity implements AllowsDismount {
             world.addParticleClient(ParticleTypes.LARGE_SMOKE, centreEnginePosition.x + xOffset, centreEnginePosition.y, centreEnginePosition.z + zOffset, -0.4 * this.getVelocity().x, -0.4 * this.getVelocity().y, -0.4 * this.getVelocity().z);
         }
 
-
         if (this.age >= 7 * 20) {
             this.discard();
         }

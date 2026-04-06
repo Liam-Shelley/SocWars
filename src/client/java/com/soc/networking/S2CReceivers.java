@@ -4,17 +4,16 @@ import com.soc.game.BedwarsTeamsHUD;
 import com.soc.game.BlockProtectionManager;
 import com.soc.lib.Coroutine;
 import com.soc.lib.Coroutines;
-import com.soc.mixin.client.GetLoadedModelGroups;
+import com.soc.lib.Events;
+import com.soc.mixin.client.GetOptionsVolumes;
 import com.soc.networking.s2c.*;
 import com.soc.networking.s2c.bedwars.*;
 import com.soc.player.PlayerDataManager;
 import com.soc.screenhandler.BedwarsIndividualShopScreenHandler;
 import com.soc.screenhandler.BedwarsTeamShopScreenHandler;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.option.SimpleOption;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
@@ -130,7 +129,17 @@ public class S2CReceivers {
         ClientPlayNetworking.registerGlobalReceiver(JumpscarePayload.ID, ((payload, context) -> {
              context.player().sendMessage(Text.of("Boo!"), false);
 
+            //TODO: Write the jumpscare code
+        }));
+        ClientPlayNetworking.registerGlobalReceiver(SilencePayload.ID, ((payload, context) -> {
+            final SimpleOption<Double> masterVolume = ((GetOptionsVolumes)MinecraftClient.getInstance().options).getSoundVolumeLevels().get(SoundCategory.MASTER);
+            final Double startingVolume = masterVolume.getValue();
+            if (startingVolume < 10e-5d) return;
 
+            masterVolume.setValue(0d);
+            Events.getInstance().scheduleEvent(() -> {
+                if (masterVolume.getValue() < 10e-5d) masterVolume.setValue(startingVolume);
+            }, payload.time());
         }));
     }
 }

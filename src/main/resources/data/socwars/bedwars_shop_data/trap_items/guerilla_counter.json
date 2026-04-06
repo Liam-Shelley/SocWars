@@ -1,0 +1,6 @@
+{
+  "cost": {
+    "diamonds": 5
+  },
+  "trap": "socwars:guerilla_counter"
+}

@@ -113,7 +113,7 @@ public abstract class AbstractGameMap {
         });
     }
 
-    public final Optional<BlockPos> getSpawnPosition(DyeColor team) {
+    public Optional<BlockPos> getSpawnPosition(DyeColor team) {
         final List<BlockPos> positions = new ArrayList<>(this.spawnPositions.get(team));
         if (positions.isEmpty()) return Optional.empty();
 

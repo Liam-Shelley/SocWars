@@ -4,63 +4,52 @@
       "x": 0,
       "y": 0,
       "options": [
-        "socwars:bedwars_shop_data/trap_items/mining_fatigue"
+        "socwars:bedwars_shop_data/trap_items/blindness",
+        "socwars:bedwars_shop_data/trap_items/clear_effects",
+        "socwars:bedwars_shop_data/trap_items/silence"
       ]
     },
     {
       "x": 1,
-      "y": 0,
+      "y": 1,
       "options": [
-        "socwars:bedwars_shop_data/trap_items/blindness"
+        "socwars:bedwars_shop_data/trap_items/switcheroo",
+        "socwars:bedwars_shop_data/trap_items/return_to_base",
+        "socwars:bedwars_shop_data/trap_items/attacker_swap"
       ]
     },
     {
       "x": 2,
       "y": 0,
       "options": [
-        "socwars:bedwars_shop_data/trap_items/clear_effects"
+        "socwars:bedwars_shop_data/trap_items/launch",
+        "socwars:bedwars_shop_data/trap_items/speed",
+        "socwars:bedwars_shop_data/trap_items/lightweight"
       ]
     },
     {
       "x": 3,
-      "y": 0,
+      "y": 1,
       "options": [
-        "socwars:bedwars_shop_data/trap_items/launch"
+        "socwars:bedwars_shop_data/trap_items/postura",
+        "socwars:bedwars_shop_data/trap_items/jumpscare",
+        "socwars:bedwars_shop_data/trap_items/raid_siren"
       ]
     },
     {
       "x": 4,
       "y": 0,
       "options": [
-        "socwars:bedwars_shop_data/trap_items/glowing"
+        "socwars:bedwars_shop_data/trap_items/guerilla_counter",
+        "socwars:bedwars_shop_data/trap_items/glowing",
+        "socwars:bedwars_shop_data/trap_items/enlargement"
       ]
     },
     {
       "x": 5,
-      "y": 0,
-      "options": [
-        "socwars:bedwars_shop_data/trap_items/jumpscare"
-      ]
-    },
-    {
-      "x": 0,
       "y": 1,
       "options": [
-        "socwars:bedwars_shop_data/trap_items/postura"
-      ]
-    },
-    {
-      "x": 1,
-      "y": 1,
-      "options": [
-        "socwars:bedwars_shop_data/trap_items/switcheroo"
-      ]
-    },
-    {
-      "x": 4,
-      "y": 1,
-      "options": [
-        "socwars:bedwars_shop_data/trap_items/enlargement",
+        "socwars:bedwars_shop_data/trap_items/mining_fatigue",
         "socwars:bedwars_shop_data/trap_items/perplexity",
         "socwars:bedwars_shop_data/trap_items/shuffle"
       ]

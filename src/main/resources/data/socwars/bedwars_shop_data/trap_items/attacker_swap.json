@@ -1,0 +1,6 @@
+{
+  "cost": {
+    "diamonds": 3
+  },
+  "trap": "socwars:attacker_swap"
+}

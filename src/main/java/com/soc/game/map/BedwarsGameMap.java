@@ -145,8 +145,8 @@ public class BedwarsGameMap extends AbstractGameMap {
         return islandGens.stream().collect(Multimaps.toMultimap(
                 genPos -> teams.stream().filter(spawn -> genPos.getSquaredDistance(spawn.pos()) < 9).findAny().map(spawn -> DyeColourWithEmpty.fromDyeColour(spawn.dyeColour())).orElse(DyeColourWithEmpty.EMPTY),
                 genPos -> new IslandGenerator(world, genPos),
-                MultimapBuilder.treeKeys().arrayListValues()::build)
-        );
+                MultimapBuilder.treeKeys().arrayListValues()::build
+        ));
     }
 
     @Override

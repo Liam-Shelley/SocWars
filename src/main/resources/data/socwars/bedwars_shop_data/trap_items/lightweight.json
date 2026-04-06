@@ -1,0 +1,6 @@
+{
+  "cost": {
+    "diamonds": 2
+  },
+  "trap": "socwars:lightweight"
+}

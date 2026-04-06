@@ -1,5 +1,6 @@
 package com.soc.game.manager.bedwars.traps;
 
+import com.google.common.collect.Multimap;
 import com.soc.game.manager.AbstractGameManager;
 import com.soc.game.manager.bedwars.BedwarsShopCategory;
 import com.soc.game.manager.bedwars.shopitems.ShopItem;
@@ -11,6 +12,7 @@ import net.minecraft.network.packet.s2c.play.SubtitleS2CPacket;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -44,14 +46,13 @@ public class TrapManager {
         return !this.traps.isEmpty() && this.nextTrapTriggerTime < this.world.getTime();
     }
 
-    public void trigger(AbstractGameManager<?, ?, ?> manager, Vec3d pos, List<ServerPlayerEntity> players, World world) {
+    public void trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Multimap<DyeColor, ServerPlayerEntity> enemiesInRange, DyeColor team) {
         final AbstractTrap trap = this.traps.remove();
-        final List<ServerPlayerEntity> team = mapUuidsToPlayers(this.world, this.team);
 
-        trap.trigger(pos, team, players, world);
-        final Text teamsText = players.stream().map(manager::getTeam).distinct().map(SocWarsLib::colouredTextFromColour).reduce((a, b) -> a.append(", ").append(b)).get();
+        trap.trigger(pos, manager, enemiesInRange, team);
+        final Text teamsText = enemiesInRange.keySet().stream().distinct().map(SocWarsLib::colouredTextFromColour).reduce((a, b) -> a.append(", ").append(b)).get();
 
-        team.forEach(player -> {
+        manager.getPlayers(team).forEach(player -> {
             ServerPlayNetworking.send(player, new UseTrapPayload(this.world.getTime() + trap.getCooldownTime(), trap.getCooldownTime(), false));
 
             player.networkHandler.sendPacket(new TitleS2CPacket(Text.translatable("game.bedwars.trap_triggered.title")));
@@ -62,12 +63,11 @@ public class TrapManager {
         this.currentTrapDuration = trap.getCooldownTime();
     }
 
-    private void triggerAbility(Vec3d pos, List<ServerPlayerEntity> players) {
+    private void triggerAbility(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Multimap<DyeColor, ServerPlayerEntity> enemiesInRange, DyeColor team) {
         final AbstractTrap ability = this.traps.remove();
-        final List<ServerPlayerEntity> team = mapUuidsToPlayers(this.world, this.team);
 
-        ability.trigger(pos, team, players, world);
-        //team.forEach(player -> ServerPlayNetworking.send(player, new UseAbilityPayload(this.world.getTime() + ability.getCooldownTime(), ability.getCooldownTime())));
+        ability.trigger(pos, manager, enemiesInRange, team);
+        //manager.getPlayers(team).forEach(player -> ServerPlayNetworking.send(player, new UseAbilityPayload(this.world.getTime() + ability.getCooldownTime(), ability.getCooldownTime())));
 
         this.nextAbilityTriggerTime = this.world.getTime() + ability.getCooldownTime();
         this.currentAbilityDuration = ability.getCooldownTime();

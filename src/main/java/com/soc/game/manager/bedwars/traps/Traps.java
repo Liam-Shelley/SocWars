@@ -24,5 +24,6 @@ public interface Traps {
 
     static void initialise() {
         SimpleTriggerTrap.initialise();
+        AdvancedTriggerTrap.initialise();
     }
 }

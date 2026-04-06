@@ -20,10 +20,13 @@ public class Events {
     public static void initialise() {
         final Events instance = getInstance();
         ServerLifecycleEvents.SERVER_STARTED.register(server -> instance.world = server.getOverworld());
-        ServerTickEvents.START_SERVER_TICK.register(server -> instance.tryRunEvents());
+
+        ServerTickEvents.START_SERVER_TICK.register(server -> {
+            if (!server.getTickManager().isFrozen()) instance.tryRunEvents();
+        });
     }
 
-    private void tryRunEvents() {
+    public void tryRunEvents() {
         while (!this.events.isEmpty() && this.events.getFirst().time() <= this.world.getTime()) {
             this.events.removeFirst().run();
         }
