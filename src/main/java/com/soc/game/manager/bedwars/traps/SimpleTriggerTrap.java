@@ -76,7 +76,7 @@ public class SimpleTriggerTrap extends AbstractTrap {
     }
 
     @Override
-    protected void trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Multimap<DyeColor, ServerPlayerEntity> enemies, DyeColor team) {
+    public void trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Multimap<DyeColor, ServerPlayerEntity> enemies, DyeColor team) {
         enemies.values().forEach(this.enemyTriggerFunction);
     }
 }

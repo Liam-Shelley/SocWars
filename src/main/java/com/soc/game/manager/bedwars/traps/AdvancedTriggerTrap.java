@@ -65,11 +65,11 @@ public class AdvancedTriggerTrap extends AbstractTrap {
     }
 
     @Override
-    protected void trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Multimap<DyeColor, ServerPlayerEntity> enemies, DyeColor team) {
+    public void trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Multimap<DyeColor, ServerPlayerEntity> enemies, DyeColor team) {
         this.triggerFunction.trigger(pos, manager, enemies, team);
     }
 
-    private static void swapPositions(ServerPlayerEntity a, ServerPlayerEntity b) {
+    private static void swapPositions(ServerPlayerEntity a, ServerPlayerEntity b) { //Could pull this to a lib class. I should probably also split up my SocwarsLib class because it's gross atm
         final Vec3d aPos = a.getPos(); //This should be fine since setPos assigns a new Vec3d to pos rather that mutating pos itself but what do I know I'm just a stupid idiot progammer
         final Vec3d bPos = b.getPos();
         a.requestTeleport(bPos.x, bPos.y, bPos.z);
