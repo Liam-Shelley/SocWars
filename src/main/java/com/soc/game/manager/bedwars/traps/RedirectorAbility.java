@@ -1,5 +1,6 @@
 package com.soc.game.manager.bedwars.traps;
 
+import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import com.soc.game.manager.AbstractGameManager;
 import net.minecraft.item.ItemStack;
@@ -11,12 +12,30 @@ import net.minecraft.util.math.Vec3d;
 import static com.soc.game.manager.bedwars.traps.Abilities.register;
 
 public class RedirectorAbility extends AbstractAbility {
+    public interface TriggerFunction {
+        boolean trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Multimap<DyeColor, ServerPlayerEntity> enemies, DyeColor team, TrapTriggerFunction trapTriggerFunction);
+    }
+
     public static void initialise() {}
 
-    public static final AbstractAbility DISGUISE = register(new RedirectorAbility("lightweight", Items.FEATHER.getDefaultStack(), 8 * 20)); //Trigger as normal no alert
+    public static final AbstractAbility DISGUISE = register(new RedirectorAbility("disguise", Items.OAK_LEAVES.getDefaultStack(), 15 * 20, ((pos, manager, enemies, team, trapTriggerFunction) -> {
+        trapTriggerFunction.trigger(pos, manager, enemies, team);
+        return false;
+    })));
+    public static final AbstractAbility RESISTANCE = register(new RedirectorAbility("resistance", Items.SHIELD.getDefaultStack(), 20 * 20, ((pos, manager, enemies, team, trapTriggerFunction) -> {
+        trapTriggerFunction.trigger(pos, manager, ImmutableMultimap.of(), team);
+        return true;
+    })));
+    public static final AbstractAbility UNO_REVERSE_CARD = register(new RedirectorAbility("uno_reverse_card", Items.SHIELD.getDefaultStack(), 20 * 20, ((pos, manager, enemies, team, trapTriggerFunction) -> {
+        
+        return true;
+    })));
 
-    public RedirectorAbility(String id, ItemStack icon, int time) {
+    private final TriggerFunction triggerFunction;
+
+    public RedirectorAbility(String id, ItemStack icon, int time, TriggerFunction triggerFunction) {
         super(id, icon, time, TriggerReason.TRAP_RESPONSE);
+        this.triggerFunction = triggerFunction;
     }
 
     @Override
