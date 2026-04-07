@@ -25,11 +25,9 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import static com.soc.lib.SocWarsLib.resetScale;
 import static com.soc.lib.SocWarsLib.scaleEntity;
@@ -78,7 +76,7 @@ public class SimpleTriggerTrap extends AbstractTrap {
     }
 
     @Override
-    public void trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Multimap<DyeColor, ServerPlayerEntity> enemies, DyeColor team) {
+    protected void trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Multimap<DyeColor, ServerPlayerEntity> enemies, DyeColor team) {
         enemies.values().forEach(this.enemyTriggerFunction);
     }
 }

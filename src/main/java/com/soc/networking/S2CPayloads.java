@@ -16,7 +16,7 @@ public class S2CPayloads {
         PayloadTypeRegistry.playS2C().register(BedwarsIndividualShopDataPayload.ID, BedwarsIndividualShopDataPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(BedwarsTeamShopDataPayload.ID, BedwarsTeamShopDataPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(UpdateHotbarPayload.ID, UpdateHotbarPayload.CODEC);
-        PayloadTypeRegistry.playS2C().register(UseTrapPayload.ID, UseTrapPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(UseTrapOrAbilityPayload.ID, UseTrapOrAbilityPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(SmokescreenPayload.ID, SmokescreenPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(BatchParticlePayload.ID, BatchParticlePayload.CODEC);
         PayloadTypeRegistry.playS2C().register(BlockProtectionPayload.ID, BlockProtectionPayload.CODEC);

@@ -8,6 +8,7 @@ import com.soc.effects.util.ModEffects;
 import com.soc.entities.util.ModEntities;
 import com.soc.events.ModEvents;
 import com.soc.game.manager.GamesManager;
+import com.soc.game.manager.bedwars.traps.Abilities;
 import com.soc.game.manager.bedwars.shopitems.*;
 import com.soc.game.manager.bedwars.tickfunctions.TickFunctions;
 import com.soc.game.manager.bedwars.traps.Traps;
@@ -76,6 +77,7 @@ public class SocWars implements ModInitializer {
 		TickFunctionUpgradeItem.initialise();
 
 		Traps.initialise();
+		Abilities.initialise();
 		TickFunctions.initialise();
 
 		Database.initialise();

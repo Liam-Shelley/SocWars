@@ -65,7 +65,7 @@ public class AdvancedTriggerTrap extends AbstractTrap {
     }
 
     @Override
-    public void trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Multimap<DyeColor, ServerPlayerEntity> enemies, DyeColor team) {
+    protected void trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Multimap<DyeColor, ServerPlayerEntity> enemies, DyeColor team) {
         this.triggerFunction.trigger(pos, manager, enemies, team);
     }
 

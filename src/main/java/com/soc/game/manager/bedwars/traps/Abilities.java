@@ -1,0 +1,26 @@
+package com.soc.game.manager.bedwars.traps;
+
+import com.mojang.serialization.Lifecycle;
+import com.soc.SocWars;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.SimpleRegistry;
+import net.minecraft.util.Identifier;
+
+public interface Abilities {
+    RegistryKey<Registry<AbstractAbility>> REGISTRY_KEY = RegistryKey.ofRegistry(Identifier.of(SocWars.MOD_ID, "abilities"));
+    Registry<AbstractAbility> REGISTRY = new SimpleRegistry<>(REGISTRY_KEY, Lifecycle.stable());
+
+    static <T extends AbstractAbility> T register(T trap) {
+        return Registry.register(REGISTRY, trap.getId(), trap);
+    }
+
+    static AbstractAbility getOrThrow(Identifier id) {
+        if(!REGISTRY.containsId(id)) throw new IllegalStateException("No ability registered on the client for id: " + id + ". Possible registry mismatch?");
+        return REGISTRY.get(id);
+    }
+
+    static void initialise() {
+
+    }
+}

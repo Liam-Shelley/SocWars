@@ -82,7 +82,7 @@ public class S2CReceivers {
                 screenHandler.setStackInSlot(i + 36, payload.revision(), contents.get(i));
             }
         });
-        ClientPlayNetworking.registerGlobalReceiver(UseTrapPayload.ID, (payload, context) -> {
+        ClientPlayNetworking.registerGlobalReceiver(UseTrapOrAbilityPayload.ID, (payload, context) -> {
             final ScreenHandler screenHandler = context.player().currentScreenHandler;
             if (screenHandler instanceof BedwarsTeamShopScreenHandler shopScreenHandler) {
                 if (payload.isAbility()) {

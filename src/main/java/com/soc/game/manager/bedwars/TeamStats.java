@@ -3,6 +3,7 @@ package com.soc.game.manager.bedwars;
 import com.google.common.collect.Multimap;
 import com.soc.game.manager.AbstractGameManager;
 import com.soc.game.manager.bedwars.tickfunctions.AbstractTickFunction;
+import com.soc.game.manager.bedwars.traps.AbstractAbility;
 import com.soc.game.manager.bedwars.traps.AbstractTrap;
 import com.soc.game.manager.bedwars.traps.TrapManager;
 import com.soc.resourcedata.containers.BedwarsShopDataContainer;
@@ -11,7 +12,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -87,7 +87,7 @@ public class TeamStats {
         return success;
     }
 
-    public boolean buyAbility(AbstractTrap ability, World world) {
+    public boolean buyAbility(AbstractAbility ability, World world) {
         return this.trapManager.buyAbility(ability);
     }
 

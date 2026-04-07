@@ -12,25 +12,30 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 
-public abstract class AbstractTrap implements Triggerable, TrapTriggerFunction {
-    public static final String KEY = "trap";
+public abstract class AbstractAbility implements Triggerable {
+    public static final String KEY = "ability";
 
     private final Identifier id;
     private final ItemStack icon;
     private final int cooldownTime;
+    private final TriggerReason triggerReason;
 
-    public AbstractTrap(Identifier id, ItemStack icon, int time) {
+    public AbstractAbility(Identifier id, ItemStack icon, int time, TriggerReason triggerReason) {
         this.id = id;
         this.icon = icon;
         this.cooldownTime = time;
+        this.triggerReason = triggerReason;
     }
 
-    public AbstractTrap(String id, ItemStack icon, int time) {
-        this(Identifier.of(SocWars.MOD_ID, id), icon, time);
+    public AbstractAbility(String id, ItemStack icon, int time, TriggerReason triggerReason) {
+        this(Identifier.of(SocWars.MOD_ID, id), icon, time, triggerReason);
     }
 
-    @Override
-    public abstract void trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Multimap<DyeColor, ServerPlayerEntity> enemies, DyeColor team);
+    protected abstract void trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Multimap<DyeColor, ServerPlayerEntity> enemies, DyeColor team, TrapTriggerFunction trapTriggerFunction);
+
+    public final void trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Multimap<DyeColor, ServerPlayerEntity> enemies, DyeColor team, TriggerReason triggerReason, TrapTriggerFunction trapTriggerFunction) {
+        if (this.triggerReason == triggerReason) this.trigger(pos, manager, enemies, team, trapTriggerFunction);
+    }
 
     @Override
     public final int getCooldownTime() {
@@ -46,7 +51,7 @@ public abstract class AbstractTrap implements Triggerable, TrapTriggerFunction {
     }
 
     private String getBaseName() {
-        return "trap." + this.getId().getPath();
+        return "ability." + this.getId().getPath();
     }
 
     @Override
@@ -55,7 +60,7 @@ public abstract class AbstractTrap implements Triggerable, TrapTriggerFunction {
     }
 
     public Text getTooltip() {
-        return Text.translatable(this.getBaseName() + ".tooltip", Text.literal(String.valueOf(this.cooldownTime / 20)).formatted(Formatting.DARK_GREEN)); //this is a little gross but eh it saves me from having to remember to update the tooltip duration when I change trap durations
+        return Text.translatable(this.getBaseName() + ".tooltip", Text.literal(String.valueOf(this.cooldownTime / 20)).formatted(Formatting.DARK_GREEN));
     }
 
     @Override
@@ -63,8 +68,12 @@ public abstract class AbstractTrap implements Triggerable, TrapTriggerFunction {
         return new DisplayShopItem(this.getIcon(), this.getName(), this.getTooltip());
     }
 
+    public TriggerReason getTriggerReason() {
+        return this.triggerReason;
+    }
+
     @Override
     public boolean isAbility() {
-        return false;
+        return true;
     }
 }

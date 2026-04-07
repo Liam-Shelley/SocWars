@@ -7,6 +7,7 @@ import com.soc.game.manager.bedwars.PlayerStats;
 import com.soc.game.manager.bedwars.ShopType;
 import com.soc.game.manager.bedwars.TeamStats;
 import com.soc.game.manager.bedwars.tickfunctions.AbstractTickFunction;
+import com.soc.game.manager.bedwars.traps.AbstractAbility;
 import com.soc.game.manager.bedwars.traps.AbstractTrap;
 import com.soc.game.map.*;
 import com.soc.items.components.ModComponents;
@@ -395,7 +396,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         return this.teamStatsMap.get(this.getTeam(player)).buyTrap(trap, super.world);
     }
 
-    public boolean buyAbility(ServerPlayerEntity player, AbstractTrap ability) {
+    public boolean buyAbility(ServerPlayerEntity player, AbstractAbility ability) {
         return this.teamStatsMap.get(this.getTeam(player)).buyAbility(ability, super.world);
     }
 
