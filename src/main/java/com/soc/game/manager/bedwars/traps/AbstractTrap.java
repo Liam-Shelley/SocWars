@@ -1,6 +1,5 @@
 package com.soc.game.manager.bedwars.traps;
 
-import com.google.common.collect.Multimap;
 import com.soc.SocWars;
 import com.soc.game.manager.AbstractGameManager;
 import com.soc.game.manager.bedwars.shopitems.DisplayShopItem;
@@ -11,6 +10,8 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
+
+import java.util.Collection;
 
 public abstract class AbstractTrap implements Triggerable, TrapTriggerFunction {
     public static final String KEY = "trap";
@@ -30,7 +31,7 @@ public abstract class AbstractTrap implements Triggerable, TrapTriggerFunction {
     }
 
     @Override
-    public abstract void trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Multimap<DyeColor, ServerPlayerEntity> enemies, DyeColor team);
+    public abstract void trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Collection<ServerPlayerEntity> enemies, DyeColor team);
 
     @Override
     public final int getCooldownTime() {

@@ -382,6 +382,8 @@
   "game.bedwars.shop.team": "Team Shop",
   "game.bedwars.trap_triggered.title": "TRAP TRIGGERED!",
   "game.bedwars.trap_triggered.subtitle": "Your %s trap was set off by %s",
+  "game.bedwars.ability_triggered.title": "ABILITY TRIGGERED!",
+  "game.bedwars.ability_triggered.subtitle": "Your %s ability was used against %s",
   "game.bedwars.broke_own_bed": "§cYou §oare§r§c on the %s§c team, silly",
   "game.warning.placed_out_of_bounds": "You placed a block out of bounds! It will disappear in 5 seconds",
   "game.warning.placed_out_of_bounds.title": "Out of bounds!",

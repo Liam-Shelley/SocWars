@@ -21,6 +21,6 @@ public interface Abilities {
     }
 
     static void initialise() {
-
+        RedirectorAbility.initialise();
     }
 }

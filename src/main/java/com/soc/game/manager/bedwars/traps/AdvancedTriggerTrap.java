@@ -1,6 +1,5 @@
 package com.soc.game.manager.bedwars.traps;
 
-import com.google.common.collect.Multimap;
 import com.soc.game.manager.AbstractGameManager;
 import com.soc.util.Sounds;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -22,39 +21,36 @@ import static com.soc.lib.SocWarsLib.colouredTextFromColour;
 
 public class AdvancedTriggerTrap extends AbstractTrap {
     public interface TriggerFunction {
-        void trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Multimap<DyeColor, ServerPlayerEntity> enemies, DyeColor team);
+        void trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Collection<ServerPlayerEntity> enemiesInRange, DyeColor owningTeam);
     }
 
     public static void initialise() {}
 
-    public static final AbstractTrap SWITCHEROO = register(new AdvancedTriggerTrap("switcheroo", Items.ENDER_PEARL.getDefaultStack(), 12 * 20, (pos, manager, enemies, team) -> {
-        enemies.keySet().forEach(enemyTeam -> {
-            final Collection<ServerPlayerEntity> enemyPlayers = manager.getPlayers(enemyTeam);
-            final List<Vec3d> positions = enemyPlayers.stream().map(ServerPlayerEntity::getPos).collect(Collectors.toList());
+    public static final AbstractTrap SWITCHEROO = register(new AdvancedTriggerTrap("switcheroo", Items.ENDER_PEARL.getDefaultStack(), 12 * 20, (pos, manager, enemiesInRange, owningTeam) -> {
+        final List<Vec3d> positions = enemiesInRange.stream().map(ServerPlayerEntity::getPos).collect(Collectors.toList());
 
-            Collections.shuffle(positions);
-            for (final ServerPlayerEntity enemy : enemyPlayers) {
-                final Vec3d position = positions.removeFirst();
-                enemy.requestTeleport(position.x, position.y, position.z);
-            }
-        });
-    }));
-    public static final AbstractTrap RETURN_TO_BASE = register(new AdvancedTriggerTrap("return_to_base", Items.RED_BED.getDefaultStack(), 8 * 20, (pos, manager, enemies, team) -> {
-        manager.getSpawnPosition(team).map(BlockPos::toCenterPos).ifPresent(spawnPos -> manager.getPlayers(team).forEach(player -> player.requestTeleport(spawnPos.x, spawnPos.y, spawnPos.z)));
-    }));
-    public static final AbstractTrap GUERILLA_COUNTER = register(new AdvancedTriggerTrap("guerilla_counter", Items.JUNGLE_SAPLING.getDefaultStack(), 10 * 20, (pos, manager, enemies, team) -> {
-        manager.getPlayers(team).forEach(player -> player.addStatusEffect(new StatusEffectInstance(StatusEffects.INVISIBILITY, player.getPos().isInRange(pos, 30) ? 10 * 20 : 5 * 20, 0, false, false)));
-    }));
-    public static final AbstractTrap ATTACKER_SWAP = register(new AdvancedTriggerTrap("attacker_swap", Items.CHAIN.getDefaultStack(), 6 * 20, (pos, manager, enemies, team) -> {
-        final List<ServerPlayerEntity> teamPlayers = new ArrayList<>(manager.getPlayers(team));
-        for (ServerPlayerEntity enemy : enemies.values()) {
-            if (teamPlayers.isEmpty()) return;
-            swapPositions(enemy, teamPlayers.removeFirst());
+        Collections.shuffle(positions);
+        for (final ServerPlayerEntity enemy : enemiesInRange) {
+            final Vec3d position = positions.removeFirst();
+            enemy.requestTeleport(position.x, position.y, position.z);
         }
     }));
-    public static final AbstractTrap RAID_SIREN = register(new AdvancedTriggerTrap("raid_siren", Items.SCULK_SHRIEKER.getDefaultStack(), 10 * 20, (pos, manager, enemies, team) -> {
+    public static final AbstractTrap RETURN_TO_BASE = register(new AdvancedTriggerTrap("return_to_base", Items.RED_BED.getDefaultStack(), 8 * 20, (pos, manager, enemiesInRange, owningTeam) -> {
+        manager.getSpawnPosition(owningTeam).map(BlockPos::toCenterPos).ifPresent(spawnPos -> manager.getPlayers(owningTeam).forEach(player -> player.requestTeleport(spawnPos.x, spawnPos.y, spawnPos.z)));
+    }));
+    public static final AbstractTrap GUERILLA_COUNTER = register(new AdvancedTriggerTrap("guerilla_counter", Items.JUNGLE_SAPLING.getDefaultStack(), 10 * 20, (pos, manager, enemiesInRange, owningTeam) -> {
+        manager.getPlayers(owningTeam).forEach(player -> player.addStatusEffect(new StatusEffectInstance(StatusEffects.INVISIBILITY, player.getPos().isInRange(pos, 30) ? 10 * 20 : 5 * 20, 0, false, false)));
+    }));
+    public static final AbstractTrap ATTACKER_SWAP = register(new AdvancedTriggerTrap("attacker_swap", Items.CHAIN.getDefaultStack(), 6 * 20, (pos, manager, enemiesInRange, owningTeam) -> {
+        final List<ServerPlayerEntity> teamPlayers = new ArrayList<>(manager.getPlayers(owningTeam));
+        for (ServerPlayerEntity enemy : enemiesInRange) {
+            if (teamPlayers.isEmpty()) return;
+            swapPositions(enemy, teamPlayers.removeFirst()); //May have to refine this to work better based on the whole
+        }
+    }));
+    public static final AbstractTrap RAID_SIREN = register(new AdvancedTriggerTrap("raid_siren", Items.SCULK_SHRIEKER.getDefaultStack(), 10 * 20, (pos, manager, enemiesInRange, owningTeam) -> {
         manager.getWorld().playSound(null, pos.x, pos.y, pos.z, Sounds.NUCLEAR_SIREN, SoundCategory.MASTER, 10f, 1f);
-        manager.broadcast(Text.translatable("game.bedwars.raid_siren_activated", colouredTextFromColour(team)), false);
+        manager.broadcast(Text.translatable("game.bedwars.raid_siren_activated", colouredTextFromColour(owningTeam)), false);
     }));
 
     final TriggerFunction triggerFunction;
@@ -65,7 +61,7 @@ public class AdvancedTriggerTrap extends AbstractTrap {
     }
 
     @Override
-    public void trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Multimap<DyeColor, ServerPlayerEntity> enemies, DyeColor team) {
+    public void trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Collection<ServerPlayerEntity> enemies, DyeColor team) {
         this.triggerFunction.trigger(pos, manager, enemies, team);
     }
 

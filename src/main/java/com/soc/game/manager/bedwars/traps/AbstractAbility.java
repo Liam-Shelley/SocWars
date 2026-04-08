@@ -12,6 +12,8 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 
+import java.util.Collection;
+
 public abstract class AbstractAbility implements Triggerable {
     public static final String KEY = "ability";
 
@@ -31,10 +33,10 @@ public abstract class AbstractAbility implements Triggerable {
         this(Identifier.of(SocWars.MOD_ID, id), icon, time, triggerReason);
     }
 
-    protected abstract boolean trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Multimap<DyeColor, ServerPlayerEntity> enemies, DyeColor team, TrapTriggerFunction trapTriggerFunction);
+    protected abstract boolean trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Collection<ServerPlayerEntity> enemiesInRange, DyeColor team, TrapTriggerFunction trapTriggerFunction);
 
-    public final void trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Multimap<DyeColor, ServerPlayerEntity> enemies, DyeColor team, TriggerReason triggerReason, TrapTriggerFunction trapTriggerFunction) {
-        if (this.triggerReason == triggerReason) this.trigger(pos, manager, enemies, team, trapTriggerFunction);
+    public final void trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Collection<ServerPlayerEntity> enemiesInRange, DyeColor team, TriggerReason triggerReason, TrapTriggerFunction trapTriggerFunction) {
+        if (this.triggerReason == triggerReason) this.trigger(pos, manager, enemiesInRange, team, trapTriggerFunction);
     }
 
     @Override

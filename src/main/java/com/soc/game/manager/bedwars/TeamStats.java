@@ -34,7 +34,7 @@ public class TeamStats {
     public TeamStats(DyeColor team, Collection<PlayerStats> playerStatsCollection, World world, long shopSeed, Collection<BlockPos> spawnPositions) {
         this.team = team;
         this.playerStatsMap = playerStatsCollection.stream().collect(PlayerStats.MAP_COLLECTOR);
-        this.trapManager = new TrapManager(this.playerStatsMap.keySet(), world);
+        this.trapManager = new TrapManager(this.playerStatsMap.keySet(), team, world);
         this.tickFunctions = new Object2IntOpenHashMap<>();
         this.spawnPositions = spawnPositions.stream().map(BlockPos::toCenterPos).toList();
         this.teamShopContents = BedwarsShopDataContainer.INSTANCE.getTeamBedwarsShop(shopSeed, team, world);
@@ -114,6 +114,10 @@ public class TeamStats {
                 });
             }
         }
+    }
+
+    public TrapManager getTrapManager() {
+        return this.trapManager;
     }
 
     //Goddamn this stupid visual bug

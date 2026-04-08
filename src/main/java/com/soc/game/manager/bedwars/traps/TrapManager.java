@@ -2,6 +2,7 @@ package com.soc.game.manager.bedwars.traps;
 
 import com.google.common.collect.Multimap;
 import com.soc.game.manager.AbstractGameManager;
+import com.soc.game.manager.TrapGame;
 import com.soc.game.manager.bedwars.BedwarsShopCategory;
 import com.soc.game.manager.bedwars.shopitems.ShopItem;
 import com.soc.game.manager.bedwars.shopitems.SimpleShopItem;
@@ -25,6 +26,7 @@ public class TrapManager {
     public static final int ABILITY_CAPACITY = 3;
 
     private final Set<UUID> team;
+    private final DyeColor teamColour;
     private final World world;
 
     private final Queue<AbstractTrap> traps = new LinkedList<>();
@@ -34,10 +36,16 @@ public class TrapManager {
     private long nextAbilityTriggerTime;
     private int currentAbilityDuration;
 
-    public TrapManager(Set<UUID> players, World world) {
+    public TrapManager(Set<UUID> players, DyeColor teamColour, World world) {
         this.team = players;
+        this.teamColour = teamColour;
         this.world = world;
         this.nextTrapTriggerTime = world.getTime();
+
+        abilities.add(RedirectorAbility.DISGUISE);
+        abilities.add(RedirectorAbility.RESISTANCE);
+        abilities.add(RedirectorAbility.DISGUISE);
+        abilities.add(RedirectorAbility.RESISTANCE);
     }
 
     public boolean hasActiveTrap() {
@@ -48,39 +56,53 @@ public class TrapManager {
         return !this.abilities.isEmpty() && this.abilities.peek().getTriggerReason() == reason && this.nextAbilityTriggerTime < this.world.getTime();
     }
 
-    public void trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Multimap<DyeColor, ServerPlayerEntity> enemiesInRange, DyeColor team) { //Eventually consolidate the two methods
-        final AbstractTrap trap = this.traps.remove();
+    public void trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Multimap<DyeColor, ServerPlayerEntity> enemiesInRange, DyeColor owningTeam) {
+        if (manager instanceof TrapGame trapGame) {
+            final AbstractTrap trap = this.traps.remove();
 
-        if (this.hasActiveAbility(TriggerReason.TRAP_RESPONSE)) {
-            final boolean alert = this.triggerAbility(pos, manager, enemiesInRange, team, trap); //I probably need to return something to handle whether I actually send packets and whatnot
-            this.sendUsePackets(manager, enemiesInRange, team, trap, alert);
-        } else {
-            trap.trigger(pos, manager, enemiesInRange, team);
-            this.sendUsePackets(manager, enemiesInRange, team, trap, true);
+            final Set<DyeColor> alertingTeams = new HashSet<>();
+
+            enemiesInRange.keySet().forEach(enemyTeam -> {
+                if (trapGame.getTrapManager(enemyTeam).receiveTrap(pos, manager, manager.getPlayers(enemyTeam), owningTeam, trap)) {
+                    alertingTeams.add(enemyTeam);
+                }
+            });
+
+            this.sendUsePackets(manager, alertingTeams, owningTeam, trap);
+
+            this.nextTrapTriggerTime = this.world.getTime() + trap.getCooldownTime();
+            this.currentTrapDuration = trap.getCooldownTime();
         }
-        this.nextTrapTriggerTime = this.world.getTime() + trap.getCooldownTime();
-        this.currentTrapDuration = trap.getCooldownTime();
     }
 
-    public boolean triggerAbility(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Multimap<DyeColor, ServerPlayerEntity> enemiesInRange, DyeColor team, TrapTriggerFunction trapTriggerFunction) {
+    public boolean receiveTrap(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Collection<ServerPlayerEntity> enemiesInRange, DyeColor owningTeam, AbstractTrap trap) {
+        if (this.hasActiveAbility(TriggerReason.TRAP_RESPONSE)) {
+            return this.triggerAbility(pos, manager, enemiesInRange, owningTeam, trap);
+        } else {
+            trap.trigger(pos, manager, enemiesInRange, owningTeam);
+            return true;
+        }
+    }
+
+    public boolean triggerAbility(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Collection<ServerPlayerEntity> enemiesInRange, DyeColor owningTeam, TrapTriggerFunction trapTriggerFunction) {
         final AbstractAbility ability = this.abilities.remove();
 
-        this.sendUsePackets(manager, enemiesInRange, team, ability, true);
+        this.sendUsePackets(manager, Set.of(owningTeam), this.teamColour, ability);
 
         this.nextAbilityTriggerTime = this.world.getTime() + ability.getCooldownTime();
         this.currentAbilityDuration = ability.getCooldownTime();
 
-        return ability.trigger(pos, manager, enemiesInRange, team, this.traps.poll());
+        return ability.trigger(pos, manager, enemiesInRange, owningTeam, trapTriggerFunction);
     }
 
-    private void sendUsePackets(AbstractGameManager<?, ?, ?> manager, Multimap<DyeColor, ServerPlayerEntity> enemiesInRange, DyeColor team, Triggerable triggerable, boolean alert) {
+    private void sendUsePackets(AbstractGameManager<?, ?, ?> manager, Set<DyeColor> alertingTeams, DyeColor owningTeam, Triggerable triggerable) {
         final String titleKey = triggerable.isAbility() ? "ability" : "trap";
 
-        final Text teamsText = getEnemiesInRangeText(enemiesInRange);
-        manager.getPlayers(team).forEach(player -> {
+        final Text teamsText = getEnemiesInRangeText(alertingTeams);
+        manager.getPlayers(owningTeam).forEach(player -> {
             ServerPlayNetworking.send(player, new UseTrapOrAbilityPayload(this.world.getTime() + triggerable.getCooldownTime(), triggerable.getCooldownTime(), triggerable.isAbility()));
 
-            if (alert) {
+            if (!alertingTeams.isEmpty()) {
                 player.networkHandler.sendPacket(new TitleS2CPacket(Text.translatable("game.bedwars." + titleKey + "_triggered.title"))); //Cache these before the loop? //Yeah I really don't need to do that
                 player.networkHandler.sendPacket(new SubtitleS2CPacket(Text.translatable("game.bedwars." + titleKey + "_triggered.subtitle", triggerable.getName(), teamsText)));
             }
@@ -126,7 +148,7 @@ public class TrapManager {
         return new BedwarsShopCategory(displayItems);
     }
 
-    private static Text getEnemiesInRangeText(Multimap<DyeColor, ServerPlayerEntity> enemiesInRange) {
-        return enemiesInRange.keySet().stream().distinct().map(SocWarsLib::colouredTextFromColour).reduce((a, b) -> a.append(", ").append(b)).get();
+    private static Text getEnemiesInRangeText(Set<DyeColor> alertingTeams) {
+        return alertingTeams.stream().map(SocWarsLib::colouredTextFromColour).reduce((a, b) -> a.append(", ").append(b)).get();
     }
 }

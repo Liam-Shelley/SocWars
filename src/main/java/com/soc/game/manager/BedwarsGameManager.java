@@ -9,6 +9,7 @@ import com.soc.game.manager.bedwars.TeamStats;
 import com.soc.game.manager.bedwars.tickfunctions.AbstractTickFunction;
 import com.soc.game.manager.bedwars.traps.AbstractAbility;
 import com.soc.game.manager.bedwars.traps.AbstractTrap;
+import com.soc.game.manager.bedwars.traps.TrapManager;
 import com.soc.game.map.*;
 import com.soc.items.components.ModComponents;
 import com.soc.lib.Events;
@@ -51,7 +52,7 @@ import static com.soc.game.map.AbstractGameMap.getRandomPlayerStack;
 import static com.soc.lib.SocWarsLib.*;
 import static net.minecraft.item.Items.*;
 
-public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, BedwarsTable, BedwarsGameManager> {
+public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, BedwarsTable, BedwarsGameManager> implements TrapGame {
     protected static final Item[] RESOURCES = { IRON_INGOT, GOLD_INGOT, Items.DIAMOND, Items.EMERALD };
     protected static final Map<Item, Formatting> RESOURCE_TO_COLOUR_MAP = Map.of(
             IRON_INGOT, Formatting.GRAY,
@@ -406,5 +407,10 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
     public void buyTickFunctionUpgrade(ServerPlayerEntity player, AbstractTickFunction function, int tier) {
         this.teamStatsMap.get(this.getTeam(player)).buyTickFunctionUpgrade(function, tier);
+    }
+
+    @Override
+    public TrapManager getTrapManager(DyeColor team) {
+        return this.teamStatsMap.get(team).getTrapManager();
     }
 }

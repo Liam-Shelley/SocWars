@@ -127,6 +127,7 @@ public class BedwarsTeamShopScreenHandler extends AbstractCategoriesShopScreenHa
     }
 
     public ShopItem<?> getShopItem(final int slot) {
+        if (this.currentCategory == null) return SimpleShopItem.EMPTY;
         if (slot < this.currentCategory.size()) {
             return this.currentCategory == null ? SimpleShopItem.EMPTY : this.currentCategory.getShopItem(slot);
         } else {
