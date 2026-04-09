@@ -30,4 +30,8 @@ public record CostStack(Cost cost, ItemStack stack) {
     private Optional<ItemStack> optionalStack() {
         return this.stack.isEmpty() ? Optional.empty() : Optional.of(this.stack);
     }
+
+    public CostStack copy() {
+        return new CostStack(this.cost, this.stack.copy());
+    }
 }

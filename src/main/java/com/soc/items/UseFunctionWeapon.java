@@ -340,7 +340,7 @@ public class UseFunctionWeapon extends Item {
                 world.playSound(null, user.getX(), user.getY(), user.getZ(), Sounds.SNIPER_RIFLE_SHOT, SoundCategory.PLAYERS);
 
                 //actually technical stuff setup
-                final double maxDistance = 20d;
+                final double maxDistance = 40d;
 
                 final Vec3d eyePos = user.getEyePos();
                 final Vec3d direction = user.getRotationVector();

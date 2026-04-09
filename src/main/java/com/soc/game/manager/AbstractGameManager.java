@@ -259,6 +259,10 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         return mapUuidsToPlayers(this.world, this.teams.get(team));
     }
 
+    public final Collection<ServerPlayerEntity> getPlayers(DyeColor team, Predicate<ServerPlayerEntity> predicate) {
+        return this.getPlayers(team).stream().filter(predicate).toList();
+    }
+
     public final Collection<ServerPlayerEntity> getSpectators() {
         return mapUuidsToPlayers(this.world, this.spectators);
     }

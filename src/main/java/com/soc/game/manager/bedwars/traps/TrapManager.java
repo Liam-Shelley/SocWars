@@ -21,7 +21,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class TrapManager {
-    public static final double TRAP_DETECTION_RANGE = 8d;
+    public static final double TRAP_DETECTION_RANGE = 10d;
     public static final int TRAP_CAPACITY = 5;
     public static final int ABILITY_CAPACITY = 3;
 
@@ -42,10 +42,9 @@ public class TrapManager {
         this.world = world;
         this.nextTrapTriggerTime = world.getTime();
 
-        abilities.add(RedirectorAbility.DISGUISE);
-        abilities.add(RedirectorAbility.RESISTANCE);
-        abilities.add(RedirectorAbility.DISGUISE);
-        abilities.add(RedirectorAbility.RESISTANCE);
+        abilities.add(RedirectorAbility.UNO_REVERSE_CARD);
+        abilities.add(RedirectorAbility.UNO_REVERSE_CARD);
+        abilities.add(RedirectorAbility.UNO_REVERSE_CARD);
     }
 
     public boolean hasActiveTrap() {
@@ -149,6 +148,6 @@ public class TrapManager {
     }
 
     private static Text getEnemiesInRangeText(Set<DyeColor> alertingTeams) {
-        return alertingTeams.stream().map(SocWarsLib::colouredTextFromColour).reduce((a, b) -> a.append(", ").append(b)).get();
+        return alertingTeams.stream().map(SocWarsLib::colouredTextFromColour).reduce((a, b) -> a.append(", ").append(b)).orElse(Text.empty()); //Probably just make this return an optional
     }
 }

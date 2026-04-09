@@ -4,27 +4,21 @@ import com.google.gson.JsonObject;
 import com.soc.resourcedata.deserialisation.Cost;
 import com.soc.screenhandler.AbstractShopScreenHandler;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.ItemEnchantmentsComponent;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.equipment.trim.*;
-import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.ItemTags;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 
@@ -103,7 +97,7 @@ public class SimpleShopItem implements ShopItem<SimpleShopItem>, TooltipProvider
 
     @Override
     public SimpleShopItem lazyClone() {
-        return new SimpleShopItem(this.cost, this.stack);
+        return new SimpleShopItem(this.cost, this.stack.copy());
     }
 
     public void trim(DyeColor team, World world) {

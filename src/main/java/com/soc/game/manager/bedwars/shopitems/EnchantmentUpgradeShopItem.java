@@ -108,7 +108,7 @@ public class EnchantmentUpgradeShopItem extends TieredShopItem<EnchantmentUpgrad
 
     @Override
     public EnchantmentUpgradeShopItem lazyClone() {
-        return new EnchantmentUpgradeShopItem(this.icon, this.costs, getEnchantment(), 0);
+        return new EnchantmentUpgradeShopItem(this.icon.copy(), this.costs, this.enchantment, 0);
     }
 
     @Override

@@ -184,7 +184,7 @@ public class UpgradeableShopItem implements ShopItem<UpgradeableShopItem>, Toolt
 
     @Override
     public UpgradeableShopItem lazyClone() {
-        return new UpgradeableShopItem(this.stacks, this.downgradeOnDeath, this.retainBaseTier, 0);
+        return new UpgradeableShopItem(this.stacks.stream().map(CostStack::copy).toList(), this.downgradeOnDeath, this.retainBaseTier, 0);
     }
 
     @Override

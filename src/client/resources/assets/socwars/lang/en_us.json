@@ -432,7 +432,7 @@
   "trap.switcheroo": "Switcheroo",
   "trap.switcheroo.tooltip": "Randomly swaps the positions of §4the enemy team's§r players.\n%s§2 second §rcooldown.",
   "trap.lightweight": "Lightweight",
-  "trap.lightweight.tooltip": "Quintuples §4the enemy's§r knockback for %s§2 seconds.",
+  "trap.lightweight.tooltip": "Quintuples the knockback that §4the enemy§r takes for %s§2 seconds.",
   "trap.raid_siren": "Raid Siren",
   "trap.raid_siren.tooltip": "Raises the alarm.\n%s§2 second §rcooldown.",
   "trap.return_to_base": "Homesick",
