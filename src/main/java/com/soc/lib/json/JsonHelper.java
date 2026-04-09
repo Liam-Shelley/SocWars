@@ -10,6 +10,8 @@ import com.mojang.serialization.JsonOps;
 import com.soc.SocWars;
 import com.soc.game.manager.bedwars.tickfunctions.AbstractTickFunction;
 import com.soc.game.manager.bedwars.tickfunctions.TickFunctions;
+import com.soc.game.manager.bedwars.traps.Abilities;
+import com.soc.game.manager.bedwars.traps.AbstractAbility;
 import com.soc.game.manager.bedwars.traps.AbstractTrap;
 import com.soc.game.manager.bedwars.traps.Traps;
 import com.soc.game.map.DyeColourWithEmpty;
@@ -181,6 +183,13 @@ public class JsonHelper {
         final Identifier id = Identifier.of(element.getAsString());
 
         return Traps.REGISTRY.containsId(id) ? Traps.REGISTRY.get(id) : null; //I know that this is currently useless but I will put an empty trapitem here at some point
+    }
+
+    public static AbstractAbility getDefaultedAbility(JsonObject json, String key) {
+        final JsonElement element = json.get(key);
+        final Identifier id = Identifier.of(element.getAsString());
+
+        return Abilities.REGISTRY.containsId(id) ? Abilities.REGISTRY.get(id) : null;
     }
 
     public static AbstractTickFunction getDefaultedTickFunction(JsonObject json, String key) {

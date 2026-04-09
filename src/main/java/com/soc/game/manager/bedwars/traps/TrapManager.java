@@ -25,7 +25,6 @@ public class TrapManager {
     public static final int TRAP_CAPACITY = 5;
     public static final int ABILITY_CAPACITY = 3;
 
-    private final Set<UUID> team;
     private final DyeColor teamColour;
     private final World world;
 
@@ -36,15 +35,10 @@ public class TrapManager {
     private long nextAbilityTriggerTime;
     private int currentAbilityDuration;
 
-    public TrapManager(Set<UUID> players, DyeColor teamColour, World world) {
-        this.team = players;
+    public TrapManager(DyeColor teamColour, World world) {
         this.teamColour = teamColour;
         this.world = world;
         this.nextTrapTriggerTime = world.getTime();
-
-        abilities.add(RedirectorAbility.UNO_REVERSE_CARD);
-        abilities.add(RedirectorAbility.UNO_REVERSE_CARD);
-        abilities.add(RedirectorAbility.UNO_REVERSE_CARD);
     }
 
     public boolean hasActiveTrap() {

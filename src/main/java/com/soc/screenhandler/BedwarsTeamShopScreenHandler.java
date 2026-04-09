@@ -2,10 +2,7 @@ package com.soc.screenhandler;
 
 import com.soc.game.manager.bedwars.BedwarsShopCategory;
 import com.soc.game.manager.bedwars.BedwarsShopContents;
-import com.soc.game.manager.bedwars.shopitems.DisplayShopItem;
-import com.soc.game.manager.bedwars.shopitems.ShopItem;
-import com.soc.game.manager.bedwars.shopitems.SimpleShopItem;
-import com.soc.game.manager.bedwars.shopitems.TrapShopItem;
+import com.soc.game.manager.bedwars.shopitems.*;
 import com.soc.screenhandler.slots.CategorySlot;
 import com.soc.screenhandler.slots.DisplaySlot;
 import com.soc.screenhandler.slots.StockSlot;
@@ -194,8 +191,22 @@ public class BedwarsTeamShopScreenHandler extends AbstractCategoriesShopScreenHa
     }
 
     @SuppressWarnings("DataFlowIssue")
-    public void onBuyTrap(TrapShopItem trapShopItem) {
+    public void onBuyTrap(TrapShopItem trapShopItem) { //Fix these things they no work good
         final BedwarsShopCategory trapsCategory = this.shopContents.getCategory(3);
+        trapsCategory.forEachEnumerate((i, item) -> {
+            if (!(item instanceof DisplayShopItem displayItem && !displayItem.isEmpty())) {
+                trapsCategory.setShopItem(i, trapShopItem.getDisplayCopy());
+                return false;
+            }
+            return true;
+        });
+
+        this.refreshItems();
+    }
+
+    @SuppressWarnings("DataFlowIssue")
+    public void onBuyAbility(AbilityShopItem trapShopItem) {
+        final BedwarsShopCategory trapsCategory = this.shopContents.getCategory(4);
         trapsCategory.forEachEnumerate((i, item) -> {
             if (!(item instanceof DisplayShopItem displayItem && !displayItem.isEmpty())) {
                 trapsCategory.setShopItem(i, trapShopItem.getDisplayCopy());

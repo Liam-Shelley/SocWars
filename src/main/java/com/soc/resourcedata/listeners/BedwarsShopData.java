@@ -22,6 +22,7 @@ public class BedwarsShopData implements SimpleSynchronousResourceReloadListener 
             "bedwars_shop_data/upgradeable_items", UpgradeableShopItem::new,
             "bedwars_shop_data/team_items", TeamShopItem::new,
             "bedwars_shop_data/trap_items", TrapShopItem::new,
+            "bedwars_shop_data/ability_items", AbilityShopItem::new,
             "bedwars_shop_data/enchantment_upgrade_items", EnchantmentUpgradeShopItem::new,
             "bedwars_shop_data/tick_function_upgrade_items", TickFunctionUpgradeItem::new
     );

@@ -28,7 +28,7 @@ public class RedirectorAbility extends AbstractAbility {
         trapTriggerFunction.trigger(pos, manager, List.of(), owningTeam);
         return true;
     })));
-    public static final AbstractAbility UNO_REVERSE_CARD = register(new RedirectorAbility("uno_reverse_card", Items.SHIELD.getDefaultStack(), 20 * 20, ((pos, manager, enemiesInRange, owningTeam, trapTriggerFunction) -> {
+    public static final AbstractAbility UNO_REVERSE_CARD = register(new RedirectorAbility("uno_reverse_card", Items.YELLOW_BANNER.getDefaultStack(), 30 * 20, ((pos, manager, enemiesInRange, owningTeam, trapTriggerFunction) -> {
         trapTriggerFunction.trigger(pos, manager, manager.getPlayers(owningTeam, player -> player.getPos().isInRange(pos, TRAP_DETECTION_RANGE * 5)), owningTeam);
         return true;
     })));

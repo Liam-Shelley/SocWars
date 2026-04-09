@@ -4,7 +4,21 @@
       "x": 0,
       "y": 0,
       "options": [
-        "socwars:bedwars_shop_data/trap_items/launch"
+        "socwars:bedwars_shop_data/ability_items/disguise"
+      ]
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "options": [
+        "socwars:bedwars_shop_data/ability_items/resistance"
+      ]
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "options": [
+        "socwars:bedwars_shop_data/ability_items/uno_reverse_card"
       ]
     }
   ]

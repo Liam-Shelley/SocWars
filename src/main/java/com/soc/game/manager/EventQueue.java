@@ -63,4 +63,8 @@ public class EventQueue<T extends AbstractGameManager<?, ?, ?>> {
     public void cancelEvents() {
         this.events.clear();
     }
+
+    public SortedSet<Event<T>> getEvents() {
+        return this.events;
+    }
 }
