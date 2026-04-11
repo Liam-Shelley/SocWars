@@ -168,7 +168,6 @@ public class BedwarsTeamShopScreenHandler extends AbstractCategoriesShopScreenHa
 
     public void useTrap(long nextTime, int duration) {
         this.shiftCategory(3);
-        if (this.currentCategory == this.shopContents.getCategory(0)) this.refreshItems();
 
         this.nextTrapTime = nextTime;
         this.trapDuration = duration;
@@ -176,7 +175,6 @@ public class BedwarsTeamShopScreenHandler extends AbstractCategoriesShopScreenHa
 
     public void useAbility(long nextTime, int duration) {
         this.shiftCategory(4);
-        if (this.currentCategory == this.shopContents.getCategory(1)) this.refreshItems();
 
         this.nextAbilityTime = nextTime;
         this.abilityDuration = duration;
@@ -188,10 +186,13 @@ public class BedwarsTeamShopScreenHandler extends AbstractCategoriesShopScreenHa
         category.forEachEnumerate((i, item) -> {
             category.setShopItem(i - 1, item);
         });
+        category.setShopItem(category.size() - 1, SimpleShopItem.EMPTY);
+
+        this.refreshItems();
     }
 
     @SuppressWarnings("DataFlowIssue")
-    public void onBuyTrap(TrapShopItem trapShopItem) { //Fix these things they no work good
+    public void onBuyTrap(TrapShopItem trapShopItem) { //Fix these methods they no work good
         final BedwarsShopCategory trapsCategory = this.shopContents.getCategory(3);
         trapsCategory.forEachEnumerate((i, item) -> {
             if (!(item instanceof DisplayShopItem displayItem && !displayItem.isEmpty())) {
@@ -216,18 +217,6 @@ public class BedwarsTeamShopScreenHandler extends AbstractCategoriesShopScreenHa
         });
 
         this.refreshItems();
-    }
-
-    @SuppressWarnings("DataFlowIssue")
-    private void refreshCategory(TrapShopItem trapShopItem) {
-        final BedwarsShopCategory trapsCategory = this.shopContents.getCategory(2);
-        trapsCategory.forEachEnumerate((i, item) -> {
-            if (!(item instanceof DisplayShopItem displayItem && !displayItem.isEmpty())) {
-                trapsCategory.setShopItem(i, trapShopItem.getDisplayCopy());
-                return false;
-            }
-            return true;
-        });
     }
 
     @Override

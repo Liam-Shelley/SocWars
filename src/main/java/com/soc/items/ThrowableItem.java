@@ -67,13 +67,13 @@ public class ThrowableItem extends Item {
         tnt.setFuse(40);
     }), new Settings().useCooldown(0.75f));
     public static final Item ENDER_BEAM = ModItems.register("ender_beam", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new EnderBeamEntity(world, user), world, user, 1.75f)), new Settings().useCooldown(0.75f));
-    public static final Item HAND_GRENADE = ModItems.register("hand_grenade", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new HandGrenadeEntity(ModEntities.HAND_GRENADE, world, 0.5f), world, user, 0.65f), (stack, consumer) -> consumer.accept(Text.translatable("tooltip.hand_grenade"))), new Settings().useCooldown(1f).rarity(Rarity.UNCOMMON));
-    public static final Item HOLY_HAND_GRENADE = ModItems.register("holy_hand_grenade", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new HolyHandGrenadeEntity(ModEntities.HOLY_HAND_GRENADE, world, 0.5f), world, user, 0.65f), (stack, consumer) -> {
+    public static final Item HAND_GRENADE = ModItems.register("hand_grenade", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new HandGrenadeEntity(ModEntities.HAND_GRENADE, world, 0.5f, user), world, user, 0.65f), (stack, consumer) -> consumer.accept(Text.translatable("tooltip.hand_grenade"))), new Settings().useCooldown(1f).rarity(Rarity.UNCOMMON));
+    public static final Item HOLY_HAND_GRENADE = ModItems.register("holy_hand_grenade", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new HolyHandGrenadeEntity(ModEntities.HOLY_HAND_GRENADE, world, 0.5f, user), world, user, 0.65f), (stack, consumer) -> {
         for (int i = 0; i < 10; i++) {
             consumer.accept(Text.translatable("tooltip.holy_hand_grenade." + i));
         }
     }), new Settings().useCooldown(3f).rarity(Rarity.RARE));
-    public static final Item MOLOTOV_COCKTAIL = ModItems.register("molotov_cocktail", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new MolotovCocktailEntity(ModEntities.MOLOTOV_COCKTAIL, world), world, user, 0.7f)), new Settings().useCooldown(0.5f).rarity(Rarity.UNCOMMON));
+    public static final Item MOLOTOV_COCKTAIL = ModItems.register("molotov_cocktail", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new MolotovCocktailEntity(ModEntities.MOLOTOV_COCKTAIL, world, user), world, user, 0.7f)), new Settings().useCooldown(0.5f).rarity(Rarity.UNCOMMON));
     public static final Item POCKET_SAND = ModItems.register("pocket_sand", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new PocketSandEntity(ModEntities.POCKET_SAND, world), world, user, 0.9f), ((stack, consumer) -> consumer.accept(Text.translatable("tooltip.pocket_sand")))), new Settings().useCooldown(0.5f));
 
     @Override

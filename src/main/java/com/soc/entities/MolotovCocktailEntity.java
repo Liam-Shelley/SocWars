@@ -1,6 +1,7 @@
 package com.soc.entities;
 
 import com.soc.util.SphereExplosion;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.projectile.thrown.ThrownEntity;
 import net.minecraft.particle.ParticleTypes;
@@ -12,6 +13,10 @@ import net.minecraft.world.World;
 public class MolotovCocktailEntity extends HandGrenadeEntity {
     public MolotovCocktailEntity(EntityType<? extends ThrownEntity> type, World world) {
         super(type, world, 0f);
+    }
+
+    public MolotovCocktailEntity(EntityType<? extends ThrownEntity> type, World world, Entity owner) {
+        super(type, world, 0f, owner);
     }
 
     @Override
@@ -27,6 +32,6 @@ public class MolotovCocktailEntity extends HandGrenadeEntity {
 
     @Override
     protected void detonate() {
-        SphereExplosion.fireExplosion(this.getWorld(), this.getBlockPos(), 6f, 0.25f);
+        SphereExplosion.fireExplosion(this.getWorld(), this.getBlockPos(), 6f, 0.25f, this.getOwner());
     }
 }

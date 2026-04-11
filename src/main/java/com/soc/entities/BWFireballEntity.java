@@ -56,7 +56,7 @@ public class BWFireballEntity extends FireballEntity {
 
     public static void fireballExplosion(ServerWorld world, Vec3d pos, float explosionPower, Entity owner) {
         SphereExplosion.explode(world, pos, explosionPower, 1.1f, 1f, true, owner, null);
-        SphereExplosion.fireExplosion(world, BlockPos.ofFloored(pos), explosionPower, 0.2f);
+        SphereExplosion.fireExplosion(world, BlockPos.ofFloored(pos), explosionPower, 0.2f, owner);
     }
 
     public static void snailExplosion(ServerWorld world, Vec3d pos, float explosionPower, Entity owner) {

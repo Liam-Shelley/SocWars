@@ -98,7 +98,7 @@ public class SkywarsGameMap extends AbstractGameMap {
 
             colour.ifPresent(woolColour -> {
                 int slot = this.world.random.nextBetween(0, 26);
-                inventory.setStack(slot, new ItemStack(woolItemFromColour(woolColour), 16));
+                inventory.setStack(slot, new ItemStack(woolItemFromColour(woolColour), 32));
             });
         }
     }

@@ -46,5 +46,11 @@
     "sounds": [
       "socwars:sniper_rifle_shot"
     ]
+  },
+  "heavenly": {
+    "subtitle": "sound.socwars.heavenly",
+    "sounds": [
+      "socwars:heavenly"
+    ]
   }
 }

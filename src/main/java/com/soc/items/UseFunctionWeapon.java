@@ -13,6 +13,7 @@ import com.soc.util.DamageTypes;
 import com.soc.util.Sounds;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.TooltipDisplayComponent;
@@ -49,12 +50,10 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 import static com.soc.items.BowItem.playBowSound;
 import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
@@ -339,24 +338,28 @@ public class UseFunctionWeapon extends Item {
                 itemStack.damage(1, user, hand);
                 world.playSound(null, user.getX(), user.getY(), user.getZ(), Sounds.SNIPER_RIFLE_SHOT, SoundCategory.PLAYERS);
 
+                //block damage and particles
+                final Set<Vec3d> particlePositions = new HashSet<>();
+                final BiPredicate<BlockPos, BlockState> damage = getBlockDamagePredicate(world, true, user);
+
                 //actually technical stuff setup
                 final double maxDistance = 40d;
+                final double width = 1.5f;
+                final double boxStep = 8d;
 
                 final Vec3d eyePos = user.getEyePos();
                 final Vec3d direction = user.getRotationVector();
-                final Vec3d eyeDirectionEnd = eyePos.add(direction.multiply(maxDistance));
-                final Box checkBox = new Box(eyePos, eyeDirectionEnd).expand(2d);
 
-                //block damage and particles
-                final List<Vec3d> positions = new ArrayList<>();
-                final Predicate<BlockPos> damage = getBlockDamagePredicate(world, true, user);
+                for (double distance = 0; distance < maxDistance;) {
+                    final Box checkBox = new Box(eyePos.add(direction.multiply(distance)), eyePos.add(direction.multiply(distance += boxStep))).expand(Math.ceil(width));
 
-                iterateInCube(new IntBox(checkBox), pos -> {
-                    if (isPointWithinDistanceOfUnitVector(eyePos, direction, pos.toCenterPos(), 1.75d) && !world.isAir(pos)) {
-                        if (damage.test(pos)) world.setBlockState(pos, Blocks.AIR.getDefaultState());
-                        if (world.random.nextFloat() < 0.3f) positions.add(pos.toCenterPos());
-                    }
-                });
+                    iterateInCube(new IntBox(checkBox), pos -> {
+                        if (isPointWithinDistanceOfUnitVector(eyePos, direction, pos.toCenterPos(), width) && !world.isAir(pos)) {
+                            if (damage.test(pos, world.getBlockState(pos))) world.setBlockState(pos, Blocks.AIR.getDefaultState());
+                            if (world.random.nextFloat() < 0.3f) particlePositions.add(pos.toCenterPos());
+                        }
+                    });
+                }
 
                 if (world instanceof ServerWorld serverWorld) {
                     final Collection<ServerPlayerEntity> nearbyPlayers = PlayerLookup.around(serverWorld, eyePos, 250d);
@@ -365,7 +368,7 @@ public class UseFunctionWeapon extends Item {
                     final Vec3d velocity = direction.multiply(-0.05d).add(0d, 0.025d, 0d);
                     final Vec3d mainParticePosition = eyePos.add(direction);
                     nearbyPlayers.forEach(player -> {
-                        ServerPlayNetworking.send(player, new BatchParticlePayload(ParticleTypes.LARGE_SMOKE, positions, velocity));
+                        ServerPlayNetworking.send(player, new BatchParticlePayload(ParticleTypes.LARGE_SMOKE, particlePositions, velocity));
                         player.networkHandler.sendPacket(new ParticleS2CPacket(ParticleTypes.FLAME, true, true, mainParticePosition.x, mainParticePosition.y, mainParticePosition.z, 0.07f, 0.07f, 0.07f, 0.1f, 16));
                     });
 
@@ -373,7 +376,7 @@ public class UseFunctionWeapon extends Item {
                     final List<Entity> entities = new ArrayList<>();
                     EntityHitResult hitResult;
                     do {
-                        hitResult = ProjectileUtil.raycast(user, eyePos, eyeDirectionEnd, checkBox, entity -> !entities.contains(entity), maxDistance * maxDistance);
+                        hitResult = ProjectileUtil.raycast(user, eyePos, eyePos.add(direction.multiply(maxDistance)), new Box(eyePos, eyePos.add(direction.multiply(maxDistance))), entity -> !entities.contains(entity), maxDistance * maxDistance);
                         if (hitResult != null) {
                             entities.add(hitResult.getEntity());
                         }

@@ -15,23 +15,27 @@ import static com.soc.game.manager.bedwars.traps.TrapManager.TRAP_DETECTION_RANG
 
 public class RedirectorAbility extends AbstractAbility {
     public interface TriggerFunction {
-        boolean trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Collection<ServerPlayerEntity> enemiesInRange, DyeColor owningTeam, TrapTriggerFunction trapTriggerFunction);
+        boolean trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Collection<ServerPlayerEntity> enemiesInRange, DyeColor owningTeam, AbstractTrap trapTriggerFunction);
     }
 
     public static void initialise() {}
 
-    public static final AbstractAbility DISGUISE = register(new RedirectorAbility("disguise", Items.OAK_LEAVES.getDefaultStack(), 15 * 20, ((pos, manager, enemiesInRange, owningTeam, trapTriggerFunction) -> {
+    public static final AbstractAbility DISGUISE = register(new RedirectorAbility("disguise", Items.OAK_LEAVES.getDefaultStack(), 15 * 20, (pos, manager, enemiesInRange, owningTeam, trapTriggerFunction) -> {
         trapTriggerFunction.trigger(pos, manager, enemiesInRange, owningTeam);
         return false;
-    })));
-    public static final AbstractAbility RESISTANCE = register(new RedirectorAbility("resistance", Items.SHIELD.getDefaultStack(), 20 * 20, ((pos, manager, enemiesInRange, owningTeam, trapTriggerFunction) -> {
+    }));
+    public static final AbstractAbility RESISTANCE = register(new RedirectorAbility("resistance", Items.SHIELD.getDefaultStack(), 20 * 20, (pos, manager, enemiesInRange, owningTeam, trapTriggerFunction) -> {
         trapTriggerFunction.trigger(pos, manager, List.of(), owningTeam);
         return true;
-    })));
-    public static final AbstractAbility UNO_REVERSE_CARD = register(new RedirectorAbility("uno_reverse_card", Items.YELLOW_BANNER.getDefaultStack(), 30 * 20, ((pos, manager, enemiesInRange, owningTeam, trapTriggerFunction) -> {
+    }));
+    public static final AbstractAbility UNO_REVERSE_CARD = register(new RedirectorAbility("uno_reverse_card", Items.YELLOW_BANNER.getDefaultStack(), 30 * 20, (pos, manager, enemiesInRange, owningTeam, trapTriggerFunction) -> {
         trapTriggerFunction.trigger(pos, manager, manager.getPlayers(owningTeam, player -> player.getPos().isInRange(pos, TRAP_DETECTION_RANGE * 5)), owningTeam);
         return true;
-    })));
+    }));
+    public static final AbstractAbility TRAP_AMPLIFIER = register(new RedirectorAbility("trap_amplifier", Items.YELLOW_BANNER.getDefaultStack(), 30 * 20, (pos, manager, enemiesInRange, owningTeam, trapTriggerFunction) -> {
+        trapTriggerFunction.modifyCooldownTime(initial -> 2 * initial); //TODO: Whole system needs a lot of work
+        return true;
+    }));
 
     private final TriggerFunction triggerFunction;
 
@@ -41,7 +45,7 @@ public class RedirectorAbility extends AbstractAbility {
     }
 
     @Override
-    protected boolean trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Collection<ServerPlayerEntity> enemiesInRange, DyeColor team, TrapTriggerFunction trapTriggerFunction) {
+    protected boolean trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Collection<ServerPlayerEntity> enemiesInRange, DyeColor team, AbstractTrap trapTriggerFunction) {
         return this.triggerFunction.trigger(pos, manager, enemiesInRange, team, trapTriggerFunction);
     }
 }

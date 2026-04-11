@@ -5,6 +5,7 @@
   "mixins": [
     "AbstractBlockBreak",
     "AppendTooltipAtEnd",
+    "BucketBlockProtection",
     "CancelSprintParticles",
     "ChestDepositableProperty",
     "ClearInventoryHoverItem",

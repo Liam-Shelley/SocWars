@@ -583,4 +583,13 @@ public final class SocWarsLib {
 
         return max;
     }
+
+    public static <T> List<T> mapFromRange(int start, int end, IntFunction<T> mapper) {
+        final List<T> list = new ArrayList<>();
+        for (int i = start; i < end; i++) {
+            list.add(mapper.apply(i));
+        }
+
+        return list;
+    }
 }

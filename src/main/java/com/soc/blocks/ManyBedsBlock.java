@@ -1,13 +1,19 @@
 package com.soc.blocks;
 
+import com.soc.items.BlockItems;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.WorldView;
+
+import java.util.Objects;
 
 public class ManyBedsBlock extends ColourStateBlock {
     private static final VoxelShape VOXEL_SHAPE = VoxelShapes.cuboid(0d, 0d, 0d, 1d, 9d/16d, 1d);
@@ -31,5 +37,10 @@ public class ManyBedsBlock extends ColourStateBlock {
                 entity.setVelocity(velocity.x, velocity.y * -0.4f, velocity.z);
             }
         }
+    }
+
+    @Override
+    protected ItemStack getPickStack(WorldView world, BlockPos pos, BlockState state, boolean includeData) {
+        return new ItemStack(Objects.requireNonNullElse(BlockItems.MANY_BEDS_BLOCKS.get(state.get(ColourStateBlock.COLOUR)), Items.AIR));
     }
 }

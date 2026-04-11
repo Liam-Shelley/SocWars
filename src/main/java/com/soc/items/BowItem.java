@@ -116,14 +116,14 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
                 protected void onHit(LivingEntity target) {
                     super.onHit(target);
                     this.discard();
-                    fireExplosion(world, target.getBlockPos(), 5f, 0.125f);
+                    fireExplosion(world, target.getBlockPos(), 5f, 0.125f, user);
                 }
 
                 @Override
                 protected void onBlockHit(BlockHitResult blockHitResult) {
                     super.onBlockHit(blockHitResult);
                     this.discard();
-                    fireExplosion(world, blockHitResult.getBlockPos(), 4f, 0.175f);
+                    fireExplosion(world, blockHitResult.getBlockPos(), 4f, 0.175f, user);
                 }
             }, stack -> 1f, stack -> 3f), new Settings()
             .rarity(Rarity.UNCOMMON)

@@ -24,6 +24,13 @@ public class HandGrenadeEntity extends ThrownEntity {
         this.detonationTime = detonationTime;
     }
 
+    public HandGrenadeEntity(EntityType<? extends ThrownEntity> type, World world, float detonationTime, Entity owner) {
+        super(type, world);
+        this.detonationTime = detonationTime;
+
+        this.setOwner(owner);
+    }
+
     @Override
     protected void initDataTracker(DataTracker.Builder builder) {
 

@@ -77,7 +77,7 @@ public class CartoonArmour extends ArmourItem implements OnHitArmour {
 
             return true;
     }), new Settings().maxDamage(325).rarity(Rarity.RARE));
-    public static final Item CARTOON_CHESTPLATE = ModItems.register("cartoon_chestplate", settings -> new CartoonArmour(settings, EquipmentSlot.CHEST, 8, (stack, wearer, world, source) -> {
+    public static final Item CARTOON_CHESTPLATE = ModItems.register("cartoon_chestplate", settings -> new CartoonArmour(settings, EquipmentSlot.CHEST, 9, (stack, wearer, world, source) -> {
             if (world.isClient) return true;
             final int random = world.random.nextBetween(1, 8);
             switch (random) {
@@ -92,7 +92,7 @@ public class CartoonArmour extends ArmourItem implements OnHitArmour {
 
             return true;
     }), new Settings().maxDamage(400).rarity(Rarity.RARE));
-    public static final Item CARTOON_LEGGINGS = ModItems.register("cartoon_leggings", settings -> new CartoonArmour(settings, EquipmentSlot.LEGS, 6, (stack, wearer, world, source) -> {
+    public static final Item CARTOON_LEGGINGS = ModItems.register("cartoon_leggings", settings -> new CartoonArmour(settings, EquipmentSlot.LEGS, 7, (stack, wearer, world, source) -> {
             if (world.isClient) return true;
             final int random = world.random.nextBetween(1, 8);
             switch (random) {

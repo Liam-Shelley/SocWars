@@ -3,6 +3,7 @@ package com.soc.game.manager.bedwars.traps;
 import com.soc.SocWars;
 import com.soc.game.manager.AbstractGameManager;
 import com.soc.game.manager.bedwars.shopitems.DisplayShopItem;
+import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -18,7 +19,7 @@ public abstract class AbstractTrap implements Triggerable, TrapTriggerFunction {
 
     private final Identifier id;
     private final ItemStack icon;
-    private final int cooldownTime;
+    private int cooldownTime;
 
     public AbstractTrap(Identifier id, ItemStack icon, int time) {
         this.id = id;
@@ -67,5 +68,9 @@ public abstract class AbstractTrap implements Triggerable, TrapTriggerFunction {
     @Override
     public boolean isAbility() {
         return false;
+    }
+
+    public void modifyCooldownTime(Int2IntFunction modifier) {
+        this.cooldownTime = modifier.applyAsInt(this.cooldownTime);
     }
 }

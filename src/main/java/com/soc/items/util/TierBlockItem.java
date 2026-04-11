@@ -6,7 +6,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
 
 public class TierBlockItem extends BlockItem {
-    private final int tier;
+    protected final int tier;
 
     public TierBlockItem(TierBlock block, Settings settings, int tier) {
         super(block, settings);

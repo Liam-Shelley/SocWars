@@ -9,6 +9,7 @@
     "DisplayBlockOutline",
     "DragonFireballTooltip",
     "FinishGamesOnSaveAndQuit",
+    "GamePlayerList",
     "GetLoadedModelGroups",
     "GetOptionsVolumes",
     "KeyboardInputModifier",

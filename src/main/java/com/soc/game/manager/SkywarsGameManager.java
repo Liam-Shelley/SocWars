@@ -157,7 +157,7 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
     @Override
     protected void respawnPlayer(ServerPlayerEntity player) {
         super.respawnPlayer(player);
-        player.giveItemStack(new ItemStack(woolItemFromColour(this.getTeam(player.getUuid())), 16));
+        player.giveItemStack(new ItemStack(woolItemFromColour(this.getTeam(player.getUuid())), 32));
     }
 
     @Override

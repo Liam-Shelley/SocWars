@@ -39,10 +39,10 @@ public class GlassArmour extends ArmourItem implements OnHitArmour, TransparentA
         addItemToGroupsAndBaseItemGroup(GLASS_BOOTS, ItemGroups.COMBAT);
     }
 
-    public static final Item GLASS_HELMET = ModItems.register("glass_helmet", settings -> new GlassArmour(settings, EquipmentSlot.HEAD, 1), new Settings().maxDamage(325).rarity(Rarity.RARE));
-    public static final Item GLASS_CHESTPLATE = ModItems.register("glass_chestplate", settings -> new GlassArmour(settings, EquipmentSlot.CHEST, 7), new Settings().maxDamage(400).rarity(Rarity.RARE));
-    public static final Item GLASS_LEGGINGS = ModItems.register("glass_leggings", settings -> new GlassArmour(settings, EquipmentSlot.LEGS, 5), new Settings().maxDamage(375).rarity(Rarity.RARE));
-    public static final Item GLASS_BOOTS = ModItems.register("glass_boots", settings -> new GlassArmour(settings, EquipmentSlot.FEET, 3), new Settings().maxDamage(325).rarity(Rarity.RARE));
+    public static final Item GLASS_HELMET = ModItems.register("glass_helmet", settings -> new GlassArmour(settings, EquipmentSlot.HEAD, 2), new Settings().maxDamage(325).rarity(Rarity.RARE));
+    public static final Item GLASS_CHESTPLATE = ModItems.register("glass_chestplate", settings -> new GlassArmour(settings, EquipmentSlot.CHEST, 8), new Settings().maxDamage(400).rarity(Rarity.RARE));
+    public static final Item GLASS_LEGGINGS = ModItems.register("glass_leggings", settings -> new GlassArmour(settings, EquipmentSlot.LEGS, 6), new Settings().maxDamage(375).rarity(Rarity.RARE));
+    public static final Item GLASS_BOOTS = ModItems.register("glass_boots", settings -> new GlassArmour(settings, EquipmentSlot.FEET, 4), new Settings().maxDamage(325).rarity(Rarity.RARE));
 
     @Override
     public boolean onHit(ItemStack stack, LivingEntity wearer, World world, DamageSource source) {

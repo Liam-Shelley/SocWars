@@ -1,6 +1,5 @@
 package com.soc.util;
 
-import com.soc.game.manager.AbstractGameManager;
 import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -22,8 +21,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
+import static com.soc.game.manager.AbstractGameManager.getBlockDamagePredicate;
 import static com.soc.lib.SocWarsLib.damageSource;
 import static com.soc.lib.SocWarsLib.iterateInSphere;
 
@@ -31,7 +32,7 @@ public class SphereExplosion {
     private SphereExplosion() {}
 
     public static void explode(World world, Vec3d centre, float explosionRadius, float explosionVariance, float damageFactor, float knockbackFactor, boolean blockDamage, @Nullable Entity causingEntity, @Nullable RegistryKey<DamageType> damageType) {
-        final Predicate<BlockPos> damage = AbstractGameManager.getBlockDamagePredicate(world, blockDamage, causingEntity);
+        final BiPredicate<BlockPos, BlockState> damage = getBlockDamagePredicate(world, blockDamage, causingEntity);
 
         iterateInSphere(BlockPos.ofFloored(centre), explosionRadius, explosionVariance, pos -> {
                 final BlockState currentState = world.getBlockState(pos);
@@ -40,7 +41,7 @@ public class SphereExplosion {
 
                 if (currentState == Blocks.WATER.getDefaultState()) trySpawnSteam(world, pos);
 
-                if (damage.test(pos)) world.setBlockState(pos, Blocks.AIR.getDefaultState());
+                if (damage.test(pos, currentState)) world.setBlockState(pos, Blocks.AIR.getDefaultState());
         });
 
         applyDamageAndKnockback(world, centre, explosionRadius, damageFactor, knockbackFactor, damageSource(world, damageType == null ? DamageTypes.SPHERE_EXPLOSION : damageType, causingEntity));
@@ -94,16 +95,18 @@ public class SphereExplosion {
         trySpawnSteam(world, pos.getX(), pos.getY(), pos.getZ());
     }
 
-    public static void fireExplosion(World world, BlockPos centre, float radius, float fireChance) {
+    public static void fireExplosion(World world, BlockPos centre, float radius, float fireChance, Entity owner) {
+        final BiPredicate<BlockPos, BlockState> damage = getBlockDamagePredicate(world, true, owner);
+
         if (world.isClient) return;
         iterateInSphere(centre, radius, 0f, pos -> {
-                if (world.random.nextFloat() < fireChance && AbstractFireBlock.canPlaceAt(world, pos, Direction.DOWN)) {
+                if (world.random.nextFloat() < fireChance && AbstractFireBlock.canPlaceAt(world, pos, Direction.DOWN) && damage.test(pos, world.getBlockState(pos))) {
                     world.setBlockState(pos, AbstractFireBlock.getState(world, pos));
                 }
         });
     }
 
-    public static void fireExplosion(World world, BlockPos centre, float radius) {
-        fireExplosion(world, centre, radius, 0.1f);
+    public static void fireExplosion(World world, BlockPos centre, float radius, Entity owner) {
+        fireExplosion(world, centre, radius, 0.1f, owner);
     }
 }

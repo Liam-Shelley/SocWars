@@ -8,6 +8,7 @@ import com.soc.game.manager.bedwars.shopitems.ShopItem;
 import com.soc.game.manager.bedwars.shopitems.SimpleShopItem;
 import com.soc.lib.SocWarsLib;
 import com.soc.networking.s2c.bedwars.UseTrapOrAbilityPayload;
+import com.soc.screenhandler.BedwarsTeamShopScreenHandler;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.packet.s2c.play.SubtitleS2CPacket;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
@@ -53,8 +54,11 @@ public class TrapManager {
         if (manager instanceof TrapGame trapGame) {
             final AbstractTrap trap = this.traps.remove();
 
-            final Set<DyeColor> alertingTeams = new HashSet<>();
+            if (this.hasActiveAbility(TriggerReason.TRAP_MODIFIER)) {
+                this.triggerAbility(pos, manager, enemiesInRange.values(), owningTeam, trap);
+            }
 
+            final Set<DyeColor> alertingTeams = new HashSet<>();
             enemiesInRange.keySet().forEach(enemyTeam -> {
                 if (trapGame.getTrapManager(enemyTeam).receiveTrap(pos, manager, manager.getPlayers(enemyTeam), owningTeam, trap)) {
                     alertingTeams.add(enemyTeam);
@@ -65,6 +69,12 @@ public class TrapManager {
 
             this.nextTrapTriggerTime = this.world.getTime() + trap.getCooldownTime();
             this.currentTrapDuration = trap.getCooldownTime();
+
+            manager.getPlayers(owningTeam).forEach(player -> {
+                if (player.currentScreenHandler instanceof BedwarsTeamShopScreenHandler handler) {
+                    handler.useTrap(this.nextTrapTriggerTime, this.currentTrapDuration);
+                }
+            });
         }
     }
 
@@ -77,13 +87,19 @@ public class TrapManager {
         }
     }
 
-    public boolean triggerAbility(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Collection<ServerPlayerEntity> enemiesInRange, DyeColor owningTeam, TrapTriggerFunction trapTriggerFunction) {
+    public boolean triggerAbility(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Collection<ServerPlayerEntity> enemiesInRange, DyeColor owningTeam, AbstractTrap trapTriggerFunction) {
         final AbstractAbility ability = this.abilities.remove();
 
         this.sendUsePackets(manager, Set.of(owningTeam), this.teamColour, ability);
 
         this.nextAbilityTriggerTime = this.world.getTime() + ability.getCooldownTime();
         this.currentAbilityDuration = ability.getCooldownTime();
+
+        manager.getPlayers(owningTeam).forEach(player -> {
+            if (player.currentScreenHandler instanceof BedwarsTeamShopScreenHandler handler) {
+                handler.useTrap(this.nextAbilityTriggerTime, this.currentAbilityDuration);
+            }
+        });
 
         return ability.trigger(pos, manager, enemiesInRange, owningTeam, trapTriggerFunction);
     }

@@ -36,7 +36,7 @@ public class DemolitionistArmour extends SetBonusArmourItem {
     }
 
     public static final Item DEMOLITIONIST_HELMET = ModItems.register("demolitionist_helmet", settings -> new DemolitionistArmour(settings, EquipmentSlot.HEAD, 4), new Settings().maxDamage(425).rarity(Rarity.UNCOMMON));
-    public static final Item DEMOLITIONIST_CHESTPLATE = ModItems.register("demolitionist_chestplate", settings -> new DemolitionistArmour(settings, EquipmentSlot.CHEST, 3), new Settings().maxDamage(500).rarity(Rarity.UNCOMMON));
-    public static final Item DEMOLITIONIST_LEGGINGS = ModItems.register("demolitionist_leggings", settings -> new DemolitionistArmour(settings, EquipmentSlot.LEGS, 3), new Settings().maxDamage(450).rarity(Rarity.UNCOMMON));
-    public static final Item DEMOLITIONIST_BOOTS = ModItems.register("demolitionist_boots", settings -> new DemolitionistArmour(settings, EquipmentSlot.FEET, 2), new Settings().maxDamage(425).rarity(Rarity.UNCOMMON));
+    public static final Item DEMOLITIONIST_CHESTPLATE = ModItems.register("demolitionist_chestplate", settings -> new DemolitionistArmour(settings, EquipmentSlot.CHEST, 9), new Settings().maxDamage(500).rarity(Rarity.UNCOMMON));
+    public static final Item DEMOLITIONIST_LEGGINGS = ModItems.register("demolitionist_leggings", settings -> new DemolitionistArmour(settings, EquipmentSlot.LEGS, 6), new Settings().maxDamage(450).rarity(Rarity.UNCOMMON));
+    public static final Item DEMOLITIONIST_BOOTS = ModItems.register("demolitionist_boots", settings -> new DemolitionistArmour(settings, EquipmentSlot.FEET, 3), new Settings().maxDamage(425).rarity(Rarity.UNCOMMON));
 }

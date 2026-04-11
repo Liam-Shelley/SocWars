@@ -33,9 +33,9 @@ public abstract class AbstractAbility implements Triggerable {
         this(Identifier.of(SocWars.MOD_ID, id), icon, time, triggerReason);
     }
 
-    protected abstract boolean trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Collection<ServerPlayerEntity> enemiesInRange, DyeColor team, TrapTriggerFunction trapTriggerFunction);
+    protected abstract boolean trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Collection<ServerPlayerEntity> enemiesInRange, DyeColor team, AbstractTrap trapTriggerFunction);
 
-    public final void trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Collection<ServerPlayerEntity> enemiesInRange, DyeColor team, TriggerReason triggerReason, TrapTriggerFunction trapTriggerFunction) {
+    public final void trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Collection<ServerPlayerEntity> enemiesInRange, DyeColor team, TriggerReason triggerReason, AbstractTrap trapTriggerFunction) {
         if (this.triggerReason == triggerReason) this.trigger(pos, manager, enemiesInRange, team, trapTriggerFunction);
     }
 

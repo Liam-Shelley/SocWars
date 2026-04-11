@@ -47,6 +47,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -204,11 +205,11 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     }
 
     public boolean onBlockBroken(ServerPlayerEntity player, BlockPos pos, BlockState state, BlockEntity blockEntity) {
-        return this.isBlockUnprotected(player, pos);
+        return this.isBlockUnprotected(player, pos, state);
     }
 
     public ActionResult onBlockPlaced(ServerPlayerEntity player, BlockPos pos, ItemUsageContext context) {
-        final boolean allow = this.isBlockUnprotected(player, pos);
+        final boolean allow = this.isBlockUnprotected(player, pos, this.world.getBlockState(pos));
         if (allow) {
             if (!pos.isWithinDistance(this.map.getCentrePos(), this.map.size * 1.35f)) {
                 this.world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), SoundCategory.MASTER);
@@ -499,20 +500,21 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         this.sendLeaveGamePayload(player);
     }
 
-    public final boolean isBlockProtected(BlockPos pos) {
+    public final boolean isBlockProtected(BlockPos pos, BlockState state) { //Yeah this whole section is kind of a mess
+        if (!state.isAir() && state.isReplaceable()) return false;
         return this.map.isBlockProtected(pos);
     }
 
-    public final boolean isBlockProtected(ServerPlayerEntity player, BlockPos pos) {
-        return this.map.isBlockProtected(pos) && player.getGameMode() == GameMode.SURVIVAL;
+    public final boolean isBlockProtected(ServerPlayerEntity player, BlockPos pos, BlockState state) {
+        return this.isBlockProtected(pos, state) && player.getGameMode() == GameMode.SURVIVAL;
     }
 
-    public final boolean isBlockUnprotected(BlockPos pos) {
+    public final boolean isBlockUnprotected(BlockPos pos, BlockState state) {
         return !this.map.isBlockProtected(pos);
     }
 
-    public final boolean isBlockUnprotected(ServerPlayerEntity player, BlockPos pos) {
-        return !this.map.isBlockProtected(pos) || player.getGameMode() != GameMode.SURVIVAL;
+    public final boolean isBlockUnprotected(ServerPlayerEntity player, BlockPos pos, BlockState state) {
+        return !this.isBlockProtected(player, pos, state);
     }
 
     protected static List<Pair<Text, Integer>> getNTopKillers(Map<UUID, ? extends CombatTable> dbTables, World world, int n) {
@@ -524,18 +526,18 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         }
     }
 
-    public static Predicate<BlockPos> getBlockDamagePredicate(World world, boolean blockDamage, @Nullable Entity causingEntity) {
+    public static BiPredicate<BlockPos, BlockState> getBlockDamagePredicate(World world, boolean blockDamage, @Nullable Entity causingEntity) {
         final Optional<AbstractGameManager<?, ?, ?>> managerOptional = causingEntity == null ? Optional.empty() : GamesManager.getInstance().getGame(causingEntity);
 
-        final Predicate<BlockPos> damage;
+        final BiPredicate<BlockPos, BlockState> damage;
         if (!blockDamage) {
-            damage = pos -> false;
+            damage = (pos, state) -> false;
         } else if (managerOptional.isPresent()) {
             final AbstractGameManager<?, ?, ?> manager = managerOptional.get();
             damage = manager::isBlockUnprotected;
         } else {
             final boolean def = world instanceof ServerWorld serverWorld && serverWorld.getGameRules().getBoolean(GameRules.TNT_EXPLODES);
-            damage = pos -> def;
+            damage = (pos, state) -> def;
         }
         return damage;
     }

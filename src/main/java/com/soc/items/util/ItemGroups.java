@@ -39,23 +39,27 @@ public interface ItemGroups {
         Registry.register(Registries.ITEM_GROUP, MAP_MAKING_TOOLS_KEY, MAP_MAKING_TOOLS_GROUP);
     }
 
-    static void addItemToItemsGroup(Item item) {
+    static Item addItemToItemsGroup(Item item) {
         ItemGroupEvents.modifyEntriesEvent(ITEMS_KEY).register(itemGroup -> itemGroup.add(item));
+        return item;
     }
 
-    static void addItemToBlocksGroup(Item item) {
+    static Item addItemToBlocksGroup(Item item) {
         ItemGroupEvents.modifyEntriesEvent(BLOCKS_KEY).register(itemGroup -> itemGroup.add(item));
+        return item;
     }
 
-    static void addItemToMapMakingGroup(Item item) {
+    static Item addItemToMapMakingGroup(Item item) {
         ItemGroupEvents.modifyEntriesEvent(MAP_MAKING_TOOLS_KEY).register(itemGroup -> itemGroup.add(item));
+        return item;
     }
 
     @SafeVarargs
-    static void addItemToGroupsAndBaseItemGroup(Item item, RegistryKey<ItemGroup>... itemGroups) {
+    static Item addItemToGroupsAndBaseItemGroup(Item item, RegistryKey<ItemGroup>... itemGroups) {
         ItemGroupEvents.modifyEntriesEvent(ITEMS_KEY).register(_itemGroup -> _itemGroup.add(item));
         for (RegistryKey<ItemGroup> itemGroup : itemGroups) {
             ItemGroupEvents.modifyEntriesEvent(itemGroup).register(_itemGroup -> _itemGroup.add(item));
         }
+        return item;
     }
 }

@@ -119,9 +119,11 @@ public class HideAndSeekGameManager extends AbstractGameManager<HideAndSeekGameM
     @Override
     public boolean onPlayerDeath(ServerPlayerEntity player, DamageSource source, float amount) {
         healPlayer(player);
-        //resetScale(player);
-
         this.map.getSpawnPosition(this.getTeam(player.getUuid())).ifPresent(pos -> player.requestTeleport(pos.getX(), pos.getY(), pos.getZ()));
+
+        if (this.getTeam(player) == SEEKER_COLOUR) {
+            this.endGame(false, HIDER_COLOUR);
+        }
 
         return false;
     }

@@ -232,7 +232,7 @@ public class AttackFunctionWeapon extends Item {
     );
     public static final Item FIRESTORM = ModItems.register("firestorm", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
                 final World world = target.getWorld();
-                fireExplosion(world, target.getBlockPos(), 4f);
+                fireExplosion(world, target.getBlockPos(), 4f, attacker);
             }), new Settings()
             .sword(ToolMaterials.BASE, 5.5f, -2.5f)
             .maxDamage(400)

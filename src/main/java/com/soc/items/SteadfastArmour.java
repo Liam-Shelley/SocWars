@@ -29,8 +29,8 @@ public class SteadfastArmour extends SetBonusArmourItem {
         addItemToGroupsAndBaseItemGroup(STEADFAST_BOOTS, ItemGroups.COMBAT);
     }
 
-    public static final Item STEADFAST_HELMET = ModItems.register("steadfast_helmet", (settings) -> new SteadfastArmour(settings, EquipmentSlot.HEAD, 2), new Settings().maxDamage(325).rarity(Rarity.RARE));
-    public static final Item STEADFAST_CHESTPLATE = ModItems.register("steadfast_chestplate", (settings) -> new SteadfastArmour(settings, EquipmentSlot.CHEST, 6), new Settings().maxDamage(400).rarity(Rarity.RARE));
+    public static final Item STEADFAST_HELMET = ModItems.register("steadfast_helmet", (settings) -> new SteadfastArmour(settings, EquipmentSlot.HEAD, 3), new Settings().maxDamage(325).rarity(Rarity.RARE));
+    public static final Item STEADFAST_CHESTPLATE = ModItems.register("steadfast_chestplate", (settings) -> new SteadfastArmour(settings, EquipmentSlot.CHEST, 7), new Settings().maxDamage(400).rarity(Rarity.RARE));
     public static final Item STEADFAST_LEGGINGS = ModItems.register("steadfast_leggings", (settings) -> new SteadfastArmour(settings, EquipmentSlot.LEGS, 5), new Settings().maxDamage(375).rarity(Rarity.RARE));
-    public static final Item STEADFAST_BOOTS = ModItems.register("steadfast_boots", (settings) -> new SteadfastArmour(settings, EquipmentSlot.FEET, 2), new Settings().maxDamage(325).rarity(Rarity.RARE));
+    public static final Item STEADFAST_BOOTS = ModItems.register("steadfast_boots", (settings) -> new SteadfastArmour(settings, EquipmentSlot.FEET, 3), new Settings().maxDamage(325).rarity(Rarity.RARE));
 }
