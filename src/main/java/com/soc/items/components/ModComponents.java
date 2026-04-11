@@ -2,6 +2,7 @@ package com.soc.items.components;
 
 import com.mojang.serialization.Codec;
 import com.soc.SocWars;
+import com.soc.game.map.ResourceGenerator;
 import net.minecraft.component.ComponentType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -45,6 +46,11 @@ public interface ModComponents {
             Registries.DATA_COMPONENT_TYPE,
             Identifier.of(SocWars.MOD_ID, "double_jump"),
             ComponentType.<Boolean>builder().codec(Codec.BOOL).build()
+    );
+    ComponentType<Integer> GENERATOR_REFERENCE = Registry.register(
+            Registries.DATA_COMPONENT_TYPE,
+            Identifier.of(SocWars.MOD_ID, "generator_reference"),
+            ComponentType.<Integer>builder().codec(Codec.INT).build()
     );
 
     static void initialise() {}

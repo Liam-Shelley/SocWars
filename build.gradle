@@ -21,6 +21,7 @@ repositories {
 	// for more information about repositories.
 
 	maven { url 'https://maven.wispforest.io' }
+	maven { url = "https://api.modrinth.com/maven" }
 }
 
 loom {
@@ -54,6 +55,8 @@ dependencies {
 
 	implementation "org.postgresql:postgresql:${project.pgjdbc_version}"
 	include "org.postgresql:postgresql:${project.pgjdbc_version}"
+
+	modImplementation "maven.modrinth:jade:${project.jade_version}"
 }
 
 processResources {

@@ -3,7 +3,6 @@ package com.soc.game.map;
 import com.google.common.collect.*;
 import com.soc.SocWars;
 import com.soc.entities.BedwarsShopEntity;
-import com.soc.entities.util.ModEntities;
 import com.soc.game.manager.bedwars.ShopType;
 import com.soc.lib.SparseVoxelOctree;
 import com.soc.nbt.SpawnPosition;
@@ -19,6 +18,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.soc.lib.SocWarsLib.*;
@@ -37,6 +38,7 @@ public class BedwarsGameMap extends AbstractGameMap {
     private final Set<ResourceGenerator> diamondGens;
     private final Set<ResourceGenerator> emeraldGens;
     private final Multimap<DyeColourWithEmpty, IslandGenerator> islandGens;
+    private final Map<Integer, ResourceGenerator> resourceGeneratorIdMap;
     private final Map<DyeColor, BlockPos> bedPositions;
     private final Set<BlockPos> individualShops;
     private final Set<BlockPos> teamShops;
@@ -56,9 +58,10 @@ public class BedwarsGameMap extends AbstractGameMap {
             @NotNull Set<BlockPos> teamShops
     ) {
         super(structure, spawnPositions, centrePos, absoluteCentrePos, blockProtectionOverlay, world);
-        this.diamondGens = ResourceGenerator.resourceGenerators(Items.DIAMOND.getDefaultStack(), world, diamondGens.stream().map(super::pos).collect(Collectors.toSet()), false, 30 * 20);
-        this.emeraldGens = ResourceGenerator.resourceGenerators(Items.EMERALD.getDefaultStack(), world, emeraldGens.stream().map(super::pos).collect(Collectors.toSet()), false, 30 * 20);
-        this.islandGens = this.makeIslandGenerators(world, islandGens.stream().map(super::pos).collect(Collectors.toSet()), spawnPositions.stream().map(spawnPosition -> spawnPosition.withPos(super.pos(spawnPosition.pos()))).collect(Collectors.toSet()));
+        this.diamondGens = diamondGens.stream().map(pos -> new ResourceGenerator(Items.DIAMOND.getDefaultStack(), world, this.pos(pos), false, 30 * 20)).collect(Collectors.toSet());
+        this.emeraldGens = emeraldGens.stream().map(pos -> new ResourceGenerator(Items.EMERALD.getDefaultStack(), world, this.pos(pos), false, 40 * 20)).collect(Collectors.toSet());
+        this.islandGens = this.makeIslandGenerators(world, islandGens.stream().map(this::pos).collect(Collectors.toSet()), spawnPositions.stream().map(spawnPosition -> spawnPosition.withPos(this.pos(spawnPosition.pos()))).collect(Collectors.toSet()));
+        this.resourceGeneratorIdMap = this.assignGeneratorIds();
         this.bedPositions = this.makeBedPositions(spawnPositions, bedPositions);
         this.individualShops = individualShops;
         this.teamShops = teamShops;
@@ -78,9 +81,10 @@ public class BedwarsGameMap extends AbstractGameMap {
             @NotNull Set<BlockPos> teamShops
     ) {
         super(structure, spawnPositions, centrePos, blockProtectionOverlay);
-        this.diamondGens = ResourceGenerator.resourceGenerators(Items.DIAMOND.getDefaultStack(), super.world, diamondGens, false, 30 * 20);
-        this.emeraldGens = ResourceGenerator.resourceGenerators(Items.EMERALD.getDefaultStack(), super.world, emeraldGens, false, 30 * 20);
+        this.diamondGens = diamondGens.stream().map(pos -> new ResourceGenerator(Items.DIAMOND.getDefaultStack(), world, this.pos(pos), false, 30 * 20)).collect(Collectors.toSet());
+        this.emeraldGens = emeraldGens.stream().map(pos -> new ResourceGenerator(Items.EMERALD.getDefaultStack(), world, this.pos(pos), false, 40 * 20)).collect(Collectors.toSet());
         this.islandGens = this.makeIslandGenerators(super.world, islandGens, spawnPositions);
+        this.resourceGeneratorIdMap = this.assignGeneratorIds();
         this.bedPositions = this.makeBedPositions(spawnPositions, bedPositions);
         this.individualShops = individualShops;
         this.teamShops = teamShops;
@@ -149,11 +153,20 @@ public class BedwarsGameMap extends AbstractGameMap {
         ));
     }
 
+    private Map<Integer, ResourceGenerator> assignGeneratorIds() {
+        final Map<Integer, ResourceGenerator> map = this.islandGens.values().stream().flatMap(IslandGenerator::getConsituentGenerators).collect(Collectors.toMap(ResourceGenerator::getId, Function.identity()));
+
+        this.diamondGens.forEach(gen -> map.put(gen.getId(), gen));
+        this.emeraldGens.forEach(gen -> map.put(gen.getId(), gen));
+
+        return map;
+    }
+
     @Override
     public void placeMap() {
         super.placeMap();
-        this.individualShops.forEach(pos -> BedwarsShopEntity.spawnWithPos(super.world, super.pos(pos).toBottomCenterPos(), ShopType.INDIVIDUAL));
-        this.teamShops.forEach(pos -> BedwarsShopEntity.spawnWithPos(super.world, super.pos(pos).toBottomCenterPos(), ShopType.TEAM));
+        this.individualShops.forEach(pos -> BedwarsShopEntity.spawnWithPos(this.world, this.pos(pos).toBottomCenterPos(), ShopType.INDIVIDUAL));
+        this.teamShops.forEach(pos -> BedwarsShopEntity.spawnWithPos(this.world, this.pos(pos).toBottomCenterPos(), ShopType.TEAM));
     }
 
     @Override
@@ -177,5 +190,9 @@ public class BedwarsGameMap extends AbstractGameMap {
 
     public BlockPos getBedPosition(DyeColor team) {
         return this.pos(this.bedPositions.get(team));
+    }
+
+    public Optional<ResourceGenerator> getResourceGenerator(int id) {
+        return Optional.ofNullable(this.resourceGeneratorIdMap.get(id));
     }
 }

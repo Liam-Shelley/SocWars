@@ -6,8 +6,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.stream.Streams;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 public class IslandGenerator {
     private static final List<IslandGeneratorUpgrade> GENERATOR_UPGRADES = BedwarsGeneratorDataContainer.INSTANCE.getIslandGeneratorUpgrades();
@@ -44,6 +46,10 @@ public class IslandGenerator {
         this.emeraldGenerator.setStats(stats.emeraldTime(), stats.emeraldCount());
 
         return true;
+    }
+
+    public Stream<ResourceGenerator> getConsituentGenerators() {
+        return Streams.of(this.ironGenerator, this.goldGenerator, this.emeraldGenerator);
     }
 
     public BlockPos getPos() {

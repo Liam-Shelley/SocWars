@@ -19,6 +19,7 @@ import com.soc.resourcedata.containers.BedwarsGeneratorDataContainer;
 import com.soc.resourcedata.deserialisation.ResourceGeneratorUpgrade;
 import com.soc.util.Sounds;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.component.ComponentType;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
@@ -40,6 +41,7 @@ import net.minecraft.util.Unit;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
+import org.apache.commons.lang3.function.TriConsumer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -60,6 +62,26 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
             DIAMOND, Formatting.BLUE,
             EMERALD, Formatting.GREEN
     );
+    private static final Map<ComponentType<?>, TriConsumer<ItemStack, ServerPlayerEntity, BedwarsGameManager>> ITEM_PICKUP_COMPONENT_FUNCTION_MAP = Map.of(
+            ModComponents.RESOURCE_SPLIT, (stack, player, manager) -> {
+                    stack.remove(ModComponents.RESOURCE_SPLIT);
+                    if (manager.map.isWithinSplitRange(player)) {
+                        manager.getPlayers().stream().filter(pickUpPlayer -> manager.map.isWithinSplitRange(pickUpPlayer) && pickUpPlayer.isTeammate(player) && pickUpPlayer != player).forEach(otherPlayer -> {
+                            final ItemStack giveStack = stack.copy();
+                            manager.onItemPickup(otherPlayer, giveStack);
+                            otherPlayer.giveOrDropStack(giveStack);
+                        });
+                    }
+            },
+            ModComponents.RESOURCE_COUNTED, (stack, player, manager) -> {
+                    stack.remove(ModComponents.RESOURCE_COUNTED);
+                    manager.getDbTable(player).collectItem(stack);
+            },
+            ModComponents.GENERATOR_REFERENCE, (stack, player, manager) -> {
+                manager.map.getResourceGenerator(stack.get(ModComponents.GENERATOR_REFERENCE)).ifPresent(ResourceGenerator::checkItemCap);
+                stack.remove(ModComponents.GENERATOR_REFERENCE);
+            }
+    );
 
     private final Map<UUID, PlayerStats> playerStatsMap;
     private final Map<DyeColor, TeamStats> teamStatsMap;
@@ -69,12 +91,12 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
         final long shopSeed = world.random.nextLong();
         this.playerStatsMap = players.stream().collect(Collectors.toMap(ServerPlayerEntity::getUuid, player -> new PlayerStats(player, this.getTeam(player), shopSeed)));
-        this.teamStatsMap = super.teams.keySet().stream().collect(Collectors.toMap(Function.identity(), team -> new TeamStats(team, super.teams.get(team).stream().map(this.playerStatsMap::get).collect(Collectors.toSet()), world, shopSeed, this.map.poss(this.map.getSpawnPositions(team)))));
+        this.teamStatsMap = this.teams.keySet().stream().collect(Collectors.toMap(Function.identity(), team -> new TeamStats(team, this.teams.get(team).stream().map(this.playerStatsMap::get).collect(Collectors.toSet()), world, shopSeed, this.map.poss(this.map.getSpawnPositions(team)))));
     }
 
     @Override
     protected BedwarsGameMap buildMap() {
-        final Optional<BedwarsGameMap> map = AbstractGameMap.loadRandomMap(super.world, super.generateCentrePosition(), BedwarsGameMap::fromNbt, BedwarsGameMap.FILE_EXTENSION);
+        final Optional<BedwarsGameMap> map = AbstractGameMap.loadRandomMap(this.world, this.generateCentrePosition(), BedwarsGameMap::fromNbt, BedwarsGameMap.FILE_EXTENSION);
 
         if (map.isEmpty()) throw new IllegalStateException("No Bedwars map found");
 
@@ -85,9 +107,9 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
     public void startGame() {
         super.startGame();
 
-        super.map.getBedPositions().forEach((team, pos) -> {
-            if (!super.teams.containsKey(team)) {
-                super.world.breakBlock(super.map.pos(pos).down(), false);
+        this.map.getBedPositions().forEach((team, pos) -> {
+            if (!this.teams.containsKey(team)) {
+                this.world.breakBlock(this.map.pos(pos).down(), false);
             }
         });
     }
@@ -101,7 +123,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
             final Text message;
             final SoundEvent sound;
             final BedwarsTable dbTable = this.dbTables.get(uuid);
-            if (this.teamStatsMap.get(super.getTeam(uuid)).isAlive()) {
+            if (this.teamStatsMap.get(this.getTeam(uuid)).isAlive()) {
                 message = Text.translatable("game.bedwars.win");
                 sound = SoundEvents.ENTITY_PLAYER_LEVELUP;
                 dbTable.win();
@@ -137,7 +159,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
         final Stack<UUID> playerStack = getRandomPlayerStack(players);
 
-        final Set<DyeColor> teamColours = super.map.getTeamColours();
+        final Set<DyeColor> teamColours = this.map.getTeamColours();
         final int numTeams = Math.min(spreadRules.numTeams(), teamColours.size());
 
         final ImmutableMultimap.Builder<DyeColor, UUID> builder = ImmutableMultimap.builder();
@@ -152,7 +174,6 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
         return builder.build();
 
-
 //        final ImmutableMultimap.Builder<DyeColor, ServerPlayerEntity> builder2 = ImmutableMultimap.builder();
 //
 //        final DyeColor firstTeam = teamColours.stream().findFirst().get();
@@ -160,7 +181,6 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 //        players.forEach(player -> builder2.put(firstTeam, player));
 //
 //        return builder2.build();
-
     }
 
     @Override
@@ -188,7 +208,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
     @Override
     protected void sendJoinGamePayload(ServerPlayerEntity player) {
         super.sendJoinGamePayload(player);
-        ServerPlayNetworking.send(player, new JoinBedwarsPayload(super.getGameId(), new Teams(super.teams, this.teamStatsMap)));
+        ServerPlayNetworking.send(player, new JoinBedwarsPayload(this.getGameId(), new Teams(this.teams, this.teamStatsMap)));
     }
 
     @Override
@@ -288,20 +308,9 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
     @Override
     public void onItemPickup(ServerPlayerEntity player, ItemStack stack) {
-        if (stack.get(ModComponents.RESOURCE_SPLIT) != null) {
-            stack.remove(ModComponents.RESOURCE_SPLIT);
-            if (this.map.isWithinSplitRange(player)) {
-                this.getPlayers().stream().filter(pickUpPlayer -> this.map.isWithinSplitRange(pickUpPlayer) && pickUpPlayer.isTeammate(player) && pickUpPlayer != player).forEach(otherPlayer -> {
-                    final ItemStack giveStack = stack.copy();
-                    this.onItemPickup(otherPlayer, giveStack);
-                    otherPlayer.giveOrDropStack(giveStack);
-                });
-            }
-        }
-        if (stack.get(ModComponents.RESOURCE_COUNTED) != null) {
-            stack.remove(ModComponents.RESOURCE_COUNTED);
-            this.getDbTable(player).collectItem(stack);
-        }
+        ITEM_PICKUP_COMPONENT_FUNCTION_MAP.forEach((component, function) -> {
+            if (stack.get(component) != null) function.accept(stack, player, this);
+        });
     }
 
     @Override
@@ -373,11 +382,11 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
     }
 
     public void upgradeDiamondGens(GeneratorStats stats) {
-        super.map.upgradeDiamondGens(stats);
+        this.map.upgradeDiamondGens(stats);
     }
 
     public void upgradeEmeraldGens(GeneratorStats stats) {
-        super.map.upgradeEmeraldGens(stats);
+        this.map.upgradeEmeraldGens(stats);
     }
 
     @Override
@@ -403,15 +412,15 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
     }
 
     public boolean buyTrap(ServerPlayerEntity player, AbstractTrap trap) {
-        return this.teamStatsMap.get(this.getTeam(player)).buyTrap(trap, super.world);
+        return this.teamStatsMap.get(this.getTeam(player)).buyTrap(trap, this.world);
     }
 
     public boolean buyAbility(ServerPlayerEntity player, AbstractAbility ability) {
-        return this.teamStatsMap.get(this.getTeam(player)).buyAbility(ability, super.world);
+        return this.teamStatsMap.get(this.getTeam(player)).buyAbility(ability, this.world);
     }
 
     public void buyEnchantmentUpgrade(ServerPlayerEntity player, RegistryEntry<Enchantment> enchantment, int tier) {
-        this.teamStatsMap.get(this.getTeam(player)).buyEnchantmentUpgrade(enchantment, super.world, tier);
+        this.teamStatsMap.get(this.getTeam(player)).buyEnchantmentUpgrade(enchantment, this.world, tier);
     }
 
     public void buyTickFunctionUpgrade(ServerPlayerEntity player, AbstractTickFunction function, int tier) {
