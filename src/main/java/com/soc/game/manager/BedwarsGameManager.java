@@ -201,22 +201,22 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         final boolean canRespawn = this.canRespawn(player);
         this.broadcastDeath(player, source, !canRespawn);
 
-        getPlayerAttacker(player).ifPresentOrElse(attacker -> giveResourcesToPlayer(player, (ServerPlayerEntity) attacker), () -> dropResources(player));
+        getPlayerAttacker(player).ifPresentOrElse(attacker -> this.giveResourcesToPlayer(player, (ServerPlayerEntity) attacker), () -> dropResources(player));
 
         final PlayerStats playerStats = this.getPlayerStats(player);
-        playerStats.onDeath(canRespawn, super.world);
+        playerStats.onDeath(canRespawn, this.world);
         player.getInventory().clear();
-        playerStats.returnToolsToSlots(super.world);
+        playerStats.returnToolsToSlots(this.world);
 
         super.onPlayerDeath(player, source, amount);
 
-        if (this.getAliveTeams().size() < (super.teams.keySet().size() > 1 ? 2 : 1)) {
+        if (this.getAliveTeams().size() < (this.teams.keySet().size() > 1 ? 2 : 1)) {
             this.endGame(false);
             return false;
         }
 
         if (canRespawn) {
-            PrescheduledEvents.playCountdown(() -> super.respawnPlayer(player), this, 5, 20, SoundEvents.BLOCK_FUNGUS_STEP, player);
+            PrescheduledEvents.playCountdown(() -> this.respawnPlayer(player), this, 5, 20, SoundEvents.BLOCK_FUNGUS_STEP, player);
         } else {
             player.networkHandler.sendPacket(new TitleS2CPacket(Text.translatable("game.bedwars.eliminate")));
         }
@@ -226,7 +226,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
     @Override
     protected boolean canRespawn(ServerPlayerEntity player) {
-        return this.teamStatsMap.get(super.getTeam(player)).hasBed();
+        return this.teamStatsMap.get(this.getTeam(player)).hasBed();
     }
 
     protected Set<ServerPlayerEntity> getAlivePlayers() {
@@ -263,10 +263,14 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         });
     }
 
-    protected static void giveResourcesToPlayer(ServerPlayerEntity giver, ServerPlayerEntity receiver) {
+    protected void giveResourcesToPlayer(ServerPlayerEntity giver, ServerPlayerEntity receiver) {
+        final BedwarsTable table = this.getDbTable(receiver);
         for (Item resource : RESOURCES) {
             final int count = giver.getInventory().count(resource);
             final ItemStack stack = new ItemStack(resource, count);
+
+            table.collectItem(stack);
+
             stack.set(ModComponents.RESOURCE_COUNTED, Unit.INSTANCE);
             receiver.giveItemStack(stack);
 
@@ -284,38 +288,43 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
     @Override
     public void onItemPickup(ServerPlayerEntity player, ItemStack stack) {
+        if (stack.get(ModComponents.RESOURCE_SPLIT) != null) {
+            stack.remove(ModComponents.RESOURCE_SPLIT);
+            if (this.map.isWithinSplitRange(player)) {
+                this.getPlayers().stream().filter(pickUpPlayer -> this.map.isWithinSplitRange(pickUpPlayer) && pickUpPlayer.isTeammate(player) && pickUpPlayer != player).forEach(otherPlayer -> {
+                    final ItemStack giveStack = stack.copy();
+                    this.onItemPickup(otherPlayer, giveStack);
+                    otherPlayer.giveOrDropStack(giveStack);
+                });
+            }
+        }
         if (stack.get(ModComponents.RESOURCE_COUNTED) != null) {
             stack.remove(ModComponents.RESOURCE_COUNTED);
             this.getDbTable(player).collectItem(stack);
-        }
-        final BedwarsGameMap map = super.map;
-        if (stack.get(ModComponents.RESOURCE_SPLIT) != null && map.isWithinSplitRange(player)) {
-            stack.remove(ModComponents.RESOURCE_SPLIT);
-            this.getPlayers().stream().filter(map::isWithinSplitRange).filter(player::isTeammate).filter(pickUpPlayer -> pickUpPlayer != player).forEach(otherPlayer -> otherPlayer.giveOrDropStack(stack));
         }
     }
 
     @Override
     public boolean onBedBroken(ServerPlayerEntity player, BlockPos pos) {
-        final Optional<DyeColor> bedTeamOptional = super.map.getBedPositions().entrySet().stream().filter(entry -> super.map.pos(entry.getValue()).isWithinDistance(pos, 2d)).findFirst().map(Map.Entry::getKey);
+        final Optional<DyeColor> bedTeamOptional = this.map.getBedPositions().entrySet().stream().filter(entry -> super.map.pos(entry.getValue()).isWithinDistance(pos, 2d)).findFirst().map(Map.Entry::getKey);
 
         return bedTeamOptional.map(bedTeam -> {
-            if (bedTeam == super.getTeam(player) && player.getGameMode() == GameMode.SURVIVAL) {
+            if (bedTeam == this.getTeam(player) && player.getGameMode() == GameMode.SURVIVAL) {
                 player.sendMessage(Text.translatable("game.bedwars.broke_own_bed", colouredTextFromColour(bedTeam)), false);
                 return false;
             }
 
             final boolean brokeBed = this.teamStatsMap.get(bedTeam).breakBed();
             if (brokeBed) {
-                super.broadcast(Text.translatable("game.bedwars.bed_broken.chat", colouredTextFromColour(bedTeam), player.getStyledDisplayName()), false);
-                super.broadcastTitle(bedTeam, Text.translatable("game.bedwars.bed_broken.title").formatted(Formatting.DARK_RED));
-                super.broadcastSound(bedTeam, SoundEvents.ENTITY_WITHER_SPAWN);
+                this.broadcast(Text.translatable("game.bedwars.bed_broken.chat", colouredTextFromColour(bedTeam), player.getStyledDisplayName()), false);
+                this.broadcastTitle(bedTeam, Text.translatable("game.bedwars.bed_broken.title").formatted(Formatting.DARK_RED));
+                this.broadcastSound(bedTeam, SoundEvents.ENTITY_WITHER_SPAWN);
                 player.playSoundToPlayer(Sounds.AIR_HORN, SoundCategory.PLAYERS, 1, 1);
 
-                super.getDbTable(player).grantBedBreak();
-                super.getPlayers(bedTeam).stream().map(super::getDbTable).forEach(BedwarsTable::loseBed);
+                this.getDbTable(player).grantBedBreak();
+                this.getPlayers(bedTeam).stream().map(this::getDbTable).forEach(BedwarsTable::loseBed);
 
-                super.sendPayloadToPlayers(new BedBreakPayload(bedTeam));
+                this.sendPayloadToPlayers(new BedBreakPayload(bedTeam));
             }
 
             return true;

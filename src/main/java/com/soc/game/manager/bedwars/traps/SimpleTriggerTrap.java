@@ -39,7 +39,7 @@ public class SimpleTriggerTrap extends AbstractTrap {
 
     public static final AbstractTrap MINING_FATIGUE = register(new SimpleTriggerTrap("mining_fatigue", Items.TRIPWIRE_HOOK.getDefaultStack(), 12 * 20, StatusEffects.MINING_FATIGUE, 1));
     public static final AbstractTrap CLEAR_EFFECTS = register(new SimpleTriggerTrap("clear_effects", Items.MILK_BUCKET.getDefaultStack(), 5 * 20, ServerPlayerEntity::clearStatusEffects));
-    public static final AbstractTrap LAUNCH = register(new SimpleTriggerTrap("launch", Items.PISTON.getDefaultStack(), 5 * 20, enemy -> enemy.networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(enemy.getId(), new Vec3d(0d, 2d, 0d)))));
+    public static final AbstractTrap LAUNCH = register(new SimpleTriggerTrap("launch", Items.PISTON.getDefaultStack(), 5 * 20, (enemy, context) -> enemy.networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(enemy.getId(), new Vec3d(0d, context.getCooldownTime() * 0.4d, 0d)))));
     public static final AbstractTrap STEVIE_WONDER = register(new SimpleTriggerTrap("steve_harvey", Items.SCULK_VEIN.getDefaultStack(), 8 * 20, (enemy, context) -> {
         enemy.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, context.getCooldownTime(), 1, false, true, true));
         enemy.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, context.getCooldownTime(), 1, false, true, true));

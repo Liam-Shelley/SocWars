@@ -450,5 +450,6 @@
   "tick_function.heal_pool": "Heal Pool",
   "tick_function.maniac_miner": "Maniac Miner",
   "tick_function.invisibility": "Permanent Invisibility",
-  "summoners_garb.spawn_chance": "+%s%% Chance to summon"
+  "summoners_garb.spawn_chance": "+%s%% Chance to summon",
+  "game.disallow_dismount": "You may not press %s to Dismount"
 }
