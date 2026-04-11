@@ -72,9 +72,10 @@ public class ResourceGenerator {
         this.maxCount = stats.maxCount();
     }
 
-    public void setStats(int generationTime, int count) {
+    public void setStats(int generationTime, int count, int maxCount) {
         this.generationTime = generationTime;
         this.item.setCount(count);
+        this.maxCount = maxCount;
     }
 
     public BlockPos getPos() {

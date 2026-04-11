@@ -2,39 +2,63 @@
   {
     "iron_generation_time": 80,
     "iron_generation_count": 4,
+    "iron_max_count": 48,
     "gold_generation_time": 100,
-    "gold_generation_count": 1
+    "gold_generation_count": 1,
+    "gold_max_count": 24
   },
   {
     "cost": 4,
+    "time": {
+      "minutes": 5
+    },
     "iron_generation_time": 50,
     "iron_generation_count": 4,
+    "iron_max_count": 72,
     "gold_generation_time": 70,
-    "gold_generation_count": 1
+    "gold_generation_count": 1,
+    "gold_max_count": 32
   },
   {
     "cost": 8,
+    "time": {
+      "minutes": 10
+    },
     "iron_generation_time": 30,
     "iron_generation_count": 5,
+    "iron_max_count": 128,
     "gold_generation_time": 40,
-    "gold_generation_count": 1
+    "gold_generation_count": 1,
+    "gold_max_count": 48
   },
   {
     "cost": 12,
+    "time": {
+      "minutes": 15
+    },
     "iron_generation_time": 20,
     "iron_generation_count": 6,
+    "iron_max_count": 256,
     "gold_generation_time": 40,
     "gold_generation_count": 2,
+    "gold_max_count": 72,
     "emerald_generation_time": 400,
-    "emerald_generation_count": 1
+    "emerald_generation_count": 1,
+    "emerald_max_count": 4
   },
   {
     "cost": 16,
+    "time": {
+      "minutes": 20
+    },
     "iron_generation_time": 16,
     "iron_generation_count": 8,
+    "iron_max_count": 512,
     "gold_generation_time": 24,
     "gold_generation_count": 2,
+    "gold_max_count": 128,
     "emerald_generation_time": 100,
-    "emerald_generation_count": 1
+    "emerald_generation_count": 1,
+    "emerald_max_count": 8
   }
 ]

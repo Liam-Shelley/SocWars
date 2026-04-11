@@ -36,14 +36,14 @@ public class IslandGenerator {
         this.emeraldGenerator.tick();
     }
 
-    public boolean upgrade() {
+    public boolean upgrade() { //TODO: Link this up for both manual and automatic upgrades
         if (GENERATOR_UPGRADES.size() <= this.tier + 1) return false;
 
         final IslandGeneratorUpgrade stats = GENERATOR_UPGRADES.get(++this.tier);
 
-        this.ironGenerator.setStats(stats.ironTime(), stats.ironCount());
-        this.goldGenerator.setStats(stats.goldTime(), stats.goldCount());
-        this.emeraldGenerator.setStats(stats.emeraldTime(), stats.emeraldCount());
+        this.ironGenerator.setStats(stats.ironTime(), stats.ironCount(), stats.ironMaxCount());
+        this.goldGenerator.setStats(stats.goldTime(), stats.goldCount(), stats.goldMaxCount());
+        this.emeraldGenerator.setStats(stats.emeraldTime(), stats.emeraldCount(), stats.emeraldMaxCount());
 
         return true;
     }

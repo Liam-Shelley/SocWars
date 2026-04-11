@@ -3,7 +3,8 @@
     "generation_time": {
       "seconds": 30
     },
-    "generation_count": 1
+    "generation_count": 1,
+    "max_count": 6
   },
   {
     "time": {
@@ -12,7 +13,8 @@
     "generation_time": {
       "seconds": 30
     },
-    "generation_count": 1
+    "generation_count": 1,
+    "max_count": 8
   },
   {
     "time": {
@@ -22,7 +24,8 @@
     "generation_time": {
       "seconds": 20
     },
-    "generation_count": 1
+    "generation_count": 1,
+    "max_count": 10
   },
   {
     "time": {
@@ -32,7 +35,8 @@
       "seconds": 12,
       "ticks": 10
     },
-    "generation_count": 1
+    "generation_count": 1,
+    "max_count": 12
   },
   {
     "time": {
@@ -42,6 +46,7 @@
       "seconds": 7,
       "ticks": 10
     },
-    "generation_count": 1
+    "generation_count": 1,
+    "max_count": 16
   }
 ]
