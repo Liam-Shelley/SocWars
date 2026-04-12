@@ -382,7 +382,7 @@ public class UseFunctionWeapon extends Item {
                         }
                     } while (hitResult != null && hitResult.getEntity().squaredDistanceTo(user.getPos()) <= maxDistance * maxDistance);
 
-                    entities.forEach(entity -> entity.damage(serverWorld, damageSource(serverWorld, DamageTypes.SNIPER_RIFLE, user), 12f));
+                    entities.forEach(entity -> entity.damage(serverWorld, damageSource(serverWorld, DamageTypes.SNIPER_RIFLE, user), 18f));
                 }
 
                 return ActionResult.SUCCESS;

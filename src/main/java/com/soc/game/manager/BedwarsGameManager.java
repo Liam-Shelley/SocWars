@@ -302,8 +302,6 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
             final ItemStack stack = new ItemStack(resource, count);
 
             table.collectItem(stack);
-
-            stack.set(ModComponents.RESOURCE_COUNTED, Unit.INSTANCE);
             receiver.giveItemStack(stack);
 
             if (count > 0) receiver.sendMessage(Text.translatable("game.bedwars.receive_items", count, resource.getDefaultStack().toHoverableText().copy().formatted(RESOURCE_TO_COLOUR_MAP.get(resource))).formatted(Formatting.DARK_GREEN), false);

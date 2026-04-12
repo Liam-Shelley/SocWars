@@ -34,6 +34,7 @@ public class RedirectorAbility extends AbstractAbility {
     }));
     public static final AbstractAbility TRAP_AMPLIFIER = register(new RedirectorAbility("trap_amplifier", Items.GLASS_PANE.getDefaultStack(), 30 * 20, (pos, manager, enemiesInRange, owningTeam, trapTriggerFunction) -> {
         trapTriggerFunction.modifyCooldownTime(initial -> 2 * initial); //TODO: Whole system needs a lot of work
+        trapTriggerFunction.trigger(pos, manager, enemiesInRange, owningTeam);
         return true;
     }));
 
