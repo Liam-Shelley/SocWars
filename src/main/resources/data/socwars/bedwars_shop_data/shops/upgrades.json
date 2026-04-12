@@ -62,6 +62,13 @@
       "options": [
         "socwars:bedwars_shop_data/tick_function_upgrade_items/invisibility"
       ]
+    },
+    {
+      "x": 3,
+      "y": 1,
+      "options": [
+        "socwars:bedwars_shop_data/generator_upgrade_items/standard_four_tier"
+      ]
     }
   ]
 }

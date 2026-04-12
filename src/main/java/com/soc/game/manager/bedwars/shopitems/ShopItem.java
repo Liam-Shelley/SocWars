@@ -28,6 +28,7 @@ import static com.soc.lib.SocWarsLib.inventoryCanAcceptStack;
 
 public interface ShopItem<INHERITOR> {
     Map<Integer, Function<RegistryByteBuf, ?>> DECODER_MAP = new HashMap<>();
+    String ICON_KEY = "icon";
 
     boolean buy(PlayerEntity player, AbstractShopScreenHandler context);
 
@@ -101,11 +102,7 @@ public interface ShopItem<INHERITOR> {
         }
     }
 
-    default void enchant(RegistryEntry<Enchantment> enchantment, int tier) {
-        if (enchantment.value().isAcceptableItem(this.getIcon())) {
-            this.getIcon().addEnchantment(enchantment, tier);
-        }
-    }
+    default void enchant(RegistryEntry<Enchantment> enchantment, int tier) {}
 
     static void applyEnchantmentIfApplicable(ItemStack stack, RegistryEntry<Enchantment> enchantment, int tier) {
         if (enchantment.value().isAcceptableItem(stack)) {

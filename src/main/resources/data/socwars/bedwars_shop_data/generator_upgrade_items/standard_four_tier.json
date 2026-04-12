@@ -1,0 +1,17 @@
+{
+  "icon": "minecraft:furnace",
+  "costs": [
+    {
+      "diamonds": 4
+    },
+    {
+      "diamonds": 8
+    },
+    {
+      "diamonds": 12
+    },
+    {
+      "diamonds": 16
+    }
+  ]
+}

@@ -10,12 +10,12 @@ import java.util.Optional;
 
 import static com.soc.lib.json.JsonHelper.*;
 
-public record CostStack(Cost cost, ItemStack stack) {
-    public static final PacketCodec<RegistryByteBuf, CostStack> PACKET_CODEC = PacketCodec.tuple(Cost.PACKET_CODEC, CostStack::cost, PacketCodecs.optional(ItemStack.PACKET_CODEC), CostStack::optionalStack, CostStack::new);
+public record CostAndStack(Cost cost, ItemStack stack) {
+    public static final PacketCodec<RegistryByteBuf, CostAndStack> PACKET_CODEC = PacketCodec.tuple(Cost.PACKET_CODEC, CostAndStack::cost, PacketCodecs.optional(ItemStack.PACKET_CODEC), CostAndStack::optionalStack, CostAndStack::new);
 
-    public static final CostStack EMPTY = new CostStack(Cost.DEFAULT, ItemStack.EMPTY);
+    public static final CostAndStack EMPTY = new CostAndStack(Cost.DEFAULT, ItemStack.EMPTY);
 
-    public CostStack(JsonObject object) {
+    public CostAndStack(JsonObject object) {
         this(
                 getDefaultedObject(object, Cost.KEY, Cost::new, Cost.ERROR_SIGNAL),
                 getDefaultedItem(object, ItemStack.EMPTY)
@@ -23,7 +23,7 @@ public record CostStack(Cost cost, ItemStack stack) {
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    public CostStack(Cost cost, Optional<ItemStack> stack) {
+    public CostAndStack(Cost cost, Optional<ItemStack> stack) {
         this(cost, stack.orElse(ItemStack.EMPTY));
     }
 
@@ -31,7 +31,7 @@ public record CostStack(Cost cost, ItemStack stack) {
         return this.stack.isEmpty() ? Optional.empty() : Optional.of(this.stack);
     }
 
-    public CostStack copy() {
-        return new CostStack(this.cost, this.stack.copy());
+    public CostAndStack copy() {
+        return new CostAndStack(this.cost, this.stack.copy());
     }
 }

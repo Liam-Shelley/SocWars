@@ -52,8 +52,8 @@ public abstract class AbstractGameMap {
     protected final BlockPos centrePos;
     protected final BlockPos absoluteCentrePos;
     protected final Multimap<DyeColor, BlockPos> spawnPositions;
-    protected final SparseVoxelOctree<Boolean> blockProtectionOverlay;
-    protected final BlockProtectionPayload blockProtectionPacket; //Cache me outside how bout dat
+    @Nullable protected final SparseVoxelOctree<Boolean> blockProtectionOverlay;
+    @Nullable protected final BlockProtectionPayload blockProtectionPacket; //Cache me outside how bout dat
 
     protected final ServerWorld world;
 
@@ -64,7 +64,7 @@ public abstract class AbstractGameMap {
             @NotNull Set<SpawnPosition> spawnPositions,
             @NotNull BlockPos centrePos,
             BlockPos absoluteCentrePos,
-            SparseVoxelOctree<Boolean> blockProtectionOverlay,
+            @Nullable SparseVoxelOctree<Boolean> blockProtectionOverlay,
             ServerWorld world
     ) {
         this.structure = structure;
@@ -167,13 +167,13 @@ public abstract class AbstractGameMap {
         return Optional.of(maps[world.random.nextBetween(0, maps.length - 1)]);
     }
 
-    public static <T extends AbstractGameMap> Optional<T> loadRandomMap(@NotNull ServerWorld world, @NotNull BlockPos centrePos, FromNbtFunction<T> fromNbtFunction, @NotNull String fileExtension) {
-        final Optional<File> file = AbstractGameMap.getRandomMap(fileExtension, world, null);
+    public static <T extends AbstractGameMap> Optional<T> loadRandomMap(ServerWorld world, BlockPos centrePos, FromNbtFunction<T> fromNbtFunction, String fileExtension) {
+        final Optional<File> optional = AbstractGameMap.getRandomMap(fileExtension, world, null);
 
-        return file.flatMap(optional -> loadFromFile(file.get(), world, centrePos, fromNbtFunction));
+        return optional.flatMap(file -> loadFromFile(file, world, centrePos, fromNbtFunction));
     }
 
-    public static <T extends AbstractGameMap> Optional<T> loadFromFile(File file, @NotNull ServerWorld world, @NotNull BlockPos centrePos, FromNbtFunction<T> fromNbtFunction) {
+    public static <T extends AbstractGameMap> Optional<T> loadFromFile(File file, ServerWorld world, BlockPos centrePos, FromNbtFunction<T> fromNbtFunction) {
         try {
             final NbtCompound compound = NbtIo.read(file.toPath());
             return compound == null ? Optional.empty() : fromNbtFunction.fromNbt(compound, world, centrePos);

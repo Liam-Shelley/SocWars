@@ -450,6 +450,12 @@
   "tick_function.heal_pool": "Heal Pool",
   "tick_function.maniac_miner": "Maniac Miner",
   "tick_function.invisibility": "Permanent Invisibility",
+  "upgrade.generator": "§fForge",
+  "upgrade.generator.tier.0": "§8Stone",
+  "upgrade.generator.tier.1": "§7Iron",
+  "upgrade.generator.tier.2": "§6Gold",
+  "upgrade.generator.tier.3": "§2Emerald",
+  "upgrade.generator.tier.4": "§4Molten",
   "summoners_garb.spawn_chance": "+%s%% Chance to summon",
   "game.disallow_dismount": "You may not press %s to Dismount"
 }

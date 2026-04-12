@@ -10,6 +10,8 @@ import net.minecraft.util.Formatting;
 import java.util.List;
 
 public abstract class TieredShopItem<INHERITOR> implements ShopItem<INHERITOR> {
+    public static final String COSTS_KEY = "costs";
+
     protected int tier;
     protected final List<Cost> costs;
 
@@ -36,10 +38,11 @@ public abstract class TieredShopItem<INHERITOR> implements ShopItem<INHERITOR> {
     public boolean buy(PlayerEntity player, AbstractShopScreenHandler context) {
         if (this.tier == this.costs.size() || !this.getCost().canAfford(player)) return false;
 
+        this.takeItems(player);
+
         this.tier++;
         this.getIcon().setCount(Math.min(this.tier + 1, this.costs.size()));
 
-        this.takeItems(player);
         context.refreshItems();
 
         return true;

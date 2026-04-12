@@ -25,7 +25,7 @@ import java.util.OptionalInt;
 import static com.soc.lib.json.JsonHelper.*;
 import static net.minecraft.util.JsonHelper.deserialize;
 
-public class TeamShopItem implements ShopItem<TeamShopItem> {
+public class TeamShopItem implements ShopItem<TeamShopItem>, TeamItem {
     public static final int ID = 3;
     private static final PacketCodec<RegistryByteBuf, TeamShopItem> PACKET_CODEC = PacketCodec.tuple(Cost.PACKET_CODEC, TeamShopItem::getCost, PacketCodecs.optional(ItemStack.PACKET_CODEC), TeamShopItem::getOptionalStack, TeamShopItem::new);
 
@@ -67,6 +67,7 @@ public class TeamShopItem implements ShopItem<TeamShopItem> {
         );
     }
 
+    @Override
     public void setTeam(DyeColor team) {
         this.stackMap.right().ifPresent(map -> this.stackMap = Either.left(map.get(DyeColourWithEmpty.fromDyeColour(team))));
     }
@@ -116,7 +117,7 @@ public class TeamShopItem implements ShopItem<TeamShopItem> {
         this.stackMap.ifRight(map -> map.values().forEach(stack -> ShopItem.applyEnchantmentIfApplicable(stack, enchantment, tier)));
     }
 
-    /// Should only be called before {@link TeamShopItem#setTeam} has been called
+    /// Should only be called before {@link TeamItem#setTeam} has been called
     @Override
     public TeamShopItem lazyClone() {
         return new TeamShopItem(this.cost, this.stackMap.right().get());

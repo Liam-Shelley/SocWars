@@ -8,7 +8,6 @@
     "gold_max_count": 24
   },
   {
-    "cost": 4,
     "time": {
       "minutes": 5
     },
@@ -20,7 +19,6 @@
     "gold_max_count": 32
   },
   {
-    "cost": 8,
     "time": {
       "minutes": 10
     },
@@ -32,7 +30,6 @@
     "gold_max_count": 48
   },
   {
-    "cost": 12,
     "time": {
       "minutes": 15
     },
@@ -47,7 +44,6 @@
     "emerald_max_count": 4
   },
   {
-    "cost": 16,
     "time": {
       "minutes": 20
     },

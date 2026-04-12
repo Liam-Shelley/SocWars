@@ -79,7 +79,7 @@ public class JsonHelper {
     }
 
     public static <T> T getDefaultedObject(JsonObject json, String key, Function<JsonObject, T> constructor, T def) {
-        if (!json.get(key).isJsonObject()) return def;
+        if (json.get(key) == null || !json.get(key).isJsonObject()) return def;
 
         final JsonObject objectJson = json.getAsJsonObject(key);
         return objectJson == null ? def : constructor.apply(objectJson);
@@ -92,7 +92,7 @@ public class JsonHelper {
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public static <T> List<T> getDefaultedObjectList(JsonObject json, String key, Function<JsonObject, T> constructor, @NotNull Optional<T> def) {
-        if (!json.get(key).isJsonArray()) return List.of();
+        if (json.get(key) == null || !json.get(key).isJsonArray()) return List.of();
 
         final JsonArray jsonList = json.getAsJsonArray(key);
         final List<T> destList = new ArrayList<>();

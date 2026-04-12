@@ -1,4 +1,5 @@
 package com.soc.resourcedata.listeners;
+
 import com.soc.SocWars;
 import com.soc.game.manager.bedwars.shopitems.*;
 import com.soc.resourcedata.containers.BedwarsShopDataContainer;
@@ -7,7 +8,6 @@ import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
-import java.io.BufferedReader;
 import java.io.Reader;
 import java.util.Map;
 import java.util.function.Function;
@@ -24,7 +24,8 @@ public class BedwarsShopData implements SimpleSynchronousResourceReloadListener 
             "bedwars_shop_data/trap_items", TrapShopItem::new,
             "bedwars_shop_data/ability_items", AbilityShopItem::new,
             "bedwars_shop_data/enchantment_upgrade_items", EnchantmentUpgradeShopItem::new,
-            "bedwars_shop_data/tick_function_upgrade_items", TickFunctionUpgradeItem::new
+            "bedwars_shop_data/tick_function_upgrade_items", TickFunctionUpgradeShopItem::new,
+            "bedwars_shop_data/generator_upgrade_items", GeneratorUpgradeShopItem::new
     );
 
     private BedwarsShopData() {}

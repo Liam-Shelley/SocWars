@@ -141,5 +141,8 @@ public class S2CReceivers {
                 if (masterVolume.getValue() < 10e-5d) masterVolume.setValue(startingVolume);
             }, payload.time());
         }));
+        ClientPlayNetworking.registerGlobalReceiver(LeaveGamePayload.ID, ((payload, context) -> {
+            BlockProtectionManager.INSTANCE.clearBlockProtection();
+        }));
     }
 }

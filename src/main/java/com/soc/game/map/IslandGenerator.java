@@ -2,7 +2,6 @@ package com.soc.game.map;
 
 import com.soc.resourcedata.containers.BedwarsGeneratorDataContainer;
 import com.soc.resourcedata.deserialisation.IslandGeneratorUpgrade;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -25,9 +24,9 @@ public class IslandGenerator {
         this.pos = pos;
 
         final IslandGeneratorUpgrade baseStats = GENERATOR_UPGRADES.getFirst();
-        this.ironGenerator = new ResourceGenerator(new ItemStack(Items.IRON_INGOT, baseStats.ironCount()), world, pos, true, baseStats.ironTime());
-        this.goldGenerator = new ResourceGenerator(new ItemStack(Items.GOLD_INGOT, baseStats.goldCount()), world, pos, true, baseStats.goldTime());
-        this.emeraldGenerator = new ResourceGenerator(new ItemStack(Items.EMERALD, baseStats.emeraldCount()), world, pos, true, baseStats.emeraldTime());
+        this.ironGenerator = new ResourceGenerator(Items.IRON_INGOT, baseStats.ironCount(), world, pos, true, baseStats.ironTime());
+        this.goldGenerator = new ResourceGenerator(Items.GOLD_INGOT, baseStats.goldCount(), world, pos, true, baseStats.goldTime());
+        this.emeraldGenerator = new ResourceGenerator(Items.EMERALD, baseStats.emeraldCount(), world, pos, true, baseStats.emeraldTime());
     }
 
     public void tick() {
@@ -36,10 +35,10 @@ public class IslandGenerator {
         this.emeraldGenerator.tick();
     }
 
-    public boolean upgrade() { //TODO: Link this up for both manual and automatic upgrades
-        if (GENERATOR_UPGRADES.size() <= this.tier + 1) return false;
+    public boolean upgrade(int tier) { //TODO: Link this up for automatic upgrades
+        if (tier < this.tier || tier >= GENERATOR_UPGRADES.size()) return false;
 
-        final IslandGeneratorUpgrade stats = GENERATOR_UPGRADES.get(++this.tier);
+        final IslandGeneratorUpgrade stats = GENERATOR_UPGRADES.get(this.tier = tier);
 
         this.ironGenerator.setStats(stats.ironTime(), stats.ironCount(), stats.ironMaxCount());
         this.goldGenerator.setStats(stats.goldTime(), stats.goldCount(), stats.goldMaxCount());
@@ -48,7 +47,7 @@ public class IslandGenerator {
         return true;
     }
 
-    public Stream<ResourceGenerator> getConsituentGenerators() {
+    public Stream<ResourceGenerator> getConstituentGenerators() {
         return Streams.of(this.ironGenerator, this.goldGenerator, this.emeraldGenerator);
     }
 

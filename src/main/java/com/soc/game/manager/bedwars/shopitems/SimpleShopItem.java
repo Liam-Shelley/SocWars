@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.soc.resourcedata.deserialisation.Cost;
 import com.soc.screenhandler.AbstractShopScreenHandler;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.equipment.trim.*;
@@ -12,6 +13,7 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
@@ -105,6 +107,13 @@ public class SimpleShopItem implements ShopItem<SimpleShopItem>, TooltipProvider
             final Registry<ArmorTrimMaterial> materialRegistry = world.getRegistryManager().getOrThrow(RegistryKeys.TRIM_MATERIAL);
             final Registry<ArmorTrimPattern> patternRegistry = world.getRegistryManager().getOrThrow(RegistryKeys.TRIM_PATTERN);
             this.stack.set(DataComponentTypes.TRIM, new ArmorTrim(materialRegistry.getOrThrow(armourTrimFromColour(team)), patternRegistry.getOrThrow(ArmorTrimPatterns.FLOW)));
+        }
+    }
+
+    @Override
+    public void enchant(RegistryEntry<Enchantment> enchantment, int tier) {
+        if (enchantment.value().isAcceptableItem(this.getIcon())) {
+            this.getIcon().addEnchantment(enchantment, tier);
         }
     }
 

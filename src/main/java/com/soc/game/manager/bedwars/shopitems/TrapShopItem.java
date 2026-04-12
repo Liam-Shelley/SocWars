@@ -89,9 +89,6 @@ public class TrapShopItem implements ShopItem<TrapShopItem>, TooltipProvider {
     }
 
     @Override
-    public void enchant(RegistryEntry<Enchantment> enchantment, int tier) {}
-
-    @Override
     public TrapShopItem lazyClone() {
         return this;
     }

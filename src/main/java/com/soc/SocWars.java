@@ -75,7 +75,8 @@ public class SocWars implements ModInitializer {
 		TrapShopItem.initialise();
 		AbilityShopItem.initialise();
 		DisplayShopItem.initialise();
-		TickFunctionUpgradeItem.initialise();
+		GeneratorUpgradeShopItem.initialise();
+		TickFunctionUpgradeShopItem.initialise();
 
 		Traps.initialise();
 		Abilities.initialise();

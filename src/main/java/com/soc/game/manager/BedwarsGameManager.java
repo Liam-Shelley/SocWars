@@ -62,6 +62,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
             DIAMOND, Formatting.BLUE,
             EMERALD, Formatting.GREEN
     );
+    @SuppressWarnings("DataFlowIssue")
     private static final Map<ComponentType<?>, TriConsumer<ItemStack, ServerPlayerEntity, BedwarsGameManager>> ITEM_PICKUP_COMPONENT_FUNCTION_MAP = Map.of(
             ModComponents.RESOURCE_SPLIT, (stack, player, manager) -> {
                     stack.remove(ModComponents.RESOURCE_SPLIT);
@@ -213,6 +214,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
     @Override
     protected void sendLeaveGamePayload(ServerPlayerEntity player) {
+        super.sendLeaveGamePayload(player);
         ServerPlayNetworking.send(player, new LeaveBedwarsPayload());
     }
 
@@ -425,6 +427,10 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
     public void buyTickFunctionUpgrade(ServerPlayerEntity player, AbstractTickFunction function, int tier) {
         this.teamStatsMap.get(this.getTeam(player)).buyTickFunctionUpgrade(function, tier);
+    }
+
+    public boolean buyGeneratorUpgrade(ServerPlayerEntity player, int tier) {
+        return this.map.upgradeIslandGen(this.getTeam(player), tier);
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.soc.database.stats.CombatTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.SpreadRules;
 import com.soc.lib.Events;
+import com.soc.networking.s2c.LeaveGamePayload;
 import com.soc.networking.s2c.UpdateHotbarPayload;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
@@ -59,10 +60,10 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
 
     private final int gameId;
 
-    protected final MAP map;
     protected final ServerWorld world;
-    protected final Multimap<DyeColor, UUID> teams;
     protected final List<UUID> spectators;
+    protected final MAP map;
+    protected final Multimap<DyeColor, UUID> teams;
     protected final Map<DyeColor, Team> scoreboardTeams;
     protected final @Nullable EventQueue<EVENT> eventQueue;
 
@@ -106,7 +107,9 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         ifNotNull(this.map.getBlockProtectionPacket(), packet -> ServerPlayNetworking.send(player, packet));
     }
 
-    protected void sendLeaveGamePayload(ServerPlayerEntity player) {}
+    protected void sendLeaveGamePayload(ServerPlayerEntity player) {
+        ServerPlayNetworking.send(player, new LeaveGamePayload());
+    }
 
     protected void sendPayloadToPlayers(CustomPayload payload) {
         this.getPlayers().forEach(player -> ServerPlayNetworking.send(player, payload));

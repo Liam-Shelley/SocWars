@@ -18,7 +18,6 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
@@ -28,14 +27,11 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.soc.lib.json.JsonHelper.*;
-import static com.soc.resourcedata.deserialisation.PreSelectionBedwarsShopCategory.ICON_KEY;
 import static net.minecraft.util.JsonHelper.deserialize;
 
 public class EnchantmentUpgradeShopItem extends TieredShopItem<EnchantmentUpgradeShopItem> {
     public static final int ID = 6;
     private static final PacketCodec<RegistryByteBuf, EnchantmentUpgradeShopItem> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.optional(ItemStack.PACKET_CODEC), EnchantmentUpgradeShopItem::getOptionalIcon, PacketCodecs.collection(ArrayList::new, Cost.PACKET_CODEC), EnchantmentUpgradeShopItem::getCosts, Identifier.PACKET_CODEC, EnchantmentUpgradeShopItem::getEnchantment, PacketCodecs.INTEGER, EnchantmentUpgradeShopItem::getTier, EnchantmentUpgradeShopItem::new);
-
-    public static final String COSTS_KEY = "costs";
 
     private final ItemStack icon;
     private final Identifier enchantment;
@@ -110,9 +106,6 @@ public class EnchantmentUpgradeShopItem extends TieredShopItem<EnchantmentUpgrad
     public EnchantmentUpgradeShopItem lazyClone() {
         return new EnchantmentUpgradeShopItem(this.icon.copy(), this.costs, this.enchantment, 0);
     }
-
-    @Override
-    public void enchant(RegistryEntry<Enchantment> enchantment, int tier) {}
 
     private Identifier getEnchantment() {
         return this.enchantment;

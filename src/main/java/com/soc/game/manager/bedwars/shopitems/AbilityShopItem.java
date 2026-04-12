@@ -7,12 +7,10 @@ import com.soc.game.manager.bedwars.traps.AbstractAbility;
 import com.soc.resourcedata.deserialisation.Cost;
 import com.soc.screenhandler.AbstractShopScreenHandler;
 import com.soc.screenhandler.BedwarsTeamShopScreenHandler;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -25,7 +23,7 @@ import static net.minecraft.util.JsonHelper.deserialize;
 
 public class AbilityShopItem implements ShopItem<AbilityShopItem>, TooltipProvider {
     public static final int ID = 8;
-    private static final PacketCodec<RegistryByteBuf, AbilityShopItem> PACKET_CODEC = PacketCodec.tuple(Cost.PACKET_CODEC, AbilityShopItem::getCost, Identifier.PACKET_CODEC, AbilityShopItem::getTrapId, AbilityShopItem::new);
+    private static final PacketCodec<RegistryByteBuf, AbilityShopItem> PACKET_CODEC = PacketCodec.tuple(Cost.PACKET_CODEC, AbilityShopItem::getCost, Identifier.PACKET_CODEC, AbilityShopItem::getAbilityId, AbilityShopItem::new);
 
     public static void initialise() {
         ShopItem.DECODER_MAP.put(ID, PACKET_CODEC::decode);
@@ -89,14 +87,11 @@ public class AbilityShopItem implements ShopItem<AbilityShopItem>, TooltipProvid
     }
 
     @Override
-    public void enchant(RegistryEntry<Enchantment> enchantment, int tier) {}
-
-    @Override
     public AbilityShopItem lazyClone() {
         return this;
     }
 
-    private Identifier getTrapId() {
+    private Identifier getAbilityId() {
         return this.ability.getId();
     }
 

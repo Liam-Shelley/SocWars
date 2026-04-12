@@ -22,4 +22,9 @@ public class BlockProtectionManager {
 
         return this.overlay.get(pos, this.origin);
     }
+
+    public void clearBlockProtection() {
+        this.overlay = null;
+        this.origin = null;
+    }
 }

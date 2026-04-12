@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.soc.items.components.ModComponents;
 import com.soc.resourcedata.deserialisation.Cost;
-import com.soc.resourcedata.deserialisation.CostStack;
+import com.soc.resourcedata.deserialisation.CostAndStack;
 import com.soc.screenhandler.AbstractShopScreenHandler;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.enchantment.Enchantment;
@@ -31,7 +31,7 @@ import static net.minecraft.util.JsonHelper.deserialize;
 
 public class UpgradeableShopItem implements ShopItem<UpgradeableShopItem>, TooltipProvider {
     public static final int ID = 2;
-    private static final PacketCodec<RegistryByteBuf, UpgradeableShopItem> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.collection(ArrayList::new, CostStack.PACKET_CODEC), UpgradeableShopItem::getStacks, PacketCodecs.BOOLEAN, UpgradeableShopItem::downgradeOnDeath, PacketCodecs.BOOLEAN, UpgradeableShopItem::retainBaseTier, PacketCodecs.INTEGER, UpgradeableShopItem::getTier, UpgradeableShopItem::new);
+    private static final PacketCodec<RegistryByteBuf, UpgradeableShopItem> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.collection(ArrayList::new, CostAndStack.PACKET_CODEC), UpgradeableShopItem::getStacks, PacketCodecs.BOOLEAN, UpgradeableShopItem::downgradeOnDeath, PacketCodecs.BOOLEAN, UpgradeableShopItem::retainBaseTier, PacketCodecs.INTEGER, UpgradeableShopItem::getTier, UpgradeableShopItem::new);
 
     private static final AtomicInteger SLOT_TRACKING_ID_TRACKER = new AtomicInteger();
 
@@ -39,7 +39,7 @@ public class UpgradeableShopItem implements ShopItem<UpgradeableShopItem>, Toolt
     public static final String DOWNGRADE_ON_DEATH_KEY = "downgrade_on_death";
     public static final String RETAIN_BASE_TIER_KEY = "retain_base_tier";
 
-    private final List<CostStack> stacks;
+    private final List<CostAndStack> stacks;
     private final boolean downgradeOnDeath;
 
     private final boolean retainBaseTier;
@@ -51,7 +51,7 @@ public class UpgradeableShopItem implements ShopItem<UpgradeableShopItem>, Toolt
         ShopItem.DECODER_MAP.put(ID, PACKET_CODEC::decode);
     }
 
-    private UpgradeableShopItem(List<CostStack> stacks, boolean downgradeOnDeath, boolean retainBaseTier, int tier) {
+    private UpgradeableShopItem(List<CostAndStack> stacks, boolean downgradeOnDeath, boolean retainBaseTier, int tier) {
         this.stacks = stacks;
         this.downgradeOnDeath = downgradeOnDeath;
         this.retainBaseTier = retainBaseTier;
@@ -71,9 +71,9 @@ public class UpgradeableShopItem implements ShopItem<UpgradeableShopItem>, Toolt
         this(deserialize(reader));
     }
 
-    private static List<CostStack> deserialiseItems(JsonArray array) {
-        final List<CostStack> items = new ArrayList<>();
-        array.forEach(element -> items.add(new CostStack(element.getAsJsonObject())));
+    private static List<CostAndStack> deserialiseItems(JsonArray array) {
+        final List<CostAndStack> items = new ArrayList<>();
+        array.forEach(element -> items.add(new CostAndStack(element.getAsJsonObject())));
 
         return items;
     }
@@ -109,7 +109,7 @@ public class UpgradeableShopItem implements ShopItem<UpgradeableShopItem>, Toolt
         return gaveStack;
     }
 
-    private List<CostStack> getStacks() {
+    private List<CostAndStack> getStacks() {
         return this.stacks;
     }
     private boolean downgradeOnDeath() {
@@ -122,7 +122,7 @@ public class UpgradeableShopItem implements ShopItem<UpgradeableShopItem>, Toolt
         return this.tier;
     }
 
-    private CostStack getStackAndCost() {
+    private CostAndStack getStackAndCost() {
         return this.tier < this.stacks.size() ? this.stacks.get(this.tier) : this.stacks.getLast();
     }
 
@@ -184,7 +184,7 @@ public class UpgradeableShopItem implements ShopItem<UpgradeableShopItem>, Toolt
 
     @Override
     public UpgradeableShopItem lazyClone() {
-        return new UpgradeableShopItem(this.stacks.stream().map(CostStack::copy).toList(), this.downgradeOnDeath, this.retainBaseTier, 0);
+        return new UpgradeableShopItem(this.stacks.stream().map(CostAndStack::copy).toList(), this.downgradeOnDeath, this.retainBaseTier, 0);
     }
 
     @Override
