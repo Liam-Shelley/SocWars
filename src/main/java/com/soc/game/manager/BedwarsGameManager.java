@@ -16,6 +16,7 @@ import com.soc.lib.Events;
 import com.soc.networking.helper.Teams;
 import com.soc.networking.s2c.bedwars.*;
 import com.soc.resourcedata.containers.BedwarsGeneratorDataContainer;
+import com.soc.resourcedata.deserialisation.IslandGeneratorUpgrade;
 import com.soc.resourcedata.deserialisation.ResourceGeneratorUpgrade;
 import com.soc.util.Sounds;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -190,12 +191,19 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
         final BedwarsGeneratorDataContainer bedwarsGeneratorDataContainer = BedwarsGeneratorDataContainer.INSTANCE;
         for (int i = 0; i < bedwarsGeneratorDataContainer.getDiamondGeneratorUpgrades().size(); i++) {
-            final ResourceGeneratorUpgrade upgrade = bedwarsGeneratorDataContainer.getDiamondGeneratorUpgrades().get(i);
-            queue.addEvent(upgrade.time(), manager -> manager.upgradeDiamondGens(upgrade.getStats()), Text.translatable("events.bedwars.diamond.tier", romanNumerals(i)));
+            final ResourceGeneratorUpgrade upgrade = bedwarsGeneratorDataContainer.getDiamondGeneratorUpgrades().get(i); //TODO: Redo these texts, they are kind of ugly at the moment
+            queue.addEvent(upgrade.time(), manager -> manager.upgradeDiamondGens(upgrade.getStats()), Text.translatable("events.bedwars.diamond_generator.tier", romanNumerals(i)));
         }
         for (int i = 0; i < bedwarsGeneratorDataContainer.getEmeraldGeneratorUpgrades().size(); i++) {
             final ResourceGeneratorUpgrade upgrade = bedwarsGeneratorDataContainer.getEmeraldGeneratorUpgrades().get(i);
-            queue.addEvent(upgrade.time(), manager -> manager.upgradeEmeraldGens(upgrade.getStats()), Text.translatable("events.bedwars.emerald.tier", romanNumerals(i)));
+            queue.addEvent(upgrade.time(), manager -> manager.upgradeEmeraldGens(upgrade.getStats()), Text.translatable("events.bedwars.emerald_generator.tier", romanNumerals(i)));
+        }
+        for (int i = 0; i < bedwarsGeneratorDataContainer.getIslandGeneratorUpgrades().size(); i++) {
+            final IslandGeneratorUpgrade upgrade = bedwarsGeneratorDataContainer.getIslandGeneratorUpgrades().get(i);
+            int finalI = i;
+            queue.addEvent(upgrade.autoUpgradeTime(), manager -> this.teamStatsMap.forEach((team, stats) -> {
+                if (stats.getPlayersAlive() == 0) manager.buyGeneratorUpgrade(team, finalI);
+            }), Text.translatable("events.bedwars.island_generator.tier", romanNumerals(i)));
         }
 
         return queue;
@@ -220,6 +228,8 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
     @Override
     public boolean onPlayerDeath(ServerPlayerEntity player, DamageSource source, float amount) {
+        if (!this.teamStatsMap.get(this.getTeam(player)).getTrapManager().onPlayerDeath(player, this)) return false;
+
         final boolean canRespawn = this.canRespawn(player);
         this.broadcastDeath(player, source, !canRespawn);
 
@@ -429,8 +439,12 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         this.teamStatsMap.get(this.getTeam(player)).buyTickFunctionUpgrade(function, tier);
     }
 
+    private boolean buyGeneratorUpgrade(DyeColor team, int tier) {
+        return this.map.upgradeIslandGen(team, tier);
+    }
+
     public boolean buyGeneratorUpgrade(ServerPlayerEntity player, int tier) {
-        return this.map.upgradeIslandGen(this.getTeam(player), tier);
+        return this.buyGeneratorUpgrade(this.getTeam(player), tier);
     }
 
     @Override

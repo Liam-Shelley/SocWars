@@ -158,6 +158,12 @@ public class TrapManager {
     }
 
     private static Text getEnemiesInRangeText(Set<DyeColor> alertingTeams) {
-        return alertingTeams.stream().map(SocWarsLib::colouredTextFromColour).reduce((a, b) -> a.append(", ").append(b)).orElse(Text.empty()); //Probably just make this return an optional
+        return alertingTeams.stream().map(SocWarsLib::colouredTextFromColour).reduce((a, b) -> a.append(", ").append(b)).orElse(Text.empty()); //Probably just let this return as an optional
+    }
+
+    public boolean onPlayerDeath(ServerPlayerEntity player, AbstractGameManager<?, ?, ?> manager) {
+        if (!this.hasActiveAbility(TriggerReason.PLAYER_DEATH)) return true;
+
+        return this.triggerAbility(null, manager, List.of(player), this.teamColour, null);
     }
 }

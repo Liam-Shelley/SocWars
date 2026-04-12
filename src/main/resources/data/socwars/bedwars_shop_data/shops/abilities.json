@@ -18,6 +18,20 @@
       "x": 2,
       "y": 0,
       "options": [
+        "socwars:bedwars_shop_data/ability_items/trap_amplifier"
+      ]
+    },
+    {
+      "x": 3,
+      "y": 0,
+      "options": [
+        "socwars:bedwars_shop_data/ability_items/life_insurance"
+      ]
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "options": [
         "socwars:bedwars_shop_data/ability_items/uno_reverse_card"
       ]
     }
