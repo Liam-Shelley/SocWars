@@ -115,7 +115,7 @@ public abstract class AbstractGameMap {
                         final Vec3i vectorToCentre = this.absoluteCentrePos.subtract(destPos);
                         ServerPlayNetworking.send(player, new SetAnglesPayload(player.getId(), (float) Math.atan2(vectorToCentre.getZ(), vectorToCentre.getX()) * 57.295776f - 90f, 0f));
                     },
-                    () -> player.sendMessage(Text.literal("Go yell at Liam for screwing up the spreadPlayers method"))
+                    () -> player.sendMessage(Text.literal("Go yell at Liam for screwing up the player spread code"))
             );
         });
     }
@@ -156,7 +156,7 @@ public abstract class AbstractGameMap {
 
         //Ensure that the folder exists before returning
         final boolean madeFileDir = file.mkdirs();
-        SocWars.LOGGER.info(madeFileDir ? "Created maps file directory" : "Failed to create maps file directory " + (file.exists() ? "as it already exists" : "because screw you I guess?"));
+        if (!file.exists()) SocWars.LOGGER.info(madeFileDir ? "Created maps file directory" : "Failed to create maps file directory because screw you I guess?");
 
         return file;
     }

@@ -22,7 +22,7 @@ public class BedwarsIndividualShopScreen extends AbstractShopScreen<BedwarsIndiv
         super.client = MinecraftClient.getInstance();
 
         super.backgroundHeight = 168;
-        super.backgroundWidth = 216;
+        super.backgroundWidth = 291;
         super.titleX = 66;
         super.titleY = 6;
         super.playerInventoryTitleX = 48;
@@ -39,6 +39,6 @@ public class BedwarsIndividualShopScreen extends AbstractShopScreen<BedwarsIndiv
         super.drawForeground(context, mouseX, mouseY);
         context.drawText(this.textRenderer, CATEGORIES_TITLE, CATEGORIES_TITLE_X, CATEGORIES_TITLE_Y, Colors.DARK_GRAY, false);
 
-        this.resourceDisplays.forEach(display -> display.render(context, BedwarsIndividualShopScreen.super.textRenderer, BedwarsIndividualShopScreen.this.playerInventory));
+        this.resourceDisplays.forEach(display -> display.render(context, this.textRenderer, this.playerInventory));
     }
 }

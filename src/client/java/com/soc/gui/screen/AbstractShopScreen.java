@@ -49,14 +49,16 @@ public abstract class AbstractShopScreen<T extends AbstractShopScreenHandler> ex
 
     @Override
     protected void drawMouseoverTooltip(DrawContext context, int x, int y) {
-        if (super.focusedSlot instanceof ShopSlot<?> shopSlot && super.focusedSlot.hasStack()) {
+        if (super.focusedSlot instanceof ShopSlot<?> shopSlot && this.focusedSlot.hasStack()) {
             switch(shopSlot.getSlotType()) {
                 case STOCK -> this.drawCostTooltip(context, x, y, this.handler.getShopItem(shopSlot));
-                case CATEGORY -> this.drawCategoryTooltip(context, x, y, ((AbstractCategoriesShopScreenHandler)this.handler).getShopCategory(super.focusedSlot));
+                case CATEGORY -> this.drawCategoryTooltip(context, x, y, ((AbstractCategoriesShopScreenHandler)this.handler).getShopCategory(this.focusedSlot));
                 case DISPLAY -> {
                     final ShopItem<?> shopItem = this.handler.getShopItem(shopSlot);
                     if (shopItem instanceof DisplayShopItem displayShopItem) {
                         this.drawDisplayTooltip(context, x, y, displayShopItem);
+                    } else {
+                        super.drawMouseoverTooltip(context, x, y);
                     }
                 }
                 default -> super.drawMouseoverTooltip(context, x, y);
@@ -105,7 +107,7 @@ public abstract class AbstractShopScreen<T extends AbstractShopScreenHandler> ex
                 } else {
                     colour = 0xefdf1020;
                 }
-                context.drawText(super.textRenderer, costString, x + i * 20 + 34 - costString.length() * 6, y + 16, colour, true);
+                context.drawText(this.textRenderer, costString, x + i * 20 + 34 - costString.length() * 6, y + 16, colour, true);
             }
         });
 
@@ -113,8 +115,8 @@ public abstract class AbstractShopScreen<T extends AbstractShopScreenHandler> ex
     }
 
     private void drawCategoryTooltip(DrawContext context, int x, int y, BedwarsShopCategory category) {
-        TooltipBackgroundRenderer.render(context, x + 12, y - 12, super.textRenderer.getWidth(category.getName()), 8, null);
-        context.drawText(super.textRenderer, category.getName(), x + 12, y - 12, 0xffffffff, true);
+        TooltipBackgroundRenderer.render(context, x + 12, y - 12, this.textRenderer.getWidth(category.getName()), 8, null);
+        context.drawText(this.textRenderer, category.getName(), x + 12, y - 12, 0xffffffff, true);
     }
 
     protected void drawDisplayTooltip(DrawContext context, int x, int y, DisplayShopItem shopItem) {
@@ -122,18 +124,18 @@ public abstract class AbstractShopScreen<T extends AbstractShopScreenHandler> ex
 
         final SplitText splitText = SplitText.split(shopItem.getTooltip(), MAX_TOOLTIP_WIDTH, this.textRenderer);
 
-        TooltipBackgroundRenderer.render(context, x + 12, y - 12, max(super.textRenderer.getWidth(name), splitText.width(), 65), Math.max(24, splitText.height() + 12), /*shopItem.get(DataComponentTypes.TOOLTIP_STYLE)*/null);
-        context.drawText(super.textRenderer, name, x + 12, y - 12, 0xffffffff, true);
-        splitText.draw(context, super.textRenderer, x + 20, y + 2);
+        TooltipBackgroundRenderer.render(context, x + 12, y - 12, max(this.textRenderer.getWidth(name), splitText.width(), 65), Math.max(24, splitText.height() + 12), /*shopItem.get(DataComponentTypes.TOOLTIP_STYLE)*/null);
+        context.drawText(this.textRenderer, name, x + 12, y - 12, 0xffffffff, true);
+        splitText.draw(context, this.textRenderer, x + 20, y + 2);
     }
 
     protected abstract Identifier getTexture();
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
-        final int i = (super.width - super.backgroundWidth) / 2;
-        final int j = (super.height - super.backgroundHeight) / 2 + this.backgroundYOffset;
-        context.drawTexture(RenderPipelines.GUI_TEXTURED, this.getTexture(), i, j, 0.0F, 0.0F, super.backgroundWidth, super.backgroundHeight, super.backgroundWidth, super.backgroundHeight);
+        final int i = (this.width - this.backgroundWidth) / 2;
+        final int j = (this.height - this.backgroundHeight) / 2 + this.backgroundYOffset;
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, this.getTexture(), i, j, 0.0F, 0.0F, this.backgroundWidth, this.backgroundHeight, this.backgroundWidth, this.backgroundHeight);
 
         super.render(context, mouseX, mouseY, deltaTicks);
 
@@ -143,7 +145,7 @@ public abstract class AbstractShopScreen<T extends AbstractShopScreenHandler> ex
     @Override
     protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
         super.drawForeground(context, mouseX, mouseY);
-        this.resourceDisplays.forEach(display -> display.render(context, super.textRenderer, this.playerInventory));
+        this.resourceDisplays.forEach(display -> display.render(context, this.textRenderer, this.playerInventory));
     }
 
     @Override

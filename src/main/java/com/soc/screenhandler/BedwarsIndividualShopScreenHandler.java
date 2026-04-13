@@ -4,7 +4,9 @@ import com.soc.game.manager.bedwars.BedwarsShopContents;
 import com.soc.game.manager.bedwars.shopitems.ShopItem;
 import com.soc.game.manager.bedwars.shopitems.SimpleShopItem;
 import com.soc.screenhandler.slots.CategorySlot;
+import com.soc.screenhandler.slots.DisplaySlot;
 import com.soc.screenhandler.slots.StockSlot;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -19,6 +21,7 @@ public class BedwarsIndividualShopScreenHandler extends AbstractCategoriesShopSc
     private final PlayerEntity player;
     private final PlayerInventory playerInventory;
     private final Inventory stock;
+    private final Inventory armourDisplay;
 
     public BedwarsIndividualShopScreenHandler(int syncId, PlayerInventory playerInventory) {
         this(syncId, playerInventory, playerInventory.player);
@@ -29,6 +32,7 @@ public class BedwarsIndividualShopScreenHandler extends AbstractCategoriesShopSc
         this.player = player;
         this.playerInventory = playerInventory;
         this.stock = new SimpleInventory(STOCK_WIDTH * STOCK_HEIGHT);
+        this.armourDisplay = new SimpleInventory(4);
 
         this.shopContents = super.manager == null ? null : super.manager.getIndividualShopContents(player.getUuid());
         this.currentCategory = this.shopContents == null ? null : this.shopContents.getFirstCategory();
@@ -56,6 +60,10 @@ public class BedwarsIndividualShopScreenHandler extends AbstractCategoriesShopSc
 
         this.addPlayerSlots(this.playerInventory, 48, this.getPlayerInventorySlotHeight());
 
+        for (int y = 0; y < 4; y++) {
+            this.addSlot(new DisplaySlot(this.armourDisplay, y, 214, y * -18 + 142, this.player, this));
+        }
+
         this.refreshItems();
         this.refreshCategories();
     }
@@ -63,6 +71,9 @@ public class BedwarsIndividualShopScreenHandler extends AbstractCategoriesShopSc
     public void refreshItems() {
         for (int i = 0; i < this.stock.size(); i++) {
             this.stock.setStack(i, this.getShopItem(i).getIcon());
+        }
+        for (int i = 0; i < this.armourDisplay.size(); i++) {
+            this.armourDisplay.setStack(i, this.player.getEquippedStack(EquipmentSlot.values()[i + 2]));
         }
     }
 

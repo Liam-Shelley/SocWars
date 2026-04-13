@@ -22,6 +22,8 @@ public class StockSlot extends ShopSlot<AbstractShopScreenHandler> {
 
         super.player.playSound(success ? BUY_SUCCESS : BUY_FAIL);
 
+        if (success) this.context.refreshItems();
+
         return ItemStack.EMPTY;
     }
 
