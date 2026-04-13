@@ -9,6 +9,8 @@ import com.soc.lib.Coroutines;
 import com.soc.lib.SparseVoxelOctree;
 import com.soc.nbt.SpawnPosition;
 import com.soc.networking.s2c.BlockProtectionPayload;
+import com.soc.networking.s2c.SetAnglesPayload;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -16,6 +18,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.network.packet.s2c.play.PositionFlag;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructurePlacementData;
@@ -109,7 +112,8 @@ public abstract class AbstractGameMap {
             pos.ifPresentOrElse(
                     destPos -> {
                         player.requestTeleport(destPos.getX() + 0.5d, destPos.getY(), destPos.getZ() + 0.5d);
-                        //player.networkHandler.sendPacket(new PlayerRotationS2CPacket());
+                        final Vec3i vectorToCentre = this.absoluteCentrePos.subtract(destPos);
+                        ServerPlayNetworking.send(player, new SetAnglesPayload(player.getId(), (float) Math.atan2(vectorToCentre.getZ(), vectorToCentre.getX()) * 57.295776f - 90f, 0f));
                     },
                     () -> player.sendMessage(Text.literal("Go yell at Liam for screwing up the spreadPlayers method"))
             );

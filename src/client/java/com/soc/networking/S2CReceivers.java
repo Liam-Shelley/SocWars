@@ -144,5 +144,11 @@ public class S2CReceivers {
         ClientPlayNetworking.registerGlobalReceiver(LeaveGamePayload.ID, ((payload, context) -> {
             BlockProtectionManager.INSTANCE.clearBlockProtection();
         }));
+        ClientPlayNetworking.registerGlobalReceiver(SetAnglesPayload.ID, ((payload, context) -> {
+            final PlayerEntity player = MinecraftClient.getInstance().player;
+            if (player != null && player.getId() == payload.entityId()) {
+                player.setAngles(payload.yaw(), payload.pitch());
+            }
+        }));
     }
 }
