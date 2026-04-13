@@ -199,7 +199,9 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         return true;
     }
 
-    public void onChestOpened(ServerPlayerEntity player, BlockPos pos) {}
+    public boolean onChestOpened(ServerPlayerEntity player, BlockPos pos) {
+        return true;
+    }
 
     public void onItemPickup(ServerPlayerEntity player, ItemStack stack) {}
 

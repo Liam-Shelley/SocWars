@@ -16,9 +16,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ChestBlock.class)
 public abstract class OnChestOpenedEventTrigger {
-    @Inject(at = @At("HEAD"), method = "onUse")
+    @Inject(at = @At("HEAD"), method = "onUse", cancellable = true)
     public void socwars_onChestOpened(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir) {
         if (world.isClient) return;
-        ModEvents.ON_CHEST_OPENED.invoker().onChestOpen((ServerPlayerEntity)player, pos);
+        if (!ModEvents.ON_CHEST_OPENED.invoker().onChestOpen((ServerPlayerEntity)player, pos)) cir.setReturnValue(ActionResult.FAIL);
     }
 }

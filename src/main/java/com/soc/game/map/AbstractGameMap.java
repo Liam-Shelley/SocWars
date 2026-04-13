@@ -107,7 +107,10 @@ public abstract class AbstractGameMap {
 
             final Optional<BlockPos> pos = this.getSpawnPosition(team);
             pos.ifPresentOrElse(
-                    destPos -> player.requestTeleport(destPos.getX() + 0.5d, destPos.getY(), destPos.getZ() + 0.5d),
+                    destPos -> {
+                        player.requestTeleport(destPos.getX() + 0.5d, destPos.getY(), destPos.getZ() + 0.5d);
+                        //player.networkHandler.sendPacket(new PlayerRotationS2CPacket());
+                    },
                     () -> player.sendMessage(Text.literal("Go yell at Liam for screwing up the spreadPlayers method"))
             );
         });
@@ -266,7 +269,11 @@ public abstract class AbstractGameMap {
         return this.blockProtectionOverlay != null && this.blockProtectionOverlay.get(pos, this.getOrigin());
     }
 
-    public BlockProtectionPayload getBlockProtectionPacket() {
+    public @Nullable BlockProtectionPayload getBlockProtectionPacket() {
         return this.blockProtectionPacket;
+    }
+
+    public Optional<Map.Entry<DyeColor, BlockPos>> getClosestSpawn(BlockPos pos) {
+        return this.spawnPositions.entries().stream().min(Comparator.comparingDouble(entry -> entry.getValue().getSquaredDistance(this.pos(pos))));
     }
 }

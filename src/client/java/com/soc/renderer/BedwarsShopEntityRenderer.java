@@ -2,6 +2,7 @@ package com.soc.renderer;
 
 import com.soc.SocWars;
 import com.soc.entities.BedwarsShopEntity;
+import com.soc.game.manager.bedwars.ShopType;
 import com.soc.model.BedwarsShopEntityModel;
 import com.soc.renderstate.BedwarsShopRenderState;
 import net.minecraft.client.MinecraftClient;
@@ -11,15 +12,18 @@ import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 
 public class BedwarsShopEntityRenderer extends LivingEntityRenderer<BedwarsShopEntity, BedwarsShopRenderState, BedwarsShopEntityModel> {
     private final Identifier skinTexture;
 
-    public BedwarsShopEntityRenderer(EntityRendererFactory.Context context) {
+    public BedwarsShopEntityRenderer(EntityRendererFactory.Context context, ShopType shopType) {
         super(context, new BedwarsShopEntityModel(MinecraftClient.getInstance().getLoadedEntityModels().getModelPart(EntityModelLayers.PLAYER_SLIM)), 0.5f);
-        this.skinTexture = Identifier.of(SocWars.MOD_ID, Math.random() < 0.95d ? "textures/shop_skins/bat_pink.png" : "textures/shop_skins/bat_green.png");
+        //this.skinTexture = Identifier.of(SocWars.MOD_ID, Math.random() < 0.95d ? "textures/shop_skins/bat_pink.png" : "textures/shop_skins/bat_green.png");
+        this.skinTexture = switch (shopType) {
+            case INDIVIDUAL -> Identifier.of(SocWars.MOD_ID, "textures/shop_skins/bat_pink.png");
+            case TEAM -> Identifier.of(SocWars.MOD_ID, "textures/shop_skins/bat_green.png");
+        };
     }
 
     public void render(BedwarsShopRenderState state, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i) {

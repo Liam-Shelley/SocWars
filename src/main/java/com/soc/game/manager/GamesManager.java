@@ -65,7 +65,7 @@ public class GamesManager {
                 this.getGame(player).map(game -> game.onPlayerDamage(player, source, amount)).orElse(true)
         );
         ModEvents.ON_CHEST_OPENED.register((player, pos) ->
-                this.getGame(player).ifPresent(game -> game.onChestOpened(player, pos))
+                this.getGame(player).map(game -> game.onChestOpened(player, pos)).orElse(true)
         );
         ModEvents.ON_ITEM_PICKUP.register((player, stack) ->
                 this.getGame(player).ifPresent(game -> game.onItemPickup(player, stack))

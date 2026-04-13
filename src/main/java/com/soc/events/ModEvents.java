@@ -18,9 +18,13 @@ public interface ModEvents {
     });
 
     Event<OnChestOpened> ON_CHEST_OPENED = EventFactory.createArrayBacked(OnChestOpened.class, listeners -> (player, chestPos) -> {
+        boolean allowEvent = true;
+
         for (OnChestOpened listener : listeners) {
-            listener.onChestOpen(player, chestPos);
+            allowEvent &= listener.onChestOpen(player, chestPos);
         }
+
+        return allowEvent;
     });
 
     Event<OnItemPickup> ON_ITEM_PICKUP = EventFactory.createArrayBacked(OnItemPickup.class, listeners -> (player, itemStack) -> {

@@ -5,5 +5,5 @@ import net.minecraft.util.math.BlockPos;
 
 @FunctionalInterface
 public interface OnChestOpened {
-    void onChestOpen(ServerPlayerEntity player, BlockPos pos);
+    boolean onChestOpen(ServerPlayerEntity player, BlockPos pos);
 }

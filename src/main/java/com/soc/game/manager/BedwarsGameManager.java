@@ -38,7 +38,6 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Unit;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
@@ -314,6 +313,24 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
                 if (stack.isOf(resource)) player.dropStack(player.getWorld(), stack);
             });
         }
+    }
+
+    @Override
+    public boolean onChestOpened(ServerPlayerEntity player, BlockPos pos) {
+        final Optional<Map.Entry<DyeColor, BlockPos>> closestSpawn = this.map.getClosestSpawn(pos);
+
+        final boolean allow = closestSpawn.map(entry -> {
+                final boolean isSameTeam = entry.getKey() == this.getTeam(player);
+                final boolean isClosestTeamDead = !this.teamStatsMap.get(entry.getKey()).isAlive();
+                final boolean isChestTooFar = !entry.getValue().isWithinDistance(pos, 20); //Gross check since I only keep track of teams that exist
+                return isSameTeam || isClosestTeamDead || isChestTooFar;
+        }).orElse(true);
+
+        if (!allow) {
+            player.sendMessage(Text.translatable("game.bedwars.chest_locked", colouredTextFromColour(closestSpawn.get().getKey())));
+        }
+
+        return allow;
     }
 
     @Override

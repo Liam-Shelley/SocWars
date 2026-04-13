@@ -179,12 +179,14 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
     }
 
     @Override
-    public void onChestOpened(ServerPlayerEntity player, BlockPos pos) {
+    public boolean onChestOpened(ServerPlayerEntity player, BlockPos pos) {
         super.map.getLootChest(pos).ifPresent(chest -> {
             if (chest.open()) {
                 this.getDbTable(player).openChest(chest.getTier());
             }
         });
+
+        return true;
     }
 
     private List<UUID> getAlivePlayers() {
