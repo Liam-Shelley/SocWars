@@ -61,9 +61,9 @@ public class BedwarsShopDataContainer implements CachedData {
     public final BedwarsShopContents getTeamBedwarsShop(long shopSeed, DyeColor team, World world) {
         final Random random = Random.create(shopSeed);
         final List<BedwarsShopCategory> categories = new ArrayList<>();
+        categories.add(new BedwarsShopCategory(this.resolveItems(this.teamStockCategories[2], random, team, BedwarsTeamShopScreenHandler.STOCK_WIDTH, BedwarsTeamShopScreenHandler.STOCK_HEIGHT, world), Items.ARROW.getDefaultStack(), Text.of("Upgrades")));
         categories.add(new BedwarsShopCategory(this.resolveItems(this.teamStockCategories[0], random, team, BedwarsTeamShopScreenHandler.STOCK_WIDTH, BedwarsTeamShopScreenHandler.STOCK_HEIGHT, world), Items.TRIPWIRE_HOOK.getDefaultStack(), Text.of("Traps")));
         categories.add(new BedwarsShopCategory(this.resolveItems(this.teamStockCategories[1], random, team, BedwarsTeamShopScreenHandler.STOCK_WIDTH, BedwarsTeamShopScreenHandler.STOCK_HEIGHT, world), Items.ANVIL.getDefaultStack(), Text.of("Abilities")));
-        categories.add(new BedwarsShopCategory(this.resolveItems(this.teamStockCategories[2], random, team, BedwarsTeamShopScreenHandler.STOCK_WIDTH, BedwarsTeamShopScreenHandler.STOCK_HEIGHT, world), Items.ARROW.getDefaultStack(), Text.of("Upgrades")));
 
         return new BedwarsShopContents(categories);
     }

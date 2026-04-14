@@ -12,6 +12,7 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 public class BedwarsTeamShopScreenHandler extends AbstractCategoriesShopScreenHandler {
     public static final int STOCK_WIDTH = 6;
@@ -32,7 +33,7 @@ public class BedwarsTeamShopScreenHandler extends AbstractCategoriesShopScreenHa
     private long nextAbilityTime;
     private int abilityDuration;
 
-    private BedwarsShopCategory displayCategory;
+    @Nullable private BedwarsShopCategory displayCategory;
 
     public BedwarsTeamShopScreenHandler(int syncId, PlayerInventory playerInventory) {
         this(syncId, playerInventory, playerInventory.player);
@@ -51,7 +52,7 @@ public class BedwarsTeamShopScreenHandler extends AbstractCategoriesShopScreenHa
         this.displayOffset = new SimpleInventory(DISPLAY_SIZE - 1);
 
         this.shopContents = super.manager == null ? null : super.manager.getTeamShopContents(player.getUuid());
-        this.currentCategory = this.shopContents == null ? null : this.shopContents.getFirstCategory();
+        this.setCurrentCategory(0);
 
         this.makeSlots();
     }
@@ -115,7 +116,7 @@ public class BedwarsTeamShopScreenHandler extends AbstractCategoriesShopScreenHa
         }
     }
 
-    private int getStacksInDisplay() {
+    public int getStacksInDisplay() {
         if (this.displayCategory == null) return 0;
         for (int i = 0; i < this.displayCategory.getItems().size(); i++) {
             if (this.displayCategory.getShopItem(i).getIcon().isEmpty()) return i;
@@ -221,11 +222,17 @@ public class BedwarsTeamShopScreenHandler extends AbstractCategoriesShopScreenHa
 
     @Override
     public void setCurrentCategory(int slot) {
-        if (slot < 2) {
-            this.displayCategory = this.shopContents.getCategory(slot + 3);
+        this.display.clear();
+        this.displayOffset.clear();
+        if (slot > 0 && slot < 3) {
+            this.displayCategory = this.shopContents.getCategory(slot + 2);
         } else {
             this.displayCategory = null;
         }
         super.setCurrentCategory(slot);
+    }
+
+    public @Nullable BedwarsShopCategory getDisplayCategory() {
+        return this.displayCategory;
     }
 }
