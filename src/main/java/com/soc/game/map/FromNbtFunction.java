@@ -4,8 +4,9 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 
+import java.io.File;
 import java.util.Optional;
 
 public interface FromNbtFunction<T extends AbstractGameMap> {
-     Optional<T> fromNbt(NbtCompound compound, ServerWorld world, BlockPos centrePos);
+     Optional<T> fromNbt(NbtCompound compound, ServerWorld world, BlockPos centrePos, File file);
 }

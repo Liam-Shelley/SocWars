@@ -9,9 +9,9 @@ import net.minecraft.structure.StructureTemplate;
 import net.minecraft.structure.StructureTemplateManager;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -23,26 +23,27 @@ public class HideAndSeekGameMap extends AbstractGameMap {
 
     public HideAndSeekGameMap(
             StructureTemplate structure,
-            @NotNull Set<SpawnPosition> spawnPositions,
-            @NotNull BlockPos centrePos,
-            @NotNull BlockPos absoluteCentrePos,
+            Set<SpawnPosition> spawnPositions,
+            BlockPos centrePos,
+            BlockPos absoluteCentrePos,
             @Nullable SparseVoxelOctree<Boolean> blockProtectionOverlay,
-            @NotNull ServerWorld world
+            ServerWorld world,
+            File file
     ) {
-        super(structure, spawnPositions, centrePos, absoluteCentrePos, blockProtectionOverlay, world);
+        super(structure, spawnPositions, centrePos, absoluteCentrePos, blockProtectionOverlay, world, file);
     }
 
     /// Constructor used only for saving the map to file
     public HideAndSeekGameMap(
             StructureTemplate structure,
-            @NotNull Set<SpawnPosition> spawnPositions,
-            @NotNull BlockPos centrePos,
+            Set<SpawnPosition> spawnPositions,
+            BlockPos centrePos,
             @Nullable SparseVoxelOctree<Boolean> blockProtectionOverlay
     ) {
         super(structure, spawnPositions, centrePos, blockProtectionOverlay);
     }
 
-    public static Optional<HideAndSeekGameMap> fromNbt(@NotNull NbtCompound compound, @NotNull ServerWorld world, @NotNull BlockPos centrePos) {
+    public static Optional<HideAndSeekGameMap> fromNbt(NbtCompound compound, ServerWorld world, BlockPos centrePos, File file) {
         final StructureTemplateManager templateManager = world.getStructureTemplateManager();
         final Optional<NbtCompound> structureCompound = compound.getCompound(STRUCTURE_KEY);
         final StructureTemplate template = structureCompound.map(templateManager::createTemplate).orElse(null);
@@ -61,8 +62,23 @@ public class HideAndSeekGameMap extends AbstractGameMap {
                 BlockPos.fromLong(centrePosLong.get()),
                 centrePos,
                 SparseVoxelOctree.fromNbtBooleanOnly(BLOCK_PROTECTION_OVERLAY_KEY, compound),
-                world
+                world,
+                file
         ));
+    }
+
+    @Override
+    public Optional<BlockPos> getSpawnPosition(DyeColor team) {
+        return team == SEEKER_COLOUR ? super.getSpawnPosition(team).map(pos -> pos.withY(this.world.getTopYInclusive() - 4)) : super.getSpawnPosition(team);
+    }
+
+    public Optional<BlockPos> getSpawnPositionNoOffset(DyeColor team) {
+        return super.getSpawnPosition(team);
+    }
+
+    @Override
+    public Collection<BlockPos> getSpawnPositions(DyeColor team) {
+        return team == SEEKER_COLOUR ? super.getSpawnPositions(team).stream().map(pos -> pos.withY(this.world.getTopYInclusive() - 4)).toList() : super.getSpawnPositions(team);
     }
 
     @Override

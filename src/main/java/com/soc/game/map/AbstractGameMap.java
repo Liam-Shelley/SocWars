@@ -18,7 +18,6 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtList;
-import net.minecraft.network.packet.s2c.play.PositionFlag;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructurePlacementData;
@@ -51,6 +50,8 @@ public abstract class AbstractGameMap {
 
     protected final StructureTemplate structure;
     public final float size;
+    private final float minBuildY;
+    private final float maxBuildY;
 
     protected final BlockPos centrePos;
     protected final BlockPos absoluteCentrePos;
@@ -59,6 +60,7 @@ public abstract class AbstractGameMap {
     @Nullable protected final BlockProtectionPayload blockProtectionPacket; //Cache me outside how bout dat
 
     protected final ServerWorld world;
+    private final String name;
 
     protected int tick;
 
@@ -68,7 +70,8 @@ public abstract class AbstractGameMap {
             @NotNull BlockPos centrePos,
             BlockPos absoluteCentrePos,
             @Nullable SparseVoxelOctree<Boolean> blockProtectionOverlay,
-            ServerWorld world
+            ServerWorld world,
+            File file
     ) {
         this.structure = structure;
         this.size = structure.getSize().getChebyshevDistance(Vec3i.ZERO);
@@ -78,6 +81,10 @@ public abstract class AbstractGameMap {
         this.blockProtectionOverlay = blockProtectionOverlay;
         this.blockProtectionPacket = blockProtectionOverlay == null ? null : new BlockProtectionPayload(blockProtectionOverlay, this.getOrigin());
         this.world = world;
+        this.name = file.getName().split("\\.")[0];
+
+        this.minBuildY = (int)this.getMeanSpawnY().orElse(this.absoluteCentrePos.getY()) - 20;
+        this.maxBuildY = (int)this.getMeanSpawnY().orElse(this.absoluteCentrePos.getY()) + 40;
     }
 
     /// Constructor used only for saving the map to file
@@ -93,8 +100,8 @@ public abstract class AbstractGameMap {
                 centrePos.toImmutable(),
                 BlockPos.ORIGIN,
                 blockProtectionOverlay,
-                null
-        );
+                null,
+                null);
     }
 
     public abstract void tick();
@@ -127,8 +134,8 @@ public abstract class AbstractGameMap {
         return Optional.of(this.pos(positions.get(this.world.random.nextBetween(0, positions.size() - 1))));
     }
 
-    public final Collection<BlockPos> getSpawnPositions(DyeColor team) {
-        return this.spawnPositions.get(team);
+    public Collection<BlockPos> getSpawnPositions(DyeColor team) {
+        return this.poss(this.spawnPositions.get(team));
     }
 
     public NbtCompound toNbt(NbtCompound compound) {
@@ -167,7 +174,7 @@ public abstract class AbstractGameMap {
         return (files != null) ? files : new File[0];
     }
 
-    public static Optional<File> getRandomMap(String fileExtension, World world, @Nullable String preferred_map) {
+    public static Optional<File> getRandomMap(String fileExtension, World world, @Nullable String preferredMap) {
         final File[] maps = getMaps(fileExtension);
         if (maps.length == 0) return Optional.empty();
 
@@ -183,7 +190,7 @@ public abstract class AbstractGameMap {
     public static <T extends AbstractGameMap> Optional<T> loadFromFile(File file, ServerWorld world, BlockPos centrePos, FromNbtFunction<T> fromNbtFunction) {
         try {
             final NbtCompound compound = NbtIo.read(file.toPath());
-            return compound == null ? Optional.empty() : fromNbtFunction.fromNbt(compound, world, centrePos);
+            return compound == null ? Optional.empty() : fromNbtFunction.fromNbt(compound, world, centrePos, file);
         } catch (IOException e) {
             SocWars.LOGGER.error("Could not read compound at {}", file.getAbsolutePath());
             return Optional.empty();
@@ -231,10 +238,10 @@ public abstract class AbstractGameMap {
         final int maxZ = maxPos.getZ() + XZ_CLEARING_BUFFER;
 
         if (immediate) {
-            iterateInCube(new Vec3i(minX, this.world.getBottomY(), minZ), new Vec3i(maxX, y.get(), maxZ), pos -> this.world.setBlockState(pos, Blocks.AIR.getDefaultState()));
+            iterateInCube(new Vec3i(minX, this.world.getBottomY(), minZ), new Vec3i(maxX, y.get(), maxZ), pos -> this.world.setBlockState(pos, Blocks.AIR.getDefaultState(), Block.NOTIFY_LISTENERS));
         } else {
             Coroutines.getInstance().startCoroutine(new Coroutine<>(this, map -> {
-                iterateInCube(new Vec3i(minX, y.get() - 1, minZ), new Vec3i(maxX, y.get(), maxZ), pos -> this.world.setBlockState(pos, Blocks.AIR.getDefaultState()));
+                iterateInCube(new Vec3i(minX, y.get() - 1, minZ), new Vec3i(maxX, y.get(), maxZ), pos -> this.world.setBlockState(pos, Blocks.AIR.getDefaultState(), Block.NOTIFY_LISTENERS));
                 return y.getAndDecrement() < this.world.getBottomY();
             }));
         }
@@ -244,6 +251,16 @@ public abstract class AbstractGameMap {
 
     public final BlockPos getCentrePos() {
         return this.absoluteCentrePos;
+    }
+
+    public OptionalDouble getMeanSpawnY() {
+        return this.spawnPositions.entries().stream().mapToInt(entry -> entry.getValue().getY()).average();
+    }
+
+    public BlockPos getCentrePosWithMeanSpawnY() {
+        final OptionalDouble meanSpawnY = this.getMeanSpawnY();
+
+        return meanSpawnY.isPresent() ? this.absoluteCentrePos.withY((int)meanSpawnY.getAsDouble()) : this.absoluteCentrePos;
     }
 
     public Vec3d getRespawnSpectatorPos() {
@@ -257,20 +274,48 @@ public abstract class AbstractGameMap {
                 if (this.world.getBlockState(pos).isOf(Blocks.BARRIER)) this.world.setBlockState(pos, Blocks.AIR.getDefaultState());
         };
 
-        this.spawnPositions.entries().forEach(position -> {
-            if (teams.length == 0 || Arrays.stream(teams).anyMatch(team -> team == position.getKey())) {
-                final BlockPos pos = this.pos(position.getValue());
-                for (Direction direction : HORIZONTAL_DIRECTIONS) {
-                    final BlockPos offset = pos.offset(direction);
-                    function.accept(offset);
-                    function.accept(offset.up());
-                }
+        this.spawnPositions.keySet().forEach(team -> {
+            if (teams.length == 0 || Arrays.asList(teams).contains(team)) {
+                Collection<BlockPos> spawnPositions1 = this.getSpawnPositions(team);
+                spawnPositions1.forEach(pos -> {
+                    for (Direction direction : HORIZONTAL_DIRECTIONS) {
+                        final BlockPos offset = pos.offset(direction);
+                        function.accept(offset);
+                        function.accept(offset.up());
+                    }
+                    function.accept(pos.down());
+                });
             }
         });
+
+        //this.spawnPositions.entries().forEach(position -> {
+        //    if (teams.length == 0 || Arrays.stream(teams).anyMatch(team -> team == position.getKey())) {
+        //        final BlockPos pos = this.pos(position.getValue());
+        //        for (Direction direction : HORIZONTAL_DIRECTIONS) {
+        //            final BlockPos offset = pos.offset(direction);
+        //            function.accept(offset);
+        //            function.accept(offset.up());
+        //        }
+        //    }
+        //});
     }
 
     public boolean isBlockProtected(BlockPos pos) {
         return this.blockProtectionOverlay != null && this.blockProtectionOverlay.get(pos, this.getOrigin());
+    }
+
+    public boolean isBlockInBounds(BlockPos pos) {
+        if (pos.getY() < this.minBuildY || pos.getY() > this.maxBuildY) return false;
+
+        final BlockPos centre = this.getCentrePosWithMeanSpawnY();
+        final double xDiff = Math.abs(centre.getX() - pos.getX());
+        final double yDiff = Math.abs(centre.getY() - pos.getY());
+        final double zDiff = Math.abs(centre.getZ() - pos.getZ());
+
+        final double distance = Math.pow(xDiff, 3.2d) + Math.pow(yDiff, 3.2d) + Math.pow(zDiff, 3.2d);
+        final double maxDistance = Math.pow(this.size * 0.54f, 3.2d);
+
+        return distance < maxDistance;
     }
 
     public @Nullable BlockProtectionPayload getBlockProtectionPacket() {
@@ -279,5 +324,9 @@ public abstract class AbstractGameMap {
 
     public Optional<Map.Entry<DyeColor, BlockPos>> getClosestSpawn(BlockPos pos) {
         return this.spawnPositions.entries().stream().min(Comparator.comparingDouble(entry -> entry.getValue().getSquaredDistance(this.pos(pos))));
+    }
+
+    public String getName() {
+        return this.name;
     }
 }

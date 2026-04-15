@@ -1,6 +1,5 @@
 package com.soc.game.map;
 
-import com.google.common.collect.*;
 import com.soc.SocWars;
 import com.soc.entities.BedwarsShopEntity;
 import com.soc.game.manager.bedwars.ShopType;
@@ -16,11 +15,11 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.soc.game.map.DyeColourWithEmpty.fromDyeColour;
 import static com.soc.lib.SocWarsLib.*;
 
 public class BedwarsGameMap extends AbstractGameMap {
@@ -54,9 +53,10 @@ public class BedwarsGameMap extends AbstractGameMap {
             Set<BlockPos> islandGens,
             Set<BlockPos> bedPositions,
             Set<BlockPos> individualShops,
-            Set<BlockPos> teamShops
+            Set<BlockPos> teamShops,
+            File file
     ) {
-        super(structure, spawnPositions, centrePos, absoluteCentrePos, blockProtectionOverlay, world);
+        super(structure, spawnPositions, centrePos, absoluteCentrePos, blockProtectionOverlay, world, file);
         this.diamondGens = diamondGens.stream().map(pos -> new ResourceGenerator(Items.DIAMOND, 1, world, this.pos(pos), false, 30 * 20)).collect(Collectors.toSet());
         this.emeraldGens = emeraldGens.stream().map(pos -> new ResourceGenerator(Items.EMERALD, 1, world, this.pos(pos), false, 40 * 20)).collect(Collectors.toSet());
         this.islandGens = this.makeIslandGenerators(world, islandGens.stream().map(this::pos).collect(Collectors.toSet()), spawnPositions.stream().map(spawnPosition -> spawnPosition.withPos(this.pos(spawnPosition.pos()))).collect(Collectors.toSet()));
@@ -103,7 +103,7 @@ public class BedwarsGameMap extends AbstractGameMap {
         return this.islandGens.values().stream().map(IslandGenerator::getPos).anyMatch(pos -> pos.isWithinDistance(player.getPos(), SPLIT_RANGE));
     }
 
-    public static Optional<BedwarsGameMap> fromNbt(NbtCompound compound, ServerWorld world, BlockPos centrePos) {
+    public static Optional<BedwarsGameMap> fromNbt(NbtCompound compound, ServerWorld world, BlockPos centrePos, File file) {
         final StructureTemplateManager templateManager = world.getStructureTemplateManager();
         final Optional<NbtCompound> structureCompound = compound.getCompound(STRUCTURE_KEY);
         final StructureTemplate template = structureCompound.map(templateManager::createTemplate).orElse(null);
@@ -128,7 +128,8 @@ public class BedwarsGameMap extends AbstractGameMap {
                 getBlockPosSet(compound, ISLAND_GENS_KEY).orElseGet(() -> { SocWars.LOGGER.error("Failed to load island gens"); return Set.of(); }),
                 getBlockPosSet(compound, BED_POSITIONS_KEY).orElseGet(() -> { SocWars.LOGGER.error("Failed to load bed positions"); return Set.of(); }),
                 getBlockPosSet(compound, INDIVIDUAL_SHOPS_KEY).orElseGet(() -> { SocWars.LOGGER.error("Failed to load individual shops"); return Set.of(); }),
-                getBlockPosSet(compound, TEAM_SHOPS_KEY).orElseGet(() -> { SocWars.LOGGER.error("Failed to load team shops"); return Set.of(); })
+                getBlockPosSet(compound, TEAM_SHOPS_KEY).orElseGet(() -> { SocWars.LOGGER.error("Failed to load team shops"); return Set.of(); }),
+                file
         ));
     }
 

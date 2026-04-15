@@ -12,6 +12,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 import org.joml.Matrix3x2fStack;
 
+import java.util.Objects;
+
 import static com.soc.lib.SocWarsLib.ifNotNull;
 import static net.minecraft.util.math.ColorHelper.lerp;
 
@@ -67,11 +69,8 @@ public class BedwarsTeamShopScreen extends AbstractShopScreen<BedwarsTeamShopScr
             final int capacity = category.size();
             final int usedCapacity = this.handler.getStacksInDisplay();
 
-            assert Formatting.DARK_RED.getColorValue() != null;
-            assert Formatting.DARK_BLUE.getColorValue() != null;
-
-            final int emptyColour = Formatting.DARK_RED.getColorValue();
-            final int fullColour = Formatting.DARK_BLUE.getColorValue();
+            final int emptyColour = Objects.requireNonNull(Formatting.DARK_RED.getColorValue());
+            final int fullColour = Objects.requireNonNull(Formatting.DARK_BLUE.getColorValue());
 
             context.drawText(this.textRenderer, String.valueOf(usedCapacity), 235, 94, lerp((float)usedCapacity / (float)capacity, emptyColour, fullColour) | 0xff000000, false);
             context.drawText(this.textRenderer, String.valueOf(capacity), 235, 104, fullColour | 0xff000000, false);

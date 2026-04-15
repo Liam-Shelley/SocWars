@@ -24,6 +24,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -36,14 +37,15 @@ public class SkywarsGameMap extends AbstractGameMap {
 
     public SkywarsGameMap(
             StructureTemplate structure,
-            @NotNull Set<SpawnPosition> spawnPositions,
-            @NotNull BlockPos centrePos,
-            @NotNull BlockPos absoluteCentrePos,
-            @Nullable SparseVoxelOctree<Boolean> blockProtectionOverlay,
-            @NotNull ServerWorld world,
-            @NotNull Set<SkywarsChest> lootChests
+            Set<SpawnPosition> spawnPositions,
+            BlockPos centrePos,
+            BlockPos absoluteCentrePos,
+             SparseVoxelOctree<Boolean> blockProtectionOverlay,
+            ServerWorld world,
+            Set<SkywarsChest> lootChests,
+            File file
     ) {
-        super(structure, spawnPositions, centrePos, absoluteCentrePos, blockProtectionOverlay, world);
+        super(structure, spawnPositions, centrePos, absoluteCentrePos, blockProtectionOverlay, world, file);
         this.lootChests = lootChests.stream().collect(Collectors.toMap(chest -> super.pos(chest.pos()), IngameSkywarsChest::new));
     }
 
@@ -107,7 +109,7 @@ public class SkywarsGameMap extends AbstractGameMap {
         return Optional.ofNullable(this.lootChests.get(pos));
     }
 
-    public static Optional<SkywarsGameMap> fromNbt(@NotNull NbtCompound compound, @NotNull ServerWorld world, @NotNull BlockPos centrePos) {
+    public static Optional<SkywarsGameMap> fromNbt(@NotNull NbtCompound compound, @NotNull ServerWorld world, @NotNull BlockPos centrePos, File file) {
         final StructureTemplateManager templateManager = world.getStructureTemplateManager();
         final Optional<NbtCompound> structureCompound = compound.getCompound(STRUCTURE_KEY);
         final StructureTemplate template = structureCompound.map(templateManager::createTemplate).orElse(null);
@@ -128,7 +130,8 @@ public class SkywarsGameMap extends AbstractGameMap {
                 centrePos,
                 null,
                 world,
-                chests
+                chests,
+                file
         ));
     }
 

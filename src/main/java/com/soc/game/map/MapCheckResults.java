@@ -52,6 +52,17 @@ public record MapCheckResults(Set<SpawnPosition> spawnPositions, Set<BlockPos> c
         switch (mapType) {
             case BEDWARS -> {
                 warnings.add(
+                        this.bedPositions::isEmpty,
+                        InfoList.InfoType.ERROR,
+                        Text.translatable("map_block.results.no_beds").formatted(Formatting.DARK_RED),
+                        Text.translatable("map_block.results.no_beds.hover")
+                );
+                warnings.add(
+                        () -> this.spawnPositions.size() != this.bedPositions.size(),
+                        InfoList.InfoType.WARNING,
+                        Text.translatable("map_block.results.mismatched_beds").formatted(Formatting.YELLOW)
+                );
+                warnings.add(
                         () -> this.spawnPositions.size() != this.islandGens.size(),
                         InfoList.InfoType.WARNING,
                         Text.translatable("map_block.results.mismatched_generators").formatted(Formatting.YELLOW)

@@ -92,7 +92,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
         final long shopSeed = world.random.nextLong();
         this.playerStatsMap = players.stream().collect(Collectors.toMap(ServerPlayerEntity::getUuid, player -> new PlayerStats(player, this.getTeam(player), shopSeed)));
-        this.teamStatsMap = this.teams.keySet().stream().collect(Collectors.toMap(Function.identity(), team -> new TeamStats(team, this.teams.get(team).stream().map(this.playerStatsMap::get).collect(Collectors.toSet()), world, shopSeed, this.map.poss(this.map.getSpawnPositions(team)))));
+        this.teamStatsMap = this.teams.keySet().stream().collect(Collectors.toMap(Function.identity(), team -> new TeamStats(team, this.teams.get(team).stream().map(this.playerStatsMap::get).collect(Collectors.toSet()), world, shopSeed, this.map.getSpawnPositions(team))));
     }
 
     @Override
@@ -247,7 +247,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         }
 
         if (canRespawn) {
-            PrescheduledEvents.playCountdown(() -> this.respawnPlayer(player), this, 5, 20, SoundEvents.BLOCK_FUNGUS_STEP, player);
+            PrescheduledEvents.playCountdown(() -> this.respawnPlayer(player), this, 5, 20, SoundEvents.BLOCK_FUNGUS_STEP, true, player);
         } else {
             player.networkHandler.sendPacket(new TitleS2CPacket(Text.translatable("game.bedwars.eliminate")));
         }
@@ -353,7 +353,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
             final boolean brokeBed = this.teamStatsMap.get(bedTeam).breakBed();
             if (brokeBed) {
                 this.broadcast(Text.translatable("game.bedwars.bed_broken.chat", colouredTextFromColour(bedTeam), player.getStyledDisplayName()), false);
-                this.broadcastTitle(bedTeam, Text.translatable("game.bedwars.bed_broken.title").formatted(Formatting.DARK_RED));
+                this.broadcastTitle(bedTeam, Text.translatable("game.bedwars.bed_broken.title").formatted(Formatting.DARK_RED), true);
                 this.broadcastSound(bedTeam, SoundEvents.ENTITY_WITHER_SPAWN);
                 player.playSoundToPlayer(Sounds.AIR_HORN, SoundCategory.PLAYERS, 1, 1);
 

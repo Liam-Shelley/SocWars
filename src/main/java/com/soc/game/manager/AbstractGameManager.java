@@ -21,9 +21,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.network.packet.s2c.play.ClearTitleS2CPacket;
-import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
-import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.s2c.play.*;
 import net.minecraft.scoreboard.AbstractTeam;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.Team;
@@ -133,7 +132,10 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         this.clearPlayerInventoriesAndEnderChests();
         this.removePlayersAttributes();
 
-        PrescheduledEvents.playCountdown(this::onFinishCountdown, this, 5, 20, 50, SoundEvents.BLOCK_NOTE_BLOCK_GUITAR.value(), null);
+        PrescheduledEvents.playCountdown(this::onFinishCountdown, this, 5, 20, 50, SoundEvents.BLOCK_NOTE_BLOCK_GUITAR.value(), false);
+
+        this.broadcastTitle(Text.literal(this.map.getName()), true);
+        this.getPlayers().forEach(player -> player.networkHandler.sendPacket(new TitleFadeS2CPacket(10, 140, 0)));
 
         this.getPlayers().forEach(this::sendJoinGamePayload);
     }
@@ -216,7 +218,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     public ActionResult onBlockPlaced(ServerPlayerEntity player, BlockPos pos, ItemUsageContext context) {
         final boolean allow = this.isBlockUnprotected(player, pos, this.world.getBlockState(pos));
         if (allow) {
-            if (!pos.isWithinDistance(this.map.getCentrePos(), this.map.size * 1.35f)) {
+            if (!this.map.isBlockInBounds(pos)) {
                 this.world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), SoundCategory.MASTER);
                 player.sendMessage(Text.translatable("game.warning.placed_out_of_bounds"));
                 player.networkHandler.sendPacket(new TitleS2CPacket(Text.translatable("game.warning.placed_out_of_bounds.title")));
@@ -374,12 +376,14 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         this.broadcast(text, false);
     }
 
-    protected void broadcastTitle(Text text) {
-        this.getPlayers().forEach(player -> player.networkHandler.sendPacket(new TitleS2CPacket(text)));
+    protected void broadcastTitle(Text text, boolean isTitle) {
+        final Packet<?> packet = isTitle ? new TitleS2CPacket(text) : new SubtitleS2CPacket(text);
+        this.getPlayers().forEach(player -> player.networkHandler.sendPacket(packet));
     }
 
-    protected void broadcastTitle(DyeColor team, Text text) {
-        this.getPlayers(team).forEach(player -> player.networkHandler.sendPacket(new TitleS2CPacket(text)));
+    protected void broadcastTitle(DyeColor team, Text text, boolean isTitle) {
+        final Packet<?> packet = isTitle ? new TitleS2CPacket(text) : new SubtitleS2CPacket(text);
+        this.getPlayers(team).forEach(player -> player.networkHandler.sendPacket(packet));
     }
 
     protected void clearTitle() {

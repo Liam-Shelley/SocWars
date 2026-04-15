@@ -23,6 +23,8 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import org.jetbrains.annotations.Nullable;
 
@@ -67,8 +69,14 @@ public class HideAndSeekGameManager extends AbstractGameManager<HideAndSeekGameM
 
         PrescheduledEvents.playCountdown(() -> {
             this.map.spawnCages(false, SEEKER_COLOUR);
-            this.getPlayers(SEEKER_COLOUR).forEach(seeker -> seeker.changeGameMode(GameMode.SURVIVAL));
-        }, this, 10, 20, SoundEvents.BLOCK_NOTE_BLOCK_BANJO.value(), null);
+            this.getPlayers(SEEKER_COLOUR).forEach(seeker -> {
+                seeker.changeGameMode(GameMode.SURVIVAL);
+
+                final Optional<Vec3d> seekerSpawn = this.map.getSpawnPositionNoOffset(SEEKER_COLOUR).map(BlockPos::toCenterPos);
+                seekerSpawn.ifPresent(pos -> seeker.requestTeleport(pos.x, pos.y, pos.z));
+                seeker.fallDistance = 0d;
+            });
+        }, this, 15, 20, SoundEvents.BLOCK_NOTE_BLOCK_BANJO.value(), true);
     }
 
     @Override
