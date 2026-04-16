@@ -61,4 +61,10 @@ public interface ModEvents {
 
         return allowEvent;
     });
+
+    Event<OnCollectibleBlockReplaced> ON_COLLECTIBLE_BLOCK_REPLACED = EventFactory.createArrayBacked(OnCollectibleBlockReplaced.class, listeners -> id -> {
+        for (OnCollectibleBlockReplaced listener : listeners) {
+            listener.onCollectibleBlockReplaced(id);
+        }
+    });
 }

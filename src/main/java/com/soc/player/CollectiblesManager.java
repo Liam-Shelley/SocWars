@@ -5,80 +5,79 @@ import com.google.common.collect.Multimap;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.soc.SocWars;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import com.soc.blocks.blockentities.CollectibleBlockEntity;
+import com.soc.events.ModEvents;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.PersistentStateType;
 import net.minecraft.world.World;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static java.util.Collections.nCopies;
 
 public class CollectiblesManager extends PersistentState {
-    //Extraordinarily utilitous little inner class here that I would lose my mind without
     private record Entry(int id, RegistryKey<World> world, BlockPos pos) {
         public static Codec<Entry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Codec.INT.fieldOf("id").orElse(-1).forGetter(Entry::id),
                 World.CODEC.fieldOf("world").orElse(null).forGetter(Entry::world),
-                BlockPos.CODEC.fieldOf("id").orElse(null).forGetter(Entry::pos)
+                BlockPos.CODEC.fieldOf("pos").orElse(null).forGetter(Entry::pos)
         ).apply(instance, Entry::new));
+
+        private boolean isValid() {
+            return this.id != -1 && this.world != null && this.pos != null;
+        }
 
         private boolean isInvalid() {
             return this.id == -1 && this.world == null && this.pos == null;
         }
 
-        private void logInvalidWarning() {
-            SocWars.LOGGER.warn(
-                    "Skipped loading Collectible entry as part of its data was missing: Id: {}, World: {}, Pos: {}",
+        @Override
+        public String toString() {
+            return String.format("Id: %s, World: %s, Pos: %s",
                     this.id == -1 ? "INVALID" : this.id,
                     this.world == null ? "INVALID" : this.world.getValue().toString(),
                     this.pos == null ? "INVALID" : this.pos.toString()
             );
         }
-    }
 
-    public static CollectiblesManager INSTANCE = new CollectiblesManager();
+        private boolean matches(RegistryKey<World> world, BlockPos pos) {
+            return this.isValid() && this.world == world && this.pos == pos;
+        }
+    }
 
     //I love codecs so much why can't they be like packet codecs?
     public static Codec<CollectiblesManager> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.list(Entry.CODEC).fieldOf("Entries").orElse(List.of()).forGetter(CollectiblesManager::getEntries),
-            Codec.list(Codec.INT).fieldOf("Ledger").orElse(List.of()).forGetter(CollectiblesManager::getLedger)
+            Codec.list(Entry.CODEC).fieldOf("entries").orElse(new ArrayList<>()).forGetter(CollectiblesManager::getEntries),
+            Codec.list(Codec.INT).fieldOf("ledger").orElse(new ArrayList<>()).forGetter(CollectiblesManager::getLedger)
     ).apply(instance, CollectiblesManager::new));
 
-    public static PersistentStateType<CollectiblesManager> STATE_TYPE = new PersistentStateType<>("", () -> INSTANCE, CODEC, null);
+    public static PersistentStateType<CollectiblesManager> STATE_TYPE = new PersistentStateType<>("collectible_block_tracking", CollectiblesManager::new, CODEC, null);
 
-    public static void initialise() {
-        ServerLifecycleEvents.AFTER_SAVE.register((server, flush, force) -> {
-            server.getOverworld().getPersistentStateManager().set(STATE_TYPE, INSTANCE);
-        });
-    }
+    public static void initialise() {}
 
-    private final List<Entry> collectibleMap;
+    private final List<Entry> collectibleLedger;
     private final List<Integer> removedBlockLedger;
 
     private CollectiblesManager(List<Entry> entries, List<Integer> removedBlockLedger) {
-        this.collectibleMap = rectifyEntries(entries);
+        this.collectibleLedger = rectifyEntries(entries);
         this.removedBlockLedger = removedBlockLedger;
-
-        INSTANCE = this; //This reeks but I like its stank
     }
 
     private static List<Entry> rectifyEntries(List<Entry> entries) { //Not even going to worry about performance here since this list will only maybe ever be about 100 entries long at most
-        if (entries.isEmpty()) return List.of();
+        if (entries.isEmpty()) return new ArrayList<>();
         final int maxId = entries.stream().filter(entry -> {
             if (entry.isInvalid()) {
-                entry.logInvalidWarning();
+                SocWars.LOGGER.warn("Skipped loading Collectible entry as part of its data was missing: {}", entry);
                 return false;
             } else return true;
-        }).mapToInt(Entry::id).max().getAsInt();
+        }).mapToInt(Entry::id).max().orElse(-1);
 
-        final List<Entry> rectifiedEntries = new ArrayList<>(nCopies(maxId - 1, null));
-        final Multimap<Integer, Entry> conflictingEntries = HashMultimap.create(); //TODO: Use this overengineeredness to actually write logging for duplicate entries even though it should never happen
+        final List<Entry> rectifiedEntries = new ArrayList<>(nCopies(maxId + 1, null));
+        final Multimap<Integer, Entry> conflictingEntries = HashMultimap.create();
 
         for (Entry entry : entries) {
             final int id = entry.id;
@@ -90,27 +89,76 @@ public class CollectiblesManager extends PersistentState {
             }
         }
 
-        for (int i : conflictingEntries.keySet()) {
-            rectifiedEntries.set(i, null);
+        for (int id : conflictingEntries.keySet()) {
+            rectifiedEntries.set(id, null);
+            final String conflictingEntriesString = conflictingEntries.get(id).stream().map(Entry::toString).reduce((a, b) -> a + ", " + b).orElse("");
+            SocWars.LOGGER.warn("Skipped loading all Collectible entries for Id: {} as there were duplicates: {}", id, conflictingEntriesString);
         }
 
         return rectifiedEntries;
     }
 
     private CollectiblesManager() {
-        this.collectibleMap = new ArrayList<>();
+        this.collectibleLedger = new ArrayList<>();
         this.removedBlockLedger = new ArrayList<>();
     }
 
     private List<Entry> getEntries() {
-        return this.collectibleMap;
+        return this.collectibleLedger.stream().filter(entry -> entry != null && entry.isValid()).toList();
     }
 
     private List<Integer> getLedger() {
         return this.removedBlockLedger;
     }
 
-    public static void onPlacedBlock(RegistryKey<World> world, BlockPos pos) {
-        INSTANCE.collectibleMap.put()
+    public static int addCollectibleBlock(CollectibleBlockEntity blockEntity) {
+        if (!(blockEntity.getWorld() instanceof ServerWorld serverWorld)) return -1;
+
+        return serverWorld.getPersistentStateManager().getOrCreate(STATE_TYPE).addCollectibleBlock(blockEntity.getId(), serverWorld.getRegistryKey(), blockEntity.getPos());
+    }
+
+    private int addCollectibleBlock(int tryId, RegistryKey<World> world, BlockPos pos) {
+        if (tryId >= 0 && tryId < this.collectibleLedger.size() && this.collectibleLedger.get(tryId) != null && this.collectibleLedger.get(tryId).matches(world, pos)) {
+            return tryId;
+        }
+
+        final int id = this.getNextFreeId();
+
+        if (this.removedBlockLedger.contains(id)) {
+            ModEvents.ON_COLLECTIBLE_BLOCK_REPLACED.invoker().onCollectibleBlockReplaced(id);
+        }
+
+        while (id >= this.collectibleLedger.size()) this.collectibleLedger.add(null);
+
+        this.collectibleLedger.set(id, new Entry(id, world, pos));
+
+        this.markDirty();
+
+        return id;
+    }
+
+    private int getNextFreeId() {
+        for (int i = 0; i < this.collectibleLedger.size(); i++) {
+            if (this.collectibleLedger.get(i) == null) {
+                return i;
+            }
+        }
+        return this.collectibleLedger.size();
+    }
+
+    public static void removeCollectibleBlock(int id, ServerWorld serverWorld, BlockPos pos) {
+        serverWorld.getPersistentStateManager().getOrCreate(STATE_TYPE).removeCollectibleBlock(id, serverWorld.getRegistryKey(), pos);
+    }
+
+    private void removeCollectibleBlock(int id, RegistryKey<World> world, BlockPos pos) {
+        if (this.collectibleLedger.size() <= id) return;
+
+        if (this.collectibleLedger.get(id) != null && !this.collectibleLedger.get(id).matches(world, pos)) {
+            SocWars.LOGGER.warn("Removed collectible block: {} even though it did not match the current entry with the same id: {}. ", new Entry(id, world, pos), this.collectibleLedger.get(id));
+        }
+        this.collectibleLedger.set(id, null);
+        this.removedBlockLedger.add(id);
+
+        this.markDirty();
     }
 }

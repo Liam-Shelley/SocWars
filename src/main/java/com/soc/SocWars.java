@@ -20,6 +20,7 @@ import com.soc.lib.Events;
 import com.soc.networking.C2SPayloads;
 import com.soc.networking.C2SReceivers;
 import com.soc.networking.S2CPayloads;
+import com.soc.player.CollectiblesManager;
 import com.soc.player.PlayerDataManager;
 import com.soc.resourcedata.ResourceManager;
 import com.soc.screenhandler.ScreenHandlers;
@@ -54,7 +55,6 @@ public class SocWars implements ModInitializer {
 		ModBlockEntities.initialise();
 		ModEffects.initialise();
 		GamesManager.initialise();
-		PlayerDataManager.initialise();
 		C2SPayloads.initialise();
 		S2CPayloads.initialise();
 		C2SReceivers.initialise();
@@ -83,5 +83,7 @@ public class SocWars implements ModInitializer {
 		TickFunctions.initialise();
 
 		Database.initialise();
+		CollectiblesManager.initialise();
+		PlayerDataManager.initialise();
 	}
 }

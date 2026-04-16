@@ -1,61 +1,42 @@
 package com.soc.player;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.item.Item;
-import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.network.codec.PacketCodecs;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlayerData {
-    //Maybe I should just replace this with a normal tuple codec
-    public static final PacketCodec<ByteBuf, PlayerData> PACKET_CODEC = new PacketCodec<ByteBuf, PlayerData>() {
-        public HashSet<RegistryEntry<Item>> decodeCollectibles(ByteBuf byteBuf) {
-            final int numCollectibles = byteBuf.readInt();
-            final HashSet<RegistryEntry<Item>> collectibles = new HashSet<>();
+    //Maybe I should just replace this with a normal tuple codec. -- What is now the present me says yes that was a good idea it was much easier thank you.
+    public static final PacketCodec<ByteBuf, PlayerData> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.collection(ArrayList::new, PacketCodecs.BOOLEAN), PlayerData::getCollectibles, PlayerData::new);
+    public static final Codec<PlayerData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.list(Codec.BOOL).fieldOf("collectibles").orElse(new ArrayList<>()).forGetter(PlayerData::getCollectibles)
+    ).apply(instance, PlayerData::new));
 
-            for (int i = 0; i < numCollectibles; i++) {
-                collectibles.add(Item.ENTRY_PACKET_CODEC.decode((RegistryByteBuf) byteBuf));
-            }
-
-            return collectibles;
-        }
-
-        public PlayerData decode(ByteBuf byteBuf) {
-            final HashSet<RegistryEntry<Item>> collectibles = this.decodeCollectibles(byteBuf);
-
-            return new PlayerData(collectibles);
-        }
-
-        public void encodeCollectibles(ByteBuf byteBuf, PlayerData playerData) {
-            byteBuf.writeInt(playerData.collectibles.size());
-
-            playerData.collectibles.forEach(collectible -> Item.ENTRY_PACKET_CODEC.encode((RegistryByteBuf)byteBuf, collectible));
-        }
-
-        public void encode(ByteBuf byteBuf, PlayerData playerData) {
-            this.encodeCollectibles(byteBuf, playerData);
-        }
-    };
-
-    private final HashSet<RegistryEntry<Item>> collectibles;
+    private final List<Boolean> collectibles;
 
     public PlayerData() {
-        this.collectibles = new HashSet<>();
+        this.collectibles = new ArrayList<>();
     }
 
-    public PlayerData(HashSet<RegistryEntry<Item>> collectibles) {
+    public PlayerData(List<Boolean> collectibles) {
         this.collectibles = collectibles;
     }
 
-    public boolean collectCollectible(RegistryEntry<Item> collectible) {
-        return collectibles.add(collectible);
+    public boolean collectCollectible(int id) {
+        while (id >= this.collectibles.size()) this.collectibles.add(false);
+
+        return this.collectibles.set(id, true);
     }
-    public boolean hasCollectible(RegistryEntry<Item> collectible) {
-        return collectibles.contains(collectible);
+
+    public boolean hasCollectible(int collectible) {
+        return this.collectibles.get(collectible);
     }
-    public HashSet<RegistryEntry<Item>> getCollectibles() {
+
+    public List<Boolean> getCollectibles() {
         return this.collectibles;
     }
 }

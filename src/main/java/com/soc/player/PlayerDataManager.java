@@ -1,43 +1,53 @@
 package com.soc.player;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.soc.networking.s2c.PlayerDataPayload;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.scoreboard.ScoreHolder;
 import net.minecraft.scoreboard.ScoreboardObjective;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class PlayerDataManager {
     public static void initialise() {
-        net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents.JOIN.register((entity) -> {
-            HashMap<UUID, PlayerData> playerDataMap = PlayerDataManager.getPlayerDataMap();
-            if (!playerDataMap.containsKey(entity.getUuid())) {
-                playerDataMap.put(entity.getUuid(), new PlayerData());
-            }
-
-            final PlayerDataPayload playerDataPayload = new PlayerDataPayload(PlayerDataManager.getPlayerData(entity.getUuid()));
-            ServerPlayNetworking.send(entity, playerDataPayload);
-        });
+        ServerPlayerEvents.JOIN.register(entity -> ServerPlayNetworking.send(entity, new PlayerDataPayload(PlayerDataManager.getPlayerData(entity.getUuid()))));
     }
 
-    private static final HashMap<UUID, PlayerData> PLAYER_DATA_MAP = HashMap.newHashMap(10);
+    public static final Codec<PlayerDataManager> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.unboundedMap(Codec.STRING.xmap(UUID::fromString, UUID::toString), PlayerData.CODEC).fieldOf("map").forGetter(PlayerDataManager::getPlayerDataMap)
+    ).apply(instance, PlayerDataManager::new));
 
-    public static HashMap<UUID, PlayerData> getPlayerDataMap() { return PLAYER_DATA_MAP; }
+    public static final PlayerDataManager INSTANCE = new PlayerDataManager();
+
+    private final Map<UUID, PlayerData> playerDataMap;
+
+    private PlayerDataManager(Map<UUID, PlayerData> playerDataMap) {
+        this.playerDataMap = playerDataMap;
+    }
+
+    private PlayerDataManager() {
+        this.playerDataMap = new HashMap<>();
+    }
+
+    public Map<UUID, PlayerData> getPlayerDataMap() { return playerDataMap; }
 
     public static PlayerData getPlayerData(UUID uuid) {
-        return PLAYER_DATA_MAP.get(uuid);
+        return INSTANCE.playerDataMap.computeIfAbsent(uuid, uuid2 -> new PlayerData());
     }
     public static PlayerData getPlayerData(PlayerEntity player) {
         return getPlayerData(player.getUuid());
     }
 
-    public static void setPlayerData(UUID uuid, PlayerData playerData) {
-        PLAYER_DATA_MAP.put(uuid, playerData);
+    public void setPlayerData(UUID uuid, PlayerData playerData) {
+        this.playerDataMap.put(uuid, playerData);
     }
 
-    public static void setPlayerData(PlayerEntity player, PlayerData playerData) {
+    public void setPlayerData(PlayerEntity player, PlayerData playerData) {
         setPlayerData(player.getUuid(), playerData);
     }
 

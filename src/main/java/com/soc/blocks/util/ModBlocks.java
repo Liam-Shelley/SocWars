@@ -62,7 +62,7 @@ public interface ModBlocks {
 
     Block NUCLEAR_BOMB = ModBlocks.register("nuclear_bomb", settings -> new BigTntBlock(settings, BigTntEntity.BigTntType.NUCLEAR), AbstractBlock.Settings.create().breakInstantly().sounds(BlockSoundGroup.GRASS), true, ItemGroups.BLOCKS_KEY);
     Block HYDROGEN_BOMB = ModBlocks.register("hydrogen_bomb", settings -> new BigTntBlock(settings, BigTntEntity.BigTntType.HYDROGEN), AbstractBlock.Settings.create().breakInstantly().sounds(BlockSoundGroup.GRASS), true, ItemGroups.BLOCKS_KEY);
-    Block COLLECTIBLE_BLOCK = ModBlocks.register("collectible_block", CollectibleBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.IRON).nonOpaque().luminance(state -> state.get(CollectibleBlock.HAS_COLLECTIBLE) ? 2 : 15), true, ItemGroups.BLOCKS_KEY); //No collision?
+    Block COLLECTIBLE_BLOCK = ModBlocks.register("collectible_block", CollectibleBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.IRON).nonOpaque().luminance(state -> 2), true, ItemGroups.BLOCKS_KEY); //No collision?
     Block DISPLAY_BLOCK = ModBlocks.register("display_block", DisplayBlock::new, AbstractBlock.Settings.create().nonOpaque().noCollision(), true, ItemGroups.BLOCKS_KEY);
     Block ITSEVOCAT_SKULL = ModBlocks.register("itsevocat_skull", ItsevocatSkull::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.BAMBOO).nonOpaque(), true, ItemGroups.BLOCKS_KEY); //No collision?
     Block MAP_BLOCK = ModBlocks.register("map_block", MapBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.IRON), true, ItemGroups.BLOCKS_KEY);
