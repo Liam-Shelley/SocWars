@@ -38,12 +38,12 @@ public class CollectibleBlockEntity extends BlockEntity {
 
     @Override
     protected void writeData(WriteView view) {
-        if (this.id != -1) view.put("id", Codec.INT, this.id);
+        if (this.id != -1) view.put("tracking_id", Codec.INT, this.id);
     }
 
     @Override
     protected void readData(ReadView view) {
-        this.id = view.read("id", Codec.INT).orElse(-1);
+        this.id = view.read("tracking_id", Codec.INT).orElse(-1);
     }
 
     @Override

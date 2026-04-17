@@ -47,7 +47,7 @@ public class S2CReceivers {
                 context.player().sendMessage(Text.translatable("queue.leave", payload.queue()), false);
         });
         ClientPlayNetworking.registerGlobalReceiver(PlayerDataPayload.ID, (payload, context) -> {
-                PlayerDataManager.setPlayerData(context.player(), payload.playerData());
+                //PlayerDataManager.setPlayerData(context.player(), payload.playerData()); //TODO: Fix?
         });
         ClientPlayNetworking.registerGlobalReceiver(AddVelocityPayload.ID, (payload, context) -> {
                 context.player().addVelocity(payload.velocity());

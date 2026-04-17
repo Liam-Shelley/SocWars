@@ -23,13 +23,21 @@ public class PlayerData {
     }
 
     public PlayerData(List<Boolean> collectibles) {
-        this.collectibles = collectibles;
+        this.collectibles = new ArrayList<>(collectibles);
     }
 
     public boolean collectCollectible(int id) {
+        if (id < 0) return false;
+
         while (id >= this.collectibles.size()) this.collectibles.add(false);
 
         return this.collectibles.set(id, true);
+    }
+
+    public void resetCollectible(int id) {
+        if (id < 0 || id >= this.collectibles.size()) return;
+
+        this.collectibles.set(id, false);
     }
 
     public boolean hasCollectible(int collectible) {

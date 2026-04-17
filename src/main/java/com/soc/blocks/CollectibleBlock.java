@@ -10,6 +10,7 @@ import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.text.Text;
@@ -45,7 +46,7 @@ public class CollectibleBlock extends BlockWithEntity {
             return super.onUse(state, world, pos, player, hit);
         }
 
-        if (!world.isClient()) this.collect(player, world, blockEntity.getId());
+        if (!world.isClient()) this.collect((ServerPlayerEntity)player, blockEntity.getId());
         return ActionResult.SUCCESS;
     }
 
@@ -60,7 +61,7 @@ public class CollectibleBlock extends BlockWithEntity {
         //Ready for a nice bit of mixing in
     }
 
-    private void collect(PlayerEntity player, World world, int id) {
+    private void collect(ServerPlayerEntity player, int id) {
         boolean collected = !PlayerDataManager.getPlayerData(player).collectCollectible(id);
 
         player.sendMessage(Text.translatable(collected ? "collectible.collect" : "collectible.already_collected"), false); //Consolidate this garbage

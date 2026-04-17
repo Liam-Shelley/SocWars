@@ -45,7 +45,7 @@ public class CollectiblesManager extends PersistentState {
         }
 
         private boolean matches(RegistryKey<World> world, BlockPos pos) {
-            return this.isValid() && this.world == world && this.pos == pos;
+            return this.isValid() && this.world == world && this.pos.equals(pos);
         }
     }
 
@@ -64,7 +64,7 @@ public class CollectiblesManager extends PersistentState {
 
     private CollectiblesManager(List<Entry> entries, List<Integer> removedBlockLedger) {
         this.collectibleLedger = rectifyEntries(entries);
-        this.removedBlockLedger = removedBlockLedger;
+        this.removedBlockLedger = new ArrayList<>(removedBlockLedger);
     }
 
     private static List<Entry> rectifyEntries(List<Entry> entries) { //Not even going to worry about performance here since this list will only maybe ever be about 100 entries long at most
@@ -114,23 +114,24 @@ public class CollectiblesManager extends PersistentState {
     public static int addCollectibleBlock(CollectibleBlockEntity blockEntity) {
         if (!(blockEntity.getWorld() instanceof ServerWorld serverWorld)) return -1;
 
-        return serverWorld.getPersistentStateManager().getOrCreate(STATE_TYPE).addCollectibleBlock(blockEntity.getId(), serverWorld.getRegistryKey(), blockEntity.getPos());
+        return getPersistentState(serverWorld).addCollectibleBlock(blockEntity.getId(), serverWorld, blockEntity.getPos());
     }
 
-    private int addCollectibleBlock(int tryId, RegistryKey<World> world, BlockPos pos) {
-        if (tryId >= 0 && tryId < this.collectibleLedger.size() && this.collectibleLedger.get(tryId) != null && this.collectibleLedger.get(tryId).matches(world, pos)) {
+    private int addCollectibleBlock(int tryId, ServerWorld world, BlockPos pos) {
+        if (tryId >= 0 && tryId < this.collectibleLedger.size() && this.collectibleLedger.get(tryId) != null && this.collectibleLedger.get(tryId).matches(world.getRegistryKey(), pos)) {
             return tryId;
         }
 
         final int id = this.getNextFreeId();
 
         if (this.removedBlockLedger.contains(id)) {
-            ModEvents.ON_COLLECTIBLE_BLOCK_REPLACED.invoker().onCollectibleBlockReplaced(id);
+            ModEvents.ON_COLLECTIBLE_BLOCK_REPLACED.invoker().onCollectibleBlockReplaced(id, world);
+            this.removedBlockLedger.remove((Integer)id); //Please don't optimise away and screw this up
         }
 
         while (id >= this.collectibleLedger.size()) this.collectibleLedger.add(null);
 
-        this.collectibleLedger.set(id, new Entry(id, world, pos));
+        this.collectibleLedger.set(id, new Entry(id, world.getRegistryKey(), pos));
 
         this.markDirty();
 
@@ -147,7 +148,7 @@ public class CollectiblesManager extends PersistentState {
     }
 
     public static void removeCollectibleBlock(int id, ServerWorld serverWorld, BlockPos pos) {
-        serverWorld.getPersistentStateManager().getOrCreate(STATE_TYPE).removeCollectibleBlock(id, serverWorld.getRegistryKey(), pos);
+        getPersistentState(serverWorld).removeCollectibleBlock(id, serverWorld.getRegistryKey(), pos);
     }
 
     private void removeCollectibleBlock(int id, RegistryKey<World> world, BlockPos pos) {
@@ -160,5 +161,9 @@ public class CollectiblesManager extends PersistentState {
         this.removedBlockLedger.add(id);
 
         this.markDirty();
+    }
+
+    public static CollectiblesManager getPersistentState(ServerWorld serverWorld) {
+        return serverWorld.getServer().getOverworld().getPersistentStateManager().getOrCreate(STATE_TYPE);
     }
 }

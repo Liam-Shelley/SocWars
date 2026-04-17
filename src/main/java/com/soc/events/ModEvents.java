@@ -62,9 +62,9 @@ public interface ModEvents {
         return allowEvent;
     });
 
-    Event<OnCollectibleBlockReplaced> ON_COLLECTIBLE_BLOCK_REPLACED = EventFactory.createArrayBacked(OnCollectibleBlockReplaced.class, listeners -> id -> {
+    Event<OnCollectibleBlockReplaced> ON_COLLECTIBLE_BLOCK_REPLACED = EventFactory.createArrayBacked(OnCollectibleBlockReplaced.class, listeners -> (id, world) -> {
         for (OnCollectibleBlockReplaced listener : listeners) {
-            listener.onCollectibleBlockReplaced(id);
+            listener.onCollectibleBlockReplaced(id, world);
         }
     });
 }
