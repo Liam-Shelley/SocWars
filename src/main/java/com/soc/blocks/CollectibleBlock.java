@@ -46,7 +46,7 @@ public class CollectibleBlock extends BlockWithEntity {
             return super.onUse(state, world, pos, player, hit);
         }
 
-        if (!world.isClient()) this.collect((ServerPlayerEntity)player, blockEntity.getId());
+        if (!world.isClient()) this.collect((ServerPlayerEntity)player, pos, blockEntity.getId());
         return ActionResult.SUCCESS;
     }
 
@@ -56,16 +56,16 @@ public class CollectibleBlock extends BlockWithEntity {
         return parent == null ? null : parent.with(ROTATION, RotationPropertyHelper.fromYaw(ctx.getPlayerYaw()));
     }
 
-    @Override
-    public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random) {
-        //Ready for a nice bit of mixing in
-    }
-
-    private void collect(ServerPlayerEntity player, int id) {
+    private void collect(ServerPlayerEntity player, BlockPos pos, int id) {
         boolean collected = !PlayerDataManager.getPlayerData(player).collectCollectible(id);
 
         player.sendMessage(Text.translatable(collected ? "collectible.collect" : "collectible.already_collected"), false); //Consolidate this garbage
-        if (collected) PlayerDataManager.collectDoubloons(player, 10);
+        if (collected) {
+            player.getWorld().markDirty(pos); //God I love sync stuff
+            PlayerDataManager.sendData(player);
+
+            PlayerDataManager.collectDoubloons(player, 10);
+        }
     }
 
     @Override

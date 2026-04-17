@@ -8,6 +8,7 @@ import com.soc.lib.Events;
 import com.soc.mixin.client.GetOptionsVolumes;
 import com.soc.networking.s2c.*;
 import com.soc.networking.s2c.bedwars.*;
+import com.soc.player.PlayerData;
 import com.soc.player.PlayerDataManager;
 import com.soc.screenhandler.BedwarsIndividualShopScreenHandler;
 import com.soc.screenhandler.BedwarsTeamShopScreenHandler;
@@ -47,7 +48,7 @@ public class S2CReceivers {
                 context.player().sendMessage(Text.translatable("queue.leave", payload.queue()), false);
         });
         ClientPlayNetworking.registerGlobalReceiver(PlayerDataPayload.ID, (payload, context) -> {
-                //PlayerDataManager.setPlayerData(context.player(), payload.playerData()); //TODO: Fix?
+                if (context.player() == MinecraftClient.getInstance().player) PlayerData.CLIENT_INSTANCE = payload.playerData();
         });
         ClientPlayNetworking.registerGlobalReceiver(AddVelocityPayload.ID, (payload, context) -> {
                 context.player().addVelocity(payload.velocity());

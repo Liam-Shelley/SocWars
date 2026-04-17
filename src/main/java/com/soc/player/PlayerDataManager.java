@@ -18,10 +18,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.soc.lib.SocWarsLib.ifNotNull;
+
 public class PlayerDataManager extends PersistentState {
     public static void initialise() {
-        ServerPlayerEvents.JOIN.register(entity -> ServerPlayNetworking.send(entity, new PlayerDataPayload(PlayerDataManager.getPlayerData(entity))));
-        ModEvents.ON_COLLECTIBLE_BLOCK_REPLACED.register((id, world) -> getPersistentState(world).playerDataMap.values().forEach(playerData -> playerData.resetCollectible(id)));
+        ServerPlayerEvents.JOIN.register(PlayerDataManager::sendData);
+        ModEvents.ON_COLLECTIBLE_BLOCK_REPLACED.register((id, world) -> getPersistentState(world).playerDataMap.forEach((uuid, playerData) -> {
+            ifNotNull(world.getPlayerByUuid(uuid), player -> sendData((ServerPlayerEntity)player));
+            playerData.resetCollectible(id);
+        }));
+    }
+
+    public static void sendData(ServerPlayerEntity player) {
+        ServerPlayNetworking.send(player, new PlayerDataPayload(PlayerDataManager.getPlayerData(player)));
     }
 
     public static final Codec<PlayerDataManager> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -44,10 +53,6 @@ public class PlayerDataManager extends PersistentState {
 
     public static PlayerData getPlayerData(ServerPlayerEntity player) {
         return getPersistentState(player.getWorld()).playerDataMap.computeIfAbsent(player.getUuid(), uuid2 -> new PlayerData());
-    }
-
-    public static void setPlayerData(ServerPlayerEntity player, PlayerData playerData) {
-        getPersistentState(player.getWorld()).playerDataMap.put(player.getUuid(), playerData);
     }
 
     public static PlayerDataManager getPersistentState(ServerWorld serverWorld) {

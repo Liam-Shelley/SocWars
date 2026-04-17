@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,8 @@ public class PlayerData {
     public static final Codec<PlayerData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.list(Codec.BOOL).fieldOf("collectibles").orElse(new ArrayList<>()).forGetter(PlayerData::getCollectibles)
     ).apply(instance, PlayerData::new));
+
+    public static @Nullable PlayerData CLIENT_INSTANCE = null;
 
     private final List<Boolean> collectibles;
 
@@ -41,10 +44,14 @@ public class PlayerData {
     }
 
     public boolean hasCollectible(int collectible) {
-        return this.collectibles.get(collectible);
+        return collectible >= 0 && collectible < this.collectibles.size() && this.collectibles.get(collectible);
     }
 
     public List<Boolean> getCollectibles() {
         return this.collectibles;
+    }
+
+    public static boolean hasCollectibleClient(int id) {
+        return CLIENT_INSTANCE != null && CLIENT_INSTANCE.hasCollectible(id);
     }
 }

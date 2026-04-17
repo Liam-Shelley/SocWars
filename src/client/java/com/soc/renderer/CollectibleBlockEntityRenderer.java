@@ -2,6 +2,7 @@ package com.soc.renderer;
 
 import com.soc.blocks.blockentities.CollectibleBlockEntity;
 import com.soc.blocks.util.ModBlocks;
+import com.soc.player.PlayerData;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
@@ -27,7 +28,9 @@ public class CollectibleBlockEntityRenderer implements BlockEntityRenderer<Colle
         matrices.multiply(new Quaternionf().rotateY(entity.getRotation()));
         matrices.translate(-0.5f, 0f, -0.5f);
 
-        this.blockRenderManager.renderBlockAsEntity(ModBlocks.ITSEVOCAT_SKULL.getDefaultState(), matrices, vertexConsumers, light, overlay);
+        final boolean hasCollectible = PlayerData.hasCollectibleClient(entity.getId());
+
+        this.blockRenderManager.renderBlockAsEntity(ModBlocks.ITSEVOCAT_SKULL.getDefaultState(), matrices, vertexConsumers, hasCollectible ? 0 : light, overlay);
 
         matrices.pop();
     }
