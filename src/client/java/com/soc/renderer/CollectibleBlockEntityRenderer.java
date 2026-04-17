@@ -8,10 +8,11 @@ import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.Item;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Quaternionf;
+
+import static com.soc.lib.SocWarsLib.randomCentredVec3d;
 
 public class CollectibleBlockEntityRenderer implements BlockEntityRenderer<CollectibleBlockEntity> {
     private final BlockRenderManager blockRenderManager;
@@ -30,7 +31,7 @@ public class CollectibleBlockEntityRenderer implements BlockEntityRenderer<Colle
 
         final boolean hasCollectible = PlayerData.hasCollectibleClient(entity.getId());
 
-        this.blockRenderManager.renderBlockAsEntity(ModBlocks.ITSEVOCAT_SKULL.getDefaultState(), matrices, vertexConsumers, hasCollectible ? 0 : light, overlay);
+        this.blockRenderManager.renderBlockAsEntity(ModBlocks.ITSEVOCAT_SKULL.getDefaultState(), matrices, vertexConsumers, hasCollectible ? 2 : light, overlay);
 
         matrices.pop();
     }
