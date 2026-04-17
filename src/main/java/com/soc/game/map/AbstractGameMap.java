@@ -50,19 +50,20 @@ public abstract class AbstractGameMap {
 
     protected final StructureTemplate structure;
     public final float size;
-    private final float minBuildY;
-    private final float maxBuildY;
 
     protected final BlockPos centrePos;
     protected final BlockPos absoluteCentrePos;
     protected final Multimap<DyeColor, BlockPos> spawnPositions;
     @Nullable protected final SparseVoxelOctree<Boolean> blockProtectionOverlay;
-    @Nullable protected final BlockProtectionPayload blockProtectionPacket; //Cache me outside how bout dat
 
     protected final ServerWorld world;
     private final String name;
 
-    protected int tick;
+    private final int minBuildY;
+    private final int maxBuildY;
+    @Nullable protected final BlockProtectionPayload blockProtectionPacket; //Cache me outside how bout dat
+
+    protected int tick = 0;
 
     public AbstractGameMap(
             StructureTemplate structure,
@@ -79,12 +80,12 @@ public abstract class AbstractGameMap {
         this.centrePos = centrePos.toImmutable();
         this.absoluteCentrePos = absoluteCentrePos;
         this.blockProtectionOverlay = blockProtectionOverlay;
-        this.blockProtectionPacket = blockProtectionOverlay == null ? null : new BlockProtectionPayload(blockProtectionOverlay, this.getOrigin());
         this.world = world;
-        this.name = file.getName().split("\\.")[0];
+        this.name = file.getName().split("\\.")[0]; //Figure out a system for this properly
 
         this.minBuildY = (int)this.getMeanSpawnY().orElse(this.absoluteCentrePos.getY()) - 20;
         this.maxBuildY = (int)this.getMeanSpawnY().orElse(this.absoluteCentrePos.getY()) + 40;
+        this.blockProtectionPacket = new BlockProtectionPayload(Optional.ofNullable(blockProtectionOverlay), blockProtectionOverlay == null ? Optional.empty() : Optional.of(this.getOrigin()), this.minBuildY, this.maxBuildY);
     }
 
     /// Constructor used only for saving the map to file

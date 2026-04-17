@@ -20,7 +20,7 @@ import java.util.*;
 
 public class BedwarsTeamsHUD {
     public static void initialise() {
-        HudElementRegistry.addFirst(Identifier.of(SocWars.MOD_ID, ""), BedwarsTeamsHUD::render);
+        HudElementRegistry.addFirst(Identifier.of(SocWars.MOD_ID, "bedwars_teams_hud"), BedwarsTeamsHUD::render);
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> INSTANCE = null);
     }
 
