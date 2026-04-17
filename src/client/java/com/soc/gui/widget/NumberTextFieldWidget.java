@@ -9,7 +9,6 @@ import java.util.function.Consumer;
 public class NumberTextFieldWidget extends TextFieldWidget {
     private final Consumer<Integer> charTypedCallback;
     private final int maxValue;
-    private String text;
 
     public NumberTextFieldWidget(TextRenderer textRenderer, int x, int y, int width, int height, Text text, int maxValue, Consumer<Integer> charTypedCallback) {
         super(textRenderer, x, y, width, height, text);

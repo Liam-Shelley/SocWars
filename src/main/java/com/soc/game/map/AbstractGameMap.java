@@ -26,6 +26,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -81,7 +82,7 @@ public abstract class AbstractGameMap {
         this.absoluteCentrePos = absoluteCentrePos;
         this.blockProtectionOverlay = blockProtectionOverlay;
         this.world = world;
-        this.name = file.getName().split("\\.")[0]; //Figure out a system for this properly
+        this.name = file == null ? null : file.getName().split("\\.")[0]; //Figure out a system for this properly
 
         this.minBuildY = (int)this.getMeanSpawnY().orElse(this.absoluteCentrePos.getY()) - 20;
         this.maxBuildY = (int)this.getMeanSpawnY().orElse(this.absoluteCentrePos.getY()) + 40;
@@ -133,6 +134,10 @@ public abstract class AbstractGameMap {
         if (positions.isEmpty()) return Optional.empty();
 
         return Optional.of(this.pos(positions.get(this.world.random.nextBetween(0, positions.size() - 1))));
+    }
+
+    public Collection<Pair<DyeColor, BlockPos>> getSpawnPositions() {
+        return this.spawnPositions.entries().stream().map(entry -> Pair.of(entry.getKey(), this.pos(entry.getValue()))).toList();
     }
 
     public Collection<BlockPos> getSpawnPositions(DyeColor team) {
@@ -323,8 +328,8 @@ public abstract class AbstractGameMap {
         return this.blockProtectionPacket;
     }
 
-    public Optional<Map.Entry<DyeColor, BlockPos>> getClosestSpawn(BlockPos pos) {
-        return this.spawnPositions.entries().stream().min(Comparator.comparingDouble(entry -> entry.getValue().getSquaredDistance(this.pos(pos))));
+    public Optional<Pair<DyeColor, BlockPos>> getClosestSpawn(BlockPos pos) {
+        return this.getSpawnPositions().stream().min(Comparator.comparingDouble(entry -> entry.getRight().getSquaredDistance(pos)));
     }
 
     public String getName() {

@@ -42,6 +42,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import org.apache.commons.lang3.function.TriConsumer;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -317,17 +318,17 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
     @Override
     public boolean onChestOpened(ServerPlayerEntity player, BlockPos pos) {
-        final Optional<Map.Entry<DyeColor, BlockPos>> closestSpawn = this.map.getClosestSpawn(pos);
+        final Optional<Pair<DyeColor, BlockPos>> closestSpawn = this.map.getClosestSpawn(pos);
 
         final boolean allow = closestSpawn.map(entry -> {
-                final boolean isSameTeam = entry.getKey() == this.getTeam(player);
-                final boolean isClosestTeamDead = !this.teamStatsMap.get(entry.getKey()).isAlive();
-                final boolean isChestTooFar = !entry.getValue().isWithinDistance(pos, 20); //Gross check since I only keep track of teams that exist
+                final boolean isSameTeam = entry.getLeft() == this.getTeam(player);
+                final boolean isClosestTeamDead = !this.teamStatsMap.containsKey(entry.getLeft()) || !this.teamStatsMap.get(entry.getLeft()).isAlive();
+                final boolean isChestTooFar = !entry.getRight().isWithinDistance(pos, 20); //Gross check since I only keep track of teams that exist
                 return isSameTeam || isClosestTeamDead || isChestTooFar;
         }).orElse(true);
 
         if (!allow) {
-            player.sendMessage(Text.translatable("game.bedwars.chest_locked", colouredTextFromColour(closestSpawn.get().getKey())));
+            player.sendMessage(Text.translatable("game.bedwars.chest_locked", colouredTextFromColour(closestSpawn.get().getLeft())));
         }
 
         return allow;
