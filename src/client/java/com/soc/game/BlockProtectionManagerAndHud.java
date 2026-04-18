@@ -20,9 +20,9 @@ import java.text.DecimalFormat;
 import static com.soc.lib.SocWarsLib.mapIfNotNull;
 import static org.joml.Math.lerp;
 
-public class BlockProtectionManager {
+public class BlockProtectionManagerAndHud {
     public static void initialise() {
-        HudElementRegistry.addFirst(Identifier.of(SocWars.MOD_ID, "block_protection_hud"), BlockProtectionManager::render);
+        HudElementRegistry.addFirst(Identifier.of(SocWars.MOD_ID, "block_protection_hud"), BlockProtectionManagerAndHud::render);
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> INSTANCE.clearBlockProtection());
     }
 
@@ -31,14 +31,14 @@ public class BlockProtectionManager {
     public static final Identifier MINI_PLAYER = Identifier.of(SocWars.MOD_ID, "textures/gui/hud/height_indicator_player.png");
     public static final Identifier BAR = Identifier.of(SocWars.MOD_ID, "textures/gui/hud/height_indicator_bar.png");
 
-    public static final BlockProtectionManager INSTANCE = new BlockProtectionManager();
+    public static final BlockProtectionManagerAndHud INSTANCE = new BlockProtectionManagerAndHud();
 
     private SparseVoxelOctree<Boolean> overlay = null;
     private BlockPos origin = null;
     private double minHeight = Integer.MIN_VALUE; //Yeah this is a bit gross but eh
     private double maxHeight = Integer.MIN_VALUE;
 
-    private BlockProtectionManager() {}
+    private BlockProtectionManagerAndHud() {}
 
     public void setBlockProtection(BlockProtectionPayload packet) {
         this.overlay = packet.blockProtectionOverlay().orElse(null);
@@ -64,9 +64,6 @@ public class BlockProtectionManager {
         if (INSTANCE.minHeight == Integer.MIN_VALUE) return;
 
         final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-
-        //final int width = drawContext.getScaledWindowWidth();
-        //final int height = drawContext.getScaledWindowHeight();
 
         final double playerHeight = mapIfNotNull(MinecraftClient.getInstance().player, Entity::getY, 0d);
         final double reverseLerp = (playerHeight - INSTANCE.minHeight - 0.25d) / (INSTANCE.maxHeight - INSTANCE.minHeight + 1d);

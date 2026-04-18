@@ -1,7 +1,7 @@
 package com.soc.mixin.client;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import com.soc.game.BlockProtectionManager;
+import com.soc.game.BlockProtectionManagerAndHud;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexRendering;
@@ -22,8 +22,8 @@ abstract class BlockProtectionRenderOutline {
         final HitResult hitResult = MinecraftClient.getInstance().crosshairTarget;
 
         if (hitResult != null && hitResult.getType() == HitResult.Type.BLOCK) {
-            int thisBlock = BlockProtectionManager.INSTANCE.isBlockProtected(pos) ? 1 : 0;
-            int facingBlock = BlockProtectionManager.INSTANCE.isBlockProtected(pos.offset(((BlockHitResult)hitResult).getSide())) ? 2 : 0;
+            int thisBlock = BlockProtectionManagerAndHud.INSTANCE.isBlockProtected(pos) ? 1 : 0;
+            int facingBlock = BlockProtectionManagerAndHud.INSTANCE.isBlockProtected(pos.offset(((BlockHitResult)hitResult).getSide())) ? 2 : 0;
 
             switch(thisBlock + facingBlock) {
                 case 1 -> color = 0xa0e06000;

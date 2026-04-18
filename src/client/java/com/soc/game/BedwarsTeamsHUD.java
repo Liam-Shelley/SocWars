@@ -1,10 +1,10 @@
 package com.soc.game;
 
 import com.google.common.collect.Multimap;
-import com.soc.SocWars;
+import com.soc.gui.hud.Reference;
+import com.soc.gui.hud.VerticallyStackedHudComponent;
 import com.soc.networking.helper.Teams;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -14,13 +14,34 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Language;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class BedwarsTeamsHUD {
+public class BedwarsTeamsHUD { //TODO: Rewrite this whole class as an implementation of the component interface instead of this weird inner-classes hybrid thing I made by retrofitting
+    public static class HudComponent implements VerticallyStackedHudComponent {
+        @Override
+        public void render(DrawContext drawContext, RenderTickCounter renderTickCounter, TextRenderer textRenderer, int x, int y) {
+            BedwarsTeamsHUD.render(drawContext, renderTickCounter, x, y);
+        }
+
+        @Override
+        public int getSize() {
+            return INSTANCE.teams.keySet().size() * 40;
+        }
+
+        @Override
+        public int priority() {
+            return 0;
+        }
+    }
+
+    public static final @NotNull Reference<HudComponent> COMPONENT_REFERENCE = new Reference<>(null);
+
     public static void initialise() {
-        HudElementRegistry.addFirst(Identifier.of(SocWars.MOD_ID, "bedwars_teams_hud"), BedwarsTeamsHUD::render);
+        SidebarHud.addHudElement(COMPONENT_REFERENCE);
+
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> INSTANCE = null);
     }
 
@@ -51,10 +72,12 @@ public class BedwarsTeamsHUD {
 
     public static void joinGame(Teams teams) {
         INSTANCE = new BedwarsTeamsHUD(teams);
+        COMPONENT_REFERENCE.set(new HudComponent());
     }
 
     public static void leaveGame() {
         INSTANCE = null;
+        COMPONENT_REFERENCE.set(null);
     }
 
     public static void breakBed(DyeColor team) {
@@ -65,26 +88,23 @@ public class BedwarsTeamsHUD {
         return Optional.ofNullable(this.skinTextures.get(uuid));
     }
 
-    public static void render(DrawContext drawContext, RenderTickCounter renderTickCounter) {
+    public static void render(DrawContext drawContext, RenderTickCounter renderTickCounter, int x, int y) {
         if (getInstance().isEmpty()) return;
 
         final BedwarsTeamsHUD instance = getInstance().get();
         final TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 
-        final int width = drawContext.getScaledWindowWidth();
-        final int height = drawContext.getScaledWindowHeight();
-
-        drawContext.fill(width - 130, height / 2 - 100, width, height / 2 + 100, 0x38000000);
+        //drawContext.fill(x, y - 100, x + 128, y + 100, 0x38000000);
 
         int i = 0;
         for (DyeColor team : instance.teams.keySet()) {
-            final int heightStart = height / 2 - 60 + 40 * i++;
+            final int heightStart = y + 40 * i++;
 
-            drawContext.fill(width - 130, heightStart, width, heightStart + 40, team.getSignColor() & 0x00ffffff | 0x99000000);
+            drawContext.fill(x, heightStart, x + 128, heightStart + 40, team.getSignColor() & 0x00ffffff | 0x99000000);
 
-            draw(instance, drawContext, team, textRenderer, width, heightStart - 40);
-            drawTeamText(instance, drawContext, team, textRenderer, width, heightStart);
-            drawTeamHeads(instance, drawContext, team, width, heightStart);
+            draw(instance, drawContext, team, textRenderer, x + 128, heightStart - 40);
+            drawTeamText(instance, drawContext, team, textRenderer, x + 128, heightStart);
+            drawTeamHeads(instance, drawContext, team, x + 128, heightStart);
         }
     }
 

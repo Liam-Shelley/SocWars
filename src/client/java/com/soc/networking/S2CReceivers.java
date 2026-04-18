@@ -1,7 +1,8 @@
 package com.soc.networking;
 
 import com.soc.game.BedwarsTeamsHUD;
-import com.soc.game.BlockProtectionManager;
+import com.soc.game.BlockProtectionManagerAndHud;
+import com.soc.game.EventsHud;
 import com.soc.lib.Coroutine;
 import com.soc.lib.Coroutines;
 import com.soc.lib.Events;
@@ -9,7 +10,6 @@ import com.soc.mixin.client.GetOptionsVolumes;
 import com.soc.networking.s2c.*;
 import com.soc.networking.s2c.bedwars.*;
 import com.soc.player.PlayerData;
-import com.soc.player.PlayerDataManager;
 import com.soc.screenhandler.BedwarsIndividualShopScreenHandler;
 import com.soc.screenhandler.BedwarsTeamShopScreenHandler;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -125,7 +125,7 @@ public class S2CReceivers {
             payload.positions().forEach(pos -> world.addParticleClient(payload.particleType(), pos.x, pos.y, pos.z, velocity.x, velocity.y, velocity.z));
         }));
         ClientPlayNetworking.registerGlobalReceiver(BlockProtectionPayload.ID, ((payload, context) -> {
-            BlockProtectionManager.INSTANCE.setBlockProtection(payload);
+            BlockProtectionManagerAndHud.INSTANCE.setBlockProtection(payload);
         }));
         ClientPlayNetworking.registerGlobalReceiver(JumpscarePayload.ID, ((payload, context) -> {
              context.player().sendMessage(Text.of("Boo!"), false);
@@ -143,13 +143,17 @@ public class S2CReceivers {
             }, payload.time());
         }));
         ClientPlayNetworking.registerGlobalReceiver(LeaveGamePayload.ID, ((payload, context) -> {
-            BlockProtectionManager.INSTANCE.clearBlockProtection();
+            BlockProtectionManagerAndHud.INSTANCE.clearBlockProtection();
+            EventsHud.clear();
         }));
         ClientPlayNetworking.registerGlobalReceiver(SetAnglesPayload.ID, ((payload, context) -> {
             final PlayerEntity player = MinecraftClient.getInstance().player;
             if (player != null && player.getId() == payload.entityId()) {
                 player.setAngles(payload.yaw(), payload.pitch());
             }
+        }));
+        ClientPlayNetworking.registerGlobalReceiver(EventQueuePayload.ID, ((payload, context) -> {
+            EventsHud.receivePayload(payload);
         }));
     }
 }

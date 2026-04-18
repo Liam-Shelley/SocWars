@@ -1,6 +1,6 @@
 package com.soc.mixin.client;
 
-import com.soc.game.BlockProtectionManager;
+import com.soc.game.BlockProtectionManagerAndHud;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 abstract class BlockProtectionOnBreak {
     @Inject(method = "updateBlockBreakingProgress", at = @At("HEAD"), cancellable = true)
     private void socwars_updateBlockBreakingProgress(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> cir) {
-        if (BlockProtectionManager.INSTANCE.isBlockProtected(pos)) {
+        if (BlockProtectionManagerAndHud.INSTANCE.isBlockProtected(pos)) {
             cir.cancel();
         }
     }

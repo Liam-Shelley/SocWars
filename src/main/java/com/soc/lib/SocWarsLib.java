@@ -50,12 +50,14 @@ import net.minecraft.world.World;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.*;
 import java.util.stream.Collectors;
 
 public final class SocWarsLib {
+    public static final DecimalFormat TWO_DIGIT_NUMBER_FORMAT = new DecimalFormat("00");
     public static final Identifier SCALE_MODIFIER_ID = Identifier.of(SocWars.MOD_ID, "scale");
     public static final float SQRT2 = 1.4142135f;
     public static final float MAX_SCALE_FACTOR = 4f;
@@ -388,26 +390,41 @@ public final class SocWarsLib {
         return array.length > index ? array[index] : fallback;
     }
 
+    public static int getIndexWithFallback(int[] array, int index, int fallback) {
+        return array.length > index ? array[index] : fallback;
+    }
+
     @SafeVarargs
     public static Text getTimeFromTicksDynColours(float time, boolean includeTicks, UnaryOperator<Integer>... colours) {
         final int minutes = (int)(time / 60);
         final int seconds = (int)time % 60;
 
-        final MutableText minutesText = Text.literal(StringUtils.leftPad(String.valueOf(minutes), 2, '0')).withColor(getIndexWithFallback(colours, 0, a -> 0xffffffff).apply(minutes));
-        final Text secondsText = Text.literal(":" + StringUtils.leftPad(String.valueOf(seconds), 2, '0')).withColor(getIndexWithFallback(colours, 1, a -> 0xffffffff).apply(seconds));
+        final MutableText minutesText = Text.literal(TWO_DIGIT_NUMBER_FORMAT.format(minutes)).withColor(getIndexWithFallback(colours, 0, a -> 0xffffffff).apply(minutes));
+        final Text secondsText = Text.literal(":" + TWO_DIGIT_NUMBER_FORMAT.format(seconds)).withColor(getIndexWithFallback(colours, 1, a -> 0xffffffff).apply(seconds));
 
         if (!includeTicks) {
             return minutesText.append(secondsText);
         } else {
             final int ticks = (int)(time * 20) % 20;
-            final Text ticksText = Text.literal("+" + StringUtils.leftPad(String.valueOf(ticks), 2, '0')).withColor(getIndexWithFallback(colours, 2, a -> 0xffffffff).apply(ticks));
+            final Text ticksText = Text.literal("+" + TWO_DIGIT_NUMBER_FORMAT.format(ticks)).withColor(getIndexWithFallback(colours, 2, a -> 0xffffffff).apply(ticks));
             return minutesText.append(secondsText).append(ticksText);
         }
     }
 
-    @SuppressWarnings("unchecked")
     public static Text getTimeFromTicks(float time, boolean includeTicks, int... colours) {
-        return getTimeFromTicksDynColours(time, includeTicks, Arrays.stream(colours).mapToObj(colour -> (UnaryOperator<Integer>)(a -> colour)).toArray(UnaryOperator[]::new));
+        final int minutes = (int)(time / 60);
+        final int seconds = (int)time % 60;
+
+        final MutableText minutesText = Text.literal(TWO_DIGIT_NUMBER_FORMAT.format(minutes)).withColor(getIndexWithFallback(colours, 0, 0xffffffff));
+        final Text secondsText = Text.literal(":" + TWO_DIGIT_NUMBER_FORMAT.format(seconds)).withColor(getIndexWithFallback(colours, 1, 0xffffffff));
+
+        if (!includeTicks) {
+            return minutesText.append(secondsText);
+        } else {
+            final int ticks = (int)(time * 20) % 20;
+            final Text ticksText = Text.literal("+" + TWO_DIGIT_NUMBER_FORMAT.format(ticks)).withColor(getIndexWithFallback(colours, 2, 0xffffffff));
+            return minutesText.append(secondsText).append(ticksText);
+        }
     }
 
     public static Optional<PlayerEntity> getPlayerAttacker(PlayerEntity player) {

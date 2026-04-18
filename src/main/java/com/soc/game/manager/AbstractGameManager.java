@@ -8,6 +8,7 @@ import com.soc.database.stats.CombatTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.SpreadRules;
 import com.soc.lib.Events;
+import com.soc.networking.s2c.EventQueuePayload;
 import com.soc.networking.s2c.LeaveGamePayload;
 import com.soc.networking.s2c.UpdateHotbarPayload;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -90,7 +91,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         return this.teams.keySet().stream().collect(Collectors.toMap(Function.identity(), this::addTeamFromColour));
     }
 
-    protected @Nullable EventQueue<EVENT> buildEventQueue() {
+    protected @Nullable EventQueue<EVENT> buildEventQueue() { //Make this notnull probably
         return null;
     }
 
@@ -104,6 +105,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
 
     protected void sendJoinGamePayload(ServerPlayerEntity player) {
         ifNotNull(this.map.getBlockProtectionPacket(), packet -> ServerPlayNetworking.send(player, packet));
+        ifNotNull(this.eventQueue, eventQueue -> ServerPlayNetworking.send(player, new EventQueuePayload(eventQueue)));
     }
 
     protected void sendLeaveGamePayload(ServerPlayerEntity player) {
