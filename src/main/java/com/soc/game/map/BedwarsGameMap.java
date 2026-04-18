@@ -26,9 +26,9 @@ import static com.soc.lib.SocWarsLib.*;
 public class BedwarsGameMap extends AbstractGameMap {
     public static final String FILE_EXTENSION = "bwmap";
     public static final Map<String, RangedIntField> MAP_FIELDS = Stream.of(
-            new RangedIntField("min_build_height", -320, 320, 0, AbstractGameMap::setMinBuildY),
-            new RangedIntField("max_build_height", -320, 320, 50, AbstractGameMap::setMaxBuildY)
-    ).collect(Collectors.toMap(RangedIntField::name, Function.identity()));
+            new RangedIntField("min_build_height", -384, 384, AbstractGameMap::setMinBuildY),
+            new RangedIntField("max_build_height", -384, 384, AbstractGameMap::setMaxBuildY)
+    ).collect(Collectors.toMap(RangedIntField::name, Function.identity(), (a, b) -> a, LinkedHashMap::new));
 
     public static final String DIAMOND_GENS_KEY = "diamond_gens";
     public static final String EMERALD_GENS_KEY = "emerald_gens";

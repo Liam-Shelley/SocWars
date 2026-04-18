@@ -52,8 +52,8 @@ public class MapBlockScreen extends Screen {
     private ButtonWidget openFolderButton;
     private ButtonWidget closeButton;
 
-    private final List<NumberTextFieldWidget> optionalFields = new ArrayList<>();
-    private final Map<String, Integer> fields = new HashMap<>();
+    private final Map<GameType, List<NumberTextFieldWidget>> optionalFields = new HashMap<>();
+    private final Map<String, Integer> fields;
 
     public MapBlockScreen(MapBlockEntity blockEntity, World world) {
         super(Text.translatable("screen.map_block"));
@@ -63,6 +63,7 @@ public class MapBlockScreen extends Screen {
         this.mapName = blockEntity.getMapName();
         this.mapType = blockEntity.getMapType();
         this.blockProtection = blockEntity.hasBlockProtection();
+        this.fields = blockEntity.getFields();
 
         this.mapCheckInfo = blockEntity.getMapCheckInfo(this.mapType);
     }
@@ -104,7 +105,7 @@ public class MapBlockScreen extends Screen {
                 .build(this.width / 2 - 152, 120, 100, 20, Text.translatable("button.map_block.game_type"), (button, mapType) -> {
                     this.mapType = mapType;
                     this.refreshMapCheckInfo();
-                    this.buildOptionalFields();
+                    this.refreshOptionalFields();
                 })
         );
         //endregion
@@ -152,6 +153,8 @@ public class MapBlockScreen extends Screen {
             this.saveSyncClose();
         }).dimensions(this.width / 2 - 152, 260, 100, 20).build());
         //endregion
+
+        this.refreshOptionalFields();
     }
 
     @Override
@@ -188,6 +191,15 @@ public class MapBlockScreen extends Screen {
         this.addDrawableChild(this.openFolderButton);
         this.closeButton.setPosition(this.width / 2 - 152, 260);
         this.addDrawableChild(this.closeButton);
+
+        final List<NumberTextFieldWidget> widgets = this.optionalFields.get(this.mapType);
+        for (int i = 0; i < widgets.size(); i++) {
+            final int x = (i % 3) * 105 + this.width / 2 - 152;
+            final int y = ((int)Math.floor(i / 3f)) * 40 + 300;
+
+            widgets.get(i).setPosition(x, y);
+            this.addDrawableChild(widgets.get(i));
+        }
     }
 
     @Override
@@ -199,23 +211,40 @@ public class MapBlockScreen extends Screen {
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
-    private void buildOptionalFields() {
-        for (NumberTextFieldWidget optionalField : this.optionalFields) {
-            this.remove(optionalField);
+    private void refreshOptionalFields() {
+        this.optionalFields.forEach((mapType, widgets) -> {
+            if (mapType != this.mapType) for (NumberTextFieldWidget widget : widgets) {
+                widget.active = false;
+                widget.visible = false;
+            }
+        });
+        this.optionalFields.computeIfAbsent(this.mapType, this::buildOptionalFields);
+        for (NumberTextFieldWidget numberTextFieldWidget : this.optionalFields.get(this.mapType)) {
+            numberTextFieldWidget.active = true;
+            numberTextFieldWidget.visible = true;
         }
+    }
 
-        final Iterator<RangedIntField> fields = this.mapType.getMapFields().values().iterator();
+    private List<NumberTextFieldWidget> buildOptionalFields(GameType mapType) {
+        final List<NumberTextFieldWidget> list = new ArrayList<>(mapType.getMapFields().size());
+
+        final Iterator<RangedIntField> fields = mapType.getMapFields().values().iterator();
         for (int i = 0; fields.hasNext(); i++) {
             final RangedIntField field = fields.next();
 
             final int x = (i % 3) * 105 + this.width / 2 - 152;
             final int y = ((int)Math.floor(i / 3f)) * 40 + 300;
-            final NumberTextFieldWidget widget = this.addDrawableChild(new NumberTextFieldWidget(this.textRenderer, x, y, 94, 20, Text.translatable("text.map_block.field." + field.name()), 0, value -> {
+
+            final NumberTextFieldWidget widget = this.addDrawableChild(new NumberTextFieldWidget(this.textRenderer, x, y, 94, 20, Text.translatable("text.map_block.field." + field.name()), field.minValue(), field.maxValue(), value -> {
                 this.fields.put(field.name(), value);
             }));
 
             ifNotNull(this.fields.get(field.name()), value -> widget.setText(String.valueOf(value)));
+
+            list.add(widget);
         }
+
+        return list;
     }
 
     @Override
@@ -265,7 +294,7 @@ public class MapBlockScreen extends Screen {
             }
         }
 
-        this.optionalFields.forEach(widget -> {
+        this.optionalFields.get(this.mapType).forEach(widget -> {
             context.drawTextWithShadow(this.textRenderer, widget.getMessage(), widget.getX() - 1, widget.getY() - 10, 0xffbfbfbf);
         });
     }

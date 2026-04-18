@@ -26,13 +26,17 @@ public class NumberTextFieldWidget extends TextFieldWidget {
     }
 
     public int parseInt(String text) {
-        int value = text.isEmpty() ? 1 : Integer.parseInt(text);
-        return Math.clamp(value, this.minValue, this.maxValue);
+        int value = text.isEmpty() || text.equals("-") ? 1 : Integer.parseInt(text);
+        if (value < this.minValue || value > this.maxValue) {
+            value = Math.clamp(value, this.minValue, this.maxValue);
+            this.setText(String.valueOf(value));
+        }
+        return value;
     }
 
     @Override
     public boolean charTyped(char chr, int modifiers) {
-        if (!Character.isDigit(chr)) return false;
+        if (!(Character.isDigit(chr) || (this.minValue < 0 && chr == '-'))) return false;
 
         return super.charTyped(chr, modifiers);
     }

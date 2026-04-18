@@ -34,6 +34,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -78,7 +79,7 @@ public class MapBlockEntity extends BlockEntity {
         this.mapName = "";
         this.mapType = GameType.SKYWARS;
         this.blockProtection = false;
-        this.fields = Map.of();
+        this.fields = new HashMap<>();
     }
 
     public void checkStructure() {
@@ -272,7 +273,7 @@ public class MapBlockEntity extends BlockEntity {
         this.mapName = view.read("map_name", Codec.STRING).orElse("");
         this.mapType = GameType.fromOrdinal(view.read("map_type", Codec.INT).orElse(0));
         this.blockProtection = view.read("block_protection", Codec.BOOL).orElse(false);
-        this.fields = view.read("fields", FIELDS_CODEC).orElse(Map.of());
+        this.fields = new HashMap<>(view.read("fields", FIELDS_CODEC).orElse(Map.of()));
     }
 
     @Override
@@ -311,6 +312,10 @@ public class MapBlockEntity extends BlockEntity {
     public void setBlockProtection(boolean enabled) {
         this.blockProtection = enabled;
         this.markDirty();
+    }
+
+    public Map<String, Integer> getFields() {
+        return this.fields;
     }
 
     public void setFields(Map<String, Integer> fields) {
