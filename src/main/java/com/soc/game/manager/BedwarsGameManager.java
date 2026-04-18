@@ -187,7 +187,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
     @Override
     protected EventQueue<BedwarsGameManager> buildEventQueue() {
-        final EventQueue<BedwarsGameManager> queue = new EventQueue<>();
+        final EventQueue<BedwarsGameManager> queue = super.buildEventQueue();
 
         final BedwarsGeneratorDataContainer bedwarsGeneratorDataContainer = BedwarsGeneratorDataContainer.INSTANCE;
         for (int i = 0; i < bedwarsGeneratorDataContainer.getDiamondGeneratorUpgrades().size(); i++) {

@@ -1,21 +1,27 @@
 package com.soc.gui.hud;
 
+import org.jetbrains.annotations.Nullable;
+
 public class Reference<T> {
-    public Reference(T value) {
+    public Reference(@Nullable T value) {
         this.value = value;
     }
 
-    private T value;
+    private @Nullable T value;
 
-    public void set(T value) {
+    public void set(@Nullable T value) {
         this.value = value;
     }
 
-    public T get() {
+    public @Nullable T get() {
         return this.value;
     }
 
     public boolean isNotNull() {
         return this.value != null;
+    }
+
+    public void annul() {
+        this.value = null;
     }
 }

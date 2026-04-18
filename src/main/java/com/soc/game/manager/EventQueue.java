@@ -27,10 +27,6 @@ public class EventQueue<T extends AbstractGameManager<?, ?, ?>> {
         return this;
     }
 
-    public int peekTime() {
-        return this.events.getFirst().time();
-    }
-
     public Collection<Text> peekEventsNames(int time) {
         final ArrayList<Text> events = new ArrayList<>();
 
@@ -66,5 +62,9 @@ public class EventQueue<T extends AbstractGameManager<?, ?, ?>> {
 
     public SortedSet<Event<T>> getEvents() {
         return this.events;
+    }
+
+    public boolean isEmpty() {
+        return this.events.isEmpty();
     }
 }

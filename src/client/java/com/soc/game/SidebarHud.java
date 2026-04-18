@@ -3,6 +3,7 @@ package com.soc.game;
 import com.soc.SocWars;
 import com.soc.gui.hud.Reference;
 import com.soc.gui.hud.VerticallyStackedHudComponent;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -19,6 +20,7 @@ import java.util.Objects;
 public class SidebarHud {
     public static void initialise() {
         HudElementRegistry.addFirst(Identifier.of(SocWars.MOD_ID, "sidebar_hud"), SidebarHud::render);
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> ELEMENTS.forEach(Reference::annul));
     }
 
     private static final List<@NotNull Reference<? extends VerticallyStackedHudComponent>> ELEMENTS = new ArrayList<>();

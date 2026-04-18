@@ -41,8 +41,6 @@ public class BedwarsTeamsHUD { //TODO: Rewrite this whole class as an implementa
 
     public static void initialise() {
         SidebarHud.addHudElement(COMPONENT_REFERENCE);
-
-        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> INSTANCE = null);
     }
 
     @Nullable

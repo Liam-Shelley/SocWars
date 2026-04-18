@@ -4,6 +4,7 @@ import com.soc.game.manager.Event;
 import com.soc.gui.hud.Reference;
 import com.soc.gui.hud.VerticallyStackedHudComponent;
 import com.soc.networking.s2c.EventQueuePayload;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;

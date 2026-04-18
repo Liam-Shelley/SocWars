@@ -65,7 +65,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     protected final MAP map;
     protected final Multimap<DyeColor, UUID> teams;
     protected final Map<DyeColor, Team> scoreboardTeams;
-    protected final @Nullable EventQueue<EVENT> eventQueue;
+    protected final EventQueue<EVENT> eventQueue;
 
     protected final Map<UUID, TABLE> dbTables;
     protected final int killHeight;
@@ -91,8 +91,8 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         return this.teams.keySet().stream().collect(Collectors.toMap(Function.identity(), this::addTeamFromColour));
     }
 
-    protected @Nullable EventQueue<EVENT> buildEventQueue() { //Make this notnull probably
-        return null;
+    protected EventQueue<EVENT> buildEventQueue() {
+        return new EventQueue<>();
     }
 
     protected abstract Function<UUID, TABLE> dbTableBuilder();
@@ -105,7 +105,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
 
     protected void sendJoinGamePayload(ServerPlayerEntity player) {
         ifNotNull(this.map.getBlockProtectionPacket(), packet -> ServerPlayNetworking.send(player, packet));
-        ifNotNull(this.eventQueue, eventQueue -> ServerPlayNetworking.send(player, new EventQueuePayload(eventQueue)));
+        if (!this.eventQueue.isEmpty()) ServerPlayNetworking.send(player, new EventQueuePayload(this.eventQueue));
     }
 
     protected void sendLeaveGamePayload(ServerPlayerEntity player) {

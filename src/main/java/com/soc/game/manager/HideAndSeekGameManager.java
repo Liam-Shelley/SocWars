@@ -165,15 +165,15 @@ public class HideAndSeekGameManager extends AbstractGameManager<HideAndSeekGameM
 
     @Override
     protected EventQueue<HideAndSeekGameManager> buildEventQueue() {
-        final EventQueue<HideAndSeekGameManager> hideAndSeekGameManagerEventQueue = new EventQueue<>();
+        final EventQueue<HideAndSeekGameManager> hideAndSeekGameManagerEventQueue = super.buildEventQueue();
 
         for (int i = 1; i < 5; i++) {
             hideAndSeekGameManagerEventQueue.addEvent(i * 60 * 20, manager -> manager.getPlayers(HIDER_COLOUR).forEach(player -> {
                 this.world.playSound(null, player.getBlockPos(), SoundEvents.BLOCK_NOTE_BLOCK_FLUTE.value(), SoundCategory.MASTER, 5, 1);
                 player.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, 10, 0, false, false));
-            }), Text.of("ping " + i));
+            }), Text.translatable("events.hide_and_seek.ping." + i));
         }
-        hideAndSeekGameManagerEventQueue.addEvent(5 * 60 * 20, manager -> manager.endGame(false, HIDER_COLOUR), Text.of("end game"));
+        hideAndSeekGameManagerEventQueue.addEvent(5 * 60 * 20, manager -> manager.endGame(false, HIDER_COLOUR), Text.translatable("events.hide_and_seek.end"));
 
         return hideAndSeekGameManagerEventQueue;
     }
