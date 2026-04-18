@@ -1,6 +1,7 @@
 {
 	"format_version": "1.21.6",
 	"credit": "Made with Blockbench",
+	"parent": "minecraft:block/cube_all",
 	"textures": {
 		"0": "minecraft:block/emerald_block"
 	},
@@ -164,7 +165,9 @@
 	],
 	"display": {
 		"gui": {
-			"rotation": [10, 320, 0]
+			"rotation": [ 30, 315, 0 ],
+			"translation": [ 0, 0, 0 ],
+			"scale": [ 0.625, 0.625, 0.625 ]
 		}
 	}
 }
