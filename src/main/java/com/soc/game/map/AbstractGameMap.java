@@ -43,6 +43,8 @@ public abstract class AbstractGameMap {
     public static final String STRUCTURE_KEY = "structure";
     public static final String CENTRE_POS_KEY = "centre_positions";
     public static final String BLOCK_PROTECTION_OVERLAY_KEY = "block_protection_overlay";
+    public static final String MIN_BUILD_Y_KEY = "min_build_y";
+    public static final String MAX_BUILD_Y_KEY = "max_build_y";
 
     private static final int Y_CLEARING_BUFFER = 64;
     private static final int XZ_CLEARING_BUFFER = 64;
@@ -60,8 +62,8 @@ public abstract class AbstractGameMap {
     protected final ServerWorld world;
     private final String name;
 
-    private final int minBuildY;
-    private final int maxBuildY;
+    protected int minBuildY;
+    protected int maxBuildY;
     @Nullable protected final BlockProtectionPayload blockProtectionPacket; //Cache me outside how bout dat
 
     protected int tick = 0;
@@ -72,6 +74,8 @@ public abstract class AbstractGameMap {
             @NotNull BlockPos centrePos,
             BlockPos absoluteCentrePos,
             @Nullable SparseVoxelOctree<Boolean> blockProtectionOverlay,
+            int minBuildY,
+            int maxBuildY,
             ServerWorld world,
             File file
     ) {
@@ -84,8 +88,8 @@ public abstract class AbstractGameMap {
         this.world = world;
         this.name = file == null ? null : file.getName().split("\\.")[0]; //Figure out a system for this properly
 
-        this.minBuildY = (int)this.getMeanSpawnY().orElse(this.absoluteCentrePos.getY()) - 20;
-        this.maxBuildY = (int)this.getMeanSpawnY().orElse(this.absoluteCentrePos.getY()) + 40;
+        this.minBuildY = minBuildY + this.absoluteCentrePos.getY();
+        this.maxBuildY = maxBuildY + this.absoluteCentrePos.getY();
         this.blockProtectionPacket = new BlockProtectionPayload(Optional.ofNullable(blockProtectionOverlay), blockProtectionOverlay == null ? Optional.empty() : Optional.of(this.getOrigin()), this.minBuildY, this.maxBuildY);
     }
 
@@ -102,8 +106,11 @@ public abstract class AbstractGameMap {
                 centrePos.toImmutable(),
                 BlockPos.ORIGIN,
                 blockProtectionOverlay,
+                0,
+                50,
                 null,
-                null);
+                null
+        );
     }
 
     public abstract void tick();
@@ -122,7 +129,7 @@ public abstract class AbstractGameMap {
                     destPos -> {
                         player.requestTeleport(destPos.getX() + 0.5d, destPos.getY(), destPos.getZ() + 0.5d);
                         final Vec3i vectorToCentre = this.absoluteCentrePos.subtract(destPos);
-                        ServerPlayNetworking.send(player, new SetAnglesPayload(player.getId(), (float) Math.atan2(vectorToCentre.getZ(), vectorToCentre.getX()) * 57.295776f - 90f, 0f));
+                        ServerPlayNetworking.send(player, new SetAnglesPayload(player.getId(), (float)Math.atan2(vectorToCentre.getZ(), vectorToCentre.getX()) * 57.295776f - 90f, 0f));
                     },
                     () -> player.sendMessage(Text.literal("Go yell at Liam for screwing up the player spread code"))
             );
@@ -148,6 +155,8 @@ public abstract class AbstractGameMap {
         compound.put(STRUCTURE_KEY, this.structure.writeNbt(new NbtCompound()));
         compound.put(SpawnPosition.LIST_KEY, this.getSpawnsAsNbt());
         compound.putLong(CENTRE_POS_KEY, this.centrePos.asLong());
+        compound.putInt(MIN_BUILD_Y_KEY, this.minBuildY);
+        compound.putInt(MAX_BUILD_Y_KEY, this.maxBuildY);
 
         if (this.blockProtectionOverlay != null) this.blockProtectionOverlay.writeToNbtBooleanOnly(BLOCK_PROTECTION_OVERLAY_KEY, compound);
 
@@ -334,5 +343,13 @@ public abstract class AbstractGameMap {
 
     public String getName() {
         return this.name;
+    }
+
+    public static void setMinBuildY(AbstractGameMap map, int minBuildY) {
+        map.minBuildY = minBuildY;
+    }
+
+    public static void setMaxBuildY(AbstractGameMap map, int maxBuildY) {
+        map.maxBuildY = maxBuildY;
     }
 }

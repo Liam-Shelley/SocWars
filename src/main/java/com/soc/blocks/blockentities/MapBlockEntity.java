@@ -27,6 +27,7 @@ import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
 import net.minecraft.structure.StructureTemplate;
 import net.minecraft.text.Text;
+import net.minecraft.util.dynamic.Codecs;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import org.jetbrains.annotations.Nullable;
@@ -35,6 +36,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import static com.soc.blocks.blockentities.ModBlockEntities.MAP_BLOCK_ENTITY;
 import static com.soc.blocks.util.ModBlocks.*;
@@ -58,11 +60,13 @@ public class MapBlockEntity extends BlockEntity {
             Blocks.AIR,
             PROTECTED_AIR
     );
+    public static final Codecs.StrictUnboundedMapCodec<String, Integer> FIELDS_CODEC = Codecs.strictUnboundedMap(Codec.STRING, Codec.INT);
 
     private BlockPos.Mutable regionSize;
     private String mapName;
     private GameType mapType;
     private boolean blockProtection;
+    private Map<String, Integer> fields;
 
     private MapCheckResults mapCheckResults = null;
     private InfoList mapCheckInfo = new InfoList();
@@ -74,6 +78,7 @@ public class MapBlockEntity extends BlockEntity {
         this.mapName = "";
         this.mapType = GameType.SKYWARS;
         this.blockProtection = false;
+        this.fields = Map.of();
     }
 
     public void checkStructure() {
@@ -209,7 +214,8 @@ public class MapBlockEntity extends BlockEntity {
                     this.mapCheckResults.getRelativeGeneric(this.mapCheckResults.spawnPositions()),
                     centrePos,
                     blockProtectionOverlay,
-                    this.mapCheckResults.getRelativeGeneric(this.mapCheckResults.lootChests())
+                    this.mapCheckResults.getRelativeGeneric(this.mapCheckResults.lootChests()),
+                    this.fields
             );
             case BEDWARS -> new BedwarsGameMap(
                     structure,
@@ -221,14 +227,16 @@ public class MapBlockEntity extends BlockEntity {
                     this.mapCheckResults.getRelative(this.mapCheckResults.islandGens()),
                     this.mapCheckResults.getRelative(this.mapCheckResults.bedPositions()),
                     this.mapCheckResults.getRelative(this.mapCheckResults.individualShops()),
-                    this.mapCheckResults.getRelative(this.mapCheckResults.teamShops())
+                    this.mapCheckResults.getRelative(this.mapCheckResults.teamShops()),
+                    this.fields
             );
             case PROP_HUNT -> throw new IllegalArgumentException("prop hunt map saving not yet implemented, please try again later (or yell at Liam)");
             case HIDE_AND_SEEK -> new HideAndSeekGameMap(
                     structure,
                     this.mapCheckResults.getRelativeGeneric(this.mapCheckResults.spawnPositions()),
                     centrePos,
-                    blockProtectionOverlay
+                    blockProtectionOverlay,
+                    this.fields
             );
         };
 
@@ -251,6 +259,7 @@ public class MapBlockEntity extends BlockEntity {
         view.put("map_name", Codec.STRING, this.mapName);
         view.put("map_type", Codec.INT, this.mapType.ordinal());
         view.put("block_protection", Codec.BOOL, this.blockProtection);
+        view.put("fields", FIELDS_CODEC, this.fields);
 
         super.writeData(view);
     }
@@ -263,6 +272,7 @@ public class MapBlockEntity extends BlockEntity {
         this.mapName = view.read("map_name", Codec.STRING).orElse("");
         this.mapType = GameType.fromOrdinal(view.read("map_type", Codec.INT).orElse(0));
         this.blockProtection = view.read("block_protection", Codec.BOOL).orElse(false);
+        this.fields = view.read("fields", FIELDS_CODEC).orElse(Map.of());
     }
 
     @Override
@@ -300,6 +310,11 @@ public class MapBlockEntity extends BlockEntity {
     }
     public void setBlockProtection(boolean enabled) {
         this.blockProtection = enabled;
+        this.markDirty();
+    }
+
+    public void setFields(Map<String, Integer> fields) {
+        this.fields = fields;
         this.markDirty();
     }
 

@@ -8,11 +8,17 @@ import java.util.function.Consumer;
 
 public class NumberTextFieldWidget extends TextFieldWidget {
     private final Consumer<Integer> charTypedCallback;
+    private final int minValue;
     private final int maxValue;
 
     public NumberTextFieldWidget(TextRenderer textRenderer, int x, int y, int width, int height, Text text, int maxValue, Consumer<Integer> charTypedCallback) {
+        this(textRenderer, x, y, width, height, text, 0, maxValue, charTypedCallback);
+    }
+
+    public NumberTextFieldWidget(TextRenderer textRenderer, int x, int y, int width, int height, Text text, int minValue, int maxValue, Consumer<Integer> charTypedCallback) {
         super(textRenderer, x, y, width, height, text);
         this.charTypedCallback = charTypedCallback;
+        this.minValue = minValue;
         this.maxValue = maxValue;
 
         this.setMaxLength(4);
@@ -21,7 +27,7 @@ public class NumberTextFieldWidget extends TextFieldWidget {
 
     public int parseInt(String text) {
         int value = text.isEmpty() ? 1 : Integer.parseInt(text);
-        return Math.min(value, maxValue);
+        return Math.clamp(value, this.minValue, this.maxValue);
     }
 
     @Override

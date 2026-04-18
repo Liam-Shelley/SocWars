@@ -3,6 +3,7 @@ package com.soc.gui.screen;
 import com.soc.blocks.blockentities.MapBlockEntity;
 import com.soc.game.manager.GameType;
 import com.soc.game.map.Enabled;
+import com.soc.game.map.RangedIntField;
 import com.soc.gui.widget.NumberTextFieldWidget;
 import com.soc.lib.InfoList;
 import com.soc.networking.c2s.MapBlockSaveMapPayload;
@@ -20,10 +21,12 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
+import org.joml.Vector2i;
 
-import java.util.List;
+import java.util.*;
 
 import static com.soc.game.map.AbstractGameMap.getMapDirectory;
+import static com.soc.lib.SocWarsLib.ifNotNull;
 
 public class MapBlockScreen extends Screen {
     private final MapBlockEntity blockEntity;
@@ -49,6 +52,9 @@ public class MapBlockScreen extends Screen {
     private ButtonWidget openFolderButton;
     private ButtonWidget closeButton;
 
+    private final List<NumberTextFieldWidget> optionalFields = new ArrayList<>();
+    private final Map<String, Integer> fields = new HashMap<>();
+
     public MapBlockScreen(MapBlockEntity blockEntity, World world) {
         super(Text.translatable("screen.map_block"));
         this.blockEntity = blockEntity;
@@ -63,7 +69,7 @@ public class MapBlockScreen extends Screen {
 
     private void createWidgets() {
         //region Map Name Field
-        this.mapNameTextField = new TextFieldWidget(this.textRenderer, this.width / 2 - 152, 40, 300, 20, Text.translatable("text.map_block.enter_name")) {
+        this.mapNameTextField = new TextFieldWidget(this.textRenderer, this.width / 2 - 152, 40, 304, 20, Text.translatable("text.map_block.enter_name")) {
             @Override
             public boolean charTyped(char chr, int modifiers) {
                 if (!(Character.isLetterOrDigit(chr) ||"_- .".contains(String.valueOf(chr)))) return false;
@@ -98,6 +104,7 @@ public class MapBlockScreen extends Screen {
                 .build(this.width / 2 - 152, 120, 100, 20, Text.translatable("button.map_block.game_type"), (button, mapType) -> {
                     this.mapType = mapType;
                     this.refreshMapCheckInfo();
+                    this.buildOptionalFields();
                 })
         );
         //endregion
@@ -109,7 +116,7 @@ public class MapBlockScreen extends Screen {
 
             this.confirmSaveStructure = false;
             this.init();
-        }).dimensions(this.width / 2 + 38, 80, 110, 20).build());
+        }).dimensions(this.width / 2 + 38, 80, 114, 20).build());
         this.blockProtectionButton = this.addDrawableChild(CyclingButtonWidget.builder(Enabled::getVariantName)
                 .values(Enabled.values()).omitKeyText().initially(Enabled.fromBoolean(this.blockProtection))
                 .build(this.width / 2 - 152, 155, 100, 20, Text.translatable("button.map_block.block_protection"), (button, value) -> {
@@ -192,13 +199,32 @@ public class MapBlockScreen extends Screen {
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
+    private void buildOptionalFields() {
+        for (NumberTextFieldWidget optionalField : this.optionalFields) {
+            this.remove(optionalField);
+        }
+
+        final Iterator<RangedIntField> fields = this.mapType.getMapFields().values().iterator();
+        for (int i = 0; fields.hasNext(); i++) {
+            final RangedIntField field = fields.next();
+
+            final int x = (i % 3) * 105 + this.width / 2 - 152;
+            final int y = ((int)Math.floor(i / 3f)) * 40 + 300;
+            final NumberTextFieldWidget widget = this.addDrawableChild(new NumberTextFieldWidget(this.textRenderer, x, y, 94, 20, Text.translatable("text.map_block.field." + field.name()), 0, value -> {
+                this.fields.put(field.name(), value);
+            }));
+
+            ifNotNull(this.fields.get(field.name()), value -> widget.setText(String.valueOf(value)));
+        }
+    }
+
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
         super.render(context, mouseX, mouseY, deltaTicks);
 
-        context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 10, -1);
+        context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 10, 0xffffffff);
 
-        context.drawTextWithShadow(this.textRenderer, Text.translatable("text.map_block.enter_name_field"), this.width / 2 - 153, 30, -6250336);
+        context.drawTextWithShadow(this.textRenderer, Text.translatable("text.map_block.enter_name_field"), this.width / 2 - 153, 30, 0xffa0a0a0);
         this.mapNameTextField.render(context, mouseX, mouseY, deltaTicks);
 
         context.drawTextWithShadow(this.textRenderer, Text.translatable("text.map_block.enter_x_field"), this.width / 2 - 153, 70, MapBlockEntity.X_COLOUR);
@@ -210,8 +236,8 @@ public class MapBlockScreen extends Screen {
         context.drawTextWithShadow(this.textRenderer, Text.translatable("text.map_block.enter_z_field"), this.width / 2 - 33, 70, MapBlockEntity.Z_COLOUR);
         this.sizeZField.render(context, mouseX, mouseY, deltaTicks);
 
-        context.drawTextWithShadow(this.textRenderer, Text.translatable("text.map_block.game_type"), this.width / 2 - 153, 110, -6250336);
-        context.drawTextWithShadow(this.textRenderer, Text.translatable("text.map_block.block_protection"), this.width / 2 - 153, 145, -6250336);
+        context.drawTextWithShadow(this.textRenderer, Text.translatable("text.map_block.game_type"), this.width / 2 - 153, 110, 0xffa0a0a0);
+        context.drawTextWithShadow(this.textRenderer, Text.translatable("text.map_block.block_protection"), this.width / 2 - 153, 145, 0xffa0a0a0);
 
         this.saveStructureButton.active = !this.mapCheckInfo.hasErrors();
 
@@ -220,13 +246,13 @@ public class MapBlockScreen extends Screen {
 
         final int infoStartX = this.width / 2 - 32;
         final int infoStartY = 110;
-        final int infoWidth = 180;
+        final int infoWidth = 184;
         final int infoTextPadding = 5;
         final int infoTextHeight = 10;
         final int infoHeight = infoTextHeight * warnings.size() + 8;
 
         context.fill(infoStartX, infoStartY, infoStartX + infoWidth, infoStartY + infoHeight, 0xff000000);
-        context.drawBorder(infoStartX, infoStartY, infoWidth, infoHeight, -6250336);
+        context.drawBorder(infoStartX, infoStartY, infoWidth, infoHeight, 0xffa0a0a0);
         for (int i = 0; i < warnings.size(); i++) {
             context.drawTextWithShadow(this.textRenderer, warnings.get(i).getLeft(), infoStartX + infoTextPadding, infoStartY + infoTextPadding + i * infoTextHeight, -6250336);
         }
@@ -235,9 +261,13 @@ public class MapBlockScreen extends Screen {
             final int index = Math.min((mouseY - infoStartY - infoTextPadding + 1) / infoTextHeight, warnings.size() - 1);
             final Text[] hoverText = warnings.get(index).getRight();
             for (int i = 0; i < hoverText.length; i++) {
-                context.drawTextWithShadow(this.textRenderer, hoverText[i], mouseX + 6, mouseY + i * infoTextHeight, 0xFFBFBFBF);
+                context.drawTextWithShadow(this.textRenderer, hoverText[i], mouseX + 6, mouseY + i * infoTextHeight, 0xffbfbfbf);
             }
         }
+
+        this.optionalFields.forEach(widget -> {
+            context.drawTextWithShadow(this.textRenderer, widget.getMessage(), widget.getX() - 1, widget.getY() - 10, 0xffbfbfbf);
+        });
     }
 
     private void doServerMapSave() {
@@ -257,7 +287,7 @@ public class MapBlockScreen extends Screen {
         this.blockEntity.setMapType(this.mapType);
         this.blockEntity.setBlockProtection(this.blockProtection);
 
-        final MapBlockUpdatePayload payload = new MapBlockUpdatePayload(this.blockEntity.getPos().asLong(), this.regionSize.asLong(), this.mapName, this.mapType.ordinal(), this.blockProtection);
+        final MapBlockUpdatePayload payload = new MapBlockUpdatePayload(this.blockEntity.getPos().asLong(), this.regionSize.asLong(), this.mapName, this.mapType.ordinal(), this.blockProtection, this.fields);
         ClientPlayNetworking.send(payload);
     }
 

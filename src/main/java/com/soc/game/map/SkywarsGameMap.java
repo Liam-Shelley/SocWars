@@ -40,23 +40,25 @@ public class SkywarsGameMap extends AbstractGameMap {
             Set<SpawnPosition> spawnPositions,
             BlockPos centrePos,
             BlockPos absoluteCentrePos,
-             SparseVoxelOctree<Boolean> blockProtectionOverlay,
+            SparseVoxelOctree<Boolean> blockProtectionOverlay,
+            int minBuildY,
+            int maxBuildY,
             ServerWorld world,
             Set<SkywarsChest> lootChests,
             File file
     ) {
-        super(structure, spawnPositions, centrePos, absoluteCentrePos, blockProtectionOverlay, world, file);
+        super(structure, spawnPositions, centrePos, absoluteCentrePos, blockProtectionOverlay, minBuildY, maxBuildY, world, file);
         this.lootChests = lootChests.stream().collect(Collectors.toMap(chest -> super.pos(chest.pos()), IngameSkywarsChest::new));
     }
 
     /// Constructor used only for saving the map to file
     public SkywarsGameMap(
             StructureTemplate structure,
-            @NotNull Set<SpawnPosition> spawnPositions,
-            @NotNull BlockPos centrePos,
+            Set<SpawnPosition> spawnPositions,
+            BlockPos centrePos,
             @Nullable SparseVoxelOctree<Boolean> blockProtectionOverlay,
-            @NotNull Set<SkywarsChest> lootChests
-    ) {
+            Set<SkywarsChest> lootChests,
+            Map<String, Integer> fields) {
         super(structure, spawnPositions, centrePos, blockProtectionOverlay);
         this.lootChests = lootChests.stream().collect(Collectors.toMap(chest -> super.pos(chest.pos()), IngameSkywarsChest::new));
     }
@@ -129,10 +131,10 @@ public class SkywarsGameMap extends AbstractGameMap {
                 BlockPos.fromLong(centrePosLong.get()),
                 centrePos,
                 null,
+                compound.getInt(MIN_BUILD_Y_KEY, 0) + centrePos.getY(),
+                compound.getInt(MAX_BUILD_Y_KEY, 60) + centrePos.getY(),
                 world,
-                chests,
-                file
-        ));
+                chests, file));
     }
 
     @Override

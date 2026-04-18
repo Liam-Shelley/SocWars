@@ -19,11 +19,17 @@ import java.io.File;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.soc.lib.SocWarsLib.*;
 
 public class BedwarsGameMap extends AbstractGameMap {
     public static final String FILE_EXTENSION = "bwmap";
+    public static final Map<String, RangedIntField> MAP_FIELDS = Stream.of(
+            new RangedIntField("min_build_height", -320, 320, 0, AbstractGameMap::setMinBuildY),
+            new RangedIntField("max_build_height", -320, 320, 50, AbstractGameMap::setMaxBuildY)
+    ).collect(Collectors.toMap(RangedIntField::name, Function.identity()));
+
     public static final String DIAMOND_GENS_KEY = "diamond_gens";
     public static final String EMERALD_GENS_KEY = "emerald_gens";
     public static final String ISLAND_GENS_KEY = "island_gens";
@@ -47,6 +53,8 @@ public class BedwarsGameMap extends AbstractGameMap {
             BlockPos centrePos,
             BlockPos absoluteCentrePos,
             @Nullable SparseVoxelOctree<Boolean> blockProtectionOverlay,
+            int minBuildY,
+            int maxBuildY,
             ServerWorld world,
             Set<BlockPos> diamondGens,
             Set<BlockPos> emeraldGens,
@@ -56,7 +64,7 @@ public class BedwarsGameMap extends AbstractGameMap {
             Set<BlockPos> teamShops,
             File file
     ) {
-        super(structure, spawnPositions, centrePos, absoluteCentrePos, blockProtectionOverlay, world, file);
+        super(structure, spawnPositions, centrePos, absoluteCentrePos, blockProtectionOverlay, minBuildY, maxBuildY, world, file);
         this.diamondGens = diamondGens.stream().map(pos -> new ResourceGenerator(Items.DIAMOND, 1, world, this.pos(pos), false, 30 * 20)).collect(Collectors.toSet());
         this.emeraldGens = emeraldGens.stream().map(pos -> new ResourceGenerator(Items.EMERALD, 1, world, this.pos(pos), false, 40 * 20)).collect(Collectors.toSet());
         this.islandGens = this.makeIslandGenerators(world, islandGens.stream().map(this::pos).collect(Collectors.toSet()), spawnPositions.stream().map(spawnPosition -> spawnPosition.withPos(this.pos(spawnPosition.pos()))).collect(Collectors.toSet()));
@@ -79,7 +87,8 @@ public class BedwarsGameMap extends AbstractGameMap {
             Set<BlockPos> islandGens,
             Set<BlockPos> bedPositions,
             Set<BlockPos> individualShops,
-            Set<BlockPos> teamShops
+            Set<BlockPos> teamShops,
+            Map<String, Integer> fields
     ) {
         super(structure, spawnPositions, centrePos, blockProtectionOverlay);
         this.diamondGens = diamondGens.stream().map(pos -> new ResourceGenerator(Items.DIAMOND, 1, world, pos, false, 30 * 20)).collect(Collectors.toSet());
@@ -89,6 +98,8 @@ public class BedwarsGameMap extends AbstractGameMap {
         this.bedPositions = this.makeBedPositions(spawnPositions, bedPositions);
         this.individualShops = individualShops;
         this.teamShops = teamShops;
+
+        fields.forEach((key, value) -> MAP_FIELDS.get(key).apply(this, value));
     }
 
     private Map<DyeColor, BlockPos> makeBedPositions(Set<SpawnPosition> spawnPositions, Set<BlockPos> bedPositions) {
@@ -122,6 +133,8 @@ public class BedwarsGameMap extends AbstractGameMap {
                 BlockPos.fromLong(centrePosLong.get()),
                 centrePos,
                 SparseVoxelOctree.fromNbtBooleanOnly(BLOCK_PROTECTION_OVERLAY_KEY, compound),
+                compound.getInt(MIN_BUILD_Y_KEY, 0) + centrePos.getY(),
+                compound.getInt(MAX_BUILD_Y_KEY, 60) + centrePos.getY(),
                 world,
                 getBlockPosSet(compound, DIAMOND_GENS_KEY).orElseGet(() -> { SocWars.LOGGER.error("Failed to load diamond gens"); return Set.of(); }),
                 getBlockPosSet(compound, EMERALD_GENS_KEY).orElseGet(() -> { SocWars.LOGGER.error("Failed to load emerald gens"); return Set.of(); }),

@@ -38,6 +38,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
@@ -238,7 +239,10 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
         final PlayerStats playerStats = this.getPlayerStats(player);
         playerStats.onDeath(canRespawn, this.world);
-        player.getInventory().clear();
+
+        player.getInventory().getMainStacks().clear();
+        player.setStackInHand(Hand.OFF_HAND, ItemStack.EMPTY);
+
         playerStats.returnToolsToSlots(this.world);
 
         super.onPlayerDeath(player, source, amount);

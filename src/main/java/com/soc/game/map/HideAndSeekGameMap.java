@@ -27,10 +27,12 @@ public class HideAndSeekGameMap extends AbstractGameMap {
             BlockPos centrePos,
             BlockPos absoluteCentrePos,
             @Nullable SparseVoxelOctree<Boolean> blockProtectionOverlay,
+            int minBuildY,
+            int maxBuildY,
             ServerWorld world,
             File file
     ) {
-        super(structure, spawnPositions, centrePos, absoluteCentrePos, blockProtectionOverlay, world, file);
+        super(structure, spawnPositions, centrePos, absoluteCentrePos, blockProtectionOverlay, minBuildY, maxBuildY, world, file);
     }
 
     /// Constructor used only for saving the map to file
@@ -38,7 +40,8 @@ public class HideAndSeekGameMap extends AbstractGameMap {
             StructureTemplate structure,
             Set<SpawnPosition> spawnPositions,
             BlockPos centrePos,
-            @Nullable SparseVoxelOctree<Boolean> blockProtectionOverlay
+            @Nullable SparseVoxelOctree<Boolean> blockProtectionOverlay,
+            Map<String, Integer> fields
     ) {
         super(structure, spawnPositions, centrePos, blockProtectionOverlay);
     }
@@ -62,6 +65,8 @@ public class HideAndSeekGameMap extends AbstractGameMap {
                 BlockPos.fromLong(centrePosLong.get()),
                 centrePos,
                 SparseVoxelOctree.fromNbtBooleanOnly(BLOCK_PROTECTION_OVERLAY_KEY, compound),
+                compound.getInt(MIN_BUILD_Y_KEY, 0) + centrePos.getY(),
+                compound.getInt(MAX_BUILD_Y_KEY, 60) + centrePos.getY(),
                 world,
                 file
         ));

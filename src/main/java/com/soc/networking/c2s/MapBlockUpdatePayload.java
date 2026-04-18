@@ -10,10 +10,20 @@ import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
-public record MapBlockUpdatePayload(long pos, long regionSize, String mapName, int mapType, boolean blockProtection) implements CustomPayload, HoldsBlockEntity {
+import java.util.HashMap;
+import java.util.Map;
+
+public record MapBlockUpdatePayload(long pos, long regionSize, String mapName, int mapType, boolean blockProtection, Map<String, Integer> fields) implements CustomPayload, HoldsBlockEntity {
     public static final Identifier MAP_BLOCK_UPDATE_ID = Identifier.of(SocWars.MOD_ID, "map_block_update");
     public static final Id<MapBlockUpdatePayload> ID = new Id<>(MAP_BLOCK_UPDATE_ID);
-    public static final PacketCodec<RegistryByteBuf, MapBlockUpdatePayload> CODEC = PacketCodec.tuple(PacketCodecs.LONG, MapBlockUpdatePayload::pos, PacketCodecs.LONG, MapBlockUpdatePayload::regionSize, PacketCodecs.STRING, MapBlockUpdatePayload::mapName, PacketCodecs.INTEGER, MapBlockUpdatePayload::mapType, PacketCodecs.BOOLEAN, MapBlockUpdatePayload::blockProtection, MapBlockUpdatePayload::new);
+    public static final PacketCodec<RegistryByteBuf, MapBlockUpdatePayload> CODEC = PacketCodec.tuple(
+            PacketCodecs.LONG, MapBlockUpdatePayload::pos,
+            PacketCodecs.LONG, MapBlockUpdatePayload::regionSize,
+            PacketCodecs.STRING, MapBlockUpdatePayload::mapName,
+            PacketCodecs.INTEGER, MapBlockUpdatePayload::mapType,
+            PacketCodecs.BOOLEAN, MapBlockUpdatePayload::blockProtection,
+            PacketCodecs.map(HashMap::new, PacketCodecs.STRING, PacketCodecs.INTEGER), MapBlockUpdatePayload::fields,
+            MapBlockUpdatePayload::new);
 
     @Override
     public Id<? extends CustomPayload> getId() {

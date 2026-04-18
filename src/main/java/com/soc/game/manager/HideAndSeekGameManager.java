@@ -82,7 +82,7 @@ public class HideAndSeekGameManager extends AbstractGameManager<HideAndSeekGameM
     @Override
     public void startGame() {
         super.startGame();
-        this.getPlayers(SEEKER_COLOUR).forEach(player -> player.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 350, 0, false, false)));
+        this.getPlayers(SEEKER_COLOUR).forEach(player -> player.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 450, 0, false, false)));
     }
 
     @Override

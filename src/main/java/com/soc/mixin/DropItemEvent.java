@@ -15,8 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class DropItemEvent {
 	@Inject(at = @At("HEAD"), method = "dropItem")
 	private void socwars_dropItemEvent(ItemStack stack, boolean dropAtSelf, boolean retainOwnership, CallbackInfoReturnable<ItemEntity> cir) {
-		LivingEntity self = ((LivingEntity)(Object)this);
-		EntityAttributeInstance attributeInstance = self.getAttributeInstance(EntityAttributes.ATTACK_DAMAGE);
+		final EntityAttributeInstance attributeInstance = ((LivingEntity)(Object)this).getAttributeInstance(EntityAttributes.ATTACK_DAMAGE);
 		if (attributeInstance != null) {
 			attributeInstance.removeModifier(GamblerSword.ATTRIBUTE_ID);
 			//Hot garbage code, maybe fix this sometime

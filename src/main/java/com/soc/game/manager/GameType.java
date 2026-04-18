@@ -2,6 +2,7 @@ package com.soc.game.manager;
 
 import com.soc.game.map.BedwarsGameMap;
 import com.soc.game.map.HideAndSeekGameMap;
+import com.soc.game.map.RangedIntField;
 import com.soc.game.map.SkywarsGameMap;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
@@ -10,23 +11,28 @@ import net.minecraft.text.Text;
 import net.minecraft.util.StringIdentifiable;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.List;
+import java.util.Map;
+
 public enum GameType implements QueueProgress, StringIdentifiable {
-    SKYWARS(1, 8, "skywars", SkywarsGameMap.FILE_EXTENSION),
-    BEDWARS(1, 16, "bedwars", BedwarsGameMap.FILE_EXTENSION),
-    PROP_HUNT(2, 8, "prop_hunt", "phmap"),
-    HIDE_AND_SEEK(1, 8, "hide_and_seek", HideAndSeekGameMap.FILE_EXTENSION);
+    SKYWARS(1, 8, "skywars", SkywarsGameMap.FILE_EXTENSION, Map.of()),
+    BEDWARS(1, 16, "bedwars", BedwarsGameMap.FILE_EXTENSION, BedwarsGameMap.MAP_FIELDS),
+    PROP_HUNT(2, 8, "prop_hunt", "phmap", Map.of()),
+    HIDE_AND_SEEK(1, 8, "hide_and_seek", HideAndSeekGameMap.FILE_EXTENSION, Map.of());
 
     public static final PacketCodec<RegistryByteBuf, GameType> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.INTEGER, GameType::ordinal, GameType::fromOrdinal);
     private final int minPlayers;
     private final int maxPlayers;
     private final String name;
     private final String fileExtension;
+    private final Map<String, RangedIntField> mapFields;
 
-    GameType(int minPlayers, int maxPlayers, String name, String fileExtension) {
+    GameType(int minPlayers, int maxPlayers, String name, String fileExtension, Map<String, RangedIntField> mapFields) {
         this.minPlayers = minPlayers;
         this.maxPlayers = maxPlayers;
         this.name = name;
         this.fileExtension = fileExtension;
+        this.mapFields = mapFields;
     }
 
     public GameType fromNatural(String string) {
@@ -70,5 +76,9 @@ public enum GameType implements QueueProgress, StringIdentifiable {
     @Override
     public String asString() {
         return this.name;
+    }
+
+    public Map<String, RangedIntField> getMapFields() {
+        return this.mapFields;
     }
 }
