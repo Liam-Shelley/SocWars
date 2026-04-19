@@ -174,10 +174,7 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
 
     @Override
     public ActionResult use(World world, PlayerEntity user, Hand hand) {
-        ItemStack stack = user.getStackInHand(hand);
-        boolean hasArrowOrInfinity = !user.getProjectileType(stack).isEmpty() || hasInfinity(stack);
-
-        if (user.isInCreativeMode() || hasArrowOrInfinity) {
+        if (!user.getProjectileType(user.getStackInHand(hand)).isEmpty()) {
             user.setCurrentHand(hand);
             return ActionResult.CONSUME;
         } else {

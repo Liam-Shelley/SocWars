@@ -5,6 +5,7 @@
   "mixins": [
     "AbstractBlockMixin",
     "AppendTooltipAtEnd",
+    "BowInfinityFix",
     "BucketBlockProtection",
     "CancelSprintParticles",
     "ChestDepositableProperty",

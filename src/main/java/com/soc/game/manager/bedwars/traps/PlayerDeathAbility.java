@@ -13,7 +13,7 @@ import static com.soc.game.manager.bedwars.traps.Abilities.register;
 
 public class PlayerDeathAbility extends AbstractAbility {
     public interface TriggerFunction {
-        boolean trigger(ServerPlayerEntity player, AbstractGameManager<?, ?, ?> manager, DyeColor owningTeam);
+        ResultModifier trigger(ServerPlayerEntity player, AbstractGameManager<?, ?, ?> manager, DyeColor owningTeam);
     }
 
     public static void initialise() {}
@@ -25,7 +25,7 @@ public class PlayerDeathAbility extends AbstractAbility {
         player.requestTeleport(spawnPos.x, spawnPos.y, spawnPos.z);
         player.setHealth(10f);
 
-        return false;
+        return new ResultModifier(false, 1f);
     }));
 
     private final TriggerFunction triggerFunction;
@@ -36,8 +36,7 @@ public class PlayerDeathAbility extends AbstractAbility {
     }
 
     @Override
-    protected boolean trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Collection<ServerPlayerEntity> enemiesInRange, DyeColor team, AbstractTrap trapTriggerFunction) {
-        this.triggerFunction.trigger(enemiesInRange.iterator().next(), manager, team);
-        return false;
+    protected ResultModifier trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Collection<ServerPlayerEntity> enemiesInRange, DyeColor team, AbstractTrap trapTriggerFunction) {
+        return this.triggerFunction.trigger(enemiesInRange.iterator().next(), manager, team);
     }
 }

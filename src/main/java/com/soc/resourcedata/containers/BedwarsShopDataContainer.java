@@ -10,8 +10,13 @@ import com.soc.resourcedata.deserialisation.BedwarsShopSlot;
 import com.soc.resourcedata.deserialisation.PreSelectionBedwarsShopCategory;
 import com.soc.screenhandler.BedwarsIndividualShopScreenHandler;
 import com.soc.screenhandler.BedwarsTeamShopScreenHandler;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.equipment.trim.ArmorTrimMaterial;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
@@ -20,6 +25,8 @@ import net.minecraft.world.World;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static net.minecraft.registry.tag.ItemTags.BOW_ENCHANTABLE;
 
 public class BedwarsShopDataContainer implements CachedData {
 
@@ -98,18 +105,22 @@ public class BedwarsShopDataContainer implements CachedData {
         if (options.isEmpty()) {
             SocWars.LOGGER.warn("Skipping loading slot as the options pool was empty");
             return SimpleShopItem.EMPTY;
-        } else {
-            final Identifier choice = options.get(random.nextBetween(0, options.size() - 1));
-            final ShopItem<?> item = this.resourceItemMap.get(choice);
-            final ShopItem<?> lazilyClonedItem = item == null ? SimpleShopItem.EMPTY : (ShopItem<?>)item.lazyClone();
-            if (lazilyClonedItem instanceof TeamItem teamItem) {
-                teamItem.setTeam(team);
-            }
-            if (lazilyClonedItem instanceof SimpleShopItem simpleShopItem) {
-                simpleShopItem.trim(team, world);
-            }
-            return lazilyClonedItem;
         }
+
+        final Identifier choice = options.get(random.nextBetween(0, options.size() - 1));
+        final ShopItem<?> item = this.resourceItemMap.get(choice);
+        final ShopItem<?> lazilyClonedItem = item == null ? SimpleShopItem.EMPTY : (ShopItem<?>)item.lazyClone();
+        if (lazilyClonedItem instanceof TeamItem teamItem) {
+            teamItem.setTeam(team);
+        }
+        if (lazilyClonedItem instanceof SimpleShopItem simpleShopItem) {
+            simpleShopItem.trim(team, world);
+            if (simpleShopItem.getIcon().isIn(BOW_ENCHANTABLE)) {
+                final Registry<Enchantment> enchantmentRegistry = world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT);
+                simpleShopItem.getIcon().addEnchantment(enchantmentRegistry.getOrThrow(Enchantments.INFINITY), 1);
+            }
+        }
+        return lazilyClonedItem;
     }
 
     @Override

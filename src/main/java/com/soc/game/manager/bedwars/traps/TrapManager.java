@@ -55,21 +55,21 @@ public class TrapManager {
         if (manager instanceof TrapGame trapGame) {
             final AbstractTrap trap = this.traps.remove();
 
-            if (this.hasActiveAbility(TriggerReason.TRAP_MODIFIER)) {
-                this.triggerAbility(pos, manager, enemiesInRange.values(), owningTeam, trap);
-            }
+            final ResultModifier modifierResult = this.hasActiveAbility(TriggerReason.TRAP_MODIFIER) ? this.triggerAbility(pos, manager, enemiesInRange.values(), owningTeam, trap) : new ResultModifier(true, 1f);
 
             final Set<DyeColor> alertingTeams = new HashSet<>();
             enemiesInRange.keySet().forEach(enemyTeam -> {
-                if (trapGame.getTrapManager(enemyTeam).receiveTrap(pos, manager, manager.getPlayers(enemyTeam), owningTeam, trap)) {
+                final ResultModifier resultModifier = trapGame.getTrapManager(enemyTeam).receiveTrap(pos, manager, manager.getPlayers(enemyTeam), owningTeam, trap, modifierResult);
+                if (resultModifier.alert()) {
                     alertingTeams.add(enemyTeam);
                 }
             });
 
-            this.sendUsePackets(manager, alertingTeams, owningTeam, trap);
+            this.sendUsePackets(manager, alertingTeams, owningTeam, trap, modifierResult);
 
-            this.nextTrapTriggerTime = this.world.getTime() + trap.getCooldownTime();
-            this.currentTrapDuration = trap.getCooldownTime();
+            final int modifiedDuration = (int)(trap.getCooldownTime() * modifierResult.amplifier());
+            this.nextTrapTriggerTime = this.world.getTime() + modifiedDuration;
+            this.currentTrapDuration = modifiedDuration;
 
             manager.getPlayers(owningTeam).forEach(player -> {
                 if (player.currentScreenHandler instanceof BedwarsTeamShopScreenHandler handler) {
@@ -79,19 +79,19 @@ public class TrapManager {
         }
     }
 
-    public boolean receiveTrap(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Collection<ServerPlayerEntity> enemiesInRange, DyeColor owningTeam, AbstractTrap trap) {
+    public ResultModifier receiveTrap(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Collection<ServerPlayerEntity> enemiesInRange, DyeColor owningTeam, AbstractTrap trap, ResultModifier resultModifier) {
         if (this.hasActiveAbility(TriggerReason.TRAP_RESPONSE)) {
             return this.triggerAbility(pos, manager, enemiesInRange, owningTeam, trap);
         } else {
-            trap.trigger(pos, manager, enemiesInRange, owningTeam, 1f);
-            return true;
+            trap.trigger(pos, manager, enemiesInRange, owningTeam, resultModifier.amplifier());
+            return new ResultModifier(true, 1f);
         }
     }
 
-    public boolean triggerAbility(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Collection<ServerPlayerEntity> enemiesInRange, DyeColor owningTeam, AbstractTrap trapTriggerFunction) {
+    public ResultModifier triggerAbility(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Collection<ServerPlayerEntity> enemiesInRange, DyeColor owningTeam, AbstractTrap trapTriggerFunction) {
         final AbstractAbility ability = this.abilities.remove();
 
-        this.sendUsePackets(manager, Set.of(owningTeam), this.teamColour, ability);
+        this.sendUsePackets(manager, Set.of(owningTeam), this.teamColour, ability, new ResultModifier(true, 1f));
 
         this.nextAbilityTriggerTime = this.world.getTime() + ability.getCooldownTime();
         this.currentAbilityDuration = ability.getCooldownTime();
@@ -105,12 +105,13 @@ public class TrapManager {
         return ability.trigger(pos, manager, enemiesInRange, owningTeam, trapTriggerFunction);
     }
 
-    private void sendUsePackets(AbstractGameManager<?, ?, ?> manager, Set<DyeColor> alertingTeams, DyeColor owningTeam, Triggerable triggerable) {
+    private void sendUsePackets(AbstractGameManager<?, ?, ?> manager, Set<DyeColor> alertingTeams, DyeColor owningTeam, Triggerable triggerable, ResultModifier resultModifier) {
         final String titleKey = triggerable.isAbility() ? "ability" : "trap";
+        int modifiedDuration = (int)(triggerable.getCooldownTime() * resultModifier.amplifier());
 
         final Text teamsText = getEnemiesInRangeText(alertingTeams);
         manager.getPlayers(owningTeam).forEach(player -> {
-            ServerPlayNetworking.send(player, new UseTrapOrAbilityPayload(this.world.getTime() + triggerable.getCooldownTime(), triggerable.getCooldownTime(), triggerable.isAbility()));
+            ServerPlayNetworking.send(player, new UseTrapOrAbilityPayload(this.world.getTime() + modifiedDuration, modifiedDuration, triggerable.isAbility()));
 
             if (!alertingTeams.isEmpty()) {
                 player.networkHandler.sendPacket(new TitleS2CPacket(Text.translatable("game.bedwars." + titleKey + "_triggered.title"))); //Cache these before the loop? //Yeah I really don't need to do that
@@ -165,6 +166,6 @@ public class TrapManager {
     public boolean onPlayerDeath(ServerPlayerEntity player, AbstractGameManager<?, ?, ?> manager) {
         if (!this.hasActiveAbility(TriggerReason.PLAYER_DEATH)) return true;
 
-        return this.triggerAbility(null, manager, List.of(player), this.teamColour, null);
+        return this.triggerAbility(null, manager, List.of(player), this.teamColour, null).alert();
     }
 }
