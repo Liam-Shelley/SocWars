@@ -8,5 +8,5 @@ import net.minecraft.util.math.Vec3d;
 import java.util.Collection;
 
 public interface TrapTriggerFunction {
-    void trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Collection<ServerPlayerEntity> enemies, DyeColor team);
+    void trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Collection<ServerPlayerEntity> enemies, DyeColor team, float amplifier);
 }

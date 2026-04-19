@@ -19,7 +19,7 @@ public abstract class AbstractTrap implements Triggerable, TrapTriggerFunction {
 
     private final Identifier id;
     private final ItemStack icon;
-    private int cooldownTime;
+    private final int cooldownTime; //Bad Liam this should not be mutable ever
 
     public AbstractTrap(Identifier id, ItemStack icon, int time) {
         this.id = id;
@@ -32,7 +32,7 @@ public abstract class AbstractTrap implements Triggerable, TrapTriggerFunction {
     }
 
     @Override
-    public abstract void trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Collection<ServerPlayerEntity> enemies, DyeColor team);
+    public abstract void trigger(Vec3d pos, AbstractGameManager<?, ?, ?> manager, Collection<ServerPlayerEntity> enemies, DyeColor team, float amplifier);
 
     @Override
     public final int getCooldownTime() {
@@ -68,9 +68,5 @@ public abstract class AbstractTrap implements Triggerable, TrapTriggerFunction {
     @Override
     public boolean isAbility() {
         return false;
-    }
-
-    public void modifyCooldownTime(Int2IntFunction modifier) {
-        this.cooldownTime = modifier.applyAsInt(this.cooldownTime);
     }
 }

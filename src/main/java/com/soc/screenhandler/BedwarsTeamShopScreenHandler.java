@@ -3,6 +3,7 @@ package com.soc.screenhandler;
 import com.soc.game.manager.bedwars.BedwarsShopCategory;
 import com.soc.game.manager.bedwars.BedwarsShopContents;
 import com.soc.game.manager.bedwars.shopitems.*;
+import com.soc.networking.helper.TrapProgressStats;
 import com.soc.screenhandler.slots.CategorySlot;
 import com.soc.screenhandler.slots.DisplaySlot;
 import com.soc.screenhandler.slots.StockSlot;
@@ -234,5 +235,12 @@ public class BedwarsTeamShopScreenHandler extends AbstractCategoriesShopScreenHa
 
     public @Nullable BedwarsShopCategory getDisplayCategory() {
         return this.displayCategory;
+    }
+
+    public void setTrapProgress(TrapProgressStats stats) {
+        this.nextTrapTime = stats.nextTrapTime();
+        this.trapDuration = stats.trapDuration();
+        this.nextAbilityTime = stats.nextAbilityTime();
+        this.abilityDuration = stats.abilityDuration();
     }
 }

@@ -77,17 +77,11 @@ public class TeamStats {
         return this.teamShopContents;
     }
 
-    public int[] getTrapProgressStats() {
-        return this.trapManager.getTrapProgressStats();
+    public boolean buyTrap(AbstractTrap trap) {
+        return this.trapManager.buyTrap(trap);
     }
 
-    public boolean buyTrap(AbstractTrap trap, World world) {
-        boolean success = this.trapManager.buyTrap(trap);
-        //if (success) this.resendPlayerShops(world);
-        return success;
-    }
-
-    public boolean buyAbility(AbstractAbility ability, World world) {
+    public boolean buyAbility(AbstractAbility ability) {
         return this.trapManager.buyAbility(ability);
     }
 

@@ -7,6 +7,7 @@ import com.soc.game.manager.bedwars.BedwarsShopCategory;
 import com.soc.game.manager.bedwars.shopitems.ShopItem;
 import com.soc.game.manager.bedwars.shopitems.SimpleShopItem;
 import com.soc.lib.SocWarsLib;
+import com.soc.networking.helper.TrapProgressStats;
 import com.soc.networking.s2c.bedwars.UseTrapOrAbilityPayload;
 import com.soc.screenhandler.BedwarsTeamShopScreenHandler;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -82,7 +83,7 @@ public class TrapManager {
         if (this.hasActiveAbility(TriggerReason.TRAP_RESPONSE)) {
             return this.triggerAbility(pos, manager, enemiesInRange, owningTeam, trap);
         } else {
-            trap.trigger(pos, manager, enemiesInRange, owningTeam);
+            trap.trigger(pos, manager, enemiesInRange, owningTeam, 1f);
             return true;
         }
     }
@@ -132,13 +133,13 @@ public class TrapManager {
         return true;
     }
 
-    public int[] getTrapProgressStats() {
-        return new int[]{
-                (int)this.nextTrapTriggerTime,
+    public TrapProgressStats getTrapProgressStats() {
+        return new TrapProgressStats(
+                this.nextTrapTriggerTime,
                 this.currentTrapDuration,
-                (int)this.nextAbilityTriggerTime,
+                this.nextAbilityTriggerTime,
                 this.currentAbilityDuration
-        };
+        );
     }
 
     public BedwarsShopCategory getTrapsDisplay() {

@@ -72,6 +72,7 @@ public class S2CReceivers {
             final ScreenHandler screenHandler = context.player().currentScreenHandler;
             if (screenHandler.syncId == payload.syncId() && screenHandler instanceof BedwarsTeamShopScreenHandler shopScreenHandler) {
                 shopScreenHandler.setShopContents(payload.shopContents());
+                shopScreenHandler.setTrapProgress(payload.trapProgressStats());
             }
         });
         ClientPlayNetworking.registerGlobalReceiver(UpdateHotbarPayload.ID, (payload, context) -> {

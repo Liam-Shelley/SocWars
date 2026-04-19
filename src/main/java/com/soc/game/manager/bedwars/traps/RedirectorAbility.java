@@ -21,28 +21,31 @@ public class RedirectorAbility extends AbstractAbility {
     public static void initialise() {}
 
     public static final AbstractAbility DISGUISE = register(new RedirectorAbility("disguise", Items.OAK_LEAVES.getDefaultStack(), 15 * 20, (pos, manager, enemiesInRange, owningTeam, trapTriggerFunction) -> {
-        trapTriggerFunction.trigger(pos, manager, enemiesInRange, owningTeam);
+        trapTriggerFunction.trigger(pos, manager, enemiesInRange, owningTeam, 1f);
         return false;
     }));
     public static final AbstractAbility RESISTANCE = register(new RedirectorAbility("resistance", Items.SHIELD.getDefaultStack(), 20 * 20, (pos, manager, enemiesInRange, owningTeam, trapTriggerFunction) -> {
-        trapTriggerFunction.trigger(pos, manager, List.of(), owningTeam);
+        trapTriggerFunction.trigger(pos, manager, List.of(), owningTeam, 1f);
         return true;
     }));
     public static final AbstractAbility UNO_REVERSE_CARD = register(new RedirectorAbility("uno_reverse_card", Items.YELLOW_BANNER.getDefaultStack(), 30 * 20, (pos, manager, enemiesInRange, owningTeam, trapTriggerFunction) -> {
-        trapTriggerFunction.trigger(pos, manager, manager.getPlayers(owningTeam, player -> player.getPos().isInRange(pos, TRAP_DETECTION_RANGE * 5)), owningTeam);
+        trapTriggerFunction.trigger(pos, manager, manager.getPlayers(owningTeam, player -> player.getPos().isInRange(pos, TRAP_DETECTION_RANGE * 5)), owningTeam, 1f);
         return true;
     }));
-    public static final AbstractAbility TRAP_AMPLIFIER = register(new RedirectorAbility("trap_amplifier", Items.GLASS_PANE.getDefaultStack(), 30 * 20, (pos, manager, enemiesInRange, owningTeam, trapTriggerFunction) -> {
-        trapTriggerFunction.modifyCooldownTime(initial -> 2 * initial); //TODO: Whole system needs a lot of work
-        trapTriggerFunction.trigger(pos, manager, enemiesInRange, owningTeam);
+    public static final AbstractAbility TRAP_AMPLIFIER = register(new RedirectorAbility("trap_amplifier", Items.GLASS_PANE.getDefaultStack(), 30 * 20, TriggerReason.TRAP_MODIFIER, (pos, manager, enemiesInRange, owningTeam, trapTriggerFunction) -> {
+        trapTriggerFunction.trigger(pos, manager, enemiesInRange, owningTeam, 2f);
         return true;
     }));
 
     private final TriggerFunction triggerFunction;
 
-    public RedirectorAbility(String id, ItemStack icon, int time, TriggerFunction triggerFunction) {
-        super(id, icon, time, TriggerReason.TRAP_RESPONSE);
+    public RedirectorAbility(String id, ItemStack icon, int time, TriggerReason triggerReason, TriggerFunction triggerFunction) {
+        super(id, icon, time, triggerReason);
         this.triggerFunction = triggerFunction;
+    }
+
+    public RedirectorAbility(String id, ItemStack icon, int time, TriggerFunction triggerFunction) {
+        this(id, icon, time, TriggerReason.TRAP_RESPONSE, triggerFunction);
     }
 
     @Override

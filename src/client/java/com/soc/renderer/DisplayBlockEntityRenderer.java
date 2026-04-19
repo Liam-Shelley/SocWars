@@ -31,7 +31,7 @@ public class DisplayBlockEntityRenderer implements BlockEntityRenderer<DisplayBl
             matrices.multiply(new Quaternionf().rotateX(direction == Direction.UP ? -1.5707964f : 1.5707964f));
         }
 
-        matrices.translate(0d, 0d, 0.46875d);
+        matrices.translate(0d, 0d, 0.465d);
         matrices.multiply(new Quaternionf().rotateZ(entity.getRotation() * 1.5707964f)); //Rotate it on the face
 
         this.itemRenderer.renderItem(entity.getDisplayItem(), ItemDisplayContext.FIXED, light, overlay, matrices, vertexConsumers, entity.getWorld(), 0);

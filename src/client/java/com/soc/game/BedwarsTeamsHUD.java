@@ -100,14 +100,9 @@ public class BedwarsTeamsHUD { //TODO: Rewrite this whole class as an implementa
 
             drawContext.fill(x, heightStart, x + 128, heightStart + 40, team.getSignColor() & 0x00ffffff | 0x99000000);
 
-            draw(instance, drawContext, team, textRenderer, x + 128, heightStart - 40);
             drawTeamText(instance, drawContext, team, textRenderer, x + 128, heightStart);
             drawTeamHeads(instance, drawContext, team, x + 128, heightStart);
         }
-    }
-
-    private static void draw(BedwarsTeamsHUD instance, DrawContext drawContext, DyeColor team, TextRenderer textRenderer, int width, int heightStart) {
-
     }
 
     private static void drawTeamText(BedwarsTeamsHUD instance, DrawContext drawContext, DyeColor team, TextRenderer textRenderer, int width, int heightStart) {

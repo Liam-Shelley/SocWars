@@ -13,7 +13,7 @@ import java.util.Objects;
 
 public class Arthrodesis extends StatusEffect {
     public Arthrodesis() {
-        super(StatusEffectCategory.HARMFUL, 0xbabbc7);
+        super(StatusEffectCategory.HARMFUL, 0xffe67017);
     }
 
     @Override

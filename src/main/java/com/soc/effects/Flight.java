@@ -10,7 +10,7 @@ public class Flight extends StatusEffect {
     private PlayerEntity playerEntity;
 
     public Flight() {
-        super(StatusEffectCategory.BENEFICIAL, 0xfffdec);
+        super(StatusEffectCategory.BENEFICIAL, 0xff66f0f2);
     }
 
     @Override

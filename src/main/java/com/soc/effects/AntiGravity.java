@@ -16,7 +16,7 @@ import java.util.Objects;
 
 public class AntiGravity extends StatusEffect {
     public AntiGravity() {
-        super(StatusEffectCategory.BENEFICIAL, 0xfffdec);
+        super(StatusEffectCategory.BENEFICIAL, 0xffb26de3);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class AntiGravity extends StatusEffect {
 
     @Override
     public void onRemoved(AttributeContainer attributeContainer) {
-        Multimap<RegistryEntry<EntityAttribute>, EntityAttributeModifier> map = ImmutableMultimap.of(EntityAttributes.GRAVITY, new EntityAttributeModifier(Identifier.of("gravity_orb"), 0, EntityAttributeModifier.Operation.ADD_VALUE));
+        final Multimap<RegistryEntry<EntityAttribute>, EntityAttributeModifier> map = ImmutableMultimap.of(EntityAttributes.GRAVITY, new EntityAttributeModifier(Identifier.of("gravity_orb"), 0, EntityAttributeModifier.Operation.ADD_VALUE));
         attributeContainer.removeModifiers(map);
     }
 }

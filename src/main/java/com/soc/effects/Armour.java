@@ -16,7 +16,7 @@ import java.util.Objects;
 
 public class Armour extends StatusEffect {
     public Armour() {
-        super(StatusEffectCategory.BENEFICIAL, 0xbabbc7);
+        super(StatusEffectCategory.BENEFICIAL, 0xff8e999c);
     }
 
     @Override
@@ -26,7 +26,7 @@ public class Armour extends StatusEffect {
 
     @Override
     public void onRemoved(AttributeContainer attributeContainer) {
-        Multimap<RegistryEntry<EntityAttribute>, EntityAttributeModifier> map = ImmutableMultimap.of(EntityAttributes.ARMOR, new EntityAttributeModifier(Identifier.ofVanilla("apple_armour"), 0, EntityAttributeModifier.Operation.ADD_VALUE));
+        final Multimap<RegistryEntry<EntityAttribute>, EntityAttributeModifier> map = ImmutableMultimap.of(EntityAttributes.ARMOR, new EntityAttributeModifier(Identifier.ofVanilla("apple_armour"), 0, EntityAttributeModifier.Operation.ADD_VALUE));
         attributeContainer.removeModifiers(map);
     }
 }

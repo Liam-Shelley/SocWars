@@ -117,16 +117,17 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         });
     }
 
-    @SuppressWarnings("DataFlowIssue")
     @Override
     public void endGame(boolean immediate) {
         this.eventQueue.cancelEvents();
+
+        final Collection<DyeColor> winningTeams = this.getWinningTeams();
 
         this.playerStatsMap.forEach((uuid, stats) -> {
             final Text message;
             final SoundEvent sound;
             final BedwarsTable dbTable = this.dbTables.get(uuid);
-            if (this.teamStatsMap.get(this.getTeam(uuid)).isAlive()) {
+            if (winningTeams.contains(this.getTeam(stats.getPlayer())) && stats.isAlive()) {
                 message = Text.translatable("game.bedwars.win");
                 sound = SoundEvents.ENTITY_PLAYER_LEVELUP;
                 dbTable.win();
@@ -150,6 +151,20 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         } else {
             Events.getInstance().scheduleEvent(() -> super.endGame(false), 5 * 20);
         }
+    }
+
+    private Collection<DyeColor> getWinningTeams() {
+        final List<Map.Entry<DyeColor, TeamStats>> entries = new ArrayList<>(this.teamStatsMap.entrySet()); //Want a nicely ordered list to ensure stable sorts
+        final List<Map.Entry<DyeColor, TeamStats>> sortedEntries = entries.stream().sorted(Comparator.comparingInt(entry -> entry.getValue().getPlayersAlive())).sorted(Comparator.comparingInt(entry -> entry.getValue().hasBed() ? 1 : 0)).toList();
+
+        final TeamStats finalEntry = sortedEntries.getLast().getValue();
+        int i = sortedEntries.size() - 1;
+        for (; i >= 0; i--) {
+            final TeamStats entry = sortedEntries.get(i).getValue();
+            if ((finalEntry.hasBed() && !entry.hasBed()) || finalEntry.getPlayersAlive() > entry.getPlayersAlive()) break;
+        }
+
+        return sortedEntries.subList(i + 1, sortedEntries.size()).stream().map(Map.Entry::getKey).toList();
     }
 
     protected final PlayerStats getPlayerStats(ServerPlayerEntity player) {
@@ -391,10 +406,6 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         return this.teamStatsMap.get(this.getTeam(player)).getShopContents();
     }
 
-    public int[] getTrapProgressStats(UUID player) {
-        return this.teamStatsMap.get(this.getTeam(player)).getTrapProgressStats();
-    }
-
     @Nullable
     public static BedwarsGameManager getBedwarsGameManager(PlayerEntity player) {
         return GamesManager.getInstance().getGame(player).map(manager -> manager instanceof BedwarsGameManager bedwarsGameManager ? bedwarsGameManager : null).orElse(null);
@@ -408,7 +419,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
         switch (shopType) {
             case INDIVIDUAL -> ServerPlayNetworking.send(player, new BedwarsIndividualShopDataPayload(manager.getIndividualShopContents(player.getUuid()), syncId.getAsInt()));
-            case TEAM -> ServerPlayNetworking.send(player, new BedwarsTeamShopDataPayload(manager.getTeamShopContents(player.getUuid()), syncId.getAsInt()));
+            case TEAM -> ServerPlayNetworking.send(player, new BedwarsTeamShopDataPayload(manager.getTeamShopContents(player.getUuid()), syncId.getAsInt(), manager.getTrapManager(manager.getTeam(player.getUuid())).getTrapProgressStats()));
         }
 
         return true;
@@ -445,11 +456,11 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
     }
 
     public boolean buyTrap(ServerPlayerEntity player, AbstractTrap trap) {
-        return this.teamStatsMap.get(this.getTeam(player)).buyTrap(trap, this.world);
+        return this.teamStatsMap.get(this.getTeam(player)).buyTrap(trap);
     }
 
     public boolean buyAbility(ServerPlayerEntity player, AbstractAbility ability) {
-        return this.teamStatsMap.get(this.getTeam(player)).buyAbility(ability, this.world);
+        return this.teamStatsMap.get(this.getTeam(player)).buyAbility(ability);
     }
 
     public void buyEnchantmentUpgrade(ServerPlayerEntity player, RegistryEntry<Enchantment> enchantment, int tier) {

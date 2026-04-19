@@ -5,6 +5,6 @@ import net.minecraft.entity.effect.StatusEffectCategory;
 
 public class Lightweight extends StatusEffect {
     public Lightweight() {
-        super(StatusEffectCategory.HARMFUL, 0xfffa0a0);
+        super(StatusEffectCategory.HARMFUL, 0xff77f289);
     }
 }
