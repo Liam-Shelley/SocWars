@@ -1,8 +1,6 @@
-package com.soc.game;
+package com.soc.gui.hud;
 
 import com.soc.SocWars;
-import com.soc.gui.hud.Reference;
-import com.soc.gui.hud.VerticallyStackedHudComponent;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.minecraft.client.MinecraftClient;

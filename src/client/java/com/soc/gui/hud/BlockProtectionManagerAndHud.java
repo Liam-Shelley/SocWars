@@ -1,4 +1,4 @@
-package com.soc.game;
+package com.soc.gui.hud;
 
 import com.soc.SocWars;
 import com.soc.lib.SparseVoxelOctree;

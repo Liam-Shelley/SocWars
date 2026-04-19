@@ -1,8 +1,8 @@
 package com.soc.networking;
 
-import com.soc.game.BedwarsTeamsHUD;
-import com.soc.game.BlockProtectionManagerAndHud;
-import com.soc.game.EventsHud;
+import com.soc.gui.hud.BedwarsTeamsHud;
+import com.soc.gui.hud.BlockProtectionManagerAndHud;
+import com.soc.gui.hud.EventsHud;
 import com.soc.lib.Coroutine;
 import com.soc.lib.Coroutines;
 import com.soc.lib.Events;
@@ -54,13 +54,13 @@ public class S2CReceivers {
                 context.player().addVelocity(payload.velocity());
         });
         ClientPlayNetworking.registerGlobalReceiver(JoinBedwarsPayload.ID, (payload, context) -> {
-            BedwarsTeamsHUD.joinGame(payload.teams());
+            BedwarsTeamsHud.joinGame(payload.teams());
         });
         ClientPlayNetworking.registerGlobalReceiver(LeaveBedwarsPayload.ID, (payload, context) -> {
-            BedwarsTeamsHUD.leaveGame();
+            BedwarsTeamsHud.leaveGame();
         });
         ClientPlayNetworking.registerGlobalReceiver(BedBreakPayload.ID, (payload, context) -> {
-            BedwarsTeamsHUD.breakBed(payload.team());
+            BedwarsTeamsHud.breakBed(payload.team());
         });
         ClientPlayNetworking.registerGlobalReceiver(BedwarsIndividualShopDataPayload.ID, (payload, context) -> {
             final ScreenHandler screenHandler = context.player().currentScreenHandler;

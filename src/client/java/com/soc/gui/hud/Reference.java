@@ -2,6 +2,10 @@ package com.soc.gui.hud;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.Consumer;
+
+import static com.soc.lib.SocWarsLib.ifNotNull;
+
 public class Reference<T> {
     public Reference(@Nullable T value) {
         this.value = value;
@@ -17,11 +21,11 @@ public class Reference<T> {
         return this.value;
     }
 
-    public boolean isNotNull() {
-        return this.value != null;
-    }
-
     public void annul() {
         this.value = null;
+    }
+
+    public void ifPresent(Consumer<T> function) {
+        ifNotNull(this.value, function);
     }
 }

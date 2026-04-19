@@ -1,7 +1,7 @@
 package com.soc.mixin.client;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import com.soc.game.BlockProtectionManagerAndHud;
+import com.soc.gui.hud.BlockProtectionManagerAndHud;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexRendering;

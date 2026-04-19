@@ -1,6 +1,6 @@
 package com.soc.mixin.client;
 
-import com.soc.game.BlockProtectionManagerAndHud;
+import com.soc.gui.hud.BlockProtectionManagerAndHud;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;

@@ -1,6 +1,6 @@
 package com.soc.mixin.client;
 
-import com.soc.game.BlockProtectionManagerAndHud;
+import com.soc.gui.hud.BlockProtectionManagerAndHud;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
