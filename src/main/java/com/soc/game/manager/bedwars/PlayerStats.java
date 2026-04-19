@@ -7,6 +7,8 @@ import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.DyeColor;
@@ -64,6 +66,8 @@ public class PlayerStats {
 
         final PlayerInventory inventory = player.getInventory();
         this.toolSlotMap.forEach((id, slot) -> this.shopContents.getUpgradeableShopItemBySlotTrackingId(id).ifPresent(shopItem -> inventory.setStack(slot, shopItem.getDowngradedStackCopy().copy())));
+
+        player.giveItemStack(new ItemStack(Items.WOODEN_SWORD));
     }
 
     public UUID getPlayer() {

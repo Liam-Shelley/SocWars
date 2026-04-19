@@ -14,6 +14,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
@@ -48,6 +49,7 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
@@ -59,6 +61,7 @@ import java.util.stream.Collectors;
 public final class SocWarsLib {
     public static final DecimalFormat TWO_DIGIT_NUMBER_FORMAT = new DecimalFormat("00");
     public static final Identifier SCALE_MODIFIER_ID = Identifier.of(SocWars.MOD_ID, "scale");
+    public static final EquipmentSlot[] ARMOUR_SLOTS = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
     public static final float SQRT2 = 1.4142135f;
     public static final float MAX_SCALE_FACTOR = 4f;
 
@@ -608,5 +611,19 @@ public final class SocWarsLib {
         }
 
         return list;
+    }
+
+    public static @NotNull Item leatherArmour(EquipmentSlot slot) {
+        return switch (slot) {
+            case HEAD -> Items.LEATHER_HELMET;
+            case CHEST -> Items.LEATHER_CHESTPLATE;
+            case LEGS -> Items.LEATHER_LEGGINGS;
+            case FEET -> Items.LEATHER_BOOTS;
+            default -> throw new IllegalArgumentException("No such leather armour exists for slot " + slot.getName()); //Unreachable
+        };
+    }
+
+    public static RegistryEntry<Enchantment> enchantmentEntry(World world, RegistryKey<Enchantment> enchantmentKey) {
+        return world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(enchantmentKey);
     }
 }

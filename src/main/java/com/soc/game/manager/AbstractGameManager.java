@@ -427,8 +427,8 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
 
         player.changeGameMode(GameMode.SURVIVAL);
 
-        player.getHungerManager().setFoodLevel(20);
-        player.getHungerManager().setSaturationLevel(5f);
+        //player.getHungerManager().setFoodLevel(20);
+        //player.getHungerManager().setSaturationLevel(5f);
     }
 
     protected final void sendPlayersToLobby() {

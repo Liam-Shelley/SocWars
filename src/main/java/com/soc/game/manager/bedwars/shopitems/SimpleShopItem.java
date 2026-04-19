@@ -17,6 +17,7 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.Unit;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -107,6 +108,7 @@ public class SimpleShopItem implements ShopItem<SimpleShopItem>, TooltipProvider
             final Registry<ArmorTrimMaterial> materialRegistry = world.getRegistryManager().getOrThrow(RegistryKeys.TRIM_MATERIAL);
             final Registry<ArmorTrimPattern> patternRegistry = world.getRegistryManager().getOrThrow(RegistryKeys.TRIM_PATTERN);
             this.stack.set(DataComponentTypes.TRIM, new ArmorTrim(materialRegistry.getOrThrow(armourTrimFromColour(team)), patternRegistry.getOrThrow(ArmorTrimPatterns.FLOW)));
+            this.stack.set(DataComponentTypes.UNBREAKABLE, Unit.INSTANCE);
         }
     }
 

@@ -21,7 +21,11 @@ import com.soc.resourcedata.deserialisation.ResourceGeneratorUpgrade;
 import com.soc.util.Sounds;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.component.ComponentType;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.DyedColorComponent;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
@@ -39,6 +43,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Unit;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
@@ -115,6 +120,25 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
                 this.world.breakBlock(this.map.pos(pos).down(), false);
             }
         });
+    }
+
+    @Override
+    protected void onFinishCountdown() {
+        super.onFinishCountdown();
+
+        for (ServerPlayerEntity player : this.getPlayers()) {
+            final DyeColor team = this.getTeam(player);
+
+            for (EquipmentSlot equipmentSlot : ARMOUR_SLOTS) {
+                final ItemStack armour = new ItemStack(leatherArmour(equipmentSlot));
+                armour.addEnchantment(enchantmentEntry(player.getWorld(), Enchantments.BINDING_CURSE), 1);
+                armour.set(DataComponentTypes.UNBREAKABLE, Unit.INSTANCE);
+                armour.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(team.getEntityColor()));
+
+                player.equipStack(equipmentSlot, armour);
+            }
+            player.giveItemStack(new ItemStack(Items.WOODEN_SWORD));
+        }
     }
 
     @Override

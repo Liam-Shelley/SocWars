@@ -1,7 +1,6 @@
 package com.soc.items;
 
 import com.soc.effects.util.ModEffects;
-import com.soc.networking.s2c.AddVelocityPayload;
 import com.soc.util.BlockTags;
 import com.soc.util.DamageTypes;
 import com.soc.items.util.ModItems;
@@ -10,11 +9,9 @@ import com.soc.items.util.ModifyEquipmentFunction;
 import com.soc.materials.ToolMaterials;
 import com.soc.util.Sounds;
 import com.soc.util.SphereExplosion;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.Blocks;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.TooltipDisplayComponent;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.*;
 import net.minecraft.entity.damage.DamageSource;
@@ -24,9 +21,6 @@ import net.minecraft.entity.mob.SlimeEntity;
 import net.minecraft.item.*;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -38,7 +32,6 @@ import net.minecraft.util.Rarity;
 import net.minecraft.util.Unit;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
@@ -48,25 +41,12 @@ import static com.soc.lib.SocWarsLib.*;
 import static com.soc.util.SphereExplosion.fireExplosion;
 
 public class AttackFunctionWeapon extends Item {
-    private final AttackFunction attackFunction;
-
-    private static final EquipmentSlot[] ARMOUR_SLOTS = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
-    private static @NotNull Item leatherArmour(EquipmentSlot slot) {
-        return switch (slot) {
-            case HEAD -> Items.LEATHER_HELMET;
-            case CHEST -> Items.LEATHER_CHESTPLATE;
-            case LEGS -> Items.LEATHER_LEGGINGS;
-            case FEET -> Items.LEATHER_BOOTS;
-            default -> throw new IllegalArgumentException("No such leather armour exists for slot " + slot.getName()); //Unreachable
-        };
-    }
-    private static RegistryEntry<Enchantment> enchantmentEntry(World world, RegistryKey<Enchantment> enchantmentKey) {
-        return world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(enchantmentKey);
-    }
     private enum ReplaceMode {
         PRESENT,
         NOT_LEATHER
     }
+
+    private final AttackFunction attackFunction;
 
     public AttackFunctionWeapon(Settings settings, AttackFunction attackFunction) {
         super(settings);
