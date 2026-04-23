@@ -7,6 +7,7 @@ import com.soc.items.BlockItems;
 import com.soc.items.FeatherBlockItem;
 import com.soc.items.util.ItemGroups;
 import net.minecraft.block.*;
+import net.minecraft.block.enums.NoteBlockInstrument;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -29,6 +30,8 @@ import java.util.function.UnaryOperator;
 public interface ModBlocks {
     static void initialise() {}
 
+    Block WHITER_CONCRETE = ModBlocks.register("whiter_concrete", Block::new, AbstractBlock.Settings.create().mapColor(DyeColor.WHITE).instrument(NoteBlockInstrument.BASS).sounds(BlockSoundGroup.WOOD).requiresTool().strength(2f, 3f).burnable(), true, ItemGroups.BLOCKS_KEY);
+    Block JARRAH_PLANKS = ModBlocks.register("jarrah_planks", Block::new, AbstractBlock.Settings.create().mapColor(MapColor.DIRT_BROWN).instrument(NoteBlockInstrument.BASEDRUM).requiresTool().strength(1.8f), true, ItemGroups.BLOCKS_KEY);
     Block PLASTIC_BLOCK = ModBlocks.register("plastic_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(2f, 2), true, ItemGroups.BLOCKS_KEY);
     Block RUBBER_BLOCK = ModBlocks.register("rubber_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(4f, 3), true, ItemGroups.BLOCKS_KEY);
     Block PERSPEX_BLOCK = ModBlocks.register("perspex_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(3f, 1200f), true, ItemGroups.BLOCKS_KEY);

@@ -154,8 +154,7 @@ public class MapBlockEntity extends BlockEntity {
                 for (int x = minPos.getX(); x < maxPos.getX(); x++) {
                     final BlockPos currentPos = new BlockPos(x, y, z);
 
-                    if (!this.world.isAir(currentPos)) {
-                        if (this.world.getBlockState(currentPos).isOf(ModBlocks.MAP_BLOCK)) continue; //Ignore the map block itself
+                    if (!(this.world.isAir(currentPos) || this.world.getBlockState(currentPos).isOf(ModBlocks.MAP_BLOCK))) {
                         if (y == minPos.getY() - 1) {
                             flaggedFaces.add(Direction.DOWN);
                         } else {
@@ -191,17 +190,17 @@ public class MapBlockEntity extends BlockEntity {
 
     public boolean saveMap(ServerPlayerEntity player) {
         this.checkStructure();
-        if (this.mapCheckInfo.hasErrors() || super.world.isClient) return false;
+        if (this.mapCheckInfo.hasErrors() || this.world.isClient) return false;
 
         final StructureTemplate structure = new StructureTemplate();
-        structure.saveFromWorld(this.world, this.pos.up(), this.regionSize, false, IGNORED_BLOCKS);
+        structure.saveFromWorld(this.world, this.pos.up(), this.regionSize, true, IGNORED_BLOCKS);
         final BlockPos centrePos = this.mapCheckResults.centrePositions().stream().findAny().orElse(new BlockPos(0, 0, 0)).subtract(this.pos).down();
 
         final SparseVoxelOctree<Boolean> blockProtectionOverlay;
         if (this.blockProtection) {
             final BlockPos origin = this.pos.up();
             final CubicList<Boolean> naive = new CubicList<>(structure.getSize(), (x, y, z) -> {
-                final BlockState state = super.world.getBlockState(origin.add(x, y, z));
+                final BlockState state = this.world.getBlockState(origin.add(x, y, z));
                 return !(state.isAir() || state.isIn(net.minecraft.registry.tag.BlockTags.BEDS) || state.isReplaceable());
             });
             blockProtectionOverlay = naive.asOctree();
@@ -261,14 +260,10 @@ public class MapBlockEntity extends BlockEntity {
         view.put("map_type", Codec.INT, this.mapType.ordinal());
         view.put("block_protection", Codec.BOOL, this.blockProtection);
         view.put("fields", FIELDS_CODEC, this.fields);
-
-        super.writeData(view);
     }
 
     @Override
     protected void readData(ReadView view) {
-        super.readData(view);
-
         this.regionSize = view.read("region_size", BlockPos.Mutable.CODEC).orElse(new BlockPos.Mutable(1, 1, 1)).mutableCopy();
         this.mapName = view.read("map_name", Codec.STRING).orElse("");
         this.mapType = GameType.fromOrdinal(view.read("map_type", Codec.INT).orElse(0));

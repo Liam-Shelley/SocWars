@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "F": "minecraft:fermented_spider_eye",
+    "I": "#c:nuggets/iron",
+    "G": "#c:ingots/gold"
+  },
+  "pattern": [
+    " F ",
+    "IGI",
+    " I "
+  ],
+  "result": {
+    "count": 1,
+    "id": "socwars:invisibility_ring"
+  }
+}
