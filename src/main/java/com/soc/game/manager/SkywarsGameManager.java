@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.soc.game.map.AbstractGameMap.getRandomPlayerStack;
 import static com.soc.lib.SocWarsLib.*;
@@ -45,16 +46,20 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
     private class PlayerStats {
         private int lives;
 
-        public PlayerStats() {
+        private PlayerStats() {
             this.lives = SkywarsGameManager.this.settings.lives;
         }
 
-        public boolean kill() {
-            return --lives > 0;
+        private boolean kill() {
+            return --this.lives > 0;
         }
 
-        public boolean isAlive() {
-            return lives > 0;
+        private boolean isAlive() {
+            return this.lives > 0;
+        }
+
+        private int getLives() {
+            return this.lives;
         }
     }
 
@@ -166,6 +171,34 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
     }
 
     @Override
+    public Entity getWinningPlayer(@Nullable Entity except) {
+        if (this.playerMap.size() == 1) return except;
+
+        final Stream<Map.Entry<UUID, PlayerStats>> playersStream = this.playerMap
+                .entrySet()
+                .stream();
+        final Stream<Map.Entry<UUID, PlayerStats>> playersStreamFiltered = except == null ? playersStream : playersStream.filter(entry -> entry.getKey() != except.getUuid());
+        final OptionalInt mostLivesRemainingOptional = playersStreamFiltered
+                .mapToInt(entry -> entry.getValue().getLives())
+                .max();
+
+        if (mostLivesRemainingOptional.isEmpty()) return null;
+        final int mostLivesRemaining = mostLivesRemainingOptional.getAsInt();
+
+        final Stream<UUID> playersWithMostLives = this.playerMap.entrySet().stream().filter(entry -> entry.getValue().getLives() == mostLivesRemaining).map(Map.Entry::getKey);
+        return except == null ?
+                playersWithMostLives
+                        .min(Comparator.comparingInt(uuid -> this.world.random.nextInt()))
+                        .map(this.world::getPlayerByUuid)
+                        .orElse(null) :
+                playersWithMostLives
+                        .filter(player -> player != except.getUuid())
+                        .map(this.world::getPlayerByUuid)
+                        .min(Comparator.comparingDouble(player -> player.distanceTo(except)))
+                        .orElse(null);
+    }
+
+    @Override
     protected boolean canRespawn(ServerPlayerEntity player) {
         return this.playerMap.get(player.getUuid()).isAlive();
     }
@@ -185,7 +218,7 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
 
     @Override
     public boolean onChestOpened(ServerPlayerEntity player, BlockPos pos) {
-        super.map.getLootChest(pos).ifPresent(chest -> {
+        this.map.getLootChest(pos).ifPresent(chest -> {
             if (chest.open()) {
                 this.getDbTable(player).openChest(chest.getTier());
             }

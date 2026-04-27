@@ -25,6 +25,7 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.DyedColorComponent;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
@@ -463,6 +464,11 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         this.checkTraps();
 
         this.teamStatsMap.values().forEach(stats -> stats.tick(this.time, this.world));
+    }
+
+    @Override
+    public Entity getWinningPlayer(@Nullable Entity except) {
+        return null;
     }
 
     public void checkTraps() {

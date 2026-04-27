@@ -30,8 +30,9 @@ import java.util.function.UnaryOperator;
 public interface ModBlocks {
     static void initialise() {}
 
-    Block WHITER_CONCRETE = ModBlocks.register("whiter_concrete", Block::new, AbstractBlock.Settings.create().mapColor(DyeColor.WHITE).instrument(NoteBlockInstrument.BASS).sounds(BlockSoundGroup.WOOD).requiresTool().strength(2f, 3f).burnable(), true, ItemGroups.BLOCKS_KEY);
-    Block JARRAH_PLANKS = ModBlocks.register("jarrah_planks", Block::new, AbstractBlock.Settings.create().mapColor(MapColor.DIRT_BROWN).instrument(NoteBlockInstrument.BASEDRUM).requiresTool().strength(1.8f), true, ItemGroups.BLOCKS_KEY);
+    Block WHITER_CONCRETE = ModBlocks.register("whiter_concrete", Block::new, AbstractBlock.Settings.create().mapColor(DyeColor.WHITE).instrument(NoteBlockInstrument.BASS).sounds(BlockSoundGroup.STONE).requiresTool().strength(1.8f), true, ItemGroups.BLOCKS_KEY);
+    Block JONGLE_LOG = ModBlocks.register("jongle_log", PillarBlock::new, AbstractBlock.Settings.create().mapColor(MapColor.DIRT_BROWN).instrument(NoteBlockInstrument.BASEDRUM).sounds(BlockSoundGroup.WOOD).requiresTool().strength(2f, 3f).burnable(), true, ItemGroups.BLOCKS_KEY);
+    Block JONGLE_PLANKS = ModBlocks.register("jongle_planks", Block::new, AbstractBlock.Settings.create().mapColor(MapColor.DIRT_BROWN).instrument(NoteBlockInstrument.BASEDRUM).sounds(BlockSoundGroup.WOOD).requiresTool().strength(2f, 3f).burnable(), true, ItemGroups.BLOCKS_KEY);
     Block PLASTIC_BLOCK = ModBlocks.register("plastic_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(2f, 2), true, ItemGroups.BLOCKS_KEY);
     Block RUBBER_BLOCK = ModBlocks.register("rubber_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(4f, 3), true, ItemGroups.BLOCKS_KEY);
     Block PERSPEX_BLOCK = ModBlocks.register("perspex_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(3f, 1200f), true, ItemGroups.BLOCKS_KEY);
@@ -61,7 +62,7 @@ public interface ModBlocks {
 
     Block PROTECTED_AIR = ModBlocks.register("protected_air", Block::new, AbstractBlock.Settings.create().noCollision(), true, ItemGroups.MAP_MAKING_TOOLS_KEY);
 
-    Block MOSHPIT_MAP = ModBlocks.register("moshpit_map", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.WOOL).noCollision().nonOpaque(), true, ItemGroups.BLOCKS_KEY); //Maybe fix voxel shape
+    Block MOSHPIT_MAP = ModBlocks.register("moshpit_map", SurvivalIntangibleBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.WOOL).noCollision().nonOpaque(), true, ItemGroups.BLOCKS_KEY); //Maybe fix voxel shape
 
     Block NUCLEAR_BOMB = ModBlocks.register("nuclear_bomb", settings -> new BigTntBlock(settings, BigTntEntity.BigTntType.NUCLEAR), AbstractBlock.Settings.create().breakInstantly().sounds(BlockSoundGroup.GRASS), true, ItemGroups.BLOCKS_KEY);
     Block HYDROGEN_BOMB = ModBlocks.register("hydrogen_bomb", settings -> new BigTntBlock(settings, BigTntEntity.BigTntType.HYDROGEN), AbstractBlock.Settings.create().breakInstantly().sounds(BlockSoundGroup.GRASS), true, ItemGroups.BLOCKS_KEY);
@@ -71,7 +72,7 @@ public interface ModBlocks {
     Block MAP_BLOCK = ModBlocks.register("map_block", MapBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.IRON), true, ItemGroups.BLOCKS_KEY);
     Block JOIN_QUEUE_BLOCK = ModBlocks.register("join_queue_block", JoinQueueBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).hardness(1000000f).resistance(1000000f).nonOpaque().pistonBehavior(PistonBehavior.BLOCK), true, ItemGroups.BLOCKS_KEY);
 
-    Block PASSABLE_INVISIBLE_BLOCK = ModBlocks.register("passable_invisible_block", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.STONE).hardness(1000000f).resistance(1000000f).nonOpaque().noCollision().pistonBehavior(PistonBehavior.BLOCK), true, ItemGroups.BLOCKS_KEY);
+    Block PASSABLE_INVISIBLE_BLOCK = ModBlocks.register("passable_invisible_block", SurvivalIntangibleBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.STONE).hardness(1000000f).resistance(1000000f).nonOpaque().noCollision().pistonBehavior(PistonBehavior.BLOCK), true, ItemGroups.BLOCKS_KEY);
 
     /*
     public static final Block SOC_HEAD = ModBlocks.register(

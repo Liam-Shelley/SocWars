@@ -1,6 +1,7 @@
 package com.soc.items;
 
 import com.soc.effects.util.ModEffects;
+import com.soc.entities.BlueShellEntity;
 import com.soc.entities.RedShellEntity;
 import com.soc.items.util.ModItems;
 import com.soc.items.util.UseFunction;
@@ -86,6 +87,7 @@ public class UseFunctionWeapon extends Item {
         addItemToGroupsAndBaseItemGroup(ALPHA_BOW, ItemGroups.COMBAT);
         addItemToGroupsAndBaseItemGroup(SNIPER_RIFLE, ItemGroups.COMBAT);
         addItemToGroupsAndBaseItemGroup(RED_SHELL, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(BLUE_SHELL, ItemGroups.COMBAT);
     }
 
     public static final Item DASHREND = ModItems.register("dashrend", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
@@ -395,11 +397,23 @@ public class UseFunctionWeapon extends Item {
                 if (world.isClient) return null;
 
                 world.spawnEntity(new RedShellEntity(world, player.getPos(), player));
+                player.getStackInHand(hand).decrementUnlessCreative(1, player);
 
                 return ActionResult.SUCCESS;
             }), new Settings()
             .useCooldown(5f)
             .rarity(Rarity.RARE)
+    );
+    public static final Item BLUE_SHELL = ModItems.register("blue_shell", settings -> new UseFunctionWeapon(settings, (world, player, hand) -> {
+                if (world.isClient) return null;
+
+                world.spawnEntity(new BlueShellEntity(world, player.getPos(), player));
+                player.getStackInHand(hand).decrementUnlessCreative(1, player);
+
+                return ActionResult.SUCCESS;
+            }), new Settings()
+                    .useCooldown(5f)
+                    .rarity(Rarity.RARE)
     );
 
     @Override

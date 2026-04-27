@@ -2,9 +2,9 @@ package com.soc.blocks;
 
 import com.mojang.serialization.MapCodec;
 import com.soc.blocks.blockentities.DisplayBlockEntity;
+import com.soc.blocks.util.SurvivalIntangibleBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
-import net.minecraft.block.EntityShapeContext;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -14,9 +14,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.GameMode;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -54,11 +52,7 @@ public class DisplayBlock extends BlockWithEntity {
     }
 
     @Override
-    protected VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        if (context instanceof EntityShapeContext entityShapeContext && entityShapeContext.getEntity() instanceof PlayerEntity playerEntity && playerEntity.getGameMode() != GameMode.CREATIVE) {
-            return VoxelShapes.empty();
-        }
-
-        return VoxelShapes.fullCube();
+    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return SurvivalIntangibleBlock.getModifiedOutlineShape(state, world, pos, context);
     }
 }

@@ -97,6 +97,12 @@ public interface ModEntities {
             .maxTrackingRange(8)
             .eyeHeight(0.1f)
     );
+    EntityType<BlueShellEntity> BLUE_SHELL = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "blue_shell"), EntityType.Builder.<BlueShellEntity>create(BlueShellEntity::new, SpawnGroup.MISC)
+            .dropsNothing()
+            .dimensions(0.2f, 0.2f)
+            .maxTrackingRange(8)
+            .eyeHeight(0.1f)
+    );
     EntityType<PocketSandEntity> POCKET_SAND = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "pocket_sand"), EntityType.Builder.create(PocketSandEntity::new, SpawnGroup.MISC)
             .dropsNothing()
             .dimensions(0.3f, 0.3f)

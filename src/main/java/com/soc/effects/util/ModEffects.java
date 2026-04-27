@@ -19,6 +19,7 @@ public interface ModEffects {
     RegistryEntry<StatusEffect> ARTHRODESIS = Registry.registerReference(Registries.STATUS_EFFECT, Identifier.of(SocWars.MOD_ID, "arthrodesis"), new Arthrodesis());
     RegistryEntry<StatusEffect> PERPLEXITY = Registry.registerReference(Registries.STATUS_EFFECT, Identifier.of(SocWars.MOD_ID, "perplexity"), new Perplexity());
     RegistryEntry<StatusEffect> LIGHTWEIGHT = Registry.registerReference(Registries.STATUS_EFFECT, Identifier.of(SocWars.MOD_ID, "lightweight"), new Lightweight());
+    RegistryEntry<StatusEffect> LETHARGY = Registry.registerReference(Registries.STATUS_EFFECT, Identifier.of(SocWars.MOD_ID, "lethargy"), new Lethargy());
 
     RegistryEntry<Potion> ANTI_GRAVITY_BASE = registerPotion("anti_gravity", new Potion("anti_gravity", new StatusEffectInstance(ANTI_GRAVITY, 10 * 20, 0)));
     RegistryEntry<Potion> ANTI_GRAVITY_STRONG = registerPotion("anti_gravity_strong", new Potion("anti_gravity", new StatusEffectInstance(ANTI_GRAVITY, 8 * 20, 1)));

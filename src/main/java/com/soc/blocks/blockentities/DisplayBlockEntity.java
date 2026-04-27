@@ -36,14 +36,10 @@ public class DisplayBlockEntity extends BlockEntity {
         if (this.displayItem != null && !this.displayItem.isEmpty()) view.put("display_item", ItemStack.CODEC, this.displayItem);
         if (this.direction != null) view.put("direction", Direction.CODEC, this.direction);
         view.put("rotation", Codec.INT, this.rotation);
-
-        super.writeData(view);
     }
 
     @Override
     protected void readData(ReadView view) {
-        super.readData(view);
-
         this.displayItem = view.read("display_item", ItemStack.CODEC).orElse(ItemStack.EMPTY);
         this.direction = view.read("direction", Direction.CODEC).orElse(Direction.DOWN);
         this.rotation = view.read("rotation", Codec.INT).orElse(0);

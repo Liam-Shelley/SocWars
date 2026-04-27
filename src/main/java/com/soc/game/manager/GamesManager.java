@@ -126,8 +126,9 @@ public class GamesManager {
     }
 
     public Optional<AbstractGameManager<?, ?, ?>> getGame(Entity entity) {
+        if (entity == null) return Optional.empty();
         final Integer id = this.playerGameLookup.get(entity.getUuid());
-        return Optional.ofNullable(id).map(this.games::get);
+        return id == null ? Optional.empty() : Optional.of(this.games.get(id));
     }
 
     public Optional<AbstractGameManager<?, ?, ?>> getGame(int gameId) {

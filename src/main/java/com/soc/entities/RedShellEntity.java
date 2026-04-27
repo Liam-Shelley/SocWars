@@ -23,7 +23,7 @@ import java.util.function.Predicate;
 // this class is complete and utter garbage I wrote it in like an hour it barely functions and I really need to rewrite it from scratch at some point
 
 public class RedShellEntity extends Entity implements Ownable {
-    private Entity target;
+    protected Entity target;
     @Nullable private Direction direction = null;
     private boolean overshoot = false;
 
@@ -39,7 +39,7 @@ public class RedShellEntity extends Entity implements Ownable {
         this.setOwner(owner);
     }
 
-    private void setOwner(@Nullable Entity owner) {
+    protected void setOwner(@Nullable Entity owner) {
         this.owner = owner == null ? null : new LazyEntityReference<>(owner);
     }
 
@@ -65,7 +65,7 @@ public class RedShellEntity extends Entity implements Ownable {
     public void tick() {
         if (this.getWorld().isClient) return;
 
-        this.target = this.getWorld().getClosestPlayer(this.getX(), this.getY(), this.getZ(), 250d, entity -> !entity.isTeammate(this.getOwner()) && !entity.isSpectator());
+        this.findTarget();
         if (this.target == null) return;
 
         if (this.getWorld().getTime() % 8 == 0 && this.getWorld().random.nextFloat() < 0.75f) {
@@ -93,6 +93,10 @@ public class RedShellEntity extends Entity implements Ownable {
 
         this.tickBlockCollision();
         this.move(MovementType.SELF, this.getVelocity().multiply(maximumMovement));
+    }
+
+    protected void findTarget() {
+        this.target = this.getWorld().getClosestPlayer(this.getX(), this.getY(), this.getZ(), 250d, entity -> !entity.isTeammate(this.getOwner()) && !entity.isSpectator());
     }
 
     private void explode() {
