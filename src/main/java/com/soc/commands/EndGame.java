@@ -16,12 +16,12 @@ import net.minecraft.text.Text;
 import java.util.Optional;
 
 public interface EndGame {
-    String GAME_COMMAND_ID = "endgame";
+    String END_GAME_COMMAND_ID = "endgame";
     String GAME_ID_ARGUMENT = "game id";
     String GAME_IMMEDIATE_ARGUMENT = "immediate";
 
     static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment environment) {
-        dispatcher.register(CommandManager.literal(GAME_COMMAND_ID)
+        dispatcher.register(CommandManager.literal(END_GAME_COMMAND_ID)
             .requires(source -> source.hasPermissionLevel(1))
             .executes(EndGame::execute)
             .then(

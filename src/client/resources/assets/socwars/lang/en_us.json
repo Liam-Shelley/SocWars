@@ -524,5 +524,8 @@
   "upgrade.generator.tier.3": "§2Emerald",
   "upgrade.generator.tier.4": "§4Molten",
   "summoners_garb.spawn_chance": "+%s%% Chance to summon",
-  "game.disallow_dismount": "You may not press %s to Dismount"
+  "game.disallow_dismount": "You may not press %s to Dismount",
+  "message.collectibles": "Collectibles: %s / %s",
+  "message.collectibles.collected": "§2Collected",
+  "message.collectibles.not_collected": "§4Not Collected"
 }

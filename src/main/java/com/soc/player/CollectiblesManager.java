@@ -107,6 +107,10 @@ public class CollectiblesManager extends PersistentState {
         return this.collectibleLedger.stream().filter(entry -> entry != null && entry.isValid()).toList();
     }
 
+    public int getNumCollectibles() {
+        return this.collectibleLedger.size();
+    }
+
     private List<Integer> getLedger() {
         return this.removedBlockLedger;
     }

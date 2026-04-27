@@ -468,7 +468,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
     @Override
     public Entity getWinningPlayer(@Nullable Entity except) {
-        return null;
+        return null; //TODO: Do this
     }
 
     public void checkTraps() {
