@@ -271,7 +271,8 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
     @Override
     public boolean onPlayerDeath(ServerPlayerEntity player, DamageSource source, float amount) {
-        if (!this.teamStatsMap.get(this.getTeam(player)).getTrapManager().onPlayerDeath(player, this)) return false;
+        final DyeColor team = this.getTeam(player);
+        if (!this.teamStatsMap.get(team).getTrapManager().onPlayerDeath(player, this)) return false;
 
         final boolean canRespawn = this.canRespawn(player);
         this.broadcastDeath(player, source, !canRespawn);
@@ -285,6 +286,8 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         player.setStackInHand(Hand.OFF_HAND, ItemStack.EMPTY);
 
         playerStats.returnToolsToSlots(this.world);
+
+        if (!this.teamStatsMap.get(team).isAlive()) this.onTeamElimination(team);
 
         super.onPlayerDeath(player, source, amount);
 

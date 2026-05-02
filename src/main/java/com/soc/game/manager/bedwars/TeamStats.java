@@ -40,12 +40,6 @@ public class TeamStats {
         this.tickFunctions = new Object2IntOpenHashMap<>();
         this.spawnPositions = spawnPositions.stream().map(BlockPos::toCenterPos).toList();
         this.teamShopContents = BedwarsShopDataContainer.INSTANCE.getTeamBedwarsShop(shopSeed, team, world);
-
-        this.playerStatsMap.values().forEach(playerStats -> playerStats.setPlayerEliminationCallback(this::onPlayerElimination));
-    }
-
-    private void onPlayerElimination(UUID player) {
-        if (!this.isAlive()) ifNotNull(BedwarsGameManager.getBedwarsGameManager(player), manager -> manager.onTeamElimination(this.team)); //Maybe redo all of this properly at some point
     }
 
     public boolean hasBed() {
