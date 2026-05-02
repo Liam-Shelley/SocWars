@@ -13,7 +13,8 @@ import com.soc.game.manager.bedwars.traps.TrapManager;
 import com.soc.game.map.*;
 import com.soc.items.components.ModComponents;
 import com.soc.lib.Events;
-import com.soc.networking.helper.Teams;
+import com.soc.networking.helper.BedwarsTeam;
+import com.soc.networking.s2c.TeamEliminatedPayload;
 import com.soc.networking.s2c.bedwars.*;
 import com.soc.resourcedata.containers.BedwarsGeneratorDataContainer;
 import com.soc.resourcedata.deserialisation.IslandGeneratorUpgrade;
@@ -180,13 +181,13 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
 
     private Collection<DyeColor> getWinningTeams() {
         final List<Map.Entry<DyeColor, TeamStats>> entries = new ArrayList<>(this.teamStatsMap.entrySet()); //Want a nicely ordered list to ensure stable sorts
-        final List<Map.Entry<DyeColor, TeamStats>> sortedEntries = entries.stream().sorted(Comparator.comparingInt(entry -> entry.getValue().getPlayersAlive())).sorted(Comparator.comparingInt(entry -> entry.getValue().hasBed() ? 1 : 0)).toList();
+        final List<Map.Entry<DyeColor, TeamStats>> sortedEntries = entries.stream().sorted(Comparator.comparingInt(entry -> entry.getValue().getNumPlayersAlive())).sorted(Comparator.comparingInt(entry -> entry.getValue().hasBed() ? 1 : 0)).toList();
 
         final TeamStats finalEntry = sortedEntries.getLast().getValue();
         int i = sortedEntries.size() - 1;
         for (; i >= 0; i--) {
             final TeamStats entry = sortedEntries.get(i).getValue();
-            if ((finalEntry.hasBed() && !entry.hasBed()) || finalEntry.getPlayersAlive() > entry.getPlayersAlive()) break;
+            if ((finalEntry.hasBed() && !entry.hasBed()) || finalEntry.getNumPlayersAlive() > entry.getNumPlayersAlive()) break;
         }
 
         return sortedEntries.subList(i + 1, sortedEntries.size()).stream().map(Map.Entry::getKey).toList();
@@ -243,7 +244,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
             final IslandGeneratorUpgrade upgrade = bedwarsGeneratorDataContainer.getIslandGeneratorUpgrades().get(i);
             int finalI = i;
             queue.addEvent(upgrade.autoUpgradeTime(), manager -> this.teamStatsMap.forEach((team, stats) -> {
-                if (stats.getPlayersAlive() == 0) manager.buyGeneratorUpgrade(team, finalI);
+                if (stats.getNumPlayersAlive() == 0) manager.buyGeneratorUpgrade(team, finalI);
             }), Text.translatable("events.bedwars.island_generator.tier." + i));
         }
         queue.addEvent(30 * 60 * 20, manager -> manager.endGame(false), Text.translatable("events.game.end"));
@@ -259,7 +260,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
     @Override
     protected void sendJoinGamePayload(ServerPlayerEntity player) {
         super.sendJoinGamePayload(player);
-        ServerPlayNetworking.send(player, new JoinBedwarsPayload(this.getGameId(), new Teams(this.teams, this.teamStatsMap)));
+        ServerPlayNetworking.send(player, new JoinBedwarsPayload(this.getGameId(), this.teamStatsMap.values().stream().collect(Collectors.toMap(TeamStats::getTeam, BedwarsTeam::new))));
     }
 
     @Override
@@ -432,6 +433,11 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
     }
 
     @Nullable
+    public static BedwarsGameManager getBedwarsGameManager(UUID player) {
+        return GamesManager.getInstance().getGame(player).map(manager -> manager instanceof BedwarsGameManager bedwarsGameManager ? bedwarsGameManager : null).orElse(null);
+    }
+
+    @Nullable
     public static BedwarsGameManager getBedwarsGameManager(PlayerEntity player) {
         return GamesManager.getInstance().getGame(player).map(manager -> manager instanceof BedwarsGameManager bedwarsGameManager ? bedwarsGameManager : null).orElse(null);
     }
@@ -512,5 +518,10 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
     @Override
     public TrapManager getTrapManager(DyeColor team) {
         return this.teamStatsMap.get(team).getTrapManager();
+    }
+
+    public void onTeamElimination(DyeColor team) {
+        this.broadcastPacket(new TeamEliminatedPayload(team));
+        this.broadcast(Text.translatable("game.bedwars.eliminate.team", colouredTextFromColour(team)), false);
     }
 }

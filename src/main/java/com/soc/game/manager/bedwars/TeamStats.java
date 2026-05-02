@@ -2,6 +2,7 @@ package com.soc.game.manager.bedwars;
 
 import com.google.common.collect.Multimap;
 import com.soc.game.manager.AbstractGameManager;
+import com.soc.game.manager.BedwarsGameManager;
 import com.soc.game.manager.bedwars.tickfunctions.AbstractTickFunction;
 import com.soc.game.manager.bedwars.traps.AbstractAbility;
 import com.soc.game.manager.bedwars.traps.AbstractTrap;
@@ -20,6 +21,7 @@ import net.minecraft.world.World;
 import java.util.*;
 
 import static com.soc.game.manager.AbstractGameManager.mapUuidsToPlayers;
+import static com.soc.lib.SocWarsLib.ifNotNull;
 
 public class TeamStats {
     private final DyeColor team;
@@ -38,6 +40,12 @@ public class TeamStats {
         this.tickFunctions = new Object2IntOpenHashMap<>();
         this.spawnPositions = spawnPositions.stream().map(BlockPos::toCenterPos).toList();
         this.teamShopContents = BedwarsShopDataContainer.INSTANCE.getTeamBedwarsShop(shopSeed, team, world);
+
+        this.playerStatsMap.values().forEach(playerStats -> playerStats.setPlayerEliminationCallback(this::onPlayerElimination));
+    }
+
+    private void onPlayerElimination(UUID player) {
+        if (!this.isAlive()) ifNotNull(BedwarsGameManager.getBedwarsGameManager(player), manager -> manager.onTeamElimination(this.team)); //Maybe redo all of this properly at some point
     }
 
     public boolean hasBed() {
@@ -51,12 +59,16 @@ public class TeamStats {
         return true;
     }
 
-    public int getPlayersAlive() {
+    public Collection<PlayerStats> getPlayersStats() {
+        return this.playerStatsMap.values();
+    }
+
+    public int getNumPlayersAlive() {
         return (int)this.playerStatsMap.values().stream().filter(PlayerStats::isAlive).count();
     }
 
     public boolean isAlive() {
-        return this.getPlayersAlive() > 0;
+        return this.getNumPlayersAlive() > 0;
     }
 
     public DyeColor getTeam() {

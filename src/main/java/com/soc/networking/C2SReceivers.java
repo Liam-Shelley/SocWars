@@ -12,7 +12,7 @@ import net.minecraft.util.math.BlockPos;
 public class C2SReceivers {
     public static void initialise() {
         ServerPlayNetworking.registerGlobalReceiver(MapBlockUpdatePayload.ID, (payload, context) -> {
-            BlockEntity blockEntity = payload.getBlockEntity(context);
+            final BlockEntity blockEntity = payload.getBlockEntity(context);
 
             if (blockEntity instanceof MapBlockEntity mapBlockEntity) {
                 mapBlockEntity.setRegionSize(BlockPos.fromLong(payload.regionSize()).mutableCopy());
@@ -25,7 +25,7 @@ public class C2SReceivers {
             }
         });
         ServerPlayNetworking.registerGlobalReceiver(MapBlockStructureCheckPayload.ID, (payload, context) -> {
-            BlockEntity blockEntity = payload.getBlockEntity(context);
+            final BlockEntity blockEntity = payload.getBlockEntity(context);
 
             if (blockEntity instanceof MapBlockEntity mapBlockEntity) {
                 mapBlockEntity.checkStructure();
@@ -34,7 +34,7 @@ public class C2SReceivers {
             }
         });
         ServerPlayNetworking.registerGlobalReceiver(MapBlockSaveMapPayload.ID, (payload, context) -> {
-            BlockEntity blockEntity = payload.getBlockEntity(context);
+            final BlockEntity blockEntity = payload.getBlockEntity(context);
 
             if (blockEntity instanceof MapBlockEntity mapBlockEntity) {
                 mapBlockEntity.saveMap(context.player());

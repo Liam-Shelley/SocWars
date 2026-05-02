@@ -15,6 +15,7 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.world.World;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -26,6 +27,8 @@ public class PlayerStats {
     private final BedwarsShopContents shopContents;
     private boolean isAlive = true;
 
+    private Consumer<UUID> playerEliminationCallback;
+
     private final Int2IntMap toolSlotMap = new Int2IntOpenHashMap();
 
     public PlayerStats(ServerPlayerEntity player, DyeColor team, long shopSeed) {
@@ -36,6 +39,7 @@ public class PlayerStats {
     public void onDeath(boolean canRespawn, World world) {
         if (!canRespawn) {
             this.isAlive = false;
+            this.playerEliminationCallback.accept(this.player);
         }
 
         this.shopContents.downgradeItems();
@@ -97,5 +101,9 @@ public class PlayerStats {
                 }
             });
         }
+    }
+
+    public void setPlayerEliminationCallback(Consumer<UUID> playerEliminationCallback) {
+        this.playerEliminationCallback = playerEliminationCallback;
     }
 }

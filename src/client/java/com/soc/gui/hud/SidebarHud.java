@@ -16,6 +16,9 @@ import java.util.List;
 import java.util.Objects;
 
 public class SidebarHud {
+
+    public static final int BACKGROUND_COLOUR = 0x38000000;
+
     public static void initialise() {
         HudElementRegistry.addFirst(Identifier.of(SocWars.MOD_ID, "sidebar_hud"), SidebarHud::render);
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> ELEMENTS.forEach(Reference::annul));
@@ -40,7 +43,7 @@ public class SidebarHud {
         final int elementsHeigtht = activeElements.stream().mapToInt(VerticallyStackedHudComponent::getSize).sum();
 
         final int topY = (height - elementsHeigtht) >> 1;
-        drawContext.fill(width - 128, topY, width, topY + elementsHeigtht, 0x38000000);
+        drawContext.fill(width - 128, topY, width, topY + elementsHeigtht, BACKGROUND_COLOUR);
 
         int y = topY; //Mutable copy because I don't have myself enough to debug it when I inevitably screw something up
         for (VerticallyStackedHudComponent component : activeElements) {

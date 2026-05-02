@@ -125,10 +125,14 @@ public class GamesManager {
         this.games.set(gameId, null);
     }
 
+    public Optional<AbstractGameManager<?, ?, ?>> getGame(UUID uuid) {
+        final Integer id = this.playerGameLookup.get(uuid);
+        return id == null ? Optional.empty() : Optional.of(this.games.get(id));
+    }
+
     public Optional<AbstractGameManager<?, ?, ?>> getGame(Entity entity) {
         if (entity == null) return Optional.empty();
-        final Integer id = this.playerGameLookup.get(entity.getUuid());
-        return id == null ? Optional.empty() : Optional.of(this.games.get(id));
+        return this.getGame(entity.getUuid());
     }
 
     public Optional<AbstractGameManager<?, ?, ?>> getGame(int gameId) {

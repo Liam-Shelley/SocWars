@@ -16,6 +16,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LightningEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
@@ -24,6 +26,7 @@ import net.minecraft.item.ItemUsageContext;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.*;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.scoreboard.AbstractTeam;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.Team;
@@ -52,6 +55,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.soc.lib.SocWarsLib.*;
 
@@ -362,10 +366,12 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     protected void broadcastDeath(ServerPlayerEntity player, DamageSource source, boolean isFinal) {
         final MutableText message = (source.getAttacker() != null ?
                 Text.translatable("game.player.kill", player.getDisplayName(), source.getAttacker().getDisplayName()) :
-                switch (source.getType()) {
-                    default -> player.getDamageTracker().getDeathMessage().copy();
+
+                switch (player.getWorld().getRegistryManager().getOrThrow(RegistryKeys.DAMAGE_TYPE).getKey(source.getType()).orElse(null)) {
+                    //case DamageTypes.OUT_OF_WORLD -> null;
+                    case null, default -> player.getDamageTracker().getDeathMessage().copy();
                 }
-        );
+        ); //TODO: Actually write this to allow for more than just the one lame type of death message
 
 
         final MutableText text = source.getAttacker() == null ?
@@ -373,7 +379,14 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
                 Text.translatable("game.player.kill", player.getDisplayName(), source.getAttacker().getDisplayName()
         );
 
-        if (isFinal) text.append(Text.translatable("game.death.final"));
+        if (isFinal) {
+            text.append(Text.translatable("game.death.final"));
+
+            final LightningEntity lightning = new LightningEntity(EntityType.LIGHTNING_BOLT, this.world);
+            lightning.setPosition(player.getPos());
+            lightning.setCosmetic(true);
+            this.world.spawnEntity(lightning);
+        }
 
         this.broadcast(text, false);
     }
@@ -398,6 +411,14 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
 
     protected void broadcastSound(DyeColor team, SoundEvent sound) {
         this.getPlayers(team).forEach(player -> player.playSoundToPlayer(sound, SoundCategory.PLAYERS, 1f, 1f));
+    }
+
+    protected void broadcastPacket(CustomPayload packet) {
+        this.getPlayers().forEach(player -> ServerPlayNetworking.send(player, packet));
+    }
+
+    protected void broadcastPacket(DyeColor team, CustomPayload packet) {
+        this.getPlayers(team).forEach(player -> ServerPlayNetworking.send(player, packet));
     }
 
     protected void setGameMode(GameMode gameMode) {
