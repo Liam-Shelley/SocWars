@@ -34,6 +34,8 @@ public class SkywarsTeamsHud implements VerticallyStackedHudComponent { //Maybe 
     private static final Identifier FULL_HEART_NORMAL = Identifier.ofVanilla("hud/heart/full");
     private static final Identifier FULL_HEART_HARDCORE = Identifier.ofVanilla("hud/heart/hardcore_full");
 
+    private static boolean stretchLastBlock = false;
+
     private final Map<DyeColor, SkywarsTeam> teams;
     private final Map<UUID, Identifier> skinTextures = new HashMap<>();
 
@@ -70,16 +72,18 @@ public class SkywarsTeamsHud implements VerticallyStackedHudComponent { //Maybe 
 
         int i = 0;
         for (DyeColor team : this.teams.entrySet().stream().sorted(Comparator.comparingInt(entry -> -entry.getValue().getLives())).map(Map.Entry::getKey).toList()) {
+            final boolean isOddAndLast = i % 2 == 0 && i == this.teams.size() - 1 && stretchLastBlock; //Yes I know the mod == 0 looks odd but I swear it makes sense
+
             final int xOrigin = x + halfSidebarWidth * (i % 2);
             final int yOrigin = y + 40 * (i++ >> 1);
 
             int teamColour = (team.getSignColor() & 0x00ffffff | 0x99000000);
             if (!this.teams.get(team).isAlive()) teamColour = lerp(0.6f, teamColour, BACKGROUND_COLOUR);
 
-            context.fill(xOrigin, yOrigin, xOrigin + halfSidebarWidth, yOrigin + 40, teamColour);
+            context.fill(xOrigin, yOrigin, xOrigin + (isOddAndLast ? SIDEBAR_WIDTH : halfSidebarWidth), yOrigin + 40, teamColour);
 
-            this.drawTeamText(context, team, textRenderer, xOrigin + halfSidebarWidth, yOrigin);
-            this.drawTeamHeads(context, team, xOrigin + halfSidebarWidth, yOrigin);
+            this.drawTeamText(context, team, textRenderer, xOrigin + (isOddAndLast ? halfSidebarWidth * 3 / 2 : halfSidebarWidth), yOrigin);
+            this.drawTeamHeads(context, team, xOrigin + (isOddAndLast ? halfSidebarWidth * 3 / 2 : halfSidebarWidth), yOrigin);
         }
     }
 
