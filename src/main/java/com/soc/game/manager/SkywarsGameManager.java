@@ -6,6 +6,9 @@ import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.SkywarsGameMap;
 import com.soc.game.map.SpreadRules;
 import com.soc.lib.Events;
+import com.soc.networking.helper.SkywarsTeam;
+import com.soc.networking.s2c.skywars.JoinSkywarsPayload;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
@@ -139,6 +142,12 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
     @Override
     protected Function<UUID, SkywarsTable> dbTableBuilder() {
         return SkywarsTable::new;
+    }
+
+    @Override
+    protected void sendJoinGamePayload(ServerPlayerEntity player) {
+        super.sendJoinGamePayload(player);
+        ServerPlayNetworking.send(player, new JoinSkywarsPayload(this.getGameId(), this.playerMap.entrySet().stream().collect(Collectors.toMap(entry -> this.getTeam(entry.getKey()), entry -> new SkywarsTeam(entry.getKey(), entry.getValue().lives)))));
     }
 
     @Override

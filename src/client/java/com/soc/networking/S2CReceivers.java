@@ -3,12 +3,14 @@ package com.soc.networking;
 import com.soc.gui.hud.BedwarsTeamsHud;
 import com.soc.gui.hud.BlockProtectionManagerAndHud;
 import com.soc.gui.hud.EventsHud;
+import com.soc.gui.hud.SkywarsTeamsHud;
 import com.soc.lib.Coroutine;
 import com.soc.lib.Coroutines;
 import com.soc.lib.Events;
 import com.soc.mixin.client.GetOptionsVolumes;
 import com.soc.networking.s2c.*;
 import com.soc.networking.s2c.bedwars.*;
+import com.soc.networking.s2c.skywars.JoinSkywarsPayload;
 import com.soc.player.PlayerData;
 import com.soc.screenhandler.BedwarsIndividualShopScreenHandler;
 import com.soc.screenhandler.BedwarsTeamShopScreenHandler;
@@ -36,47 +38,17 @@ import static com.soc.lib.SocWarsLib.randomCentredVec3d;
 
 public class S2CReceivers {
     public static void initialise() {
+        player();
+        genericGame();
+        traps();
+        bedwars();
+        skywars();
+
         ClientPlayNetworking.registerGlobalReceiver(JoinQueuePayload.ID, (payload, context) -> {
                 context.player().sendMessage(Text.translatable("queue.join", payload.queue()), false);
-
-                //Some horrific stuff I was testing
-                //final Object2IntMap<BlockState> blockStateMap = ((GetLoadedModelGroups)MinecraftClient.getInstance().getBakedModelManager()).getModelGroups();
-                //final int greyWoolState = blockStateMap.getInt(Blocks.GRAY_BANNER.getDefaultState());
-                //blockStateMap.put(Blocks.RED_BANNER.getDefaultState(), greyWoolState);
         });
         ClientPlayNetworking.registerGlobalReceiver(LeaveQueuePayload.ID, (payload, context) -> {
                 context.player().sendMessage(Text.translatable("queue.leave", payload.queue()), false);
-        });
-        ClientPlayNetworking.registerGlobalReceiver(PlayerDataPayload.ID, (payload, context) -> {
-                if (context.player() == MinecraftClient.getInstance().player) PlayerData.CLIENT_INSTANCE = payload.playerData();
-        });
-        ClientPlayNetworking.registerGlobalReceiver(AddVelocityPayload.ID, (payload, context) -> {
-                context.player().addVelocity(payload.velocity());
-        });
-        ClientPlayNetworking.registerGlobalReceiver(JoinBedwarsPayload.ID, (payload, context) -> {
-            BedwarsTeamsHud.joinGame(payload.teams());
-        });
-        ClientPlayNetworking.registerGlobalReceiver(LeaveBedwarsPayload.ID, (payload, context) -> {
-            BedwarsTeamsHud.leaveGame();
-        });
-        ClientPlayNetworking.registerGlobalReceiver(BedBreakPayload.ID, (payload, context) -> {
-            BedwarsTeamsHud.breakBed(payload.team());
-        });
-        ClientPlayNetworking.registerGlobalReceiver(TeamEliminatedPayload.ID, (payload, context) -> {
-            BedwarsTeamsHud.eliminateTeam(payload.team());
-        });
-        ClientPlayNetworking.registerGlobalReceiver(BedwarsIndividualShopDataPayload.ID, (payload, context) -> {
-            final ScreenHandler screenHandler = context.player().currentScreenHandler;
-            if (screenHandler.syncId == payload.syncId() && screenHandler instanceof BedwarsIndividualShopScreenHandler shopScreenHandler) {
-                shopScreenHandler.setShopContents(payload.shopContents());
-            }
-        });
-        ClientPlayNetworking.registerGlobalReceiver(BedwarsTeamShopDataPayload.ID, (payload, context) -> {
-            final ScreenHandler screenHandler = context.player().currentScreenHandler;
-            if (screenHandler.syncId == payload.syncId() && screenHandler instanceof BedwarsTeamShopScreenHandler shopScreenHandler) {
-                shopScreenHandler.setShopContents(payload.shopContents());
-                shopScreenHandler.setTrapProgress(payload.trapProgressStats());
-            }
         });
         ClientPlayNetworking.registerGlobalReceiver(UpdateHotbarPayload.ID, (payload, context) -> {
             final PlayerEntity player = context.player();
@@ -85,16 +57,6 @@ public class S2CReceivers {
 
             for (int i = 0; i < payload.contents().size(); i++) {
                 screenHandler.setStackInSlot(i + 36, payload.revision(), contents.get(i));
-            }
-        });
-        ClientPlayNetworking.registerGlobalReceiver(UseTrapOrAbilityPayload.ID, (payload, context) -> {
-            final ScreenHandler screenHandler = context.player().currentScreenHandler;
-            if (screenHandler instanceof BedwarsTeamShopScreenHandler shopScreenHandler) {
-                if (payload.isAbility()) {
-                    shopScreenHandler.useAbility(payload.nextTime(), payload.duration());
-                } else {
-                    shopScreenHandler.useTrap(payload.nextTime(), payload.duration());
-                }
             }
         });
         ClientPlayNetworking.registerGlobalReceiver(SmokescreenPayload.ID, (payload, context) -> {
@@ -128,9 +90,34 @@ public class S2CReceivers {
             final Vec3d velocity = payload.velocity();
             payload.positions().forEach(pos -> world.addParticleClient(payload.particleType(), pos.x, pos.y, pos.z, velocity.x, velocity.y, velocity.z));
         }));
-        ClientPlayNetworking.registerGlobalReceiver(BlockProtectionPayload.ID, ((payload, context) -> {
-            BlockProtectionManagerAndHud.INSTANCE.setBlockProtection(payload);
+    }
+
+    private static void player() {
+        ClientPlayNetworking.registerGlobalReceiver(AddVelocityPayload.ID, (payload, context) -> {
+            context.player().addVelocity(payload.velocity());
+        });
+        ClientPlayNetworking.registerGlobalReceiver(SetAnglesPayload.ID, ((payload, context) -> {
+            final PlayerEntity player = MinecraftClient.getInstance().player;
+            if (player != null && player.getId() == payload.entityId()) {
+                player.setAngles(payload.yaw(), payload.pitch());
+            }
         }));
+        ClientPlayNetworking.registerGlobalReceiver(PlayerDataPayload.ID, (payload, context) -> {
+            if (context.player() == MinecraftClient.getInstance().player) PlayerData.CLIENT_INSTANCE = payload.playerData();
+        });
+    }
+
+    private static void traps() {
+        ClientPlayNetworking.registerGlobalReceiver(UseTrapOrAbilityPayload.ID, (payload, context) -> {
+            final ScreenHandler screenHandler = context.player().currentScreenHandler;
+            if (screenHandler instanceof BedwarsTeamShopScreenHandler shopScreenHandler) {
+                if (payload.isAbility()) {
+                    shopScreenHandler.useAbility(payload.nextTime(), payload.duration());
+                } else {
+                    shopScreenHandler.useTrap(payload.nextTime(), payload.duration());
+                }
+            }
+        });
         ClientPlayNetworking.registerGlobalReceiver(JumpscarePayload.ID, ((payload, context) -> {
              context.player().sendMessage(Text.of("Boo!"), false);
 
@@ -146,18 +133,55 @@ public class S2CReceivers {
                 if (masterVolume.getValue() < 10e-5d) masterVolume.setValue(startingVolume);
             }, payload.time());
         }));
+    }
+
+    private static void genericGame() {
+        ClientPlayNetworking.registerGlobalReceiver(TeamEliminatedPayload.ID, (payload, context) -> {
+            switch (payload.gameType()) {
+                case BEDWARS -> BedwarsTeamsHud.eliminateTeam(payload.team());
+                case SKYWARS -> SkywarsTeamsHud.eliminateTeam(payload.team());
+            }
+        });
         ClientPlayNetworking.registerGlobalReceiver(LeaveGamePayload.ID, ((payload, context) -> {
             BlockProtectionManagerAndHud.INSTANCE.clearBlockProtection();
             EventsHud.clear();
         }));
-        ClientPlayNetworking.registerGlobalReceiver(SetAnglesPayload.ID, ((payload, context) -> {
-            final PlayerEntity player = MinecraftClient.getInstance().player;
-            if (player != null && player.getId() == payload.entityId()) {
-                player.setAngles(payload.yaw(), payload.pitch());
-            }
-        }));
         ClientPlayNetworking.registerGlobalReceiver(EventQueuePayload.ID, ((payload, context) -> {
             EventsHud.receivePayload(payload);
         }));
+        ClientPlayNetworking.registerGlobalReceiver(BlockProtectionPayload.ID, ((payload, context) -> {
+            BlockProtectionManagerAndHud.INSTANCE.setBlockProtection(payload);
+        }));
+    }
+
+    private static void bedwars() {
+        ClientPlayNetworking.registerGlobalReceiver(BedwarsIndividualShopDataPayload.ID, (payload, context) -> {
+            final ScreenHandler screenHandler = context.player().currentScreenHandler;
+            if (screenHandler.syncId == payload.syncId() && screenHandler instanceof BedwarsIndividualShopScreenHandler shopScreenHandler) {
+                shopScreenHandler.setShopContents(payload.shopContents());
+            }
+        });
+        ClientPlayNetworking.registerGlobalReceiver(BedwarsTeamShopDataPayload.ID, (payload, context) -> {
+            final ScreenHandler screenHandler = context.player().currentScreenHandler;
+            if (screenHandler.syncId == payload.syncId() && screenHandler instanceof BedwarsTeamShopScreenHandler shopScreenHandler) {
+                shopScreenHandler.setShopContents(payload.shopContents());
+                shopScreenHandler.setTrapProgress(payload.trapProgressStats());
+            }
+        });
+        ClientPlayNetworking.registerGlobalReceiver(JoinBedwarsPayload.ID, (payload, context) -> {
+            BedwarsTeamsHud.joinGame(payload.teams());
+        });
+        ClientPlayNetworking.registerGlobalReceiver(LeaveBedwarsPayload.ID, (payload, context) -> {
+            BedwarsTeamsHud.leaveGame();
+        });
+        ClientPlayNetworking.registerGlobalReceiver(BedBreakPayload.ID, (payload, context) -> {
+            BedwarsTeamsHud.breakBed(payload.team());
+        });
+    }
+
+    private static void skywars() {
+        ClientPlayNetworking.registerGlobalReceiver(JoinSkywarsPayload.ID, (payload, context) -> {
+            SkywarsTeamsHud.joinGame(payload.teams());
+        });
     }
 }

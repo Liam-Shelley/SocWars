@@ -11,13 +11,13 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Language;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.soc.gui.hud.SidebarHud.BACKGROUND_COLOUR;
+import static com.soc.gui.hud.SidebarHud.SIDEBAR_WIDTH;
 import static net.minecraft.util.math.ColorHelper.lerp;
 
 public class BedwarsTeamsHud implements VerticallyStackedHudComponent {
@@ -43,8 +43,8 @@ public class BedwarsTeamsHud implements VerticallyStackedHudComponent {
         }));
     }
 
-    public static void joinGame(Map<DyeColor, BedwarsTeam> bedwarsTeam) {
-        INSTANCE.set(new BedwarsTeamsHud(bedwarsTeam));
+    public static void joinGame(Map<DyeColor, BedwarsTeam> teams) {
+        INSTANCE.set(new BedwarsTeamsHud(teams));
     }
 
     public static void leaveGame() {
@@ -63,42 +63,42 @@ public class BedwarsTeamsHud implements VerticallyStackedHudComponent {
     public void render(DrawContext drawContext, RenderTickCounter renderTickCounter, TextRenderer textRenderer, int x, int y) {
         int i = 0;
         for (DyeColor team : this.teams.keySet()) {
-            final int heightStart = y + 40 * i++;
+            final int yOrigin = y + 40 * i++;
 
             int teamColour = (team.getSignColor() & 0x00ffffff | 0x99000000);
             if (!this.teams.get(team).isAlive()) teamColour = lerp(0.6f, teamColour, BACKGROUND_COLOUR);
 
-            drawContext.fill(x, heightStart, x + 128, heightStart + 40, teamColour);
+            drawContext.fill(x, yOrigin, x + SIDEBAR_WIDTH, yOrigin + 40, teamColour);
 
-            this.drawTeamText(drawContext, team, textRenderer, x + 128, heightStart);
-            this.drawTeamHeads(drawContext, team, x + 128, heightStart);
+            this.drawTeamText(drawContext, team, textRenderer, x + SIDEBAR_WIDTH, yOrigin);
+            this.drawTeamHeads(drawContext, team, x + SIDEBAR_WIDTH, yOrigin);
         }
     }
 
-    private void drawTeamText(DrawContext drawContext, DyeColor team, TextRenderer textRenderer, int width, int heightStart) {
+    private void drawTeamText(DrawContext drawContext, DyeColor team, TextRenderer textRenderer, int x, int y) {
         final boolean hasBed = this.teams.get(team).hasBed();
 
         final Text teamBaseString = Text.translatable("hud.bedwars.team", Text.translatable("color.minecraft." + team.asString()));
-        drawContext.drawText(textRenderer, teamBaseString, width - 120, heightStart + 4, 0xffffffff, true);
+        drawContext.drawText(textRenderer, teamBaseString, x - 120, y + 4, 0xffffffff, true);
 
         final Text hasBedBaseString = Text.translatable("hud.bedwars.has_bed");
-        drawContext.drawText(textRenderer, hasBedBaseString, width - 120 + textRenderer.getWidth(teamBaseString), heightStart + 4, 0xffffffff, true);
+        drawContext.drawText(textRenderer, hasBedBaseString, x - 120 + textRenderer.getWidth(teamBaseString), y + 4, 0xffffffff, true);
 
-        drawContext.drawText(textRenderer, Text.translatable(hasBed ? "hud.tick" : "hud.cross"), width - 120 + textRenderer.getWidth(hasBedBaseString) + textRenderer.getWidth(teamBaseString), heightStart + 4, hasBed ? 0xff11ee22 : 0xffee1122, true);
+        drawContext.drawText(textRenderer, Text.translatable(hasBed ? "hud.tick" : "hud.cross"), x - 120 + textRenderer.getWidth(hasBedBaseString) + textRenderer.getWidth(teamBaseString), y + 4, hasBed ? 0xff11ee22 : 0xffee1122, true);
     }
 
-    private void drawTeamHeads(DrawContext drawContext, DyeColor team, int width, int heightStart) {
+    private void drawTeamHeads(DrawContext drawContext, DyeColor team, int x, int y) {
         final AtomicInteger i = new AtomicInteger();
 
         this.teams.get(team).players().stream().map(PerPlayerBedwarsInfo::player).forEach(player -> {
-            final int x = width - 120 + i.getAndIncrement() * 24;
-            final int y = heightStart + 16;
+            final int headX = x - 120 + i.getAndIncrement() * 24;
+            final int headY = y + 16;
             final Identifier skinTexture = this.skinTextures.get(player);
 
             if (skinTexture == null) {
-                drawContext.fill(x, y, x + 20, y + 20, 0xffff0000);
+                drawContext.fill(headX, headY, headX + 20, headY + 20, 0xffff0000);
             } else {
-                PlayerSkinDrawer.draw(drawContext, skinTexture, x, y, 20, true, false, 0xffffffff);
+                PlayerSkinDrawer.draw(drawContext, skinTexture, headX, headY, 20, true, false, 0xffffffff);
             }
         });
     }

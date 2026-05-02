@@ -14,6 +14,7 @@ import com.soc.game.map.*;
 import com.soc.items.components.ModComponents;
 import com.soc.lib.Events;
 import com.soc.networking.helper.BedwarsTeam;
+import com.soc.networking.s2c.bedwars.LeaveBedwarsPayload;
 import com.soc.networking.s2c.TeamEliminatedPayload;
 import com.soc.networking.s2c.bedwars.*;
 import com.soc.resourcedata.containers.BedwarsGeneratorDataContainer;
@@ -524,7 +525,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
     }
 
     public void onTeamElimination(DyeColor team) {
-        this.broadcastPacket(new TeamEliminatedPayload(team));
+        this.broadcastPacket(new TeamEliminatedPayload(team, GameType.BEDWARS));
         this.broadcast(Text.translatable("game.bedwars.eliminate.team", colouredTextFromColour(team)), false);
     }
 }

@@ -2,6 +2,7 @@ package com.soc.networking;
 
 import com.soc.networking.s2c.*;
 import com.soc.networking.s2c.bedwars.*;
+import com.soc.networking.s2c.skywars.JoinSkywarsPayload;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 
 public class S2CPayloads {
@@ -26,5 +27,6 @@ public class S2CPayloads {
         PayloadTypeRegistry.playS2C().register(LeaveGamePayload.ID, LeaveGamePayload.CODEC);
         PayloadTypeRegistry.playS2C().register(SetAnglesPayload.ID, SetAnglesPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(TeamEliminatedPayload.ID, TeamEliminatedPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(JoinSkywarsPayload.ID, JoinSkywarsPayload.CODEC);
     }
 }
