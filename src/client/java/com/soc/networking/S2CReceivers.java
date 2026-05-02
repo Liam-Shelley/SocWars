@@ -11,6 +11,8 @@ import com.soc.mixin.client.GetOptionsVolumes;
 import com.soc.networking.s2c.*;
 import com.soc.networking.s2c.bedwars.*;
 import com.soc.networking.s2c.skywars.JoinSkywarsPayload;
+import com.soc.networking.s2c.skywars.LeaveSkywarsPayload;
+import com.soc.networking.s2c.skywars.SetTeamLivesPayload;
 import com.soc.player.PlayerData;
 import com.soc.screenhandler.BedwarsIndividualShopScreenHandler;
 import com.soc.screenhandler.BedwarsTeamShopScreenHandler;
@@ -182,6 +184,12 @@ public class S2CReceivers {
     private static void skywars() {
         ClientPlayNetworking.registerGlobalReceiver(JoinSkywarsPayload.ID, (payload, context) -> {
             SkywarsTeamsHud.joinGame(payload.teams());
+        });
+        ClientPlayNetworking.registerGlobalReceiver(LeaveSkywarsPayload.ID, (payload, context) -> {
+            SkywarsTeamsHud.leaveGame();
+        });
+        ClientPlayNetworking.registerGlobalReceiver(SetTeamLivesPayload.ID, (payload, context) -> {
+            SkywarsTeamsHud.setTeamLives(payload);
         });
     }
 }

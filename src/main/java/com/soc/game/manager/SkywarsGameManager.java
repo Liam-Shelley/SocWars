@@ -8,6 +8,8 @@ import com.soc.game.map.SpreadRules;
 import com.soc.lib.Events;
 import com.soc.networking.helper.SkywarsTeam;
 import com.soc.networking.s2c.skywars.JoinSkywarsPayload;
+import com.soc.networking.s2c.skywars.LeaveSkywarsPayload;
+import com.soc.networking.s2c.skywars.SetTeamLivesPayload;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
@@ -53,8 +55,8 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
             this.lives = SkywarsGameManager.this.settings.lives;
         }
 
-        private boolean kill() {
-            return --this.lives > 0;
+        private int kill() {
+            return --this.lives;
         }
 
         private boolean isAlive() {
@@ -151,10 +153,16 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
     }
 
     @Override
+    protected void sendLeaveGamePayload(ServerPlayerEntity player) {
+        super.sendLeaveGamePayload(player);
+        ServerPlayNetworking.send(player, new LeaveSkywarsPayload());
+    }
+
+    @Override
     public boolean onPlayerDeath(ServerPlayerEntity player, DamageSource source, float amount) {
         super.onPlayerDeath(player, source, amount);
 
-        this.playerMap.get(player.getUuid()).kill();
+        final int livesRemaining = this.playerMap.get(player.getUuid()).kill();
 
         final boolean canRespawn = this.canRespawn(player);
         this.broadcastDeath(player, source, !canRespawn);
@@ -163,6 +171,8 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
             this.endGame(false);
             return false;
         }
+
+        this.broadcastPacket(new SetTeamLivesPayload(this.getTeam(player), livesRemaining));
 
         if (canRespawn) {
             PrescheduledEvents.playCountdown(() -> this.respawnPlayer(player), this, 3, 20, SoundEvents.BLOCK_NOTE_BLOCK_GUITAR.value(), true, player);

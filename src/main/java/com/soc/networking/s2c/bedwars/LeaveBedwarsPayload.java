@@ -7,8 +7,8 @@ import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
 public record LeaveBedwarsPayload() implements CustomPayload {
-    public static final Identifier END_GAME_PAYLOAD_ID = Identifier.of(SocWars.MOD_ID, "leave_bedwars");
-    public static final Id<LeaveBedwarsPayload> ID = new Id<>(END_GAME_PAYLOAD_ID);
+    public static final Identifier LEAVE_SKYWARS_PAYLOAD_ID = Identifier.of(SocWars.MOD_ID, "leave_bedwars");
+    public static final Id<LeaveBedwarsPayload> ID = new Id<>(LEAVE_SKYWARS_PAYLOAD_ID);
     public static final PacketCodec<RegistryByteBuf, LeaveBedwarsPayload> CODEC = PacketCodec.unit(new LeaveBedwarsPayload());
 
     @Override

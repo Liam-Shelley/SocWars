@@ -1,8 +1,10 @@
 package com.soc.gui.hud;
 
 import com.soc.networking.helper.SkywarsTeam;
+import com.soc.networking.s2c.skywars.SetTeamLivesPayload;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.PlayerSkinDrawer;
 import net.minecraft.client.render.RenderTickCounter;
@@ -28,6 +30,9 @@ public class SkywarsTeamsHud implements VerticallyStackedHudComponent { //Maybe 
     }
 
     private static final @NotNull Reference<SkywarsTeamsHud> INSTANCE = new Reference<>(null);
+
+    private static final Identifier FULL_HEART_NORMAL = Identifier.ofVanilla("hud/heart/full");
+    private static final Identifier FULL_HEART_HARDCORE = Identifier.ofVanilla("hud/heart/hardcore_full");
 
     private final Map<DyeColor, SkywarsTeam> teams;
     private final Map<UUID, Identifier> skinTextures = new HashMap<>();
@@ -55,39 +60,47 @@ public class SkywarsTeamsHud implements VerticallyStackedHudComponent { //Maybe 
         INSTANCE.ifPresent(instance -> instance.teams.get(team).eliminate());
     }
 
+    public static void setTeamLives(SetTeamLivesPayload payload) {
+        INSTANCE.ifPresent(instance -> instance.teams.get(payload.team()).setLives(payload.lives()));
+    }
+
     @Override
-    public void render(DrawContext drawContext, RenderTickCounter renderTickCounter, TextRenderer textRenderer, int x, int y) {
+    public void render(DrawContext context, RenderTickCounter renderTickCounter, TextRenderer textRenderer, int x, int y) {
         final int halfSidebarWidth = SIDEBAR_WIDTH >> 1;
 
         int i = 0;
-        for (DyeColor team : this.teams.entrySet().stream().sorted(Comparator.comparingInt(entry -> entry.getValue().getLives())).map(Map.Entry::getKey).toList()) {
+        for (DyeColor team : this.teams.entrySet().stream().sorted(Comparator.comparingInt(entry -> -entry.getValue().getLives())).map(Map.Entry::getKey).toList()) {
             final int xOrigin = x + halfSidebarWidth * (i % 2);
             final int yOrigin = y + 40 * (i++ >> 1);
 
             int teamColour = (team.getSignColor() & 0x00ffffff | 0x99000000);
             if (!this.teams.get(team).isAlive()) teamColour = lerp(0.6f, teamColour, BACKGROUND_COLOUR);
 
-            drawContext.fill(xOrigin, yOrigin, xOrigin + halfSidebarWidth, yOrigin + 40, teamColour);
+            context.fill(xOrigin, yOrigin, xOrigin + halfSidebarWidth, yOrigin + 40, teamColour);
 
-            this.drawTeamText(drawContext, team, textRenderer, xOrigin + halfSidebarWidth, yOrigin);
-            this.drawTeamHeads(drawContext, team, xOrigin + halfSidebarWidth, yOrigin);
+            this.drawTeamText(context, team, textRenderer, xOrigin + halfSidebarWidth, yOrigin);
+            this.drawTeamHeads(context, team, xOrigin + halfSidebarWidth, yOrigin);
         }
     }
 
-    private void drawTeamText(DrawContext drawContext, DyeColor team, TextRenderer textRenderer, int x, int y) {
+    private void drawTeamText(DrawContext context, DyeColor team, TextRenderer textRenderer, int x, int y) {
         final Text teamBaseString = Text.translatable("color.minecraft." + team.asString());
-        drawContext.drawText(textRenderer, teamBaseString, x - (SIDEBAR_WIDTH >> 1) + 8, y + 4, 0xffffffff, true);
+        context.drawText(textRenderer, teamBaseString, x - (SIDEBAR_WIDTH >> 1) + 8, y + 4, 0xffffffff, true);
 
-        final Matrix3x2fStack matrices = drawContext.getMatrices();
+        final int heartX = x - (SIDEBAR_WIDTH >> 1) + 46;
+        final int heartY = y + 18;
+        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, FULL_HEART_NORMAL, heartX, heartY, 13, 13);
+
+        final Matrix3x2fStack matrices = context.getMatrices();
         matrices.pushMatrix();
         matrices.scale(1.5f);
 
-        drawContext.drawText(textRenderer, String.valueOf(this.teams.get(team).getLives()), ((x - (SIDEBAR_WIDTH >> 1) + 42) * 2 / 3), (y + 20) * 2 / 3, 0xffffffff, true);
+        context.drawText(textRenderer, String.valueOf(this.teams.get(team).getLives()), ((x - (SIDEBAR_WIDTH >> 1) + 36) * 2 / 3), (y + 20) * 2 / 3, 0xffffffff, true);
 
         matrices.popMatrix();
     }
 
-    private void drawTeamHeads(DrawContext drawContext, DyeColor team, int x, int y) {
+    private void drawTeamHeads(DrawContext context, DyeColor team, int x, int y) {
         final int headX = x - (SIDEBAR_WIDTH >> 1) + 8;
         final int headY = y + 16;
 
@@ -96,9 +109,9 @@ public class SkywarsTeamsHud implements VerticallyStackedHudComponent { //Maybe 
         final Identifier skinTexture = this.skinTextures.get(skywarsTeam.getPlayer());
 
         if (skinTexture == null) {
-            drawContext.fill(headX, headY, headX + 20, headY + 20, 0xffff0000);
+            context.fill(headX, headY, headX + 20, headY + 20, 0xffff0000);
         } else {
-            PlayerSkinDrawer.draw(drawContext, skinTexture, headX, headY, 20, true, false, 0xffffffff);
+            PlayerSkinDrawer.draw(context, skinTexture, headX, headY, 20, true, false, 0xffffffff);
         }
     }
 

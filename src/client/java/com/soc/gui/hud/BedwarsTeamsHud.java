@@ -29,11 +29,9 @@ public class BedwarsTeamsHud implements VerticallyStackedHudComponent {
 
     private final Map<DyeColor, BedwarsTeam> teams;
     private final Map<UUID, Identifier> skinTextures = new HashMap<>();
-    //private final DyeColor ownTeam;
 
     private BedwarsTeamsHud(Map<DyeColor, BedwarsTeam> teams) {
         this.teams = teams;
-        //this.ownTeam = this.teams.entries().stream().filter(entry -> entry.getValue() == MinecraftClient.getInstance().player.getUuid()).findFirst().map(Map.Entry::getKey).orElse(null);
         this.teams.values().forEach(team -> team.players().forEach(playerInfo -> {
                 final PlayerEntity player = MinecraftClient.getInstance().world.getPlayerByUuid(playerInfo.player());
                 if (player == null) return;
@@ -60,7 +58,7 @@ public class BedwarsTeamsHud implements VerticallyStackedHudComponent {
     }
 
     @Override
-    public void render(DrawContext drawContext, RenderTickCounter renderTickCounter, TextRenderer textRenderer, int x, int y) {
+    public void render(DrawContext context, RenderTickCounter renderTickCounter, TextRenderer textRenderer, int x, int y) {
         int i = 0;
         for (DyeColor team : this.teams.keySet()) {
             final int yOrigin = y + 40 * i++;
@@ -68,26 +66,26 @@ public class BedwarsTeamsHud implements VerticallyStackedHudComponent {
             int teamColour = (team.getSignColor() & 0x00ffffff | 0x99000000);
             if (!this.teams.get(team).isAlive()) teamColour = lerp(0.6f, teamColour, BACKGROUND_COLOUR);
 
-            drawContext.fill(x, yOrigin, x + SIDEBAR_WIDTH, yOrigin + 40, teamColour);
+            context.fill(x, yOrigin, x + SIDEBAR_WIDTH, yOrigin + 40, teamColour);
 
-            this.drawTeamText(drawContext, team, textRenderer, x + SIDEBAR_WIDTH, yOrigin);
-            this.drawTeamHeads(drawContext, team, x + SIDEBAR_WIDTH, yOrigin);
+            this.drawTeamText(context, team, textRenderer, x + SIDEBAR_WIDTH, yOrigin);
+            this.drawTeamHeads(context, team, x + SIDEBAR_WIDTH, yOrigin);
         }
     }
 
-    private void drawTeamText(DrawContext drawContext, DyeColor team, TextRenderer textRenderer, int x, int y) {
+    private void drawTeamText(DrawContext context, DyeColor team, TextRenderer textRenderer, int x, int y) {
         final boolean hasBed = this.teams.get(team).hasBed();
 
         final Text teamBaseString = Text.translatable("hud.bedwars.team", Text.translatable("color.minecraft." + team.asString()));
-        drawContext.drawText(textRenderer, teamBaseString, x - 120, y + 4, 0xffffffff, true);
+        context.drawText(textRenderer, teamBaseString, x - 120, y + 4, 0xffffffff, true);
 
         final Text hasBedBaseString = Text.translatable("hud.bedwars.has_bed");
-        drawContext.drawText(textRenderer, hasBedBaseString, x - 120 + textRenderer.getWidth(teamBaseString), y + 4, 0xffffffff, true);
+        context.drawText(textRenderer, hasBedBaseString, x - 120 + textRenderer.getWidth(teamBaseString), y + 4, 0xffffffff, true);
 
-        drawContext.drawText(textRenderer, Text.translatable(hasBed ? "hud.tick" : "hud.cross"), x - 120 + textRenderer.getWidth(hasBedBaseString) + textRenderer.getWidth(teamBaseString), y + 4, hasBed ? 0xff11ee22 : 0xffee1122, true);
+        context.drawText(textRenderer, Text.translatable(hasBed ? "hud.tick" : "hud.cross"), x - 120 + textRenderer.getWidth(hasBedBaseString) + textRenderer.getWidth(teamBaseString), y + 4, hasBed ? 0xff11ee22 : 0xffee1122, true);
     }
 
-    private void drawTeamHeads(DrawContext drawContext, DyeColor team, int x, int y) {
+    private void drawTeamHeads(DrawContext context, DyeColor team, int x, int y) {
         final AtomicInteger i = new AtomicInteger();
 
         this.teams.get(team).players().stream().map(PerPlayerBedwarsInfo::player).forEach(player -> {
@@ -96,9 +94,9 @@ public class BedwarsTeamsHud implements VerticallyStackedHudComponent {
             final Identifier skinTexture = this.skinTextures.get(player);
 
             if (skinTexture == null) {
-                drawContext.fill(headX, headY, headX + 20, headY + 20, 0xffff0000);
+                context.fill(headX, headY, headX + 20, headY + 20, 0xffff0000);
             } else {
-                PlayerSkinDrawer.draw(drawContext, skinTexture, headX, headY, 20, true, false, 0xffffffff);
+                PlayerSkinDrawer.draw(context, skinTexture, headX, headY, 20, true, false, 0xffffffff);
             }
         });
     }
