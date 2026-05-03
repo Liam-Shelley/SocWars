@@ -1,7 +1,11 @@
-package com.soc.gui.hud;
+package com.soc.gui.hud.sidebar;
 
+import com.soc.gui.hud.Reference;
+import com.soc.gui.hud.SidebarHud;
+import com.soc.gui.hud.VerticallyStackedHudComponent;
 import com.soc.networking.helper.BedwarsTeam;
 import com.soc.networking.helper.PerPlayerBedwarsInfo;
+import com.soc.networking.helper.TeamPlayersProvider;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -32,13 +36,13 @@ public class BedwarsTeamsHud implements VerticallyStackedHudComponent {
 
     private BedwarsTeamsHud(Map<DyeColor, BedwarsTeam> teams) {
         this.teams = teams;
-        this.teams.values().forEach(team -> team.players().forEach(playerInfo -> {
-                final PlayerEntity player = MinecraftClient.getInstance().world.getPlayerByUuid(playerInfo.player());
+        this.teams.values().stream().flatMap(TeamPlayersProvider::getPlayersStream).forEach(uuid -> {
+                final PlayerEntity player = MinecraftClient.getInstance().world.getPlayerByUuid(uuid);
                 if (player == null) return;
                 MinecraftClient.getInstance().getSkinProvider().fetchSkinTextures(player.getGameProfile()).whenCompleteAsync((optionalTextures, throwable) ->
-                        optionalTextures.ifPresent(textures -> this.skinTextures.put(playerInfo.player(), textures.texture()))
+                        optionalTextures.ifPresent(textures -> this.skinTextures.put(uuid, textures.texture()))
                 );
-        }));
+        });
     }
 
     public static void joinGame(Map<DyeColor, BedwarsTeam> teams) {

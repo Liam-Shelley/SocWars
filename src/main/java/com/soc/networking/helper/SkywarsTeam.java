@@ -5,8 +5,9 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 
 import java.util.UUID;
+import java.util.stream.Stream;
 
-public class SkywarsTeam {
+public class SkywarsTeam implements TeamPlayersProvider {
     public static final PacketCodec<RegistryByteBuf, SkywarsTeam> PACKET_CODEC = PacketCodec.tuple(
             com.soc.networking.PacketCodecs.UUID, SkywarsTeam::getPlayer,
             PacketCodecs.INTEGER, team -> team.lives,
@@ -39,5 +40,10 @@ public class SkywarsTeam {
 
     public UUID getPlayer() {
         return player;
+    }
+
+    @Override
+    public Stream<UUID> getPlayersStream() {
+        return Stream.of(this.player);
     }
 }

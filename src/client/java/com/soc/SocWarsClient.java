@@ -2,6 +2,9 @@ package com.soc;
 
 import com.soc.blocks.util.ModBlocks;
 import com.soc.gui.hud.*;
+import com.soc.gui.hud.sidebar.BedwarsTeamsHud;
+import com.soc.gui.hud.sidebar.EventsHud;
+import com.soc.gui.hud.sidebar.SkywarsTeamsHud;
 import com.soc.gui.screen.HandledScreens;
 import com.soc.items.FeatherBlockItem;
 import com.soc.lib.Coroutines;

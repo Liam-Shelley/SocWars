@@ -7,8 +7,10 @@ import net.minecraft.network.codec.PacketCodecs;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Stream;
 
-public class BedwarsTeam {
+public class BedwarsTeam implements TeamPlayersProvider {
     public static final PacketCodec<RegistryByteBuf, BedwarsTeam> PACKET_CODEC = PacketCodec.tuple(
             PacketCodecs.collection(ArrayList::new, PerPlayerBedwarsInfo.PACKET_CODEC), BedwarsTeam::players,
             PacketCodecs.BOOLEAN, BedwarsTeam::hasBed,
@@ -52,5 +54,10 @@ public class BedwarsTeam {
 
     public void eliminate() {
         this.isAlive = false;
+    }
+
+    @Override
+    public Stream<UUID> getPlayersStream() {
+        return this.players.stream().map(PerPlayerBedwarsInfo::player);
     }
 }

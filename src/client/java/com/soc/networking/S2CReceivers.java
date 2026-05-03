@@ -1,9 +1,9 @@
 package com.soc.networking;
 
-import com.soc.gui.hud.BedwarsTeamsHud;
+import com.soc.gui.hud.sidebar.BedwarsTeamsHud;
 import com.soc.gui.hud.BlockProtectionManagerAndHud;
-import com.soc.gui.hud.EventsHud;
-import com.soc.gui.hud.SkywarsTeamsHud;
+import com.soc.gui.hud.sidebar.EventsHud;
+import com.soc.gui.hud.sidebar.SkywarsTeamsHud;
 import com.soc.lib.Coroutine;
 import com.soc.lib.Coroutines;
 import com.soc.lib.Events;

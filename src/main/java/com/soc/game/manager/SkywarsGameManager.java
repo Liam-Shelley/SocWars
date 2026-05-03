@@ -166,13 +166,12 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
 
         final boolean canRespawn = this.canRespawn(player);
         this.broadcastDeath(player, source, !canRespawn);
+        this.broadcastPacket(new SetTeamLivesPayload(this.getTeam(player), livesRemaining));
 
         if (this.getAlivePlayers().size() < (super.getPlayers().size() > 1 ? 2 : 1)) {
             this.endGame(false);
             return false;
         }
-
-        this.broadcastPacket(new SetTeamLivesPayload(this.getTeam(player), livesRemaining));
 
         if (canRespawn) {
             PrescheduledEvents.playCountdown(() -> this.respawnPlayer(player), this, 3, 20, SoundEvents.BLOCK_NOTE_BLOCK_GUITAR.value(), true, player);

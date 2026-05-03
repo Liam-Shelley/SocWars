@@ -1,6 +1,11 @@
-package com.soc.gui.hud;
+package com.soc.gui.hud.sidebar;
 
+import com.soc.gui.hud.Reference;
+import com.soc.gui.hud.SidebarHud;
+import com.soc.gui.hud.VerticallyStackedHudComponent;
+import com.soc.networking.helper.BedwarsTeam;
 import com.soc.networking.helper.SkywarsTeam;
+import com.soc.networking.helper.TeamPlayersProvider;
 import com.soc.networking.s2c.skywars.SetTeamLivesPayload;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -34,18 +39,18 @@ public class SkywarsTeamsHud implements VerticallyStackedHudComponent { //Maybe 
     private static final Identifier FULL_HEART_NORMAL = Identifier.ofVanilla("hud/heart/full");
     private static final Identifier FULL_HEART_HARDCORE = Identifier.ofVanilla("hud/heart/hardcore_full");
 
-    private static boolean stretchLastBlock = false;
+    private static final boolean STRETCH_LAST_BLOCK = false; //May make this toggleable at some point
 
     private final Map<DyeColor, SkywarsTeam> teams;
     private final Map<UUID, Identifier> skinTextures = new HashMap<>();
 
     private SkywarsTeamsHud(Map<DyeColor, SkywarsTeam> teams) {
         this.teams = teams;
-        this.teams.values().forEach(team -> {
-                final PlayerEntity player = MinecraftClient.getInstance().world.getPlayerByUuid(team.getPlayer());
+        this.teams.values().stream().flatMap(TeamPlayersProvider::getPlayersStream).forEach(uuid -> {
+                final PlayerEntity player = MinecraftClient.getInstance().world.getPlayerByUuid(uuid);
                 if (player == null) return;
                 MinecraftClient.getInstance().getSkinProvider().fetchSkinTextures(player.getGameProfile()).whenCompleteAsync((optionalTextures, throwable) ->
-                        optionalTextures.ifPresent(textures -> this.skinTextures.put(team.getPlayer(), textures.texture()))
+                        optionalTextures.ifPresent(textures -> this.skinTextures.put(uuid, textures.texture()))
                 );
         });
     }
@@ -72,18 +77,20 @@ public class SkywarsTeamsHud implements VerticallyStackedHudComponent { //Maybe 
 
         int i = 0;
         for (DyeColor team : this.teams.entrySet().stream().sorted(Comparator.comparingInt(entry -> -entry.getValue().getLives())).map(Map.Entry::getKey).toList()) {
-            final boolean isOddAndLast = i % 2 == 0 && i == this.teams.size() - 1 && stretchLastBlock; //Yes I know the mod == 0 looks odd but I swear it makes sense
+            final boolean isIOddAndLast = i % 2 == 0 && i == this.teams.size() - 1 && STRETCH_LAST_BLOCK;
 
             final int xOrigin = x + halfSidebarWidth * (i % 2);
             final int yOrigin = y + 40 * (i++ >> 1);
 
             int teamColour = (team.getSignColor() & 0x00ffffff | 0x99000000);
-            if (!this.teams.get(team).isAlive()) teamColour = lerp(0.6f, teamColour, BACKGROUND_COLOUR);
+            if (!this.teams.get(team).isAlive()) teamColour = lerp(0.55f, teamColour, BACKGROUND_COLOUR);
 
-            context.fill(xOrigin, yOrigin, xOrigin + (isOddAndLast ? SIDEBAR_WIDTH : halfSidebarWidth), yOrigin + 40, teamColour);
+            context.fill(xOrigin, yOrigin, xOrigin + (isIOddAndLast ? SIDEBAR_WIDTH : halfSidebarWidth), yOrigin + 40, teamColour);
 
-            this.drawTeamText(context, team, textRenderer, xOrigin + (isOddAndLast ? halfSidebarWidth * 3 / 2 : halfSidebarWidth), yOrigin);
-            this.drawTeamHeads(context, team, xOrigin + (isOddAndLast ? halfSidebarWidth * 3 / 2 : halfSidebarWidth), yOrigin);
+            int modifiedXOrigin = xOrigin + (isIOddAndLast ? halfSidebarWidth * 3 / 2 : halfSidebarWidth);
+
+            this.drawTeamText(context, team, textRenderer, modifiedXOrigin, yOrigin);
+            this.drawTeamHeads(context, team, modifiedXOrigin, yOrigin);
         }
     }
 

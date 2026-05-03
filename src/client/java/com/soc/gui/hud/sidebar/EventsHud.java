@@ -1,6 +1,9 @@
-package com.soc.gui.hud;
+package com.soc.gui.hud.sidebar;
 
 import com.soc.game.manager.Event;
+import com.soc.gui.hud.Reference;
+import com.soc.gui.hud.SidebarHud;
+import com.soc.gui.hud.VerticallyStackedHudComponent;
 import com.soc.networking.s2c.EventQueuePayload;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
