@@ -35,10 +35,10 @@ public class BaseTool extends Item {
         addItemToGroupsAndBaseItemGroup(UNOBTANIUM_SHEARS, ItemGroups.TOOLS);
         addItemToGroupsAndBaseItemGroup(BEDROCK_PICKAXE, ItemGroups.TOOLS);
         addItemToGroupsAndBaseItemGroup(BEDROCK_AXE, ItemGroups.TOOLS);
-        addItemToGroupsAndBaseItemGroup(FISH_PICKAXE, ItemGroups.TOOLS);
-        addItemToGroupsAndBaseItemGroup(FISH_AXE, ItemGroups.TOOLS);
-        addItemToGroupsAndBaseItemGroup(FISH_SHEARS, ItemGroups.TOOLS);
-        addItemToGroupsAndBaseItemGroup(MULTI_TOOL, ItemGroups.TOOLS);
+        addItemToGroupsAndBaseItemGroup(THE_PICKAXE, ItemGroups.TOOLS);
+        addItemToGroupsAndBaseItemGroup(THE_AXE, ItemGroups.TOOLS);
+        addItemToGroupsAndBaseItemGroup(THE_SHEARS, ItemGroups.TOOLS);
+        addItemToGroupsAndBaseItemGroup(FISHAXE, ItemGroups.TOOLS);
     }
 
     public static final Item STONE_SHEARS = ModItems.register("stone_shears", BaseTool::new, new Settings().component(DataComponentTypes.TOOL, createShearsComponent(ToolMaterial.STONE)).enchantable(5));
@@ -50,10 +50,10 @@ public class BaseTool extends Item {
     public static final Item UNOBTANIUM_SHEARS = ModItems.register("unobtanium_shears", BaseTool::new, new Settings().component(DataComponentTypes.TOOL, createShearsComponent(ToolMaterials.UNOBTANIUM)).enchantable(30));
     public static final Item BEDROCK_PICKAXE = ModItems.register("bedrock_pickaxe", BaseTool::new, new Settings().pickaxe(ToolMaterials.BEDROCK, 1f, -2.8f));
     public static final Item BEDROCK_AXE = ModItems.register("bedrock_axe", BaseTool::new, new Settings().axe(ToolMaterials.BEDROCK, 5f, -3f));
-    public static final Item FISH_PICKAXE = ModItems.register("fish_pickaxe", BaseTool::new, new Settings().pickaxe(ToolMaterials.FISH, 1f, -2.8f));
-    public static final Item FISH_AXE = ModItems.register("fish_axe", BaseTool::new, new Settings().axe(ToolMaterials.FISH, 5f, -3f));
-    public static final Item FISH_SHEARS = ModItems.register("fish_shears", BaseTool::new, new Settings().component(DataComponentTypes.TOOL, createShearsComponent(ToolMaterials.FISH)).enchantable(50));
-    public static final Item MULTI_TOOL = ModItems.register("multi_tool", BaseTool::new, new Settings()
+    public static final Item THE_PICKAXE = ModItems.register("the_pickaxe", BaseTool::new, new Settings().pickaxe(ToolMaterials.FISH, 1f, -2.8f));
+    public static final Item THE_AXE = ModItems.register("the_axe", BaseTool::new, new Settings().axe(ToolMaterials.FISH, 5f, -3f));
+    public static final Item THE_SHEARS = ModItems.register("the_shears", BaseTool::new, new Settings().component(DataComponentTypes.TOOL, createShearsComponent(ToolMaterials.FISH)).enchantable(50));
+    public static final Item FISHAXE = ModItems.register("fishaxe", BaseTool::new, new Settings()
             .component(DataComponentTypes.TOOL, new ToolComponent(List.of(
                     ToolComponent.Rule.ofNeverDropping(Registries.createEntryLookup(Registries.BLOCK).getOrThrow(BlockTags.INCORRECT_FOR_NETHERITE_TOOL)),
                     ToolComponent.Rule.ofAlwaysDropping(Registries.createEntryLookup(Registries.BLOCK).getOrThrow(BlockTags.PICKAXE_MINEABLE), ToolMaterials.FISH.speed()),
