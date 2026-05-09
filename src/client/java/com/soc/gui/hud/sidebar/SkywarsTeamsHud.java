@@ -2,18 +2,13 @@ package com.soc.gui.hud.sidebar;
 
 import com.soc.gui.hud.Reference;
 import com.soc.gui.hud.SidebarHud;
-import com.soc.gui.hud.VerticallyStackedHudComponent;
-import com.soc.networking.helper.BedwarsTeam;
 import com.soc.networking.helper.SkywarsTeam;
-import com.soc.networking.helper.TeamPlayersProvider;
 import com.soc.networking.s2c.skywars.SetTeamLivesPayload;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.PlayerSkinDrawer;
 import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
@@ -21,15 +16,13 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix3x2fStack;
 
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import static com.soc.gui.hud.SidebarHud.BACKGROUND_COLOUR;
 import static com.soc.gui.hud.SidebarHud.SIDEBAR_WIDTH;
 import static net.minecraft.util.math.ColorHelper.lerp;
 
-public class SkywarsTeamsHud implements VerticallyStackedHudComponent { //Maybe I'll subclass this and BedwarsTeamsHud under GameTeamsHud or something and make a lof of the drawing code common
+public class SkywarsTeamsHud extends BaseTeamsHud<SkywarsTeam> { //Maybe I'll subclass this and BedwarsTeamsHud under GameTeamsHud or something and make a lof of the drawing code common
     public static void initialise() {
         SidebarHud.addHudElement(INSTANCE);
     }
@@ -41,18 +34,8 @@ public class SkywarsTeamsHud implements VerticallyStackedHudComponent { //Maybe 
 
     private static final boolean STRETCH_LAST_BLOCK = false; //May make this toggleable at some point
 
-    private final Map<DyeColor, SkywarsTeam> teams;
-    private final Map<UUID, Identifier> skinTextures = new HashMap<>();
-
     private SkywarsTeamsHud(Map<DyeColor, SkywarsTeam> teams) {
-        this.teams = teams;
-        this.teams.values().stream().flatMap(TeamPlayersProvider::getPlayersStream).forEach(uuid -> {
-                final PlayerEntity player = MinecraftClient.getInstance().world.getPlayerByUuid(uuid);
-                if (player == null) return;
-                MinecraftClient.getInstance().getSkinProvider().fetchSkinTextures(player.getGameProfile()).whenCompleteAsync((optionalTextures, throwable) ->
-                        optionalTextures.ifPresent(textures -> this.skinTextures.put(uuid, textures.texture()))
-                );
-        });
+        super(teams);
     }
 
     public static void joinGame(Map<DyeColor, SkywarsTeam> teams) {
@@ -82,57 +65,26 @@ public class SkywarsTeamsHud implements VerticallyStackedHudComponent { //Maybe 
             final int xOrigin = x + halfSidebarWidth * (i % 2);
             final int yOrigin = y + 40 * (i++ >> 1);
 
-            int teamColour = (team.getSignColor() & 0x00ffffff | 0x99000000);
-            if (!this.teams.get(team).isAlive()) teamColour = lerp(0.55f, teamColour, BACKGROUND_COLOUR);
-
-            context.fill(xOrigin, yOrigin, xOrigin + (isIOddAndLast ? SIDEBAR_WIDTH : halfSidebarWidth), yOrigin + 40, teamColour);
-
-            int modifiedXOrigin = xOrigin + (isIOddAndLast ? halfSidebarWidth * 3 / 2 : halfSidebarWidth);
-
-            this.drawTeamText(context, team, textRenderer, modifiedXOrigin, yOrigin);
-            this.drawTeamHeads(context, team, modifiedXOrigin, yOrigin);
+            this.drawTeamPanel(context, textRenderer, team, xOrigin, yOrigin, isIOddAndLast ? halfSidebarWidth * 3 / 2 : halfSidebarWidth, 40);
         }
     }
 
-    private void drawTeamText(DrawContext context, DyeColor team, TextRenderer textRenderer, int x, int y) {
-        final Text teamBaseString = Text.translatable("color.minecraft." + team.asString());
-        context.drawText(textRenderer, teamBaseString, x - (SIDEBAR_WIDTH >> 1) + 8, y + 4, 0xffffffff, true);
+    protected void drawTeamText(DrawContext context, DyeColor team, TextRenderer textRenderer, int x, int y) {
+        super.drawTeamText(context, team, textRenderer, x, y);
 
-        final int heartX = x - (SIDEBAR_WIDTH >> 1) + 46;
-        final int heartY = y + 18;
-        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, FULL_HEART_NORMAL, heartX, heartY, 13, 13);
+        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, FULL_HEART_NORMAL, x + 46, y + 18, 13, 13);
 
         final Matrix3x2fStack matrices = context.getMatrices();
         matrices.pushMatrix();
-        matrices.scale(1.5f);
+        matrices.scaleAround(1.5f, x + 36, y + 20);
 
-        context.drawText(textRenderer, String.valueOf(this.teams.get(team).getLives()), ((x - (SIDEBAR_WIDTH >> 1) + 36) * 2 / 3), (y + 20) * 2 / 3, 0xffffffff, true);
+        context.drawText(textRenderer, String.valueOf(this.teams.get(team).getLives()), x + 36, y + 20, 0xffffffff, true);
 
         matrices.popMatrix();
-    }
-
-    private void drawTeamHeads(DrawContext context, DyeColor team, int x, int y) {
-        final int headX = x - (SIDEBAR_WIDTH >> 1) + 8;
-        final int headY = y + 16;
-
-        final SkywarsTeam skywarsTeam = this.teams.get(team);
-
-        final Identifier skinTexture = this.skinTextures.get(skywarsTeam.getPlayer());
-
-        if (skinTexture == null) {
-            context.fill(headX, headY, headX + 20, headY + 20, 0xffff0000);
-        } else {
-            PlayerSkinDrawer.draw(context, skinTexture, headX, headY, 20, true, false, 0xffffffff);
-        }
     }
 
     @Override
     public int getSize() {
         return ((this.teams.size() + 1) >> 1) * 40;
-    }
-
-    @Override
-    public int priority() {
-        return 0;
     }
 }

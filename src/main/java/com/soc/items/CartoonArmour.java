@@ -8,7 +8,6 @@ import com.soc.items.util.OnHitArmour;
 import com.soc.util.BlockTags;
 import com.soc.util.SphereExplosion;
 import net.minecraft.block.Blocks;
-import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -23,19 +22,15 @@ import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.equipment.EquipmentAsset;
-import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-
-import java.util.function.Consumer;
 
 import static com.soc.items.ThrowableItem.spawnEntityWithVelocity;
 import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
@@ -82,7 +77,10 @@ public class CartoonArmour extends ArmourItem implements OnHitArmour {
             final int random = world.random.nextBetween(1, 8);
             switch (random) {
                 case 1 -> { return false; }
-                case 2 -> SphereExplosion.explode(world, wearer.getPos(), 4.5f, 0.8f, 0.75f, true, wearer, null);
+                case 2 -> {
+                    Vec3d centre = wearer.getPos();
+                    SphereExplosion.explode(world, centre, 4.5f, 1.5f, 0.8f, 0.75f, true, wearer, null);
+                }
                 case 3 -> {
                     iterateInPlane(wearer.getBlockPos(), 1, pos -> world.setBlockState(pos, Blocks.AIR.getDefaultState()));
                     iterateInPlane(wearer.getBlockPos().down(), 1, pos -> world.setBlockState(pos, Blocks.SLIME_BLOCK.getDefaultState()));

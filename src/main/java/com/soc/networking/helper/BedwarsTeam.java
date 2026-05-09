@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-public class BedwarsTeam implements TeamPlayersProvider {
+public class BedwarsTeam implements GameTeam {
     public static final PacketCodec<RegistryByteBuf, BedwarsTeam> PACKET_CODEC = PacketCodec.tuple(
             PacketCodecs.collection(ArrayList::new, PerPlayerBedwarsInfo.PACKET_CODEC), BedwarsTeam::players,
             PacketCodecs.BOOLEAN, BedwarsTeam::hasBed,
@@ -48,7 +48,8 @@ public class BedwarsTeam implements TeamPlayersProvider {
         this.hasBed = false;
     }
 
-    public Boolean isAlive() {
+    @Override
+    public boolean isAlive() {
         return this.isAlive;
     }
 
