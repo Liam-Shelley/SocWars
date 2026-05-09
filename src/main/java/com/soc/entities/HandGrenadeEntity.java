@@ -12,7 +12,9 @@ import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 public class HandGrenadeEntity extends ThrownEntity {
     protected float detonationTime;
@@ -93,6 +95,6 @@ public class HandGrenadeEntity extends ThrownEntity {
     }
 
     protected void detonate() {
-        SphereExplosion.explode(this.getWorld(), this.getPos(), 3f, 12f, 3f, true, this.getOwner(), DamageTypes.SPHERE_EXPLOSION);
+        SphereExplosion.explode(this.getWorld(), this.getPos(), 3f, 1.5f, 12f, 3f, true, this.getOwner(), DamageTypes.SPHERE_EXPLOSION);
     }
 }

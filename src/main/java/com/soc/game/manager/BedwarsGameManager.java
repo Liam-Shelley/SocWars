@@ -481,14 +481,14 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
         return null; //TODO: Do this
     }
 
-    public void checkTraps() {
+    public void checkTraps() { //TODO: Maybe make this into a default impl in the TrapGame interface
         this.teamStatsMap.forEach((team, stats) -> {
             if (!stats.hasActiveTrap()) return;
 
             final Vec3d pos = this.map.getBedPosition(team).toCenterPos();
             final Multimap<DyeColor, ServerPlayerEntity> enemiesInRange = this.getPlayers()
                     .stream()
-                    .filter(player -> this.getTeam(player) != team && player.getPos().isInRange(pos, TRAP_DETECTION_RANGE))
+                    .filter(player -> true || this.getTeam(player) != team && player.getPos().isInRange(pos, TRAP_DETECTION_RANGE))
                     .collect(Multimaps.toMultimap(this::getTeam, Function.identity(), HashMultimap::create));
 
             if(!enemiesInRange.isEmpty()) stats.onPlayerInTrapRange(pos, this, enemiesInRange);

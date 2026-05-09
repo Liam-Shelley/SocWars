@@ -63,14 +63,16 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
                 protected void onHit(LivingEntity target) {
                     super.onHit(target);
                     this.discard();
-                    SphereExplosion.explode(world, target.getPos(), 4f, 0.7f, 0.7f, true, user, null);
+                    Vec3d centre = target.getPos();
+                    SphereExplosion.explode(world, centre, 4f, 1.5f, 0.7f, 0.7f, true, user, null);
                 }
 
                 @Override
                 protected void onBlockHit(BlockHitResult blockHitResult) {
                     super.onBlockHit(blockHitResult);
                     this.discard();
-                    SphereExplosion.explode(world, blockHitResult.getPos(), 4.5f, 0.9f, 0.8f, true, user, null);
+                    Vec3d centre = blockHitResult.getPos();
+                    SphereExplosion.explode(world, centre, 4.5f, 1.5f, 0.9f, 0.8f, true, user, null);
                 }
     }, stack -> 1.5f, stack -> 2.75f), new Settings()
             .rarity(Rarity.UNCOMMON)
@@ -81,14 +83,16 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
                 protected void onHit(LivingEntity target) {
                     super.onHit(target);
                     this.discard();
-                    SphereExplosion.explode(world, target.getPos(), 7f, 0.7f, 0.7f, true, user, null);
+                    Vec3d centre = target.getPos();
+                    SphereExplosion.explode(world, centre, 7f, 1.5f, 0.7f, 0.7f, true, user, null);
                 }
 
                 @Override
                 protected void onBlockHit(BlockHitResult blockHitResult) {
                     super.onBlockHit(blockHitResult);
                     this.discard();
-                    SphereExplosion.explode(world, blockHitResult.getPos(), 8f, 0.9f, 0.8f, true, user, null);
+                    Vec3d centre = blockHitResult.getPos();
+                    SphereExplosion.explode(world, centre, 8f, 1.5f, 0.9f, 0.8f, true, user, null);
                 }
     }, stack -> 2f, stack -> 2.25f), new Settings()
             .rarity(Rarity.RARE)
@@ -159,7 +163,8 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
                 @Override
                 public void usageTick(World world, LivingEntity user, ItemStack stack, int remainingUseTicks) {
                     if (super.rawDrawProgress(stack, remainingUseTicks) > 7.5f) {
-                        SphereExplosion.explode(world, user.getPos(), 7f, 12f, 3f, true, user, DamageTypes.CATASTROPHE_BOW_BACKFIRE);
+                        Vec3d centre = user.getPos();
+                        SphereExplosion.explode(world, centre, 7f, 1.5f, 12f, 3f, true, user, DamageTypes.CATASTROPHE_BOW_BACKFIRE);
                     }
                 }
             }, new Settings()

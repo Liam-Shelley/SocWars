@@ -208,8 +208,15 @@ public final class SocWarsLib {
         return result;
     }
 
-    public static void iterateInSphere(Vec3d centre, float radius, float randomRadiusFactor, Consumer<BlockPos> function) {
-        iterateInSphere(BlockPos.ofFloored(centre), radius, randomRadiusFactor, function);
+    public static void iterateInSphere(Vec3i centre, float radius, float randomRadiusFactor, BiConsumer<BlockPos, Double> function) {
+        final int intRadius = (int)Math.ceil(radius);
+        final Random random = new LocalRandom(centre.getX() + centre.getY() + centre.getZ() + function.hashCode());
+        final Predicate<Double> sphereCheckFunction = randomRadiusFactor > 10e-5 ? distance -> distance < radius - random.nextFloat() : distance -> distance < radius;
+
+        iterateInCube(centre, intRadius, pos -> {
+            final double distance = Math.sqrt(centre.getSquaredDistance(pos));
+            if (sphereCheckFunction.test(distance)) function.accept(pos, distance);
+        });
     }
 
     public static void iterateInSphere(Vec3i centre, float radius, float randomRadiusFactor, Consumer<BlockPos> function) {

@@ -8,6 +8,7 @@ import net.minecraft.util.Identifier;
 
 public interface BlockTags {
     TagKey<Block> IMMUNE = from_string("immune");
+    TagKey<Block> EXPLOSION_IMMUNE = from_string("explosion_immune");
     TagKey<Block> NO_BREAK_FROM_WATER = from_string("no_break_from_water");
     TagKey<Block> MAP_PLACEHOLDER = from_string("map_placeholder");
     TagKey<Block> MAP_PLACEHOLDER_WITHOUT_BEDS = from_string("map_placeholder_without_beds");

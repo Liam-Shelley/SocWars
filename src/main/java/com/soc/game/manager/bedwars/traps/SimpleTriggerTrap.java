@@ -63,7 +63,7 @@ public class SimpleTriggerTrap extends AbstractTrap {
     public static final AbstractTrap GLOWING = register(new SimpleTriggerTrap("glowing", Items.TORCH.getDefaultStack(), 8 * 20, StatusEffects.GLOWING, 0));
     public static final AbstractTrap POSTURA = register(new SimpleTriggerTrap("postura", BaseWeapon.BAT.getDefaultStack(), 10 * 20, ModEffects.ARTHRODESIS, 0));
     public static final AbstractTrap SPEED = register(new SimpleTriggerTrap("speed", Items.BLUE_ICE.getDefaultStack(), 2 * 20, StatusEffects.SPEED, 9));
-    public static final AbstractTrap JUMPSCARE = register(new SimpleTriggerTrap("jumpscare", Items.CREEPER_HEAD.getDefaultStack(), 5 * 20, enemy -> ServerPlayNetworking.send(enemy, new JumpscarePayload(SoundEvents.ENTITY_ENDERMAN_DEATH, Identifier.of(SocWars.MOD_ID, ""))))); //TODO: Choose an Id or maybe make the field optional or something
+    public static final AbstractTrap JUMPSCARE = register(new SimpleTriggerTrap("jumpscare", Items.CREEPER_HEAD.getDefaultStack(), 5 * 20, enemy -> ServerPlayNetworking.send(enemy, new JumpscarePayload(SoundEvents.ENTITY_ENDERMAN_DEATH, Identifier.of(SocWars.MOD_ID, "textures/gui/jumpscare/hiking.png"), 20))));
     public static final AbstractTrap SILENCE = register(new SimpleTriggerTrap("silence", Items.WHITE_WOOL.getDefaultStack(), 10 * 20, (enemy, trapAmplifier) -> ServerPlayNetworking.send(enemy, new SilencePayload((int)(trapAmplifier * 10 * 20)))));
     public static final AbstractTrap LIGHTWEIGHT = register(new SimpleTriggerTrap("lightweight", Items.FEATHER.getDefaultStack(), 8 * 20, ModEffects.LIGHTWEIGHT, 4));
 

@@ -11,6 +11,7 @@ import com.soc.lib.Events;
 import com.soc.networking.s2c.EventQueuePayload;
 import com.soc.networking.s2c.LeaveGamePayload;
 import com.soc.networking.s2c.UpdateHotbarPayload;
+import com.soc.util.BlockTags;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -50,10 +51,7 @@ import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -559,17 +557,21 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     }
 
     public static BiPredicate<BlockPos, BlockState> getBlockDamagePredicate(World world, boolean blockDamage, @Nullable Entity causingEntity) {
+        return (pos, state) -> getBlockDamageThreshold(world, blockDamage, causingEntity).apply(pos, state) > 0f;
+    }
+
+    public static BiFunction<BlockPos, BlockState, Float> getBlockDamageThreshold(World world, boolean blockDamage, @Nullable Entity causingEntity) {
         final Optional<AbstractGameManager<?, ?, ?>> managerOptional = causingEntity == null ? Optional.empty() : GamesManager.getInstance().getGame(causingEntity);
 
-        final BiPredicate<BlockPos, BlockState> damage;
+        final BiFunction<BlockPos, BlockState, Float> damage;
         if (!blockDamage) {
-            damage = (pos, state) -> false;
+            damage = (pos, state) -> Float.MAX_VALUE;
         } else if (managerOptional.isPresent()) {
             final AbstractGameManager<?, ?, ?> manager = managerOptional.get();
-            damage = manager::isBlockUnprotected;
+            damage = (pos, state) -> manager.isBlockProtected(pos, state) || state.isIn(BlockTags.EXPLOSION_IMMUNE) ? Float.MAX_VALUE : state.getBlock().getBlastResistance();
         } else {
             final boolean def = world instanceof ServerWorld serverWorld && serverWorld.getGameRules().getBoolean(GameRules.TNT_EXPLODES);
-            damage = (pos, state) -> def;
+            damage = (pos, state) -> !def  || state.isIn(BlockTags.EXPLOSION_IMMUNE) ? Float.MAX_VALUE : state.getBlock().getBlastResistance();
         }
         return damage;
     }

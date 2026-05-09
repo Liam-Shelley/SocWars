@@ -1,5 +1,6 @@
 package com.soc.networking;
 
+import com.soc.gui.hud.JumpscareHud;
 import com.soc.gui.hud.sidebar.BedwarsTeamsHud;
 import com.soc.gui.hud.BlockProtectionManagerAndHud;
 import com.soc.gui.hud.sidebar.EventsHud;
@@ -121,9 +122,7 @@ public class S2CReceivers {
             }
         });
         ClientPlayNetworking.registerGlobalReceiver(JumpscarePayload.ID, ((payload, context) -> {
-             context.player().sendMessage(Text.of("Boo!"), false);
-
-            //TODO: Write the jumpscare code
+            JumpscareHud.triggerJumpscare(payload);
         }));
         ClientPlayNetworking.registerGlobalReceiver(SilencePayload.ID, ((payload, context) -> {
             final SimpleOption<Double> masterVolume = ((GetOptionsVolumes)MinecraftClient.getInstance().options).getSoundVolumeLevels().get(SoundCategory.MASTER);
