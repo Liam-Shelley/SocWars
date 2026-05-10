@@ -56,6 +56,9 @@ public class GamesManager {
     public void initialiseEvents() {
         ServerLifecycleEvents.SERVER_STARTED.register(server -> this.world = server.getOverworld());
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> this.endAllGames());
+        ServerPlayerEvents.LEAVE.register(player -> {
+            if (!player.getWorld().getServer().isDedicated()) this.endAllGames();
+        });
         ServerTickEvents.START_SERVER_TICK.register(this::tick);
 
         ServerLivingEntityEvents.ALLOW_DEATH.register((entity, source, amount) ->

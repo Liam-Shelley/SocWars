@@ -319,18 +319,24 @@ public abstract class AbstractGameMap {
         return this.blockProtectionOverlay != null && this.blockProtectionOverlay.get(pos, this.getOrigin());
     }
 
+    public double getSquircleDistance(BlockPos pos) {
+        final BlockPos centre = this.getCentrePosWithMeanSpawnY();
+        final double xDiff = Math.abs(centre.getX() - pos.getX());
+        final double zDiff = Math.abs(centre.getZ() - pos.getZ());
+
+        return Math.pow(Math.pow(xDiff, 3.2d) + Math.pow(zDiff, 3.2d), 0.3125);
+    }
+
+    public double getDistanceToSquircle() { return 0d; } //TODO: Write this once I figure out a better way to do a kissing circle for a superellipse
+
+    public boolean isBlockInSquircleRadius(BlockPos pos, float distance) {
+        return this.getSquircleDistance(pos) < distance;
+    }
+
     public boolean isBlockInBounds(BlockPos pos) {
         if (pos.getY() < this.minBuildY || pos.getY() > this.maxBuildY) return false;
 
-        final BlockPos centre = this.getCentrePosWithMeanSpawnY();
-        final double xDiff = Math.abs(centre.getX() - pos.getX());
-        final double yDiff = Math.abs(centre.getY() - pos.getY());
-        final double zDiff = Math.abs(centre.getZ() - pos.getZ());
-
-        final double distance = Math.pow(xDiff, 3.2d) + Math.pow(yDiff, 3.2d) + Math.pow(zDiff, 3.2d);
-        final double maxDistance = Math.pow(this.size * 0.54f, 3.2d);
-
-        return distance < maxDistance;
+        return this.isBlockInSquircleRadius(pos, this.size * 0.54f);
     }
 
     public @Nullable BlockProtectionPayload getBlockProtectionPacket() {

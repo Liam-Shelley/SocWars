@@ -53,7 +53,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.soc.lib.SocWarsLib.*;
 
@@ -216,11 +215,11 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     }
 
     public boolean onBlockBroken(ServerPlayerEntity player, BlockPos pos, BlockState state, BlockEntity blockEntity) {
-        return this.isBlockUnprotected(player, pos, state);
+        return !this.isBlockProtected(player, pos, state);
     }
 
     public ActionResult onBlockPlaced(ServerPlayerEntity player, BlockPos pos, ItemUsageContext context) {
-        final boolean allow = this.isBlockUnprotected(player, pos, this.world.getBlockState(pos));
+        final boolean allow = !this.isBlockProtected(player, pos, this.world.getBlockState(pos));
         if (allow) {
             if (!this.map.isBlockInBounds(pos)) {
                 this.world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), SoundCategory.MASTER);
@@ -297,16 +296,8 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         return team;
     }
 
-    protected final boolean teamAlreadyExists(DyeColor colour) {
-        return this.world.getScoreboard().getTeam(this.getTeamName(colour)) != null;
-    }
-
     protected final String getTeamName(DyeColor colour) {
         return String.format("%s_%s", this.gameId, colour.toString());
-    }
-
-    public final List<Team> addTeamsFromColours(Set<DyeColor> colours) {
-        return colours.stream().map(this::addTeamFromColour).toList();
     }
 
     private void assignPlayersToTeams() {
@@ -318,10 +309,6 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         if (this.eventQueue == null) return;
 
         this.eventQueue.tryPopAndRunEvents(time, (EVENT) this);
-    }
-
-    public final @Nullable Collection<Text> getUpcomingEvents() {
-        return this.eventQueue == null ? null : this.eventQueue.peekEventsNames(this.time);
     }
 
     public final int getGameId() {
@@ -507,7 +494,18 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     protected void tickKillzone() {
         this.getPlayers().forEach(player -> {
             @Nullable final PlayerEntity attacker = getPlayerAttacker(player).orElse(null);
-            if (player.getY() < this.killHeight) this.onPlayerDeath(player, damageSource(world, DamageTypes.OUT_OF_WORLD, attacker), 100000f);
+
+            final double squircleDistance = this.map.getSquircleDistance(player.getBlockPos());
+            final float maxDistance = this.map.size * 0.62f;
+
+            if (squircleDistance + 4d > maxDistance && this.time % 4 == 0) {
+                final double playerDistance = this.map.getDistanceToSquircle();
+                player.playSoundToPlayer(SoundEvents.BLOCK_NOTE_BLOCK_PLING.value(), SoundCategory.MASTER, 1, ((float)squircleDistance - maxDistance) * 0.25f + 2f);
+
+                if (this.time % 24 == 0) player.sendMessage(Text.translatable("game.warning.near_out_of_bounds", playerDistance), false);
+            }
+
+            if (player.getY() < this.killHeight || squircleDistance > maxDistance) this.onPlayerDeath(player, damageSource(world, DamageTypes.OUT_OF_WORLD, attacker), 100000f);
         });
     }
 
@@ -537,14 +535,6 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
 
     public final boolean isBlockProtected(ServerPlayerEntity player, BlockPos pos, BlockState state) {
         return this.isBlockProtected(pos, state) && player.getGameMode() == GameMode.SURVIVAL;
-    }
-
-    public final boolean isBlockUnprotected(BlockPos pos, BlockState state) {
-        return !this.map.isBlockProtected(pos);
-    }
-
-    public final boolean isBlockUnprotected(ServerPlayerEntity player, BlockPos pos, BlockState state) {
-        return !this.isBlockProtected(player, pos, state);
     }
 
     protected static List<Pair<Text, Integer>> getNTopKillers(Map<UUID, ? extends CombatTable> dbTables, World world, int n) {

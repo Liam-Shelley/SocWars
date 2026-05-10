@@ -448,6 +448,7 @@
   "game.bedwars.chest_locked": "This chest is locked until %s is eliminated",
   "game.warning.placed_out_of_bounds": "You placed a block out of bounds! It will disappear in 5 seconds",
   "game.warning.placed_out_of_bounds.title": "Out of bounds!",
+  "game.warning.near_out_of_bounds": "You are almost out of bounds!",
   "game.bedwars.eliminate": "You have been eliminated!",
   "game.bedwars.eliminate.team": "%s team has been eliminated!",
   "hud.bedwars.has_bed": "  //  Bed: ",
