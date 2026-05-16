@@ -9,8 +9,8 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 
 public class KitScreenHandler extends ScreenHandler {
-    public static final int ITEM_SLOTS_WIDTH = 3;
-    public static final int ITEM_SLOTS_HEIGHT = 3;
+    public static final int ITEM_SLOTS_WIDTH = 6;
+    public static final int ITEM_SLOTS_HEIGHT = 2;
 
     private final GameKit gameKit;
     private final KitBlockEntity blockEntity;
@@ -22,7 +22,7 @@ public class KitScreenHandler extends ScreenHandler {
 
         for (int y = 0; y < ITEM_SLOTS_HEIGHT; y++) {
             for (int x = 0; x < ITEM_SLOTS_WIDTH; x++) {
-                this.addSlot(new Slot(this.gameKit, x + ITEM_SLOTS_WIDTH * y, x * 18 + 8, y * 18 + 18) {
+                this.addSlot(new Slot(this.gameKit, x + ITEM_SLOTS_WIDTH * y, x * 18 + 62, y * 18 + 18) {
                     @Override
                     public void markDirty() {
                         super.markDirty();
@@ -31,7 +31,7 @@ public class KitScreenHandler extends ScreenHandler {
                 });
             }
         }
-        this.addPlayerSlots(playerInventory, 8, 86);
+        this.addPlayerSlots(playerInventory, 8, 136);
     }
 
     public KitScreenHandler(int syncId, PlayerInventory playerInventory) {
@@ -47,10 +47,10 @@ public class KitScreenHandler extends ScreenHandler {
             ItemStack itemStack2 = slot2.getStack();
             itemStack = itemStack2.copy();
             if (slot < 9) {
-                if (!this.insertItem(itemStack2, 9, this.slots.size(), true)) {
+                if (!this.insertItem(itemStack2, GameKit.ITEM_SLOTS, this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (!this.insertItem(itemStack2, 0, 9, false)) {
+            } else if (!this.insertItem(itemStack2, 0, GameKit.ITEM_SLOTS, false)) {
                 return ItemStack.EMPTY;
             }
 
