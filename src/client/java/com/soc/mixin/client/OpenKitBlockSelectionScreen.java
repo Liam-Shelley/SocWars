@@ -1,26 +1,22 @@
 package com.soc.mixin.client;
 
-import com.soc.blocks.MapBlock;
+import com.soc.blocks.KitBlock;
 import com.soc.blocks.blockentities.KitBlockEntity;
 import com.soc.gui.screen.KitBlockSelectionScreen;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(value = MapBlock.class, remap = false)
+import java.util.Objects;
+
+@Mixin(value = KitBlock.class, remap = false)
 public abstract class OpenKitBlockSelectionScreen {
 	@Inject(at = @At("HEAD"), method = "openKitSelectionScreen")
-	private void socwars_openMapBlockScreen(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir) {
-		if (world.isClient() && world.getBlockEntity(pos) instanceof KitBlockEntity mapBlockEntity) {
-			final KitBlockSelectionScreen screen = new KitBlockSelectionScreen(mapBlockEntity);
+	private void socwars_openKitBlockSelectionScreen(KitBlockEntity blockEntity, CallbackInfo ci) {
+		if (Objects.requireNonNull(blockEntity.getWorld()).isClient) {
+			final KitBlockSelectionScreen screen = new KitBlockSelectionScreen(blockEntity);
 			MinecraftClient.getInstance().setScreen(screen);
 		}
 	}
