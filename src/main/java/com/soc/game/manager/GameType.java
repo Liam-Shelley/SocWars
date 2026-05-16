@@ -1,5 +1,6 @@
 package com.soc.game.manager;
 
+import com.mojang.serialization.Codec;
 import com.soc.game.map.BedwarsGameMap;
 import com.soc.game.map.HideAndSeekGameMap;
 import com.soc.game.map.RangedIntField;
@@ -8,6 +9,7 @@ import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.text.Text;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.StringIdentifiable;
 import org.apache.commons.lang3.StringUtils;
 
@@ -21,6 +23,7 @@ public enum GameType implements QueueProgress, StringIdentifiable {
     HIDE_AND_SEEK(1, 8, "hide_and_seek", HideAndSeekGameMap.FILE_EXTENSION, Map.of());
 
     public static final PacketCodec<RegistryByteBuf, GameType> PACKET_CODEC = PacketCodec.tuple(PacketCodecs.INTEGER, GameType::ordinal, GameType::fromOrdinal);
+    public static final Codec<GameType> CODEC = StringIdentifiable.createCodec(GameType::values);
     private final int minPlayers;
     private final int maxPlayers;
     private final String name;

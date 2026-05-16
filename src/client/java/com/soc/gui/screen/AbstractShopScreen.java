@@ -133,12 +133,7 @@ public abstract class AbstractShopScreen<T extends AbstractShopScreenHandler> ex
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
-        final int i = (this.width - this.backgroundWidth) / 2;
-        final int j = (this.height - this.backgroundHeight) / 2 + this.backgroundYOffset;
-        context.drawTexture(RenderPipelines.GUI_TEXTURED, this.getTexture(), i, j, 0.0F, 0.0F, this.backgroundWidth, this.backgroundHeight, this.backgroundWidth, this.backgroundHeight);
-
         super.render(context, mouseX, mouseY, deltaTicks);
-
         this.drawMouseoverTooltip(context, mouseX, mouseY);
     }
 
@@ -149,5 +144,9 @@ public abstract class AbstractShopScreen<T extends AbstractShopScreenHandler> ex
     }
 
     @Override
-    protected void drawBackground(DrawContext context, float deltaTicks, int mouseX, int mouseY) {}
+    protected void drawBackground(DrawContext context, float deltaTicks, int mouseX, int mouseY) {
+        final int i = (this.width - this.backgroundWidth) / 2;
+        final int j = (this.height - this.backgroundHeight) / 2 + this.backgroundYOffset;
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, this.getTexture(), i, j, 0.0F, 0.0F, this.backgroundWidth, this.backgroundHeight, this.backgroundWidth, this.backgroundHeight);
+    }
 }

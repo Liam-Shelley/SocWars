@@ -26,7 +26,7 @@ public class ShopResourceDisplay {
         context.drawItem(this.defaultStack, left, top);
         context.drawText(
                 textRenderer,
-                Text.of(count < 1000 ? String.valueOf(count) : "Big"),
+                count < 1000 ? Text.of(String.valueOf(count)) : Text.translatable("hud.over_999_items"),
                 left + 20,
                 top + 4,
                 count < 1000 ? 0xffffffff : 0xff00ff00,

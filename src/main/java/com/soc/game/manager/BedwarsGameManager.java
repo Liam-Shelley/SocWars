@@ -98,7 +98,7 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
     private final Map<DyeColor, TeamStats> teamStatsMap;
 
     protected BedwarsGameManager(ServerWorld world, Set<ServerPlayerEntity> players, @NotNull SpreadRules spreadRules, int gameId) {
-        super(world, players, spreadRules, gameId);
+        super(GameType.BEDWARS, world, players, spreadRules, gameId);
 
         final long shopSeed = world.random.nextLong();
         this.playerStatsMap = players.stream().collect(Collectors.toMap(ServerPlayerEntity::getUuid, player -> new PlayerStats(player, this.getTeam(player), shopSeed)));
@@ -133,6 +133,8 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
             final DyeColor team = this.getTeam(player);
 
             for (EquipmentSlot equipmentSlot : ARMOUR_SLOTS) {
+                if (!player.getEquippedStack(equipmentSlot).isEmpty()) continue;
+
                 final ItemStack armour = new ItemStack(leatherArmour(equipmentSlot));
                 armour.addEnchantment(enchantmentEntry(player.getWorld(), Enchantments.BINDING_CURSE), 1);
                 armour.set(DataComponentTypes.UNBREAKABLE, Unit.INSTANCE);

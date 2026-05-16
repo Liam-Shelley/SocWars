@@ -75,7 +75,7 @@ public class SkywarsGameManager extends AbstractGameManager<SkywarsGameMap, Skyw
             int gameId,
             Settings settings
     ) {
-        super(world, players, spreadRules, gameId);
+        super(GameType.SKYWARS, world, players, spreadRules, gameId);
         this.settings = settings;
         this.playerMap = players.stream().collect(Collectors.toMap(Entity::getUuid,key -> new PlayerStats()));
     }

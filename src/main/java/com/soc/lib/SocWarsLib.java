@@ -633,4 +633,12 @@ public final class SocWarsLib {
     public static RegistryEntry<Enchantment> enchantmentEntry(World world, RegistryKey<Enchantment> enchantmentKey) {
         return world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT).getOrThrow(enchantmentKey);
     }
+
+    public static <T, K, V> Map<K, V> mapFromArray(T[] array, Function<T, K> keyMapper, Function<T, V> valueMapper) {
+        return Arrays.stream(array).collect(Collectors.toMap(keyMapper, valueMapper));
+    }
+
+    public static <K, V> Map<K, V> mapFromArray(K[] array, Function<K, V> valueMapper) {
+        return mapFromArray(array, Function.identity(), valueMapper);
+    }
 }

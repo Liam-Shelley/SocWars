@@ -45,6 +45,8 @@ public class BedwarsTeamShopScreen extends AbstractShopScreen<BedwarsTeamShopScr
 
     @Override
     protected void drawBackground(DrawContext context, float deltaTicks, int mouseX, int mouseY) {
+        super.drawBackground(context, deltaTicks, mouseX, mouseY);
+
         final World world = this.client.world;
         this.drawFillBar(context, deltaTicks, 14, this.handler.getTrapProgress(world), 0xff22ee22);
         this.drawFillBar(context, deltaTicks, 36, this.handler.getAbilityProgress(world), 0xffeeee22);

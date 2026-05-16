@@ -14,11 +14,14 @@
     "KeyboardInputModifier",
     "MouseInputModifier",
     "OnMountDismountAlert",
+    "OpenKitBlockSelectionScreen",
     "OpenMapBlockScreen",
     "TransparentGlassArmour",
     "TrueInvisibility"
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "mixins": [
+  ]
 }

@@ -1,7 +1,9 @@
 package com.soc.networking;
 
+import com.soc.blocks.blockentities.KitBlockEntity;
 import com.soc.blocks.blockentities.MapBlockEntity;
 import com.soc.game.manager.GameType;
+import com.soc.networking.c2s.KitBlockUpdatePayload;
 import com.soc.networking.c2s.MapBlockSaveMapPayload;
 import com.soc.networking.c2s.MapBlockStructureCheckPayload;
 import com.soc.networking.c2s.MapBlockUpdatePayload;
@@ -40,5 +42,12 @@ public class C2SReceivers {
                 mapBlockEntity.saveMap(context.player());
             }
         });
+        ServerPlayNetworking.registerGlobalReceiver(KitBlockUpdatePayload.ID, ((payload, context) -> {
+            final BlockEntity blockEntity = payload.getBlockEntity(context);
+
+            if (blockEntity instanceof KitBlockEntity kitBlockEntity) {
+                kitBlockEntity.setKit(payload.kit());
+            }
+        }));
     }
 }

@@ -11,6 +11,7 @@ import com.soc.lib.Events;
 import com.soc.networking.s2c.EventQueuePayload;
 import com.soc.networking.s2c.LeaveGamePayload;
 import com.soc.networking.s2c.UpdateHotbarPayload;
+import com.soc.player.PlayerDataManager;
 import com.soc.util.BlockTags;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
@@ -59,6 +60,7 @@ import static com.soc.lib.SocWarsLib.*;
 public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE extends BaseTable, EVENT extends AbstractGameManager<?, ?, ?>> {
     public static final int KILLZONE_Y_OFFSET = -35;
 
+    private final GameType gameType;
     private final int gameId;
 
     protected final ServerWorld world;
@@ -73,7 +75,8 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
 
     protected int time;
 
-    protected AbstractGameManager(ServerWorld world, Set<ServerPlayerEntity> players, SpreadRules spreadRules, int gameId) {
+    protected AbstractGameManager(GameType gameType, ServerWorld world, Set<ServerPlayerEntity> players, SpreadRules spreadRules, int gameId) {
+        this.gameType = gameType;
         this.gameId = gameId;
         this.world = world;
         this.spectators = new ArrayList<>();
@@ -146,6 +149,11 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     protected void onFinishCountdown() {
         this.map.spawnCages(false);
         this.setGameMode(GameMode.SURVIVAL);
+        this.giveKits();
+    }
+
+    public void giveKits() {
+        this.playersForEach((team, player) -> PlayerDataManager.getPlayerData(player).tryApplyKit(this.gameType, player));
     }
 
     @MustBeInvokedByOverriders

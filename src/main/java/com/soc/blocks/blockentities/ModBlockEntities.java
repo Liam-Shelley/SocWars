@@ -16,6 +16,7 @@ public class ModBlockEntities {
     public static final BlockEntityType<CollectibleBlockEntity> COLLECTIBLE_BLOCK_ENTITY = register("collectible_block", CollectibleBlockEntity::new, ModBlocks.COLLECTIBLE_BLOCK);
     public static final BlockEntityType<MapBlockEntity> MAP_BLOCK_ENTITY = ModBlockEntities.register("map_block", MapBlockEntity::new, ModBlocks.MAP_BLOCK);
     public static final BlockEntityType<DisplayBlockEntity> DISPLAY_BLOCK_ENTITY = ModBlockEntities.register("display_block", DisplayBlockEntity::new, ModBlocks.DISPLAY_BLOCK);
+    public static final BlockEntityType<KitBlockEntity> KIT_BLOCK_ENTITY = ModBlockEntities.register("kit_block", KitBlockEntity::new, ModBlocks.KIT_BLOCK);
 
     public static <T extends BlockEntity> BlockEntityType<T> register(
             String name,

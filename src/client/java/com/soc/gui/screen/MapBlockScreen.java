@@ -55,7 +55,7 @@ public class MapBlockScreen extends Screen {
     private final Map<GameType, List<NumberTextFieldWidget>> optionalFields = new HashMap<>();
     private final Map<String, Integer> fields;
 
-    public MapBlockScreen(MapBlockEntity blockEntity, World world) {
+    public MapBlockScreen(MapBlockEntity blockEntity) {
         super(Text.translatable("screen.map_block"));
         this.blockEntity = blockEntity;
 

@@ -458,6 +458,7 @@
   "hud.a_to_b": "%s → %s",
   "hud.events": "Upcoming Events",
   "hud.upcoming_event": "%s in %s",
+  "hud.over_999_items": "Big",
   "enchantment.level.0": "0",
   "gui.enabled": "Enabled",
   "gui.disabled": "Disabled",
@@ -530,5 +531,6 @@
   "game.disallow_dismount": "You may not press %s to Dismount",
   "message.collectibles": "Collectibles: %s / %s",
   "message.collectibles.collected": "§2Collected",
-  "message.collectibles.not_collected": "§4Not Collected"
+  "message.collectibles.not_collected": "§4Not Collected",
+  "container.kit": "Kit Builder"
 }

@@ -43,7 +43,7 @@ public class HideAndSeekGameManager extends AbstractGameManager<HideAndSeekGameM
             @Nullable SpreadRules spreadRules,
             int gameId
     ) {
-        super(world, players, spreadRules, gameId);
+        super(GameType.HIDE_AND_SEEK, world, players, spreadRules, gameId);
     }
 
     @Override
