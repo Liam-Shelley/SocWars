@@ -53,11 +53,11 @@ public interface Collectibles {
             final DecimalFormat indexFormat = new DecimalFormat("0".repeat(String.valueOf(numCollectibles).length())); //I hate this so much but it works - why couldn't the simple .* regex have worked out
 
             for (int i = 0; i < numCollectibles; i++) {
-                text.append("\n" + indexFormat.format(i + 1) + ": ").append(Text.translatable(i < collectibles.size() && collectibles.get(i) ? "message.collectibles.collected" : "message.collectibles.not_collected"));
+                text.append("\n  " + indexFormat.format(i + 1) + ": ").append(Text.translatable(i < collectibles.size() && collectibles.get(i) ? "message.collectibles.collected" : "message.collectibles.not_collected"));
             }
         } else {
             for (int i = 0; i < collectibles.size(); i++) {
-                if (collectibles.get(i)) text.append(Text.literal("\n" + (i + 1)).formatted(Formatting.DARK_GREEN));
+                if (collectibles.get(i)) text.append(Text.literal("\n  " + (i + 1)).formatted(Formatting.DARK_GREEN));
             }
         }
 

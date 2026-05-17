@@ -2,13 +2,14 @@ package com.soc.networking;
 
 import com.soc.blocks.blockentities.KitBlockEntity;
 import com.soc.blocks.blockentities.MapBlockEntity;
-import com.soc.game.GameKit;
 import com.soc.game.manager.GameType;
 import com.soc.networking.c2s.*;
-import com.soc.player.PlayerData;
 import com.soc.player.PlayerDataManager;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 
 public class C2SReceivers {
@@ -54,6 +55,12 @@ public class C2SReceivers {
 
             if (blockEntity instanceof KitBlockEntity kitBlockEntity) {
                 PlayerDataManager.getPlayerData(context.player()).setKits(kitBlockEntity.getKit(), payload.selectedGameTypes());
+
+                final MutableText message = Text.translatable("message.kit_selection", kitBlockEntity.getKit().getName());
+                for (GameType gameType : payload.selectedGameTypes()) {
+                    message.append("\n  ").append(gameType.getVariantName());
+                }
+                context.player().sendMessage(message);
             }
         }));
     }

@@ -1,4 +1,5 @@
 package com.soc.blocks.blockentities;
+
 import com.mojang.serialization.Codec;
 import com.soc.game.GameKit;
 import com.soc.game.manager.GameType;
@@ -20,30 +21,36 @@ import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.soc.blocks.blockentities.ModBlockEntities.KIT_BLOCK_ENTITY;
 
 public class KitBlockEntity extends LockableContainerBlockEntity {
     private GameKit kit;
-    private List<GameType> allowedGameTypes;
+    private Map<GameType, Boolean> allowedGameTypes;
 
     public KitBlockEntity(BlockPos pos, BlockState state) {
         super(KIT_BLOCK_ENTITY, pos, state);
         this.kit = new GameKit();
-        this.allowedGameTypes = List.of(GameType.values());
+        this.allowedGameTypes = new HashMap<>();
+
+        for (GameType gameType : GameType.values()) {
+            this.allowedGameTypes.put(gameType, true);
+        }
     }
 
     @Override
     protected void writeData(WriteView view) {
         view.put("kit", GameKit.CODEC, this.kit);
-        view.put("allowed_game_types", Codec.list(GameType.CODEC), this.allowedGameTypes);
+        view.put("allowed_game_types", Codec.unboundedMap(GameType.CODEC, Codec.BOOL), this.allowedGameTypes);
     }
 
     @Override
     protected void readData(ReadView view) {
         this.kit = view.read("kit", GameKit.CODEC).orElse(new GameKit());
-        this.allowedGameTypes = view.read("allowed_game_types", Codec.list(GameType.CODEC)).orElse(List.of(GameType.values()));
+        this.allowedGameTypes = new HashMap<>(view.read("allowed_game_types", Codec.unboundedMap(GameType.CODEC, Codec.BOOL)).orElse(Map.of()));
     }
 
     @Override
@@ -88,13 +95,13 @@ public class KitBlockEntity extends LockableContainerBlockEntity {
     @Override
     public void onBlockReplaced(BlockPos pos, BlockState oldState) {}
 
-    public void setAllowedGameTypes(List<GameType> allowedGameTypes) {
+    public void setAllowedGameTypes(Map<GameType, Boolean> allowedGameTypes) {
         this.allowedGameTypes = allowedGameTypes;
         this.markDirty();
     }
 
     public boolean allowsGameType(GameType gameType) {
-        return this.allowedGameTypes.contains(gameType);
+        return this.allowedGameTypes.get(gameType);
     }
 
     @Override
@@ -103,7 +110,15 @@ public class KitBlockEntity extends LockableContainerBlockEntity {
         if (this.getWorld() instanceof ServerWorld serverWorld) serverWorld.getChunkManager().markForUpdate(this.getPos());
     }
 
-    public List<GameType> getAllowedGameTypes() {
+    public List<GameType> getAllowedGameTypesList() {
+        return this.allowedGameTypes.entrySet().stream().filter(Map.Entry::getValue).map(Map.Entry::getKey).toList();
+    }
+
+    public Map<GameType, Boolean> getAllowedGameTypes() {
         return this.allowedGameTypes;
+    }
+
+    public void setGameTypeAllowed(GameType gameType, Boolean isAllowed) {
+        this.allowedGameTypes.put(gameType, isAllowed);
     }
 }

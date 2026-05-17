@@ -2,11 +2,15 @@ package com.soc.screenhandler;
 
 import com.soc.blocks.blockentities.KitBlockEntity;
 import com.soc.game.GameKit;
+import com.soc.game.manager.GameType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
+
+import java.util.List;
+import java.util.Map;
 
 public class KitBlockCreationScreenHandler extends ScreenHandler {
     public static final int ITEM_SLOTS_WIDTH = 5;
@@ -77,5 +81,17 @@ public class KitBlockCreationScreenHandler extends ScreenHandler {
 
     public void setBlockEntity(KitBlockEntity blockEntity) {
         this.blockEntity = blockEntity;
+    }
+
+    public List<GameType> getAllowedGameTypesList() {
+        return this.blockEntity == null ? List.of() : this.blockEntity.getAllowedGameTypesList();
+    }
+
+    public Map<GameType, Boolean> getAllowedGameTypes() {
+        return this.blockEntity == null ? Map.of() : this.blockEntity.getAllowedGameTypes();
+    }
+
+    public void setGameTypeAllowed(GameType gameType, Boolean isAllowed) {
+        if (this.blockEntity != null) this.blockEntity.setGameTypeAllowed(gameType, isAllowed);
     }
 }

@@ -12,15 +12,15 @@ import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-public record KitBlockUpdatePayload(BlockLocation block, List<GameType> allowedGameTypes) implements CustomPayload, HoldsBlockEntity {
+public record KitBlockUpdatePayload(BlockLocation block, Map<GameType, Boolean> allowedGameTypes) implements CustomPayload, HoldsBlockEntity {
     public static final Identifier KIT_BLOCK_UPDATE_PAYLOAD_ID = Identifier.of(SocWars.MOD_ID, "kit_block_update");
     public static final Id<KitBlockUpdatePayload> ID = new Id<>(KIT_BLOCK_UPDATE_PAYLOAD_ID);
     public static final PacketCodec<RegistryByteBuf, KitBlockUpdatePayload> CODEC = PacketCodec.tuple(
             BlockLocation.PACKET_CODEC, KitBlockUpdatePayload::block,
-            PacketCodecs.collection(ArrayList::new, GameType.PACKET_CODEC), KitBlockUpdatePayload::allowedGameTypes,
+            PacketCodecs.map(HashMap::new, GameType.PACKET_CODEC, PacketCodecs.BOOLEAN), KitBlockUpdatePayload::allowedGameTypes,
             KitBlockUpdatePayload::new
     );
 

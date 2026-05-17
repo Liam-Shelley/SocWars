@@ -37,7 +37,7 @@ public class PlayerData {
 
     public PlayerData(List<Boolean> collectibles, Map<GameType, GameKit> equippedKits) {
         this.collectibles = new ArrayList<>(collectibles);
-        this.equippedKits = equippedKits;
+        this.equippedKits = new HashMap<>(equippedKits);
     }
 
     public PlayerData(List<Boolean> collectibles) {

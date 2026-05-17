@@ -538,6 +538,8 @@
   "message.collectibles": "Collectibles: %s / %s",
   "message.collectibles.collected": "§2Collected",
   "message.collectibles.not_collected": "§4Not Collected",
+  "message.no_kits": "This kit is unavailable at this time.",
+  "message.kit_selection": "You have selected %s for:",
   "container.kit_block_creation": "Kit Builder",
   "container.kit_block_selection": "Kit Selection"
 }

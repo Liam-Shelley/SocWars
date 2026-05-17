@@ -9,6 +9,7 @@ import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -35,7 +36,11 @@ public class KitBlock extends BlockWithEntity {
             player.openHandledScreen(blockEntity);
             if (player instanceof ServerPlayerEntity serverPlayer) ServerPlayNetworking.send(serverPlayer, new KitBlockEntityAssignment(blockEntity));
         } else {
-            this.openKitSelectionScreen(blockEntity);
+            if (blockEntity.getAllowedGameTypesList().isEmpty() && world.isClient) { //Yeah I know this is gross but the openKitSelectionScreen function only does something on the server
+                player.sendMessage(Text.translatable("message.no_kits"), false);
+            } else {
+                this.openKitSelectionScreen(blockEntity);
+            }
         }
 
         return ActionResult.SUCCESS;

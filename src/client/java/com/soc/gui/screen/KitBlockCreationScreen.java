@@ -23,22 +23,16 @@ import static com.soc.lib.SocWarsLib.enumerate;
 import static com.soc.lib.SocWarsLib.mapFromArrayEnumerate;
 
 public class KitBlockCreationScreen extends HandledScreen<KitBlockCreationScreenHandler> {
-    public static final Identifier TEXTURE = Identifier.of(SocWars.MOD_ID, "textures/gui/container/kit.png");
+    public static final Identifier TEXTURE = Identifier.of(SocWars.MOD_ID, "textures/gui/container/kit_block_creation.png");
 
     private boolean initialised;
-
-    private final Map<GameType, Boolean> allowedGameTypes = HashMap.newHashMap(GameType.values().length);
 
     private Map<GameType, ToggleButtonWidget> gameSelectionButtons;
 
     public KitBlockCreationScreen(KitBlockCreationScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
         this.backgroundHeight = 218;
-        this.playerInventoryTitleY = 98;
-
-        for (GameType value : GameType.values()) {
-            this.allowedGameTypes.put(value, false);
-        }
+        this.playerInventoryTitleY = 125;
     }
 
     @Override
@@ -48,7 +42,7 @@ public class KitBlockCreationScreen extends HandledScreen<KitBlockCreationScreen
 
         enumerate(GameType.values(), (i, gameType) -> {
             final MutableText variantName = gameType.getCompactVariantName();
-            final boolean enabled = this.allowedGameTypes.get(gameType);
+            final boolean enabled = this.handler.getAllowedGameTypesList().contains(gameType);
             variantName.append(Text.translatable(enabled ? "hud.tick" : "hud.cross"));
 
             context.drawText(this.textRenderer, variantName, this.width / 2 - 78, this.height / 2 - 86 + i * 18, enabled ? 0xff11ee22 : 0xffee1122, true);
@@ -61,6 +55,7 @@ public class KitBlockCreationScreen extends HandledScreen<KitBlockCreationScreen
         final int j = (this.height - this.backgroundHeight) / 2;
         context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, i, j, 0.0F, 0.0F, this.backgroundWidth, this.backgroundHeight, this.backgroundWidth, this.backgroundHeight);
     }
+
     @Override
     protected void init() {
         super.init();
@@ -78,17 +73,13 @@ public class KitBlockCreationScreen extends HandledScreen<KitBlockCreationScreen
 
     private void createWidgets() {
         this.gameSelectionButtons = mapFromArrayEnumerate(GameType.values(), (i, gameType) -> new ToggleButtonWidget(this.width / 2 - 31, this.height / 2 - 90 + i * 18, 16, 16, false, isToggled -> {
-            this.allowedGameTypes.put(gameType, isToggled);
+            this.handler.setGameTypeAllowed(gameType, isToggled);
             this.sync();
         }, TEXTURES));
     }
 
     private void sync() {
-        ClientPlayNetworking.send(new KitBlockUpdatePayload(new BlockLocation(this.handler.getBlockEntity()), this.getAllowedGameTypes()));
-    }
-
-    private List<GameType> getAllowedGameTypes() {
-        return this.allowedGameTypes.entrySet().stream().filter(Map.Entry::getValue).map(Map.Entry::getKey).toList();
+        ClientPlayNetworking.send(new KitBlockUpdatePayload(new BlockLocation(this.handler.getBlockEntity()), this.handler.getAllowedGameTypes()));
     }
 
     public void setBlockEntity(KitBlockEntity blockEntity) {
