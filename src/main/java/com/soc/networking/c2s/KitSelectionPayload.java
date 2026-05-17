@@ -1,6 +1,7 @@
 package com.soc.networking.c2s;
 
 import com.soc.SocWars;
+import com.soc.game.GameKit;
 import com.soc.game.manager.GameType;
 import com.soc.networking.HoldsBlockEntity;
 import com.soc.networking.helper.BlockLocation;
@@ -15,13 +16,13 @@ import net.minecraft.util.Identifier;
 import java.util.ArrayList;
 import java.util.List;
 
-public record KitBlockUpdatePayload(BlockLocation block, List<GameType> allowedGameTypes) implements CustomPayload, HoldsBlockEntity {
-    public static final Identifier KIT_BLOCK_UPDATE_PAYLOAD_ID = Identifier.of(SocWars.MOD_ID, "kit_block_update");
-    public static final Id<KitBlockUpdatePayload> ID = new Id<>(KIT_BLOCK_UPDATE_PAYLOAD_ID);
-    public static final PacketCodec<RegistryByteBuf, KitBlockUpdatePayload> CODEC = PacketCodec.tuple(
-            BlockLocation.PACKET_CODEC, KitBlockUpdatePayload::block,
-            PacketCodecs.collection(ArrayList::new, GameType.PACKET_CODEC), KitBlockUpdatePayload::allowedGameTypes,
-            KitBlockUpdatePayload::new
+public record KitSelectionPayload(BlockLocation block, List<GameType> selectedGameTypes) implements CustomPayload, HoldsBlockEntity {
+    public static final Identifier KIT_SELECTION_PAYLOAD_ID = Identifier.of(SocWars.MOD_ID, "kit_selection");
+    public static final Id<KitSelectionPayload> ID = new Id<>(KIT_SELECTION_PAYLOAD_ID);
+    public static final PacketCodec<RegistryByteBuf, KitSelectionPayload> CODEC = PacketCodec.tuple(
+            BlockLocation.PACKET_CODEC, KitSelectionPayload::block,
+            PacketCodecs.collection(ArrayList::new, GameType.PACKET_CODEC), KitSelectionPayload::selectedGameTypes,
+            KitSelectionPayload::new
     );
 
     @Override

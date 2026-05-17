@@ -8,20 +8,18 @@ import com.soc.gui.widget.NumberTextFieldWidget;
 import com.soc.lib.InfoList;
 import com.soc.networking.c2s.MapBlockSaveMapPayload;
 import com.soc.networking.c2s.MapBlockUpdatePayload;
+import com.soc.networking.helper.BlockLocation;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.CyclingButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.ToggleButtonWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
-import org.joml.Vector2i;
 
 import java.util.*;
 
@@ -302,7 +300,7 @@ public class MapBlockScreen extends Screen {
     private void doServerMapSave() {
         this.client.setScreen(null);
         this.saveAndSync();
-        ClientPlayNetworking.send(new MapBlockSaveMapPayload(this.blockEntity.getPos().asLong()));
+        ClientPlayNetworking.send(new MapBlockSaveMapPayload(new BlockLocation(this.blockEntity)));
     }
 
     private void saveSyncClose() {
@@ -316,7 +314,7 @@ public class MapBlockScreen extends Screen {
         this.blockEntity.setMapType(this.mapType);
         this.blockEntity.setBlockProtection(this.blockProtection);
 
-        final MapBlockUpdatePayload payload = new MapBlockUpdatePayload(this.blockEntity.getPos().asLong(), this.regionSize.asLong(), this.mapName, this.mapType.ordinal(), this.blockProtection, this.fields);
+        final MapBlockUpdatePayload payload = new MapBlockUpdatePayload(new BlockLocation(this.blockEntity), this.regionSize.asLong(), this.mapName, this.mapType.ordinal(), this.blockProtection, this.fields);
         ClientPlayNetworking.send(payload);
     }
 

@@ -2,11 +2,11 @@ package com.soc.networking;
 
 import com.soc.blocks.blockentities.KitBlockEntity;
 import com.soc.blocks.blockentities.MapBlockEntity;
+import com.soc.game.GameKit;
 import com.soc.game.manager.GameType;
-import com.soc.networking.c2s.KitBlockUpdatePayload;
-import com.soc.networking.c2s.MapBlockSaveMapPayload;
-import com.soc.networking.c2s.MapBlockStructureCheckPayload;
-import com.soc.networking.c2s.MapBlockUpdatePayload;
+import com.soc.networking.c2s.*;
+import com.soc.player.PlayerData;
+import com.soc.player.PlayerDataManager;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
@@ -46,7 +46,14 @@ public class C2SReceivers {
             final BlockEntity blockEntity = payload.getBlockEntity(context);
 
             if (blockEntity instanceof KitBlockEntity kitBlockEntity) {
-                kitBlockEntity.setKit(payload.kit());
+                kitBlockEntity.setAllowedGameTypes(payload.allowedGameTypes());
+            }
+        }));
+        ServerPlayNetworking.registerGlobalReceiver(KitSelectionPayload.ID, ((payload, context) -> {
+            final BlockEntity blockEntity = payload.getBlockEntity(context);
+
+            if (blockEntity instanceof KitBlockEntity kitBlockEntity) {
+                PlayerDataManager.getPlayerData(context.player()).setKits(kitBlockEntity.getKit(), payload.selectedGameTypes());
             }
         }));
     }

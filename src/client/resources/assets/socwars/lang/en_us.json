@@ -280,6 +280,8 @@
   "item.socwars.gallium_block": "Block of Gallium",
   "block.socwars.display_block": "Display Block",
   "item.socwars.display_block": "Display Block",
+  "block.socwars.kit_block": "Kit Block",
+  "item.socwars.kit_block": "Kit Block",
   "block.socwars.chest_placeholder": "Skywars Chest Placeholder",
   "item.socwars.chest_placeholder_tier_0": "Tier 1 Skywars Chest Placeholder",
   "item.socwars.chest_placeholder_tier_1": "Tier 2 Skywars Chest Placeholder",
@@ -328,9 +330,13 @@
   "text.map_block.field.min_build_height": "Minimum Build Y:",
   "text.map_block.field.max_build_height": "Maximum Build Y:",
   "game_type.bedwars": "Bedwars",
+  "game_type.bedwars.compact": "Bedwars",
   "game_type.skywars": "Skywars",
+  "game_type.skywars.compact": "Skywars",
   "game_type.prop_hunt": "Prop Hunt",
+  "game_type.prop_hunt.compact": "Prop Hunt",
   "game_type.hide_and_seek": "Hide and Seek",
+  "game_type.hide_and_seek.compact": "Hide + Seek",
   "button.map_block.check_structure": "Check Structure",
   "button.map_block.save_structure": "Save Structure",
   "button.map_block.confirm_save_structure": "Confirm?",
@@ -532,5 +538,6 @@
   "message.collectibles": "Collectibles: %s / %s",
   "message.collectibles.collected": "§2Collected",
   "message.collectibles.not_collected": "§4Not Collected",
-  "container.kit": "Kit Builder"
+  "container.kit_block_creation": "Kit Builder",
+  "container.kit_block_selection": "Kit Selection"
 }

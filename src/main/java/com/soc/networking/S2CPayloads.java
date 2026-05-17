@@ -32,5 +32,6 @@ public class S2CPayloads {
         PayloadTypeRegistry.playS2C().register(JoinSkywarsPayload.ID, JoinSkywarsPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(LeaveSkywarsPayload.ID, LeaveSkywarsPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(SetTeamLivesPayload.ID, SetTeamLivesPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(KitBlockEntityAssignment.ID, KitBlockEntityAssignment.CODEC);
     }
 }

@@ -8,25 +8,25 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 
-public class KitScreenHandler extends ScreenHandler {
-    public static final int ITEM_SLOTS_WIDTH = 6;
+public class KitBlockCreationScreenHandler extends ScreenHandler {
+    public static final int ITEM_SLOTS_WIDTH = 5;
     public static final int ITEM_SLOTS_HEIGHT = 2;
 
     private final GameKit gameKit;
-    private final KitBlockEntity blockEntity;
+    private KitBlockEntity blockEntity;
 
-    public KitScreenHandler(int syncId, PlayerInventory playerInventory, GameKit gameKit, KitBlockEntity blockEntity) {
-        super(ScreenHandlers.KIT_SCREEN_HANDLER, syncId);
+    public KitBlockCreationScreenHandler(int syncId, PlayerInventory playerInventory, GameKit gameKit, KitBlockEntity blockEntity) {
+        super(ScreenHandlers.KIT_BLOCK_CREATION_SCREEN_HANDLER, syncId);
         this.gameKit = gameKit;
         this.blockEntity = blockEntity;
 
         for (int y = 0; y < ITEM_SLOTS_HEIGHT; y++) {
             for (int x = 0; x < ITEM_SLOTS_WIDTH; x++) {
-                this.addSlot(new Slot(this.gameKit, x + ITEM_SLOTS_WIDTH * y, x * 18 + 62, y * 18 + 18) {
+                this.addSlot(new Slot(this.gameKit, x + ITEM_SLOTS_WIDTH * y, x * 18 + 80, y * 18 + 18) {
                     @Override
                     public void markDirty() {
                         super.markDirty();
-                        if (KitScreenHandler.this.blockEntity != null) KitScreenHandler.this.blockEntity.markDirty();
+                        if (KitBlockCreationScreenHandler.this.blockEntity != null) KitBlockCreationScreenHandler.this.blockEntity.markDirty();
                     }
                 });
             }
@@ -34,7 +34,7 @@ public class KitScreenHandler extends ScreenHandler {
         this.addPlayerSlots(playerInventory, 8, 136);
     }
 
-    public KitScreenHandler(int syncId, PlayerInventory playerInventory) {
+    public KitBlockCreationScreenHandler(int syncId, PlayerInventory playerInventory) {
         this(syncId, playerInventory, new GameKit(), null);
     }
 
@@ -46,7 +46,7 @@ public class KitScreenHandler extends ScreenHandler {
         if (slot2 != null && slot2.hasStack()) {
             ItemStack itemStack2 = slot2.getStack();
             itemStack = itemStack2.copy();
-            if (slot < 9) {
+            if (slot < GameKit.ITEM_SLOTS) {
                 if (!this.insertItem(itemStack2, GameKit.ITEM_SLOTS, this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
@@ -69,5 +69,13 @@ public class KitScreenHandler extends ScreenHandler {
     @Override
     public boolean canUse(PlayerEntity player) {
         return player.isCreative();
+    }
+
+    public KitBlockEntity getBlockEntity() {
+        return this.blockEntity;
+    }
+
+    public void setBlockEntity(KitBlockEntity blockEntity) {
+        this.blockEntity = blockEntity;
     }
 }

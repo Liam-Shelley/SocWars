@@ -2,6 +2,7 @@ package com.soc.networking.c2s;
 
 import com.soc.SocWars;
 import com.soc.networking.HoldsBlockEntity;
+import com.soc.networking.helper.BlockLocation;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.network.RegistryByteBuf;
@@ -13,11 +14,11 @@ import net.minecraft.util.Identifier;
 import java.util.HashMap;
 import java.util.Map;
 
-public record MapBlockUpdatePayload(long pos, long regionSize, String mapName, int mapType, boolean blockProtection, Map<String, Integer> fields) implements CustomPayload, HoldsBlockEntity {
+public record MapBlockUpdatePayload(BlockLocation block, long regionSize, String mapName, int mapType, boolean blockProtection, Map<String, Integer> fields) implements CustomPayload, HoldsBlockEntity {
     public static final Identifier MAP_BLOCK_UPDATE_ID = Identifier.of(SocWars.MOD_ID, "map_block_update");
     public static final Id<MapBlockUpdatePayload> ID = new Id<>(MAP_BLOCK_UPDATE_ID);
     public static final PacketCodec<RegistryByteBuf, MapBlockUpdatePayload> CODEC = PacketCodec.tuple(
-            PacketCodecs.LONG, MapBlockUpdatePayload::pos,
+            BlockLocation.PACKET_CODEC, MapBlockUpdatePayload::block,
             PacketCodecs.LONG, MapBlockUpdatePayload::regionSize,
             PacketCodecs.STRING, MapBlockUpdatePayload::mapName,
             PacketCodecs.INTEGER, MapBlockUpdatePayload::mapType,
@@ -32,6 +33,6 @@ public record MapBlockUpdatePayload(long pos, long regionSize, String mapName, i
 
     @Override
     public BlockEntity getBlockEntity(ServerPlayNetworking.Context context) {
-        return this.getBlockEntity(context, this.pos);
+        return this.getBlockEntity(context, this.block);
     }
 }

@@ -8,6 +8,7 @@ import com.soc.game.map.SkywarsGameMap;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.StringIdentifiable;
@@ -63,8 +64,12 @@ public enum GameType implements QueueProgress, StringIdentifiable {
         return (float) Math.pow(rawProgress, 2.5f);
     }
 
-    public Text getVariantName() {
-        return Text.translatable("game_type." + this.toString().toLowerCase());
+    public MutableText getVariantName() {
+        return Text.translatable("game_type." + this.name);
+    }
+
+    public MutableText getCompactVariantName() {
+        return Text.translatable("game_type." + this.name + ".compact");
     }
 
     public static GameType fromOrdinal(int ordinal) {

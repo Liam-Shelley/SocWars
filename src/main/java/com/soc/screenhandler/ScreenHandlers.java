@@ -11,7 +11,7 @@ public interface ScreenHandlers {
 
     ScreenHandlerType<BedwarsIndividualShopScreenHandler> BEDWARS_INDIVIDUAL_SHOP_SCREEN_HANDLER = register("individual_bedwars_shop", BedwarsIndividualShopScreenHandler::new);
     ScreenHandlerType<BedwarsTeamShopScreenHandler> BEDWARS_TEAM_SHOP_SCREEN_HANDLER = register("team_bedwars_shop", BedwarsTeamShopScreenHandler::new);
-    ScreenHandlerType<KitScreenHandler> KIT_SCREEN_HANDLER = register("kit", KitScreenHandler::new);
+    ScreenHandlerType<KitBlockCreationScreenHandler> KIT_BLOCK_CREATION_SCREEN_HANDLER = register("kit_block_creation", KitBlockCreationScreenHandler::new);
 
     private static <T extends ScreenHandler> ScreenHandlerType<T> register(String id, ScreenHandlerType.Factory<T> factory) {
         return Registry.register(Registries.SCREEN_HANDLER, id, new ScreenHandlerType<>(factory, FeatureFlags.VANILLA_FEATURES));

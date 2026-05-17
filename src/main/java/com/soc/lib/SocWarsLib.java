@@ -48,7 +48,6 @@ import net.minecraft.util.math.random.LocalRandom;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -57,6 +56,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class SocWarsLib {
     public static final DecimalFormat TWO_DIGIT_NUMBER_FORMAT = new DecimalFormat("00");
@@ -640,5 +640,19 @@ public final class SocWarsLib {
 
     public static <K, V> Map<K, V> mapFromArray(K[] array, Function<K, V> valueMapper) {
         return mapFromArray(array, Function.identity(), valueMapper);
+    }
+
+    public static <K, V> Map<K, V> mapFromArrayEnumerate(K[] array, BiFunction<Integer, K, V> valueMapper) {
+        final AtomicInteger i = new AtomicInteger(0);
+        return Arrays.stream(array).collect(Collectors.toMap(Function.identity(), key -> valueMapper.apply(i.getAndIncrement(), key), (a, b) -> a, LinkedHashMap::new));
+    }
+
+    public static <I, O> Stream<O> mapEnumerate(Stream<I> collection, BiFunction<Integer, I, O> mapper) {
+        final AtomicInteger i = new AtomicInteger(0);
+        return collection.map(element -> mapper.apply(i.getAndIncrement(), element));
+    }
+
+    public static <I, O> Stream<O> mapEnumerate(Collection<I> collection, BiFunction<Integer, I, O> mapper) {
+        return mapEnumerate(collection.stream(), mapper);
     }
 }

@@ -78,7 +78,7 @@ public class PlayerData {
         ifNotNull(this.equippedKits.get(gameType), kit -> kit.apply(player));
     }
 
-    public void setKits(GameKit kit, GameType[] gameTypes) {
+    public void setKits(GameKit kit, List<GameType> gameTypes) {
         for (GameType gameType : gameTypes) {
             this.equippedKits.put(gameType, kit);
         }

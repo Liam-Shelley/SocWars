@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameKit implements Inventory {
-    public static int ITEM_SLOTS = 12;
+    public static int ITEM_SLOTS = 10;
 
     public static final PacketCodec<RegistryByteBuf, GameKit> PACKET_CODEC = PacketCodec.tuple(
             ItemStack.OPTIONAL_LIST_PACKET_CODEC, kit -> kit.items,

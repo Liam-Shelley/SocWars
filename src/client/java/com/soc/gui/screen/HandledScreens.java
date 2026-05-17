@@ -8,6 +8,6 @@ public interface HandledScreens {
     static void initialise() {
         register(ScreenHandlers.BEDWARS_INDIVIDUAL_SHOP_SCREEN_HANDLER, BedwarsIndividualShopScreen::new);
         register(ScreenHandlers.BEDWARS_TEAM_SHOP_SCREEN_HANDLER, BedwarsTeamShopScreen::new);
-        register(ScreenHandlers.KIT_SCREEN_HANDLER, KitScreen::new);
+        register(ScreenHandlers.KIT_BLOCK_CREATION_SCREEN_HANDLER, KitBlockCreationScreen::new);
     }
 }

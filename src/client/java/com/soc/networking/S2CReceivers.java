@@ -1,10 +1,12 @@
 package com.soc.networking;
 
+import com.soc.blocks.blockentities.KitBlockEntity;
 import com.soc.gui.hud.JumpscareHud;
 import com.soc.gui.hud.sidebar.BedwarsTeamsHud;
 import com.soc.gui.hud.BlockProtectionManagerAndHud;
 import com.soc.gui.hud.sidebar.EventsHud;
 import com.soc.gui.hud.sidebar.SkywarsTeamsHud;
+import com.soc.gui.screen.KitBlockCreationScreen;
 import com.soc.lib.Coroutine;
 import com.soc.lib.Coroutines;
 import com.soc.lib.Events;
@@ -92,6 +94,14 @@ public class S2CReceivers {
             final World world = context.player().getWorld();
             final Vec3d velocity = payload.velocity();
             payload.positions().forEach(pos -> world.addParticleClient(payload.particleType(), pos.x, pos.y, pos.z, velocity.x, velocity.y, velocity.z));
+        }));
+        ClientPlayNetworking.registerGlobalReceiver(KitBlockEntityAssignment.ID, ((payload, context) -> {
+            if (
+                    MinecraftClient.getInstance().currentScreen instanceof KitBlockCreationScreen kitBlockCreationScreen &&
+                    MinecraftClient.getInstance().world.getBlockEntity(payload.block().pos()) instanceof KitBlockEntity kitBlockEntity
+            ) {
+                kitBlockCreationScreen.setBlockEntity(kitBlockEntity);
+            }
         }));
     }
 
