@@ -45,7 +45,7 @@ public class KitBlockCreationScreen extends HandledScreen<KitBlockCreationScreen
             final boolean enabled = this.handler.getAllowedGameTypesList().contains(gameType);
             variantName.append(Text.translatable(enabled ? "hud.tick" : "hud.cross"));
 
-            context.drawText(this.textRenderer, variantName, this.width / 2 - 78, this.height / 2 - 86 + i * 18, enabled ? 0xff11ee22 : 0xffee1122, true);
+            context.drawText(this.textRenderer, variantName, this.width / 2 - 76, this.height / 2 - 86 + i * 18, enabled ? 0xff11ee22 : 0xffee1122, true);
         });
     }
 
@@ -66,13 +66,13 @@ public class KitBlockCreationScreen extends HandledScreen<KitBlockCreationScreen
         }
 
         enumerate(this.gameSelectionButtons.values(), (i, widget) -> {
-            widget.setPosition(this.width / 2 - 31, this.height / 2 - 90 + i * 18);
+            widget.setPosition(this.width / 2 - 79, this.height / 2 - 90 + i * 18);
             this.addDrawableChild(widget);
         });
     }
 
     private void createWidgets() {
-        this.gameSelectionButtons = mapFromArrayEnumerate(GameType.values(), (i, gameType) -> new ToggleButtonWidget(this.width / 2 - 31, this.height / 2 - 90 + i * 18, 16, 16, false, isToggled -> {
+        this.gameSelectionButtons = mapFromArrayEnumerate(GameType.values(), (i, gameType) -> new ToggleButtonWidget(this.width / 2 - 79, this.height / 2 - 90 + i * 18, 64, 16, false, isToggled -> {
             this.handler.setGameTypeAllowed(gameType, isToggled);
             this.sync();
         }, TEXTURES));

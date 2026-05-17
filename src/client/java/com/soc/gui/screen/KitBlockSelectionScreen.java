@@ -27,8 +27,8 @@ import static com.soc.lib.SocWarsLib.mapEnumerate;
 
 public class KitBlockSelectionScreen extends Screen {
     public static final Identifier TEXTURE = Identifier.of(SocWars.MOD_ID, "textures/gui/container/kit_block_selection.png");
-    public static final ButtonTextures TEXTURES = new ButtonTextures(Identifier.of(SocWars.MOD_ID, ""), Identifier.of(SocWars.MOD_ID, ""));
-    public static final ButtonTextures INSTANT_TEXTURES = new ButtonTextures(Identifier.of(SocWars.MOD_ID, "widget/leave_button"), Identifier.ofVanilla("widget/button_disabled"), Identifier.ofVanilla("widget/button_highlighted"));
+    public static final ButtonTextures TEXTURES = new ButtonTextures(Identifier.ofVanilla("widget/button"), Identifier.ofVanilla("widget/button_disabled"), Identifier.ofVanilla("widget/button_highlighted"), Identifier.of(SocWars.MOD_ID, "widget/button_disabled_highlighted"));
+    public static final ButtonTextures INSTANT_TEXTURES = new ButtonTextures(Identifier.of(SocWars.MOD_ID, "widget/leave_button"), Identifier.of(SocWars.MOD_ID, "widget/leave_button_highlighted"));
 
     private final KitBlockEntity blockEntity;
     private boolean initialised;
@@ -65,7 +65,15 @@ public class KitBlockSelectionScreen extends Screen {
             final boolean enabled = this.selectedGameTypes.get(gameType);
             variantName.append(Text.translatable(enabled ? "hud.tick" : "hud.cross"));
 
-            context.drawText(this.textRenderer, variantName, this.width / 2 - 78, this.height / 2 - 86 + i * 18, enabled ? 0xff11ee22 : 0xffee1122, true);
+            context.drawText(this.textRenderer, variantName, this.width / 2 - 76, this.height / 2 - 86 + i * 18, enabled ? 0xff11ee22 : 0xffee1122, true);
+        });
+
+        enumerate(this.blockEntity.getKit().getHeldStacks(), (i, stack) -> {
+            if (stack.isEmpty()) return;
+            final int x = this.width / 2 + 46 + (i % 2) * 18;
+            final int y = this.height / 2 - 91 + (i >> 1) * 18;
+
+            context.drawItem(stack, x, y);
         });
     }
 
@@ -79,30 +87,30 @@ public class KitBlockSelectionScreen extends Screen {
         }
 
         enumerate(this.gameSelectionButtons, (i, widget) -> {
-            widget.setPosition(this.width / 2 - 49, this.height / 2 - 90 + i * 18);
+            widget.setPosition(this.width / 2 - 79, this.height / 2 - 90 + i * 18);
             this.addDrawableChild(widget);
         });
         enumerate(this.gameInstantSelectionButtons, (i, widget) -> {
-            widget.setPosition(this.width / 2 - 31, this.height / 2 - 90 + i * 18);
+            widget.setPosition(this.width / 2 - 19, this.height / 2 - 90 + i * 18);
             this.addDrawableChild(widget);
         });
 
-        this.selectKitButton.setPosition(this.width / 2 - 31, this.height / 2);
+        this.selectKitButton.setPosition(this.width / 2 - 79, this.height / 2 - 6);
         this.addDrawableChild(this.selectKitButton);
     }
 
     private void createWidgets() {
-        this.gameSelectionButtons = mapEnumerate(this.blockEntity.getAllowedGameTypesList(), (i, gameType) -> new ToggleButtonWidget(this.width / 2 - 49, this.height / 2 - 90 + i * 18, 16, 16, true, isToggled -> {
+        this.gameSelectionButtons = mapEnumerate(this.blockEntity.getAllowedGameTypesList(), (i, gameType) -> new ToggleButtonWidget(this.width / 2 - 79, this.height / 2 - 90 + i * 18, 58, 16, true, isToggled -> {
             this.selectedGameTypes.put(gameType, isToggled);
         }, TEXTURES)).toList();
-        this.gameInstantSelectionButtons = mapEnumerate(this.blockEntity.getAllowedGameTypesList(), (i, gameType) -> new TexturedButtonWidget(this.width / 2 - 31, this.height / 2 - 90 + i * 18, 16, 16, INSTANT_TEXTURES, button -> {
+        this.gameInstantSelectionButtons = mapEnumerate(this.blockEntity.getAllowedGameTypesList(), (i, gameType) -> new TexturedButtonWidget(this.width / 2 - 19, this.height / 2 - 90 + i * 18, 16, 16, INSTANT_TEXTURES, button -> {
             ClientPlayNetworking.send(new KitSelectionPayload(new BlockLocation(this.blockEntity), List.of(gameType)));
             MinecraftClient.getInstance().setScreen(null);
         })).toList();
 
-        this.selectKitButton = ButtonWidget.builder(Text.translatable("aaa"), widget -> {
+        this.selectKitButton = ButtonWidget.builder(Text.translatable("text.kit_block.select_kits"), widget -> {
             ClientPlayNetworking.send(new KitSelectionPayload(new BlockLocation(this.blockEntity), this.selectedGameTypes.entrySet().stream().filter(Map.Entry::getValue).map(Map.Entry::getKey).toList()));
             MinecraftClient.getInstance().setScreen(null);
-        }).dimensions(this.width / 2 - 31, this.height / 2, 50, 16).build();
+        }).dimensions(this.width / 2 - 79, this.height / 2 - 6, 76, 16).build();
     }
 }

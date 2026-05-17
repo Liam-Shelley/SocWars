@@ -329,6 +329,7 @@
   "text.map_block.block_protection": "Block Protection:",
   "text.map_block.field.min_build_height": "Minimum Build Y:",
   "text.map_block.field.max_build_height": "Maximum Build Y:",
+  "text.kit_block.select_kits": "Select Kits",
   "game_type.bedwars": "Bedwars",
   "game_type.bedwars.compact": "Bedwars",
   "game_type.skywars": "Skywars",

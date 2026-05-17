@@ -22,6 +22,7 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +35,7 @@ public class KitBlockEntity extends LockableContainerBlockEntity {
     public KitBlockEntity(BlockPos pos, BlockState state) {
         super(KIT_BLOCK_ENTITY, pos, state);
         this.kit = new GameKit();
-        this.allowedGameTypes = new HashMap<>();
+        this.allowedGameTypes = new LinkedHashMap<>();
 
         for (GameType gameType : GameType.values()) {
             this.allowedGameTypes.put(gameType, true);
@@ -50,7 +51,7 @@ public class KitBlockEntity extends LockableContainerBlockEntity {
     @Override
     protected void readData(ReadView view) {
         this.kit = view.read("kit", GameKit.CODEC).orElse(new GameKit());
-        this.allowedGameTypes = new HashMap<>(view.read("allowed_game_types", Codec.unboundedMap(GameType.CODEC, Codec.BOOL)).orElse(Map.of()));
+        this.allowedGameTypes = new LinkedHashMap<>(view.read("allowed_game_types", Codec.unboundedMap(GameType.CODEC, Codec.BOOL)).orElse(Map.of()));
     }
 
     @Override

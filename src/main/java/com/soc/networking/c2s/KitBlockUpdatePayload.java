@@ -12,7 +12,7 @@ import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public record KitBlockUpdatePayload(BlockLocation block, Map<GameType, Boolean> allowedGameTypes) implements CustomPayload, HoldsBlockEntity {
@@ -20,7 +20,7 @@ public record KitBlockUpdatePayload(BlockLocation block, Map<GameType, Boolean> 
     public static final Id<KitBlockUpdatePayload> ID = new Id<>(KIT_BLOCK_UPDATE_PAYLOAD_ID);
     public static final PacketCodec<RegistryByteBuf, KitBlockUpdatePayload> CODEC = PacketCodec.tuple(
             BlockLocation.PACKET_CODEC, KitBlockUpdatePayload::block,
-            PacketCodecs.map(HashMap::new, GameType.PACKET_CODEC, PacketCodecs.BOOLEAN), KitBlockUpdatePayload::allowedGameTypes,
+            PacketCodecs.map(LinkedHashMap::new, GameType.PACKET_CODEC, PacketCodecs.BOOLEAN), KitBlockUpdatePayload::allowedGameTypes,
             KitBlockUpdatePayload::new
     );
 
