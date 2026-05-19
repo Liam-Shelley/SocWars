@@ -6,7 +6,7 @@ import com.soc.database.stats.HideAndSeekTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.HideAndSeekGameMap;
 import com.soc.game.map.SpreadRules;
-import com.soc.items.SeekingStick;
+import com.soc.items.AttackFunctionWeapon;
 import com.soc.lib.Events;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -64,7 +64,7 @@ public class HideAndSeekGameManager extends AbstractGameManager<HideAndSeekGameM
 
         final TitleS2CPacket youAreSeekingPacket = new TitleS2CPacket(Text.translatable("game.hide_and_seek.you_are_seeking"));
         this.getPlayers(SEEKER_COLOUR).forEach(player -> {
-            player.giveItemStack(new ItemStack(SeekingStick.SEEKING_STICK));
+            player.giveItemStack(new ItemStack(AttackFunctionWeapon.SEEKING_STICK));
             player.networkHandler.sendPacket(youAreSeekingPacket);
         });
 

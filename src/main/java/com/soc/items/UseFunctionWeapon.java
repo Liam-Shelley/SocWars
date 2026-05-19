@@ -39,6 +39,7 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
 import net.minecraft.text.Text;
@@ -62,6 +63,23 @@ import static com.soc.lib.SocWarsLib.*;
 import static com.soc.game.manager.AbstractGameManager.getBlockDamagePredicate;
 
 public class UseFunctionWeapon extends Item {
+    private static final SoundEvent[] TAUNTS = {
+            SoundEvents.BLOCK_ANVIL_USE,
+            SoundEvents.ENTITY_PARROT_IMITATE_ILLUSIONER,
+            SoundEvents.BLOCK_BELL_USE,
+            SoundEvents.ENTITY_FROG_DEATH,
+            SoundEvents.BLOCK_NOTE_BLOCK_DIDGERIDOO.value(),
+            SoundEvents.ENTITY_VILLAGER_YES,
+            SoundEvents.ENTITY_VILLAGER_AMBIENT,
+            SoundEvents.ENTITY_CHICKEN_HURT,
+            SoundEvents.ENTITY_FOX_SCREECH,
+            SoundEvents.ENTITY_COD_FLOP,
+            SoundEvents.ENTITY_GENERIC_EXPLODE.value(),
+            SoundEvents.ENTITY_GOAT_SCREAMING_AMBIENT,
+            SoundEvents.ENTITY_GOAT_SCREAMING_DEATH,
+            SoundEvents.ENTITY_GOAT_SCREAMING_PREPARE_RAM
+    };
+
     private final UseFunction useFunction;
 
     public UseFunctionWeapon(Settings settings, UseFunction useFunction) {
@@ -88,6 +106,7 @@ public class UseFunctionWeapon extends Item {
         addItemToGroupsAndBaseItemGroup(SNIPER_RIFLE, ItemGroups.COMBAT);
         addItemToGroupsAndBaseItemGroup(RED_SHELL, ItemGroups.COMBAT);
         addItemToGroupsAndBaseItemGroup(BLUE_SHELL, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(TAUNT_STICK, ItemGroups.COMBAT);
     }
 
     public static final Item DASHREND = ModItems.register("dashrend", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
@@ -415,6 +434,14 @@ public class UseFunctionWeapon extends Item {
                     .useCooldown(5f)
                     .rarity(Rarity.RARE)
     );
+    public static final Item TAUNT_STICK = ModItems.register("taunt_stick", settings -> new UseFunctionWeapon(settings, (world, player, hand) -> {
+                final SoundEvent soundEvent = TAUNTS[world.random.nextBetween(0, TAUNTS.length - 1)];
+                world.playSound(null, player.getBlockPos(), soundEvent, SoundCategory.MASTER);
+
+                return ActionResult.SUCCESS;
+            }), new Settings()
+                    .rarity(Rarity.UNCOMMON)
+                    .useCooldown(20 * 20));
 
     @Override
     public ActionResult use(World world, PlayerEntity user, Hand hand) {

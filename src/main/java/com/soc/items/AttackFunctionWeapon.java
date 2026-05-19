@@ -1,6 +1,9 @@
 package com.soc.items;
 
+import com.soc.SocWars;
 import com.soc.effects.util.ModEffects;
+import com.soc.game.manager.GamesManager;
+import com.soc.game.manager.HideAndSeekGameManager;
 import com.soc.util.BlockTags;
 import com.soc.util.DamageTypes;
 import com.soc.items.util.ModItems;
@@ -11,9 +14,13 @@ import com.soc.util.Sounds;
 import com.soc.util.SphereExplosion;
 import net.minecraft.block.Blocks;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.AttributeModifierSlot;
+import net.minecraft.component.type.AttributeModifiersComponent;
 import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.*;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -26,14 +33,12 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Rarity;
-import net.minecraft.util.Unit;
+import net.minecraft.util.*;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
@@ -72,6 +77,7 @@ public class AttackFunctionWeapon extends Item {
         addItemToGroupsAndBaseItemGroup(CORRUPTED_SWORD, ItemGroups.COMBAT);
         addItemToGroupsAndBaseItemGroup(POSTURA, ItemGroups.COMBAT);
         addItemToGroupsAndBaseItemGroup(FULL_METAL_SWORD, ItemGroups.COMBAT);
+        addItemToGroupsAndBaseItemGroup(SEEKING_STICK, ItemGroups.COMBAT);
     }
 
     public static final Item LIFETHIEF = ModItems.register("lifethief", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
@@ -248,6 +254,19 @@ public class AttackFunctionWeapon extends Item {
             .sword(ToolMaterials.BASE, 4.5f, -2.3f)
             .maxDamage(500)
     );
+    public static final Item SEEKING_STICK = ModItems.register("seeking_stick", settings -> new AttackFunctionWeapon(settings, (stack, target, attacker) -> {
+                GamesManager.getInstance().getGame(target).ifPresent(game -> {
+                    if (game instanceof HideAndSeekGameManager hideAndSeekGameManager) {
+                        hideAndSeekGameManager.findPlayer(attacker, (ServerPlayerEntity)target);
+                    }
+                });
+            }), new Settings()
+            .rarity(Rarity.UNCOMMON)
+            .attributeModifiers(new AttributeModifiersComponent(List.of(
+                    new AttributeModifiersComponent.Entry(EntityAttributes.ENTITY_INTERACTION_RANGE, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "seeking_stick_range"), 1, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.MAINHAND, AttributeModifiersComponent.Display.getDefault()),
+                    new AttributeModifiersComponent.Entry(EntityAttributes.MOVEMENT_SPEED, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "seeking_stick_speed"), 0.05, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.MAINHAND, AttributeModifiersComponent.Display.getHidden())
+            )))
+    );
 
     private static void modifyEquipment(LivingEntity target, LivingEntity attacker, ReplaceMode replaceMode, ModifyEquipmentFunction armourFunction, ModifyEquipmentFunction handFunction) {
         ArrayList<EquipmentSlot> armour = new ArrayList<>();
@@ -294,6 +313,7 @@ public class AttackFunctionWeapon extends Item {
             case "socwars:fleshy_blade" -> textConsumer.accept(Text.translatable(ThrowableItem.getWorldTime() % 25 > 2 ? "tooltip.fleshy_blade" : "tooltip.fleshy_blade.wet").formatted(Formatting.RED));
             case "socwars:postura" -> textConsumer.accept(Text.translatable("tooltip.postura"));
             case "socwars:full_metal_sword" -> textConsumer.accept(Text.translatable("tooltip.full_metal_sword"));
+            case "socwars:seeking_stick" -> textConsumer.accept(Text.translatable("tooltip.seeking_stick"));
         }
     }
 }

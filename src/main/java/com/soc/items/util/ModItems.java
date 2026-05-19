@@ -35,7 +35,6 @@ public class ModItems {
         DiceOfFate.initialise();
         PotionFood.initialise();
         EatFunctionFood.initialise();
-        SharpenedPokingStick.initialise();
         GamblerArmour.initialise();
         GamblerSword.initialise();
         SteadfastArmour.initialise();
@@ -51,8 +50,6 @@ public class ModItems {
         BaseTool.initialise();
         BaseItem.initialise();
         JetShoppingTrolley.initialise();
-        SeekingStick.initialise();
-        TauntStick.initialise();
     }
 
     public static Item register(String name, Function<Item.Settings, Item> itemFactory, Item.Settings settings) {

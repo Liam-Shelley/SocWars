@@ -1,14 +1,20 @@
 package com.soc.items;
 
+import com.soc.SocWars;
 import com.soc.items.components.ModComponents;
 import com.soc.items.util.AppendTooltipFunction;
 import com.soc.items.util.ItemGroups;
 import com.soc.items.util.ModItems;
+import net.minecraft.component.type.AttributeModifierSlot;
+import net.minecraft.component.type.AttributeModifiersComponent;
 import net.minecraft.component.type.TooltipDisplayComponent;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 
 import java.util.function.Consumer;
@@ -31,9 +37,16 @@ public class BaseItem extends Item {
 
     public static void initialise() {
         ItemGroups.addItemToItemsGroup(PORTABLE_STEPPING_STOOL);
+        ItemGroups.addItemToItemsGroup(SHARPENED_POKING_STICK);
     }
 
     public static final Item PORTABLE_STEPPING_STOOL = ModItems.register("portable_stepping_stool", settings -> new BaseItem(settings, Text.translatable("tooltip.portable_stepping_stool")), new Settings().component(ModComponents.DOUBLE_JUMP, true).rarity(Rarity.RARE).maxCount(1));
+    public static final Item SHARPENED_POKING_STICK = ModItems.register("sharpened_poking_stick", BaseItem::new, new Settings().maxDamage(150).rarity(Rarity.UNCOMMON).attributeModifiers(AttributeModifiersComponent.builder()
+            .add(EntityAttributes.ENTITY_INTERACTION_RANGE, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "stick_reach"), 1.75, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.HAND)
+            .add(EntityAttributes.ATTACK_DAMAGE, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "stick_damage"), 5, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.HAND)
+            .add(EntityAttributes.ATTACK_SPEED, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "stick_attack_speed"), 0.2, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.HAND)
+            .build()
+    ));
 
     @Override
     @SuppressWarnings("deprecation")
