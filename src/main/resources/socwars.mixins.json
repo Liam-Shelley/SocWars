@@ -7,6 +7,7 @@
     "AppendTooltipAtEnd",
     "BowInfinityFix",
     "BucketBlockProtection",
+    "CancelItemInteraction",
     "CancelSprintParticles",
     "ChestDepositableProperty",
     "ClearInventoryHoverItem",

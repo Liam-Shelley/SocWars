@@ -108,6 +108,6 @@ public class PlayerData {
 	public void merge(PlayerData other) {
 		if (!other.collectibles.isEmpty()) this.collectibles = other.collectibles;
 		if (!other.equippedKits.isEmpty()) this.equippedKits = other.equippedKits;
-		if (other.morph != null) this.morph = other.morph;
+		this.morph = other.morph;
 	}
 }

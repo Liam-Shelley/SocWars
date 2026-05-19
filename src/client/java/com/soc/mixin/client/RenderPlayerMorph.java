@@ -3,7 +3,6 @@ package com.soc.mixin.client;
 import com.soc.player.ClientPlayerDataManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.entity.EntityRendererFactory;
@@ -35,10 +34,20 @@ abstract class RenderPlayerMorph extends LivingEntityRendererBaseMixin {
 	@Override
 	protected void socwars_livingEntityRender(LivingEntityRenderState livingEntityRenderState, MatrixStack matrices, VertexConsumerProvider vertices, int light, CallbackInfo ci) {
 		final Entity thisEntity = Objects.requireNonNull(MinecraftClient.getInstance().world).getEntityById(((PlayerEntityRenderState)livingEntityRenderState).id);
-		final BlockState morph = ClientPlayerDataManager.getMorph(thisEntity.getUuid());
+		final BlockState morph = thisEntity == null ? null : ClientPlayerDataManager.getMorph(thisEntity.getUuid());
 		if (morph != null) {
-			this.blockRenderManager.renderBlockAsEntity(morph, matrices, vertices, light, getOverlay(livingEntityRenderState, this.getAnimationCounter(livingEntityRenderState)));
+			this.renderMorph(livingEntityRenderState, matrices, vertices, light, morph);
 			ci.cancel();
 		}
+	}
+
+	@Unique
+	private void renderMorph(LivingEntityRenderState livingEntityRenderState, MatrixStack matrices, VertexConsumerProvider vertices, int light, BlockState morph) {
+		matrices.push();
+		matrices.translate(-0.5d, 0d, -0.5d);
+
+		this.blockRenderManager.renderBlockAsEntity(morph, matrices, vertices, light, getOverlay(livingEntityRenderState, this.getAnimationCounter(livingEntityRenderState)));
+
+		matrices.pop();
 	}
 }
