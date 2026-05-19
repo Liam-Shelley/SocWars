@@ -3,12 +3,15 @@ package com.soc.player;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.soc.events.ModEvents;
-import com.soc.networking.s2c.PlayerDataPayload;
+import com.soc.networking.s2c.AllSyncPlayerDataPayload;
+import com.soc.networking.s2c.SinglePlayerDataPayload;
+import com.soc.util.Codecs;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.scoreboard.ScoreHolder;
 import net.minecraft.scoreboard.ScoreboardObjective;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.PersistentState;
@@ -30,11 +33,18 @@ public class PlayerDataManager extends PersistentState {
     }
 
     public static void sendData(ServerPlayerEntity player) {
-        ServerPlayNetworking.send(player, new PlayerDataPayload(PlayerDataManager.getPlayerData(player)));
+        ServerPlayNetworking.send(player, new SinglePlayerDataPayload(player.getUuid(), PlayerDataManager.getPlayerData(player)));
     }
 
+    public static void sendDataToAll(MinecraftServer server) {
+        final AllSyncPlayerDataPayload payload = new AllSyncPlayerDataPayload(getPersistentState(server.getOverworld()).playerDataMap);
+		for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
+			ServerPlayNetworking.send(player, payload);
+		}
+	}
+
     public static final Codec<PlayerDataManager> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.unboundedMap(Codec.STRING.xmap(UUID::fromString, UUID::toString), PlayerData.CODEC).fieldOf("player_data_map").forGetter(PlayerDataManager::getPlayerDataMap)
+            Codec.unboundedMap(Codecs.UUID, PlayerData.CODEC).fieldOf("player_data_map").forGetter(PlayerDataManager::getPlayerDataMap)
     ).apply(instance, PlayerDataManager::new));
 
     public static PersistentStateType<PlayerDataManager> STATE_TYPE = new PersistentStateType<>("player_data_manager", PlayerDataManager::new, CODEC, null);

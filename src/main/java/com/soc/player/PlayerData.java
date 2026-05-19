@@ -4,16 +4,18 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.soc.game.GameKit;
 import com.soc.game.manager.GameType;
+import com.soc.networking.helper.BlockLocation;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.block.BlockState;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.dynamic.Codecs;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.soc.lib.SocWarsLib.ifNotNull;
 
@@ -21,34 +23,51 @@ public class PlayerData {
     //Maybe I should just replace this with a normal tuple codec. --> What is now the present me says yes that was a good idea it was much easier thank you.
     public static final PacketCodec<ByteBuf, PlayerData> PACKET_CODEC = PacketCodec.tuple(
             PacketCodecs.collection(ArrayList::new, PacketCodecs.BOOLEAN), PlayerData::getCollectibles,
-            //Not bothering to sync kits to client yet. May do at some point ¯\_(ツ)_/¯
+            PacketCodecs.optional(com.soc.networking.PacketCodecs.BLOCK_STATE), playerData -> Optional.ofNullable(playerData.morph),
+            PlayerData::new
+    );
+
+    public static final PacketCodec<ByteBuf, PlayerData> ALL_SYNC_PACKET_CODEC = PacketCodec.tuple(
+			PacketCodecs.optional(com.soc.networking.PacketCodecs.BLOCK_STATE), playerData -> Optional.ofNullable(playerData.morph),
             PlayerData::new
     );
 
     public static final Codec<PlayerData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.list(Codec.BOOL).fieldOf("collectibles").orElse(new ArrayList<>()).forGetter(PlayerData::getCollectibles),
-            Codec.unboundedMap(GameType.CODEC, GameKit.CODEC).fieldOf("equipped_kits").orElse(new HashMap<>()).forGetter(playerData -> playerData.equippedKits)
+            Codec.unboundedMap(GameType.CODEC, GameKit.CODEC).fieldOf("equipped_kits").orElse(new HashMap<>()).forGetter(playerData -> playerData.equippedKits),
+            Codecs.optional(BlockState.CODEC).fieldOf("morph").orElse(null).forGetter(playerData -> Optional.ofNullable(playerData.morph))
     ).apply(instance, PlayerData::new));
 
-    public static @Nullable PlayerData CLIENT_INSTANCE = null;
+    private List<Boolean> collectibles;
+    private Map<GameType, GameKit> equippedKits;
+    private BlockState morph;
 
-    private final List<Boolean> collectibles;
-    private final Map<GameType, GameKit> equippedKits;
-
-    public PlayerData(List<Boolean> collectibles, Map<GameType, GameKit> equippedKits) {
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    public PlayerData(List<Boolean> collectibles, Map<GameType, GameKit> equippedKits, Optional<BlockState> morph) {
         this.collectibles = new ArrayList<>(collectibles);
         this.equippedKits = new HashMap<>(equippedKits);
+        this.morph = morph.orElse(null);
     }
 
-    public PlayerData(List<Boolean> collectibles) {
-        this(collectibles, new HashMap<>());
+    public PlayerData(List<Boolean> collectibles, Map<GameType, GameKit> equippedKits) {
+        this(collectibles, equippedKits, Optional.empty());
+    }
+
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    public PlayerData(List<Boolean> collectibles, Optional<BlockState> morph) {
+        this(collectibles, new HashMap<>(), morph);
     }
 
     public PlayerData() {
         this(new ArrayList<>(), new HashMap<>());
     }
 
-    public boolean collectCollectible(int id) {
+	@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+	public PlayerData(Optional<BlockState> morph) {
+		this(new ArrayList<>(), new HashMap<>(), morph);
+	}
+
+	public boolean collectCollectible(int id) {
         if (id < 0) return false;
 
         while (id >= this.collectibles.size()) this.collectibles.add(false);
@@ -70,10 +89,6 @@ public class PlayerData {
         return this.collectibles;
     }
 
-    public static boolean hasCollectibleClient(int id) {
-        return CLIENT_INSTANCE != null && CLIENT_INSTANCE.hasCollectible(id);
-    }
-
     public void tryApplyKit(GameType gameType, ServerPlayerEntity player) {
         ifNotNull(this.equippedKits.get(gameType), kit -> kit.apply(player));
     }
@@ -83,4 +98,19 @@ public class PlayerData {
             this.equippedKits.put(gameType, kit);
         }
     }
+
+    public void setMorph(World world, BlockPos pos) {
+        this.morph = world.getBlockState(pos);
+		PlayerDataManager.sendDataToAll(Objects.requireNonNull(world.getServer()));
+    }
+
+    public BlockState getMorph() {
+        return this.morph;
+    }
+
+	public void merge(PlayerData other) {
+		if (!other.collectibles.isEmpty()) this.collectibles = other.collectibles;
+		if (!other.equippedKits.isEmpty()) this.equippedKits = other.equippedKits;
+		if (other.morph != null) this.morph = other.morph;
+	}
 }

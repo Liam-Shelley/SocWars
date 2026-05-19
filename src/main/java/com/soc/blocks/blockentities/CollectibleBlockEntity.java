@@ -72,11 +72,5 @@ public class CollectibleBlockEntity extends BlockEntity {
         return BlockEntityUpdateS2CPacket.create(this);
     }
 
-    public static void clientTick(World world, BlockPos pos, BlockState blockState, CollectibleBlockEntity blockEntity) {
-        if (!PlayerData.hasCollectibleClient(blockEntity.id) && world.random.nextFloat() < 0.25f) {
-            final Vec3d offset = randomCentredVec3d(world.random, 0.5d);
-            final Vec3d centrePos = pos.toCenterPos().add(offset);
-            world.addParticleClient(ParticleTypes.HAPPY_VILLAGER, centrePos.x, centrePos.y, centrePos.z, offset.z * 0.05d, offset.x * 0.05d, offset.y * 0.05d);
-        }
-    }
+    public static void clientTick(World world, BlockPos pos, BlockState blockState, CollectibleBlockEntity blockEntity) {} //Yeah yeah another mixin target method gleesh
 }

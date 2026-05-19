@@ -16,11 +16,13 @@ import com.soc.networking.s2c.bedwars.*;
 import com.soc.networking.s2c.skywars.JoinSkywarsPayload;
 import com.soc.networking.s2c.skywars.LeaveSkywarsPayload;
 import com.soc.networking.s2c.skywars.SetTeamLivesPayload;
+import com.soc.player.ClientPlayerDataManager;
 import com.soc.player.PlayerData;
 import com.soc.screenhandler.BedwarsIndividualShopScreenHandler;
 import com.soc.screenhandler.BedwarsTeamShopScreenHandler;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.SimpleOption;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -115,8 +117,15 @@ public class S2CReceivers {
                 player.setAngles(payload.yaw(), payload.pitch());
             }
         }));
-        ClientPlayNetworking.registerGlobalReceiver(PlayerDataPayload.ID, (payload, context) -> {
-            if (context.player() == MinecraftClient.getInstance().player) PlayerData.CLIENT_INSTANCE = payload.playerData();
+        ClientPlayNetworking.registerGlobalReceiver(SinglePlayerDataPayload.ID, (payload, context) -> {
+            final PlayerEntity player = MinecraftClient.getInstance().player;
+            if (context.player() == player) { //context.player() should never return null, right?
+				assert MinecraftClient.getInstance().player != null;
+				ClientPlayerDataManager.setPlayerData(MinecraftClient.getInstance().player.getUuid(), payload.playerData());
+            }
+        });
+        ClientPlayNetworking.registerGlobalReceiver(AllSyncPlayerDataPayload.ID, (payload, context) -> {
+            ClientPlayerDataManager.setMultiplePlayerData(payload.playerDataMap());
         });
     }
 

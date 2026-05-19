@@ -17,11 +17,12 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -121,5 +122,17 @@ public class KitBlockEntity extends LockableContainerBlockEntity {
 
     public void setGameTypeAllowed(GameType gameType, Boolean isAllowed) {
         this.allowedGameTypes.put(gameType, isAllowed);
+    }
+
+    public static Text getKitSelectionMessage(List<GameType> gameTypes, GameKit kit) {
+        if (gameTypes.isEmpty()) {
+            return Text.translatable("message.kit_selection.empty");
+        } else {
+            final MutableText message = Text.translatable("message.kit_selection", Text.literal(kit.getName()).formatted(Formatting.BOLD));
+            for (GameType gameType : gameTypes) {
+                message.append("\n  ").append(gameType.getVariantName().formatted(Formatting.GOLD));
+            }
+            return message;
+        }
     }
 }
