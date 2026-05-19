@@ -88,6 +88,9 @@ public class GamesManager {
         ModEvents.ON_FURNACE_OPENED.register((player, pos) ->
                 this.getGame(player).map(game -> game.onFurnaceOpened(player, pos)).orElse(true)
         );
+        ModEvents.ON_PLAYER_MORPHED.register((player, morph) ->
+                this.getGame(player).map(game -> game.onPlayerMorphed(player, morph)).orElse(true)
+        );
     }
 
     private void endAllGames() {

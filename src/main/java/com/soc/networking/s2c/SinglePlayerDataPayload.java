@@ -11,7 +11,7 @@ import net.minecraft.util.Identifier;
 import java.util.UUID;
 
 public record SinglePlayerDataPayload(UUID uuid, PlayerData playerData) implements CustomPayload {
-    public static final Identifier PLAYER_DATA_PAYLOAD_ID = Identifier.of(SocWars.MOD_ID, "player_data");
+    public static final Identifier PLAYER_DATA_PAYLOAD_ID = Identifier.of(SocWars.MOD_ID, "single_player_data");
     public static final Id<SinglePlayerDataPayload> ID = new Id<>(PLAYER_DATA_PAYLOAD_ID);
     public static final PacketCodec<RegistryByteBuf, SinglePlayerDataPayload> CODEC = PacketCodec.tuple(
             PacketCodecs.UUID, SinglePlayerDataPayload::uuid,

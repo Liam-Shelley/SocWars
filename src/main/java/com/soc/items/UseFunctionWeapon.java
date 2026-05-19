@@ -441,7 +441,8 @@ public class UseFunctionWeapon extends Item {
                 return ActionResult.SUCCESS;
             }), new Settings()
                     .rarity(Rarity.UNCOMMON)
-                    .useCooldown(20 * 20));
+                    .useCooldown(20 * 20)
+    );
 
     @Override
     public ActionResult use(World world, PlayerEntity user, Hand hand) {

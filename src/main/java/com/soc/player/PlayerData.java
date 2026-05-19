@@ -4,16 +4,13 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.soc.game.GameKit;
 import com.soc.game.manager.GameType;
-import com.soc.networking.helper.BlockLocation;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.BlockState;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.dynamic.Codecs;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -99,8 +96,8 @@ public class PlayerData {
         }
     }
 
-    public void setMorph(World world, BlockPos pos) {
-        this.morph = world.getBlockState(pos);
+    public void setMorph(World world, BlockState morph) {
+        this.morph = morph;
 		PlayerDataManager.sendDataToAll(Objects.requireNonNull(world.getServer()));
     }
 

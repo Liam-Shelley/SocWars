@@ -67,4 +67,14 @@ public interface ModEvents {
             listener.onCollectibleBlockReplaced(id, world);
         }
     });
+
+    Event<OnPlayerMorphed> ON_PLAYER_MORPHED = EventFactory.createArrayBacked(OnPlayerMorphed.class, listeners -> (player, morph) -> {
+        boolean allowEvent = true;
+
+        for (OnPlayerMorphed listener : listeners) {
+            allowEvent &= listener.onPlayerMorphed(player, morph);
+        }
+
+        return allowEvent;
+    });
 }

@@ -11,6 +11,7 @@ import com.soc.lib.Coroutines;
 import com.soc.lib.Events;
 import com.soc.model.EntityModelLayers;
 import com.soc.networking.S2CReceivers;
+import com.soc.player.ClientPlayerDataManager;
 import com.soc.renderer.*;
 import com.soc.resourcedata.deserialisation.SkywarsItemData;
 import com.soc.resourcedata.listeners.SkywarsLootData;
@@ -58,6 +59,7 @@ public class SocWarsClient implements ClientModInitializer {
 
 		S2CReceivers.initialise();
 		HandledScreens.initialise();
+		ClientPlayerDataManager.initialise();
 
 		ClientTickEvents.START_CLIENT_TICK.register(client -> {
 			if (!client.isIntegratedServerRunning()) {

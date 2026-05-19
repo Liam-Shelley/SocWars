@@ -18,8 +18,8 @@ import java.util.function.Function;
 
 import static com.soc.items.util.ItemGroups.addItemToItemsGroup;
 
-public class ModItems {
-    public static void initialise() {
+public interface ModItems {
+    static void initialise() {
         ItemGroups.initialise();
 
         HardCodes.initialise();
@@ -50,9 +50,10 @@ public class ModItems {
         BaseTool.initialise();
         BaseItem.initialise();
         JetShoppingTrolley.initialise();
+        MorphWand.initialise();
     }
 
-    public static Item register(String name, Function<Item.Settings, Item> itemFactory, Item.Settings settings) {
+    static Item register(String name, Function<Item.Settings, Item> itemFactory, Item.Settings settings) {
         // Create the item key.
         final RegistryKey<Item> itemKey = RegistryKey.of(RegistryKeys.ITEM, Identifier.of(SocWars.MOD_ID, name));
 

@@ -255,6 +255,10 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         return true;
     }
 
+    public boolean onPlayerMorphed(ServerPlayerEntity player, BlockState morph) {
+        return false;
+    }
+
     @MustBeInvokedByOverriders
     public void tick() {
         this.time++;
