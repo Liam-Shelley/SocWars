@@ -8,7 +8,6 @@ import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.DuelsGameMap;
 import com.soc.game.map.SpreadRules;
 import com.soc.lib.Events;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;

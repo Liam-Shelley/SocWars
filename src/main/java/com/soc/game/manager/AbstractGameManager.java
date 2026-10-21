@@ -654,7 +654,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     }
 
     public void leaveAsSpectator(ServerPlayerEntity player) {
-        this.sendPlayerToLobby(player);
+        sendPlayerToLobby(player);
         this.sendLeaveGamePayload(player);
     }
 

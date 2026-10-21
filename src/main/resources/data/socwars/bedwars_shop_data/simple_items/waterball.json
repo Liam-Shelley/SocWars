@@ -1,6 +1,7 @@
 {
   "cost": {
-    "gold": 4
+    "gold": 16,
+    "emeralds": 2
   },
   "item": "socwars:waterball"
 }

@@ -1,6 +1,8 @@
 {
   "cost": {
-    "emeralds": 4
+    "iron": 32,
+    "gold": 32,
+    "emeralds": 10
   },
   "item": "socwars:scroll_of_hellfire"
 }

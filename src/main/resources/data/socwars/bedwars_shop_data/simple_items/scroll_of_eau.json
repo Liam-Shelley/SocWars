@@ -1,7 +1,8 @@
 {
   "cost": {
-    "gold": 16,
-    "emeralds": 3
+    "iron": 32,
+    "gold": 32,
+    "emeralds": 10
   },
   "item": "socwars:scroll_of_eau"
 }

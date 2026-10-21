@@ -1,6 +1,8 @@
 {
   "cost": {
-    "gold": 2
+    "iron": 16,
+    "gold": 8,
+    "emeralds": 1
   },
   "item": "minecraft:water_bucket"
 }

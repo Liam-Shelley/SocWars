@@ -3,12 +3,15 @@ package com.soc.items.components;
 import com.mojang.serialization.Codec;
 import com.soc.SocWars;
 import com.soc.game.map.ResourceGenerator;
+import com.soc.networking.helper.BlockLocation;
 import net.minecraft.component.ComponentType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Unit;
+import net.minecraft.util.math.Vec3d;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public interface ModComponents {
@@ -56,6 +59,11 @@ public interface ModComponents {
             Registries.DATA_COMPONENT_TYPE,
             Identifier.of(SocWars.MOD_ID, "command_function"),
             ComponentType.<CommandFunctionComponent>builder().codec(CommandFunctionComponent.CODEC).build()
+    );
+    ComponentType<Optional<BlockLocation>> STASIS_POSITION = Registry.register(
+            Registries.DATA_COMPONENT_TYPE,
+            Identifier.of(SocWars.MOD_ID, "stasis_position"),
+            ComponentType.<Optional<BlockLocation>>builder().codec(BlockLocation.OPTIONAL_CODEC).build()
     );
 
     static void initialise() {}
