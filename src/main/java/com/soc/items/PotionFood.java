@@ -26,7 +26,7 @@ import net.minecraft.util.Rarity;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
+import static com.soc.items.util.ModItemGroups.addItemToGroupsAndBaseItemGroup;
 import static net.minecraft.component.type.PotionContentsComponent.getEffectText;
 
 public class PotionFood extends Item {

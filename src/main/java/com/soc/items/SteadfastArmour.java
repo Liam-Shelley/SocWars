@@ -13,7 +13,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 
-import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
+import static com.soc.items.util.ModItemGroups.addItemToGroupsAndBaseItemGroup;
 
 public class SteadfastArmour extends SetBonusArmourItem {
     private static final RegistryKey<EquipmentAsset> STEADFAST_MODEL_KEY = ArmourItem.registerEquipmentAsset("steadfast");

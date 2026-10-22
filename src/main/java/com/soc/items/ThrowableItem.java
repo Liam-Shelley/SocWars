@@ -23,7 +23,7 @@ import net.minecraft.world.World;
 import java.awt.*;
 import java.util.function.Consumer;
 
-import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
+import static com.soc.items.util.ModItemGroups.addItemToGroupsAndBaseItemGroup;
 import static net.minecraft.item.ItemGroups.COMBAT;
 
 public class ThrowableItem extends Item {

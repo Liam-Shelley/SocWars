@@ -4,11 +4,10 @@ import com.soc.items.*;
 
 public interface ModItems {
     static void initialise() {
-        ItemGroups.initialise();
+        ModItemGroups.initialise();
 
         HardCodes.initialise();
 
-        BaseWeapon.initialise();
         UseFunctionWeapon.initialise();
         PotionWeapon.initialise();
         DrawableWeapon.initialise();

@@ -32,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
-import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
+import static com.soc.items.util.ModItemGroups.addItemToGroupsAndBaseItemGroup;
 
 public class GamblerArmour extends Item implements OnEquipArmour {
     private final int[] protectionValues;

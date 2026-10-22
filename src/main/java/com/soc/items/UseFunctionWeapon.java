@@ -58,7 +58,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 
 import static com.soc.items.BowItem.playBowSound;
-import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
+import static com.soc.items.util.ModItemGroups.addItemToGroupsAndBaseItemGroup;
 import static com.soc.lib.SocWarsLib.*;
 import static com.soc.game.manager.AbstractGameManager.getBlockDamagePredicate;
 

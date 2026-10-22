@@ -18,7 +18,7 @@ import java.util.function.Function;
 
 import static com.soc.itemsrework.ModItemsReworked.register;
 
-public interface ItemGroups {
+public interface ModItemGroups {
     RegistryKey<ItemGroup> ITEMS_KEY = RegistryKey.of(Registries.ITEM_GROUP.getKey(), Identifier.of(SocWars.MOD_ID, "items_group"));
     ItemGroup ITEMS_GROUP = FabricItemGroup.builder()
             .icon(() -> new ItemStack(ModItemsReworked.DEVASTATOR_PRIME))

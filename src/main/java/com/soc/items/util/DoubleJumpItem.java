@@ -17,7 +17,7 @@ public class DoubleJumpItem extends Item implements DisableOffhandSwapping {
 	}
 
 	public static void initialise() {
-		ItemGroups.addItemToItemsGroup(PORTABLE_STEPPING_STOOL);
+		ModItemGroups.addItemToItemsGroup(PORTABLE_STEPPING_STOOL);
 	}
 
 	public static final Item PORTABLE_STEPPING_STOOL = ModItemsReworked.register("portable_stepping_stool", DoubleJumpItem::new, new Settings().rarity(Rarity.RARE).maxCount(1));

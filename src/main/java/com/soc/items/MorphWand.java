@@ -2,7 +2,7 @@ package com.soc.items;
 
 import com.soc.events.ModEvents;
 import com.soc.items.util.CancelsBlockInteraction;
-import com.soc.items.util.ItemGroups;
+import com.soc.items.util.ModItemGroups;
 import com.soc.items.util.OnAttackButtonPressed;
 import com.soc.itemsrework.ModItemsReworked;
 import com.soc.mixin.AccessDebugStickCycle;
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
+import static com.soc.items.util.ModItemGroups.addItemToGroupsAndBaseItemGroup;
 
 public class MorphWand extends Item implements CancelsBlockInteraction, OnAttackButtonPressed {
 	private static final List<Property<?>> CYCLING_PROPERTIES = List.of(
@@ -39,7 +39,7 @@ public class MorphWand extends Item implements CancelsBlockInteraction, OnAttack
 	);
 
 	public static void initialise() {
-		addItemToGroupsAndBaseItemGroup(MORPH_WAND, ItemGroups.ITEMS_KEY);
+		addItemToGroupsAndBaseItemGroup(MORPH_WAND, ModItemGroups.ITEMS_KEY);
 	}
 
 	public MorphWand(Settings settings) {

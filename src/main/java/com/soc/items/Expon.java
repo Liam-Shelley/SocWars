@@ -1,6 +1,7 @@
 package com.soc.items;
 
 import com.soc.items.components.ExponComponent;
+import com.soc.items.util.ModItemGroups;
 import com.soc.itemsrework.ModItemsReworked;
 import com.soc.materials.ToolMaterials;
 import com.soc.networking.s2c.AddVelocityPayload;
@@ -36,7 +37,7 @@ public class Expon extends Item {
     }
 
     public static void initialise() {
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(EXPON, ItemGroups.COMBAT);
+        ModItemGroups.addItemToGroupsAndBaseItemGroup(EXPON, ItemGroups.COMBAT);
     }
 
     public static final Item EXPON = ModItemsReworked.register("expon", Expon::new, new Item.Settings()

@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 
 import static com.soc.blocks.util.ModBlocks.CHEST_PLACEHOLDER;
 import static com.soc.blocks.util.ModBlocks.MANY_BEDS_BLOCK;
-import static com.soc.items.util.ItemGroups.addItemToBlocksGroup;
-import static com.soc.items.util.ItemGroups.addItemToMapMakingGroup;
+import static com.soc.items.util.ModItemGroups.addItemToBlocksGroup;
+import static com.soc.items.util.ModItemGroups.addItemToMapMakingGroup;
 import static com.soc.lib.SocWarsLib.mapFromRange;
 
 public class BlockItems {

@@ -6,7 +6,7 @@ import net.minecraft.component.type.PotionContentsComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.SplashPotionItem;
 
-import static com.soc.items.util.ItemGroups.addItemToItemsGroup;
+import static com.soc.items.util.ModItemGroups.addItemToItemsGroup;
 import static com.soc.itemsrework.ModItemsReworked.register;
 
 public class HardCodes {

@@ -27,7 +27,7 @@ import net.minecraft.world.explosion.AdvancedExplosionBehavior;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
+import static com.soc.items.util.ModItemGroups.addItemToGroupsAndBaseItemGroup;
 import static com.soc.lib.SocWarsLib.*;
 
 public class DrawableWeapon extends Item {

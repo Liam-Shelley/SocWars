@@ -1,5 +1,6 @@
 package com.soc.items;
 
+import com.soc.items.util.ModItemGroups;
 import com.soc.itemsrework.ModItemsReworked;
 import com.soc.materials.ToolMaterials;
 import net.minecraft.entity.Entity;
@@ -20,7 +21,7 @@ public class GreenSword extends Item {
     }
 
     public static void initialise() {
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(GREEN_SWORD, ItemGroups.COMBAT);
+        ModItemGroups.addItemToGroupsAndBaseItemGroup(GREEN_SWORD, ItemGroups.COMBAT);
     }
 
     public static final Item GREEN_SWORD = ModItemsReworked.register("green_sword", GreenSword::new, new Settings()

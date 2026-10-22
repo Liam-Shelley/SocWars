@@ -16,7 +16,7 @@ import net.minecraft.world.World;
 
 import java.util.function.Consumer;
 
-import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
+import static com.soc.items.util.ModItemGroups.addItemToGroupsAndBaseItemGroup;
 import static com.soc.lib.SocWarsLib.*;
 
 public class EatFunctionFood extends Item { //rewrite all of this as consumable components because this is just gross and dirty and I hate it

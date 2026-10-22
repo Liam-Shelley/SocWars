@@ -2,7 +2,7 @@ package com.soc.items;
 
 import com.soc.SocWars;
 import com.soc.items.util.AppendTooltipFunction;
-import com.soc.items.util.ItemGroups;
+import com.soc.items.util.ModItemGroups;
 import com.soc.itemsrework.ModItemsReworked;
 import net.minecraft.component.type.AttributeModifierSlot;
 import net.minecraft.component.type.AttributeModifiersComponent;
@@ -35,8 +35,8 @@ public class BaseItem extends Item {
     }
 
     public static void initialise() {
-        ItemGroups.addItemToItemsGroup(SHARPENED_POKING_STICK);
-        ItemGroups.addItemToItemsGroup(BALUSTRADE);
+        ModItemGroups.addItemToItemsGroup(SHARPENED_POKING_STICK);
+        ModItemGroups.addItemToItemsGroup(BALUSTRADE);
     }
 
     public static final Item SHARPENED_POKING_STICK = ModItemsReworked.register("sharpened_poking_stick", BaseItem::new, new Settings().maxDamage(150).rarity(Rarity.UNCOMMON).attributeModifiers(AttributeModifiersComponent.builder()

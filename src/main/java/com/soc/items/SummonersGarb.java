@@ -21,7 +21,7 @@ import net.minecraft.world.World;
 
 import java.util.function.Consumer;
 
-import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
+import static com.soc.items.util.ModItemGroups.addItemToGroupsAndBaseItemGroup;
 import static com.soc.lib.SocWarsLib.copyTeam;
 import static com.soc.lib.SocWarsLib.randomHostileMob;
 

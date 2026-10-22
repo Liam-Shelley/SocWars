@@ -5,7 +5,7 @@ import com.soc.blocks.*;
 import com.soc.entities.BigTntEntity;
 import com.soc.items.BlockItems;
 import com.soc.items.FeatherBlockItem;
-import com.soc.items.util.ItemGroups;
+import com.soc.items.util.ModItemGroups;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.NoteBlockInstrument;
 import net.minecraft.block.piston.PistonBehavior;
@@ -30,57 +30,57 @@ import java.util.function.UnaryOperator;
 public interface ModBlocks {
     static void initialise() {}
 
-    Block WHITER_CONCRETE = ModBlocks.register("whiter_concrete", Block::new, AbstractBlock.Settings.create().mapColor(DyeColor.WHITE).instrument(NoteBlockInstrument.BASS).sounds(BlockSoundGroup.STONE).requiresTool().strength(1.8f), true, ItemGroups.BLOCKS_KEY);
-    Block JONGLE_PLANKS = ModBlocks.register("jongle_planks", Block::new, AbstractBlock.Settings.create().mapColor(MapColor.DIRT_BROWN).instrument(NoteBlockInstrument.BASEDRUM).sounds(BlockSoundGroup.WOOD).requiresTool().strength(2f, 3f).burnable(), true, ItemGroups.BLOCKS_KEY);
-    Block BRICKCRETE = ModBlocks.register("brickcrete", SimpleHorizontalFacingBlock::new, AbstractBlock.Settings.create().mapColor(MapColor.WHITE).sounds(BlockSoundGroup.STONE).requiresTool().strength(2f, 4f), true, ItemGroups.BLOCKS_KEY);
-    Block BRICKCRETE_CORNER = ModBlocks.register("brickcrete_corner", SimpleHorizontalFacingBlock::new, AbstractBlock.Settings.create().mapColor(MapColor.WHITE).sounds(BlockSoundGroup.STONE).requiresTool().strength(2f, 4f), true, ItemGroups.BLOCKS_KEY);
-    Block JUNGLECRETE = ModBlocks.register("junglecrete", SimpleHorizontalFacingBlock::new, AbstractBlock.Settings.create().mapColor(MapColor.WHITE).sounds(BlockSoundGroup.WOOD).requiresTool().strength(2f, 4f), true, ItemGroups.BLOCKS_KEY);
-    Block JONGLECRETE = ModBlocks.register("jonglecrete", SimpleHorizontalFacingBlock::new, AbstractBlock.Settings.create().mapColor(MapColor.WHITE).sounds(BlockSoundGroup.WOOD).requiresTool().strength(2f, 4f), true, ItemGroups.BLOCKS_KEY);
-    Block JONGLEBRICK = ModBlocks.register("jonglebrick", SimpleHorizontalFacingBlock::new, AbstractBlock.Settings.create().mapColor(MapColor.WHITE).sounds(BlockSoundGroup.WOOD).requiresTool().strength(2f, 4f), true, ItemGroups.BLOCKS_KEY);
+    Block WHITER_CONCRETE = ModBlocks.register("whiter_concrete", Block::new, AbstractBlock.Settings.create().mapColor(DyeColor.WHITE).instrument(NoteBlockInstrument.BASS).sounds(BlockSoundGroup.STONE).requiresTool().strength(1.8f), true, ModItemGroups.BLOCKS_KEY);
+    Block JONGLE_PLANKS = ModBlocks.register("jongle_planks", Block::new, AbstractBlock.Settings.create().mapColor(MapColor.DIRT_BROWN).instrument(NoteBlockInstrument.BASEDRUM).sounds(BlockSoundGroup.WOOD).requiresTool().strength(2f, 3f).burnable(), true, ModItemGroups.BLOCKS_KEY);
+    Block BRICKCRETE = ModBlocks.register("brickcrete", SimpleHorizontalFacingBlock::new, AbstractBlock.Settings.create().mapColor(MapColor.WHITE).sounds(BlockSoundGroup.STONE).requiresTool().strength(2f, 4f), true, ModItemGroups.BLOCKS_KEY);
+    Block BRICKCRETE_CORNER = ModBlocks.register("brickcrete_corner", SimpleHorizontalFacingBlock::new, AbstractBlock.Settings.create().mapColor(MapColor.WHITE).sounds(BlockSoundGroup.STONE).requiresTool().strength(2f, 4f), true, ModItemGroups.BLOCKS_KEY);
+    Block JUNGLECRETE = ModBlocks.register("junglecrete", SimpleHorizontalFacingBlock::new, AbstractBlock.Settings.create().mapColor(MapColor.WHITE).sounds(BlockSoundGroup.WOOD).requiresTool().strength(2f, 4f), true, ModItemGroups.BLOCKS_KEY);
+    Block JONGLECRETE = ModBlocks.register("jonglecrete", SimpleHorizontalFacingBlock::new, AbstractBlock.Settings.create().mapColor(MapColor.WHITE).sounds(BlockSoundGroup.WOOD).requiresTool().strength(2f, 4f), true, ModItemGroups.BLOCKS_KEY);
+    Block JONGLEBRICK = ModBlocks.register("jonglebrick", SimpleHorizontalFacingBlock::new, AbstractBlock.Settings.create().mapColor(MapColor.WHITE).sounds(BlockSoundGroup.WOOD).requiresTool().strength(2f, 4f), true, ModItemGroups.BLOCKS_KEY);
 
-    Block PLASTIC_BLOCK = ModBlocks.register("plastic_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(2f, 2f), true, ItemGroups.BLOCKS_KEY);
-    Block RUBBER_BLOCK = ModBlocks.register("rubber_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(4f, 3f), true, ItemGroups.BLOCKS_KEY);
-    Block PERSPEX_BLOCK = ModBlocks.register("perspex_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(3f, 1200f).nonOpaque().solidBlock(Blocks::never), true, ItemGroups.BLOCKS_KEY);
-    Block HARDENED_LAVA_BLOCK = ModBlocks.register("hardened_lava_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(50f, 1200f), settings -> settings.rarity(Rarity.RARE), ItemGroups.BLOCKS_KEY);
-    Block UNOBTANIUM_BLOCK = ModBlocks.register("unobtanium_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(120f, 1200f), settings -> settings.rarity(Rarity.RARE), ItemGroups.BLOCKS_KEY);
-    Block NEAR_INFINITE_DENSITY_BLOCK = ModBlocks.register("near_infinite_density_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(250f, 1200f), settings -> settings.rarity(Rarity.EPIC), ItemGroups.BLOCKS_KEY);
-    Block LIAM_BLOCK = ModBlocks.register("liam_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(500f, 1200f), settings -> settings.rarity(Rarity.EPIC), ItemGroups.BLOCKS_KEY);
-    ManyBedsBlock MANY_BEDS_BLOCK = ModBlocks.register("many_beds_block", ManyBedsBlock::new, AbstractBlock.Settings.create().requiresTool().strength(2f, 1200f).sounds(BlockSoundGroup.WOOD).nonOpaque(), false, ItemGroups.BLOCKS_KEY);
-    Block FEATHER_BLOCK = ModBlocks.register("feather_block", Block::new, AbstractBlock.Settings.create().breakInstantly(), FeatherBlockItem::new, ItemGroups.BLOCKS_KEY);
-    Block GALLIUM_BLOCK = ModBlocks.register("gallium_block", GalliumBlock::new, AbstractBlock.Settings.create().requiresTool().strength(0.35f, 2.5f).noCollision(), settings -> settings.rarity(Rarity.UNCOMMON), ItemGroups.BLOCKS_KEY);
+    Block PLASTIC_BLOCK = ModBlocks.register("plastic_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(2f, 2f), true, ModItemGroups.BLOCKS_KEY);
+    Block RUBBER_BLOCK = ModBlocks.register("rubber_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(4f, 3f), true, ModItemGroups.BLOCKS_KEY);
+    Block PERSPEX_BLOCK = ModBlocks.register("perspex_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(3f, 1200f).nonOpaque().solidBlock(Blocks::never), true, ModItemGroups.BLOCKS_KEY);
+    Block HARDENED_LAVA_BLOCK = ModBlocks.register("hardened_lava_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(50f, 1200f), settings -> settings.rarity(Rarity.RARE), ModItemGroups.BLOCKS_KEY);
+    Block UNOBTANIUM_BLOCK = ModBlocks.register("unobtanium_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(120f, 1200f), settings -> settings.rarity(Rarity.RARE), ModItemGroups.BLOCKS_KEY);
+    Block NEAR_INFINITE_DENSITY_BLOCK = ModBlocks.register("near_infinite_density_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(250f, 1200f), settings -> settings.rarity(Rarity.EPIC), ModItemGroups.BLOCKS_KEY);
+    Block LIAM_BLOCK = ModBlocks.register("liam_block", Block::new, AbstractBlock.Settings.create().requiresTool().strength(500f, 1200f), settings -> settings.rarity(Rarity.EPIC), ModItemGroups.BLOCKS_KEY);
+    ManyBedsBlock MANY_BEDS_BLOCK = ModBlocks.register("many_beds_block", ManyBedsBlock::new, AbstractBlock.Settings.create().requiresTool().strength(2f, 1200f).sounds(BlockSoundGroup.WOOD).nonOpaque(), false, ModItemGroups.BLOCKS_KEY);
+    Block FEATHER_BLOCK = ModBlocks.register("feather_block", Block::new, AbstractBlock.Settings.create().breakInstantly(), FeatherBlockItem::new, ModItemGroups.BLOCKS_KEY);
+    Block GALLIUM_BLOCK = ModBlocks.register("gallium_block", GalliumBlock::new, AbstractBlock.Settings.create().requiresTool().strength(0.35f, 2.5f).noCollision(), settings -> settings.rarity(Rarity.UNCOMMON), ModItemGroups.BLOCKS_KEY);
 
-    Block SPAWN_PLACEHOLDER = ModBlocks.register("spawn_placeholder", ModifiableColourStateBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true, ItemGroups.MAP_MAKING_TOOLS_KEY);
-    Block CENTRE_PLACEHOLDER = ModBlocks.register("centre_placeholder", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true, ItemGroups.MAP_MAKING_TOOLS_KEY);
+    Block SPAWN_PLACEHOLDER = ModBlocks.register("spawn_placeholder", ModifiableColourStateBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true, ModItemGroups.MAP_MAKING_TOOLS_KEY);
+    Block CENTRE_PLACEHOLDER = ModBlocks.register("centre_placeholder", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true, ModItemGroups.MAP_MAKING_TOOLS_KEY);
 
     TierBlock CHEST_PLACEHOLDER = ModBlocks.register("chest_placeholder", settings -> new TierBlock(settings, 1) {
         @Override
         protected ItemStack getPickStack(WorldView world, BlockPos pos, BlockState state, boolean includeData) {
             return new ItemStack(BlockItems.CHEST_PLACEHOLDERS.get(state.get(TierBlock.TIER)));
         }
-    }, AbstractBlock.Settings.create().sounds(BlockSoundGroup.STONE).noCollision().nonOpaque(), false, ItemGroups.MAP_MAKING_TOOLS_KEY);
+    }, AbstractBlock.Settings.create().sounds(BlockSoundGroup.STONE).noCollision().nonOpaque(), false, ModItemGroups.MAP_MAKING_TOOLS_KEY);
 
-    Block POWERUP_PLACEHOLDER = ModBlocks.register("powerup_placeholder", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true, ItemGroups.MAP_MAKING_TOOLS_KEY);
+    Block POWERUP_PLACEHOLDER = ModBlocks.register("powerup_placeholder", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true, ModItemGroups.MAP_MAKING_TOOLS_KEY);
 
-    Block DIAMOND_GEN_PLACEHOLDER = ModBlocks.register("diamond_gen_placeholder", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true, ItemGroups.MAP_MAKING_TOOLS_KEY);
-    Block EMERALD_GEN_PLACEHOLDER = ModBlocks.register("emerald_gen_placeholder", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true, ItemGroups.MAP_MAKING_TOOLS_KEY);
-    Block ISLAND_GEN_PLACEHOLDER = ModBlocks.register("island_gen_placeholder", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true, ItemGroups.MAP_MAKING_TOOLS_KEY);
-    Block INDIVIDUAL_SHOP_PLACEHOLDER = ModBlocks.register("individual_shop_placeholder", SimpleHorizontalFacingBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true, ItemGroups.MAP_MAKING_TOOLS_KEY);
-    Block TEAM_SHOP_PLACEHOLDER = ModBlocks.register("team_shop_placeholder", SimpleHorizontalFacingBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true, ItemGroups.MAP_MAKING_TOOLS_KEY);
+    Block DIAMOND_GEN_PLACEHOLDER = ModBlocks.register("diamond_gen_placeholder", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true, ModItemGroups.MAP_MAKING_TOOLS_KEY);
+    Block EMERALD_GEN_PLACEHOLDER = ModBlocks.register("emerald_gen_placeholder", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true, ModItemGroups.MAP_MAKING_TOOLS_KEY);
+    Block ISLAND_GEN_PLACEHOLDER = ModBlocks.register("island_gen_placeholder", Block::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true, ModItemGroups.MAP_MAKING_TOOLS_KEY);
+    Block INDIVIDUAL_SHOP_PLACEHOLDER = ModBlocks.register("individual_shop_placeholder", SimpleHorizontalFacingBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true, ModItemGroups.MAP_MAKING_TOOLS_KEY);
+    Block TEAM_SHOP_PLACEHOLDER = ModBlocks.register("team_shop_placeholder", SimpleHorizontalFacingBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).noCollision().nonOpaque(), true, ModItemGroups.MAP_MAKING_TOOLS_KEY);
 
-    Block PROTECTED_AIR = ModBlocks.register("protected_air", Block::new, AbstractBlock.Settings.create().noCollision(), true, ItemGroups.MAP_MAKING_TOOLS_KEY);
+    Block PROTECTED_AIR = ModBlocks.register("protected_air", Block::new, AbstractBlock.Settings.create().noCollision(), true, ModItemGroups.MAP_MAKING_TOOLS_KEY);
 
-    Block MOSHPIT_MAP = ModBlocks.register("moshpit_map", SurvivalIntangibleBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.WOOL).noCollision().nonOpaque(), true, ItemGroups.BLOCKS_KEY); //Maybe fix voxel shape
+    Block MOSHPIT_MAP = ModBlocks.register("moshpit_map", SurvivalIntangibleBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.WOOL).noCollision().nonOpaque(), true, ModItemGroups.BLOCKS_KEY); //Maybe fix voxel shape
 
-    Block NUCLEAR_BOMB = ModBlocks.register("nuclear_bomb", settings -> new BigTntBlock(settings, BigTntEntity.BigTntType.NUCLEAR), AbstractBlock.Settings.create().breakInstantly().sounds(BlockSoundGroup.GRASS), true, ItemGroups.BLOCKS_KEY);
-    Block HYDROGEN_BOMB = ModBlocks.register("hydrogen_bomb", settings -> new BigTntBlock(settings, BigTntEntity.BigTntType.HYDROGEN), AbstractBlock.Settings.create().breakInstantly().sounds(BlockSoundGroup.GRASS), true, ItemGroups.BLOCKS_KEY);
-    Block COLLECTIBLE_BLOCK = ModBlocks.register("collectible_block", CollectibleBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.IRON).nonOpaque().luminance(state -> 2).hardness(1000000f).resistance(1000000f), true, ItemGroups.BLOCKS_KEY); //No collision?
-    Block DISPLAY_BLOCK = ModBlocks.register("display_block", DisplayBlock::new, AbstractBlock.Settings.create().nonOpaque().noCollision(), true, ItemGroups.BLOCKS_KEY);
-    Block KIT_BLOCK = ModBlocks.register("kit_block", KitBlock::new, AbstractBlock.Settings.create().nonOpaque(), true, ItemGroups.BLOCKS_KEY);
-    Block ITSEVOCAT_SKULL = ModBlocks.register("itsevocat_skull", ItsevocatSkull::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.BAMBOO).nonOpaque(), true, ItemGroups.BLOCKS_KEY); //No collision?
-    Block MAP_BLOCK = ModBlocks.register("map_block", MapBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.IRON), true, ItemGroups.BLOCKS_KEY);
-    Block JOIN_QUEUE_BLOCK = ModBlocks.register("join_queue_block", JoinQueueBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).hardness(1000000f).resistance(1000000f).nonOpaque().pistonBehavior(PistonBehavior.BLOCK), true, ItemGroups.BLOCKS_KEY);
+    Block NUCLEAR_BOMB = ModBlocks.register("nuclear_bomb", settings -> new BigTntBlock(settings, BigTntEntity.BigTntType.NUCLEAR), AbstractBlock.Settings.create().breakInstantly().sounds(BlockSoundGroup.GRASS), true, ModItemGroups.BLOCKS_KEY);
+    Block HYDROGEN_BOMB = ModBlocks.register("hydrogen_bomb", settings -> new BigTntBlock(settings, BigTntEntity.BigTntType.HYDROGEN), AbstractBlock.Settings.create().breakInstantly().sounds(BlockSoundGroup.GRASS), true, ModItemGroups.BLOCKS_KEY);
+    Block COLLECTIBLE_BLOCK = ModBlocks.register("collectible_block", CollectibleBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.IRON).nonOpaque().luminance(state -> 2).hardness(1000000f).resistance(1000000f), true, ModItemGroups.BLOCKS_KEY); //No collision?
+    Block DISPLAY_BLOCK = ModBlocks.register("display_block", DisplayBlock::new, AbstractBlock.Settings.create().nonOpaque().noCollision(), true, ModItemGroups.BLOCKS_KEY);
+    Block KIT_BLOCK = ModBlocks.register("kit_block", KitBlock::new, AbstractBlock.Settings.create().nonOpaque(), true, ModItemGroups.BLOCKS_KEY);
+    Block ITSEVOCAT_SKULL = ModBlocks.register("itsevocat_skull", ItsevocatSkull::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.BAMBOO).nonOpaque(), true, ModItemGroups.BLOCKS_KEY); //No collision?
+    Block MAP_BLOCK = ModBlocks.register("map_block", MapBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.IRON), true, ModItemGroups.BLOCKS_KEY);
+    Block JOIN_QUEUE_BLOCK = ModBlocks.register("join_queue_block", JoinQueueBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.LODESTONE).hardness(1000000f).resistance(1000000f).nonOpaque().pistonBehavior(PistonBehavior.BLOCK), true, ModItemGroups.BLOCKS_KEY);
 
-    Block PASSABLE_INVISIBLE_BLOCK = ModBlocks.register("passable_invisible_block", SurvivalIntangibleBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.STONE).hardness(1000000f).resistance(1000000f).nonOpaque().noCollision().pistonBehavior(PistonBehavior.BLOCK), true, ItemGroups.BLOCKS_KEY);
+    Block PASSABLE_INVISIBLE_BLOCK = ModBlocks.register("passable_invisible_block", SurvivalIntangibleBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.STONE).hardness(1000000f).resistance(1000000f).nonOpaque().noCollision().pistonBehavior(PistonBehavior.BLOCK), true, ModItemGroups.BLOCKS_KEY);
 
     /*
     public static final Block SOC_HEAD = ModBlocks.register(
@@ -118,7 +118,7 @@ public interface ModBlocks {
 
             BlockItem blockItem = itemFunction.apply(block, itemKey);
             Registry.register(Registries.ITEM, itemKey, blockItem);
-            ItemGroups.addItemToGroupsAndBaseItemGroup(blockItem.asItem(), blocksKey);
+            ModItemGroups.addItemToGroupsAndBaseItemGroup(blockItem.asItem(), blocksKey);
         }
 
         return Registry.register(Registries.BLOCK, blockKey, block);

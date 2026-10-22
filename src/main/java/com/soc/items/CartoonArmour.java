@@ -33,7 +33,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import static com.soc.items.ThrowableItem.spawnEntityWithVelocity;
-import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
+import static com.soc.items.util.ModItemGroups.addItemToGroupsAndBaseItemGroup;
 import static com.soc.lib.SocWarsLib.*;
 
 public class CartoonArmour extends ArmourItem implements OnHitArmour {

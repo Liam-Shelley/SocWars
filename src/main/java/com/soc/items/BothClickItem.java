@@ -2,7 +2,7 @@ package com.soc.items;
 
 import com.soc.items.components.CommandFunctionComponent;
 import com.soc.items.components.ModComponents;
-import com.soc.items.util.ItemGroups;
+import com.soc.items.util.ModItemGroups;
 import com.soc.items.util.OnAttackButtonPressed;
 import com.soc.items.util.UseFunction;
 import com.soc.itemsrework.ModItemsReworked;
@@ -15,7 +15,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
+import static com.soc.items.util.ModItemGroups.addItemToGroupsAndBaseItemGroup;
 import static com.soc.lib.SocWarsLib.ifNotNull;
 import static com.soc.lib.SocWarsLib.mapIfNotNull;
 
@@ -38,7 +38,7 @@ public class BothClickItem extends Item implements OnAttackButtonPressed {
 	}
 
 	public static void initialise() {
-		addItemToGroupsAndBaseItemGroup(PARKOUR_RESET, ItemGroups.ITEMS_KEY);
+		addItemToGroupsAndBaseItemGroup(PARKOUR_RESET, ModItemGroups.ITEMS_KEY);
 	}
 
 	@Override

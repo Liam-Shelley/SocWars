@@ -1,7 +1,7 @@
 package com.soc.items;
 
 import com.soc.items.util.EffectRecord;
-import com.soc.items.util.ItemGroups;
+import com.soc.items.util.ModItemGroups;
 import com.soc.itemsrework.ModItemsReworked;
 import com.soc.networking.s2c.AddVelocityPayload;
 import io.netty.buffer.ByteBuf;
@@ -83,7 +83,7 @@ public class DiceOfFate extends Item {
     }
 
     public static void initialise() {
-        ItemGroups.addItemToItemsGroup(DICE_OF_FATE);
+        ModItemGroups.addItemToItemsGroup(DICE_OF_FATE);
     }
 
     public static final Item DICE_OF_FATE = ModItemsReworked.register("dice_of_fate", DiceOfFate::new, new Settings()

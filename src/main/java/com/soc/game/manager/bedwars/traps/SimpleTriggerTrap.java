@@ -3,8 +3,8 @@ package com.soc.game.manager.bedwars.traps;
 import com.soc.SocWars;
 import com.soc.effects.util.ModEffects;
 import com.soc.game.manager.AbstractGameManager;
-import com.soc.items.BaseWeapon;
 import com.soc.items.EatFunctionFood;
+import com.soc.itemsrework.ModItemsReworked;
 import com.soc.lib.Events;
 import com.soc.networking.s2c.JumpscarePayload;
 import com.soc.networking.s2c.SilencePayload;
@@ -61,7 +61,7 @@ public class SimpleTriggerTrap extends AbstractTrap {
         Events.getInstance().scheduleEvent(() -> resetScale(enemy), (int)(trapAmplifier * 10 * 20));
     }));
     public static final AbstractTrap GLOWING = register(new SimpleTriggerTrap("glowing", Items.TORCH.getDefaultStack(), 8 * 20, StatusEffects.GLOWING, 0));
-    public static final AbstractTrap POSTURA = register(new SimpleTriggerTrap("postura", BaseWeapon.BAT.getDefaultStack(), 10 * 20, ModEffects.ARTHRODESIS, 0));
+    public static final AbstractTrap POSTURA = register(new SimpleTriggerTrap("postura", ModItemsReworked.BAT.getDefaultStack(), 10 * 20, ModEffects.ARTHRODESIS, 0));
     public static final AbstractTrap SPEED = register(new SimpleTriggerTrap("speed", Items.BLUE_ICE.getDefaultStack(), 2 * 20, StatusEffects.SPEED, 9));
     public static final AbstractTrap JUMPSCARE = register(new SimpleTriggerTrap("jumpscare", Items.CREEPER_HEAD.getDefaultStack(), 5 * 20, enemy -> ServerPlayNetworking.send(enemy, new JumpscarePayload(SoundEvents.ENTITY_ENDERMAN_DEATH, Identifier.of(SocWars.MOD_ID, "textures/gui/jumpscare/hiking.png"), 20))));
     public static final AbstractTrap SILENCE = register(new SimpleTriggerTrap("silence", Items.WHITE_WOOL.getDefaultStack(), 10 * 20, (enemy, trapAmplifier) -> ServerPlayNetworking.send(enemy, new SilencePayload((int)(trapAmplifier * 10 * 20)))));

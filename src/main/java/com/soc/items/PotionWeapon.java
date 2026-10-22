@@ -18,7 +18,7 @@ import net.minecraft.util.math.random.LocalRandom;
 
 import java.util.List;
 
-import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
+import static com.soc.items.util.ModItemGroups.addItemToGroupsAndBaseItemGroup;
 
 public class PotionWeapon extends Item {
     private final EffectRecipients effectRecipients;

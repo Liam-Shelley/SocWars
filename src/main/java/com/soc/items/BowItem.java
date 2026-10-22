@@ -40,7 +40,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.soc.items.EatFunctionFood.CHORUS_SALAD_TRIES;
-import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
+import static com.soc.items.util.ModItemGroups.addItemToGroupsAndBaseItemGroup;
 import static com.soc.lib.SocWarsLib.*;
 import static com.soc.util.SphereExplosion.fireExplosion;
 

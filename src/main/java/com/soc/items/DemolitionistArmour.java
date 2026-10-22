@@ -13,7 +13,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 
-import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
+import static com.soc.items.util.ModItemGroups.addItemToGroupsAndBaseItemGroup;
 
 public class DemolitionistArmour extends SetBonusArmourItem {
     private static final RegistryKey<EquipmentAsset> DEMOLITIONIST_MODEL_KEY = ArmourItem.registerEquipmentAsset("demolitionist");
