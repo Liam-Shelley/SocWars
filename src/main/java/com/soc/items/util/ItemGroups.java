@@ -3,6 +3,7 @@ package com.soc.items.util;
 import com.soc.SocWars;
 import com.soc.blocks.util.ModBlocks;
 import com.soc.items.AttackFunctionWeapon;
+import com.soc.itemsrework.ModItemsReworked;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.Item;
@@ -21,7 +22,7 @@ import static com.soc.itemsrework.ModItemsReworked.register;
 public interface ItemGroups {
     RegistryKey<ItemGroup> ITEMS_KEY = RegistryKey.of(Registries.ITEM_GROUP.getKey(), Identifier.of(SocWars.MOD_ID, "items_group"));
     ItemGroup ITEMS_GROUP = FabricItemGroup.builder()
-            .icon(() -> new ItemStack(AttackFunctionWeapon.DEVASTATOR_PRIME))
+            .icon(() -> new ItemStack(ModItemsReworked.DEVASTATOR_PRIME))
             .displayName(Text.translatable("item_group.socwars.items"))
             .build();
 

@@ -99,7 +99,7 @@ public class RedShellEntity extends Entity implements Ownable {
         this.target = this.getWorld().getClosestPlayer(this.getX(), this.getY(), this.getZ(), 250d, entity -> !entity.isTeammate(this.getOwner()) && !entity.isSpectator());
     }
 
-    private void explode() {
+    protected void explode() {
         SphereExplosion.explode(this.getWorld(), this.getPos(), 3f, 1f, 5f, 2f, true, null, null);
         this.discard();
     }

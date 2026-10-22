@@ -9,7 +9,6 @@ public interface ModItems {
         HardCodes.initialise();
 
         BaseWeapon.initialise();
-        AttackFunctionWeapon.initialise();
         UseFunctionWeapon.initialise();
         PotionWeapon.initialise();
         DrawableWeapon.initialise();

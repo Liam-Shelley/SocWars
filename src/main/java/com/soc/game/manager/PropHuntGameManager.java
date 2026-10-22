@@ -8,6 +8,7 @@ import com.soc.items.AttackFunctionWeapon;
 import com.soc.items.BowItem;
 import com.soc.items.MorphWand;
 import com.soc.items.UseFunctionWeapon;
+import com.soc.itemsrework.ModItemsReworked;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.LivingEntity;
@@ -55,7 +56,7 @@ public class PropHuntGameManager extends AbstractHidingGameManager<PropHuntGameM
 
 		final TitleS2CPacket youAreSeekingPacket = new TitleS2CPacket(Text.translatable("game.hiding.you_are_seeking"));
 		this.getPlayers(SEEKER_COLOUR).forEach(seeker -> {
-			seeker.giveItemStack(new ItemStack(AttackFunctionWeapon.SEEKING_STICK));
+			seeker.giveItemStack(new ItemStack(ModItemsReworked.SEEKING_STICK));
 			final ItemStack stack = new ItemStack(BowItem.SEEKING_BOW);
 			stack.addEnchantment(enchantmentEntry(this.world, Enchantments.INFINITY), 1);
 			seeker.giveItemStack(stack);
