@@ -26,13 +26,13 @@ public class SocWarsItem extends Item {
 	}
 
 	@Override
-	public ActionResult use(World world, PlayerEntity user, Hand hand) {
-		return super.use(world, user, hand);
+	public void postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+		ifNotNull(stack.get(ModItemComponentsReworked.ITEM_HIT), itemHit -> itemHit.postHit(stack, target, attacker));
 	}
 
 	@Override
-	public void postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-		ifNotNull(stack.get(ModItemComponentsReworked.POST_HIT), postHit -> postHit.postHit(stack, target, attacker));
+	public ActionResult use(World world, PlayerEntity user, Hand hand) {
+		return mapIfNotNull(user.getStackInHand(hand).get(ModItemComponentsReworked.ITEM_USE), itemUse -> itemUse.use(world, user, hand), ActionResult.PASS);
 	}
 
 	@Override

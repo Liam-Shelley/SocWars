@@ -12,12 +12,16 @@ import net.minecraft.text.TextCodecs;
 import net.minecraft.util.Identifier;
 
 public interface ModItemComponentsReworked {
-	ComponentType<HitItemComponent> POST_HIT = Registry.register(
+	ComponentType<ItemHitComponent> ITEM_HIT = Registry.register(
 			Registries.DATA_COMPONENT_TYPE,
-			Identifier.of(SocWars.MOD_ID, "post_hit"),
-			ComponentType.<HitItemComponent>builder().codec(HitItemComponent.CODEC).build()
+			Identifier.of(SocWars.MOD_ID, "hit_item"),
+			ComponentType.<ItemHitComponent>builder().codec(ItemHitComponent.CODEC).build()
 	);
-
+	ComponentType<ItemUseComponent> ITEM_USE = Registry.register(
+			Registries.DATA_COMPONENT_TYPE,
+			Identifier.of(SocWars.MOD_ID, "use_item"),
+			ComponentType.<ItemUseComponent>builder().codec(ItemUseComponent.CODEC).build()
+	);
 	ComponentType<RegistryKey<DamageType>> DAMAGE_TYPE = Registry.register(
 			Registries.DATA_COMPONENT_TYPE,
 			Identifier.of(SocWars.MOD_ID, "damage_type"),

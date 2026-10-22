@@ -51,7 +51,7 @@ import java.util.function.Function;
 
 import static com.soc.items.util.ModItemGroups.registerAndGroup;
 import static com.soc.itemsrework.components.ModItemComponentsReworked.DAMAGE_TYPE;
-import static com.soc.itemsrework.components.ModItemComponentsReworked.POST_HIT;
+import static com.soc.itemsrework.components.ModItemComponentsReworked.ITEM_HIT;
 import static com.soc.lib.SocWarsLib.*;
 import static com.soc.lib.SocWarsLib.isBlockHidden;
 import static com.soc.util.SphereExplosion.fireExplosion;
@@ -94,7 +94,7 @@ public interface ModItemsReworked {
 	Item LIFETHIEF = registerAndGroup("lifethief", SocWarsItem::new, new Item.Settings()
 			.rarity(Rarity.RARE)
 			.sword(ToolMaterials.LIFETHIEF, 2.5f, -2.2f)
-			.component(POST_HIT, (stack, target, attacker) -> {
+			.component(ITEM_HIT, (stack, target, attacker) -> {
 				final int bonusHealth = attacker.getWorld().random.nextBetween(-1, 2);
 
 				if (bonusHealth >= 0) {
@@ -113,7 +113,7 @@ public interface ModItemsReworked {
 			.rarity(Rarity.EPIC)
 			.sword(ToolMaterials.DEVASTATOR, 14.5f, -2.9f)
 			.component(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true)
-			.component(POST_HIT, (stack, target, attacker) -> {
+			.component(ITEM_HIT, (stack, target, attacker) -> {
 				target.addStatusEffect(new StatusEffectInstance(StatusEffects.WITHER, 3 * 20, 1));
 				target.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 3 * 20, 2));
 			}),
@@ -121,7 +121,7 @@ public interface ModItemsReworked {
 	);
 	Item NETHERWRONG_SWORD = registerAndGroup("netherwrong_sword", SocWarsItem::new, new Item.Settings()
 			.sword(ToolMaterial.NETHERITE, -3f, -3f)
-			.component(POST_HIT, (stack, target, attacker) -> {
+			.component(ITEM_HIT, (stack, target, attacker) -> {
 				final World world = attacker.getWorld();
 				if (attacker instanceof LivingEntity && world instanceof ServerWorld serverWorld) {
 					final DamageSource damageSource = damageSource(world, DamageTypes.NETHERWRONG_SWORD);
@@ -133,7 +133,7 @@ public interface ModItemsReworked {
 	Item ORANGE_SWORD = registerAndGroup("orange_sword", SocWarsItem::new, new Item.Settings()
 			.sword(ToolMaterials.BASE, 5f, -2.1f)
 			.maxDamage(500)
-			.component(POST_HIT, (stack, target, attacker) -> {
+			.component(ITEM_HIT, (stack, target, attacker) -> {
 				attacker.getWorld().playSound(null, attacker.getBlockPos(), Sounds.VINE_BOOM, SoundCategory.PLAYERS, 1f, 1f);
 			}),
 			ItemGroups.COMBAT
@@ -142,7 +142,7 @@ public interface ModItemsReworked {
 			.rarity(Rarity.UNCOMMON)
 			.sword(ToolMaterials.BASE, 8f, -2.15f)
 			.maxDamage(800)
-			.component(POST_HIT, (stack, target, attacker) -> {
+			.component(ITEM_HIT, (stack, target, attacker) -> {
 				if (attacker.getWorld() instanceof ServerWorld serverWorld) {
 					final SlimeEntity slime = new SlimeEntity(EntityType.SLIME, attacker.getWorld());
 					slime.setSize(2, true);
@@ -156,7 +156,7 @@ public interface ModItemsReworked {
 			.rarity(Rarity.EPIC)
 			.sword(ToolMaterials.BASE, 10f, -2.2f)
 			.maxDamage(1000)
-			.component(POST_HIT, (stack, target, attacker) -> {
+			.component(ITEM_HIT, (stack, target, attacker) -> {
 				float newAbsorption = attacker.getAbsorptionAmount() + 2;
 				attacker.getDataTracker().set(GetAbsorptionAmountDataTracker.getAbsorption_Amount(), newAbsorption);
 			}),
@@ -167,7 +167,7 @@ public interface ModItemsReworked {
 			.sword(ToolMaterials.BASE, 5.5f, -2.2f)
 			.component(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true)
 			.maxDamage(450)
-			.component(POST_HIT, (stack, target, attacker) -> {
+			.component(ITEM_HIT, (stack, target, attacker) -> {
 				final Vec3d velocity = attacker.getRotationVector().multiply(-1.25f);
 
 				if (target instanceof ServerPlayerEntity serverPlayer) {
@@ -186,7 +186,7 @@ public interface ModItemsReworked {
 			.rarity(Rarity.RARE)
 			.sword(ToolMaterials.BASE, 5.5f, -2f)
 			.maxDamage(450)
-			.component(POST_HIT, (stack, target, attacker) -> {
+			.component(ITEM_HIT, (stack, target, attacker) -> {
 				if (target.getWorld().random.nextBetween(1, 4) == 1) {
 					target.setPosition(target.getPos().add(target.getRotationVector().multiply(3f)));
 				}
@@ -197,7 +197,7 @@ public interface ModItemsReworked {
 			.rarity(Rarity.UNCOMMON)
 			.sword(ToolMaterials.BASE, 5f, -2.1f)
 			.maxDamage(500)
-			.component(POST_HIT, (stack, target, attacker) -> {
+			.component(ITEM_HIT, (stack, target, attacker) -> {
 				final LightningEntity lightning = new LightningEntity(EntityType.LIGHTNING_BOLT, target.getWorld());
 				lightning.setPosition(target.getPos());
 				target.getWorld().spawnEntity(lightning);
@@ -209,7 +209,7 @@ public interface ModItemsReworked {
 			.rarity(Rarity.RARE)
 			.sword(ToolMaterials.BASE, 4.5f, -2.2f)
 			.maxDamage(400)
-			.component(POST_HIT, (stack, target, attacker) -> {
+			.component(ITEM_HIT, (stack, target, attacker) -> {
 				SphereExplosion.explode(target.getWorld(), target.getPos(), 2.5f, 0.5f, 1.4f, 0.75f, true, attacker, null);
 			}),
 			ItemGroups.COMBAT
@@ -217,7 +217,7 @@ public interface ModItemsReworked {
 	Item SHATTERSTAR = registerAndGroup("shatterstar", SocWarsItem::new, new Item.Settings()
 			.maxCount(1)
 			.rarity(Rarity.RARE)
-			.component(POST_HIT, (stack, target, attacker) -> {
+			.component(ITEM_HIT, (stack, target, attacker) -> {
 				modifyEquipment(target, attacker, ReplaceMode.PRESENT,
 						(targetEntity, slot) -> target.equipStack(slot, ItemStack.EMPTY),
 						(targetEntity, slot) -> target.setStackInHand(Hand.MAIN_HAND, ItemStack.EMPTY));
@@ -227,7 +227,7 @@ public interface ModItemsReworked {
 	Item LEATHERER = registerAndGroup("leatherer", SocWarsItem::new, new Item.Settings()
 			.maxCount(1)
 			.rarity(Rarity.RARE)
-			.component(POST_HIT, (stack, target, attacker) -> {
+			.component(ITEM_HIT, (stack, target, attacker) -> {
 				modifyEquipment(target, attacker, ReplaceMode.NOT_LEATHER, (targetEntity, slot) -> {
 					final ItemStack item = leatherArmour(slot).getDefaultStack();
 					item.addEnchantment(enchantmentEntry(target.getWorld(), Enchantments.BINDING_CURSE), 1);
@@ -242,7 +242,7 @@ public interface ModItemsReworked {
 			.sword(ToolMaterials.BASE, 8f, -1.2f)
 			.maxDamage(350)
 			.rarity(Rarity.RARE)
-			.component(POST_HIT, (stack, target, attacker) -> {
+			.component(ITEM_HIT, (stack, target, attacker) -> {
 				if (attacker.getWorld().random.nextBetween(1, attacker.isOnGround() ? 6 : 4) == 1) {
 					final ItemEntity item = attacker.dropItem(stack, true, false);
 					if (item == null) return;
@@ -256,7 +256,7 @@ public interface ModItemsReworked {
 	);
 	Item FLESHY_BLADE = registerAndGroup("fleshy_blade", SocWarsItem::new, new Item.Settings()
 			.sword(ToolMaterials.BASE, 6f, -2.2f)
-			.component(POST_HIT, (stack, target, attacker) -> {
+			.component(ITEM_HIT, (stack, target, attacker) -> {
 				attacker.getWorld().playSound(null, target.getBlockPos(), Sounds.FLESH, SoundCategory.MASTER, 1f, 1f);
 			}),
 			ItemGroups.COMBAT
@@ -265,7 +265,7 @@ public interface ModItemsReworked {
 			.sword(ToolMaterials.BASE, 5.5f, -2.5f)
 			.maxDamage(400)
 			.rarity(Rarity.RARE)
-			.component(POST_HIT, (stack, target, attacker) -> {
+			.component(ITEM_HIT, (stack, target, attacker) -> {
 				fireExplosion(target.getWorld(), target.getBlockPos(), 4f, attacker);
 			}),
 			ItemGroups.COMBAT
@@ -274,7 +274,7 @@ public interface ModItemsReworked {
 			.sword(ToolMaterials.BASE, 5.5f, -2.3f)
 			.maxDamage(550)
 			.rarity(Rarity.UNCOMMON)
-			.component(POST_HIT, (stack, target, attacker) -> {
+			.component(ITEM_HIT, (stack, target, attacker) -> {
 				final World world = target.getWorld();
 				iterateInSphere(target.getBlockPos(), 4, 0, pos -> {
 					if (world.random.nextFloat() < 0.2f && !isBlockHidden(world, pos) && !world.getBlockState(pos).isIn(ModBlockTags.IMMUNE)) {
@@ -287,7 +287,7 @@ public interface ModItemsReworked {
 	Item POSTURA = registerAndGroup("postura", SocWarsItem::new, new Item.Settings()
 			.maxCount(1)
 			.rarity(Rarity.UNCOMMON)
-			.component(POST_HIT, (stack, target, attacker) -> {
+			.component(ITEM_HIT, (stack, target, attacker) -> {
 				target.addStatusEffect(new StatusEffectInstance(ModEffects.ARTHRODESIS, 40 * 20, 0, false, true));
 				stack.decrementUnlessCreative(1, attacker);
 			})
@@ -297,7 +297,7 @@ public interface ModItemsReworked {
 	Item FULL_METAL_SWORD = registerAndGroup("full_metal_sword", SocWarsItem::new, new Item.Settings()
 			.sword(ToolMaterials.BASE, 4.5f, -2.3f)
 			.maxDamage(500)
-			.component(POST_HIT, (stack, target, attacker) -> {
+			.component(ITEM_HIT, (stack, target, attacker) -> {
 				attacker.getWorld().playSound(null, attacker.getBlockPos(), Sounds.GET_SOME, SoundCategory.PLAYERS, 1f, 1f);
 			})
 			.component(DAMAGE_TYPE, DamageTypes.FULL_METAL_SWORD)
@@ -311,7 +311,7 @@ public interface ModItemsReworked {
 					new AttributeModifiersComponent.Entry(EntityAttributes.MOVEMENT_SPEED, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "seeking_stick_speed"), 0.05d, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.MAINHAND, AttributeModifiersComponent.Display.getHidden()),
 					new AttributeModifiersComponent.Entry(EntityAttributes.ATTACK_DAMAGE, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "seeking_stick_damage"), 6.5d, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.MAINHAND)
 			)))
-			.component(POST_HIT, (stack, target, attacker) -> {
+			.component(ITEM_HIT, (stack, target, attacker) -> {
 				GamesManager.getInstance().getGame(target).ifPresent(game -> {
 					if (game instanceof AbstractHidingGameManager<?, ?, ?> hidingGameManager) {
 						hidingGameManager.tryFindPlayer(attacker, (ServerPlayerEntity)target);
