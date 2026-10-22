@@ -14,7 +14,7 @@ import com.soc.game.manager.bedwars.shopitems.*;
 import com.soc.game.manager.bedwars.tickfunctions.TickFunctions;
 import com.soc.game.manager.bedwars.traps.Traps;
 import com.soc.items.components.ModComponents;
-import com.soc.items.util.ModItems;
+import com.soc.itemsrework.ModItemsReworked;
 import com.soc.lib.Coroutines;
 import com.soc.lib.EntityAttributes;
 import com.soc.lib.Events;
@@ -37,20 +37,13 @@ import org.slf4j.LoggerFactory;
 public class SocWars implements ModInitializer {
 	public static final String MOD_ID = "socwars";
 
-	// This logger is used to write text to the console and the log file.
-	// It is considered best practice to use your mod id as the logger's name.
-	// That way, it's clear which mod wrote info, warnings, and errors.
 	public static final Logger LOGGER = LoggerFactory.getLogger("SocWars");
 
 	@Override
 	public void onInitialize() {
-		// This code runs as soon as Minecraft is in options mod-load-ready state.
-		// However, some things (like resources) may still be uninitialized.
-		// Proceed with mild caution.
+		//ModItems.initialise();
+		ModItemsReworked.initialise();
 
-		LOGGER.info("Hello Fabric world!");
-
-		ModItems.initialise();
 		Sounds.initialise();
 		ModComponents.initialise();
 		ModBlocks.initialise();

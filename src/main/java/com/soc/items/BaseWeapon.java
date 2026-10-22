@@ -1,6 +1,6 @@
 package com.soc.items;
 
-import com.soc.items.util.ModItems;
+import com.soc.itemsrework.ModItemsReworked;
 import com.soc.materials.ToolMaterials;
 import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.item.Item;
@@ -32,13 +32,13 @@ public class BaseWeapon extends Item {
         addItemToGroupsAndBaseItemGroup(NETHERIGHT_SWORD, ItemGroups.COMBAT);
     }
 
-    public static final Item BAT = ModItems.register("bat", BaseWeapon::new, new Settings().sword(ToolMaterials.BASE, 4f, -1.9f));
-    public static final Item BARBED_WIRE_BAT = ModItems.register("barbed_wire_bat", BaseWeapon::new, new Settings().sword(ToolMaterials.BASE, 5f, -1.95f));
-    public static final Item NAILED_BAT = ModItems.register("nailed_bat", BaseWeapon::new, new Settings().sword(ToolMaterials.BASE, 6f, -2f).rarity(Rarity.UNCOMMON));
-    public static final Item RAZOR_WIRE_BAT = ModItems.register("razor_wire_bat", BaseWeapon::new, new Settings().sword(ToolMaterials.BASE, 7.5f, -2.1f).rarity(Rarity.RARE));
-    public static final Item SAW_BLADE_BAT = ModItems.register("saw_blade_bat", BaseWeapon::new, new Settings().sword(ToolMaterials.BASE, 9f, -2.4f).rarity(Rarity.RARE));
-    public static final Item DEVASTATOR = ModItems.register("devastator", BaseWeapon::new, new Settings().rarity(Rarity.RARE).sword(ToolMaterials.DEVASTATOR, 4f, -3.5f));
-    public static final Item NETHERIGHT_SWORD = ModItems.register("netheright_sword", BaseWeapon::new, new Settings().sword(ToolMaterial.NETHERITE, -4.5f, 12f));
+    public static final Item BAT = ModItemsReworked.register("bat", BaseWeapon::new, new Settings().sword(ToolMaterials.BASE, 4f, -1.9f));
+    public static final Item BARBED_WIRE_BAT = ModItemsReworked.register("barbed_wire_bat", BaseWeapon::new, new Settings().sword(ToolMaterials.BASE, 5f, -1.95f));
+    public static final Item NAILED_BAT = ModItemsReworked.register("nailed_bat", BaseWeapon::new, new Settings().sword(ToolMaterials.BASE, 6f, -2f).rarity(Rarity.UNCOMMON));
+    public static final Item RAZOR_WIRE_BAT = ModItemsReworked.register("razor_wire_bat", BaseWeapon::new, new Settings().sword(ToolMaterials.BASE, 7.5f, -2.1f).rarity(Rarity.RARE));
+    public static final Item SAW_BLADE_BAT = ModItemsReworked.register("saw_blade_bat", BaseWeapon::new, new Settings().sword(ToolMaterials.BASE, 9f, -2.4f).rarity(Rarity.RARE));
+    public static final Item DEVASTATOR = ModItemsReworked.register("devastator", BaseWeapon::new, new Settings().rarity(Rarity.RARE).sword(ToolMaterials.DEVASTATOR, 4f, -3.5f));
+    public static final Item NETHERIGHT_SWORD = ModItemsReworked.register("netheright_sword", BaseWeapon::new, new Settings().sword(ToolMaterial.NETHERITE, -4.5f, 12f));
 
     @Override
     @SuppressWarnings("deprecation")

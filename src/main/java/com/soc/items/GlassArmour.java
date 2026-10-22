@@ -1,11 +1,10 @@
 package com.soc.items;
 
 import com.soc.items.util.ArmourItem;
-import com.soc.items.util.ModItems;
 import com.soc.items.util.OnHitArmour;
 import com.soc.items.util.TransparentArmour;
+import com.soc.itemsrework.ModItemsReworked;
 import com.soc.util.DamageTypes;
-import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
@@ -13,14 +12,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.equipment.EquipmentAsset;
-import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
 import net.minecraft.util.Rarity;
 import net.minecraft.world.World;
-
-import java.util.function.Consumer;
 
 import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
 import static com.soc.lib.SocWarsLib.damageSource;
@@ -39,10 +34,10 @@ public class GlassArmour extends ArmourItem implements OnHitArmour, TransparentA
         addItemToGroupsAndBaseItemGroup(GLASS_BOOTS, ItemGroups.COMBAT);
     }
 
-    public static final Item GLASS_HELMET = ModItems.register("glass_helmet", settings -> new GlassArmour(settings, EquipmentSlot.HEAD, 2), new Settings().maxDamage(325).rarity(Rarity.RARE));
-    public static final Item GLASS_CHESTPLATE = ModItems.register("glass_chestplate", settings -> new GlassArmour(settings, EquipmentSlot.CHEST, 8), new Settings().maxDamage(400).rarity(Rarity.RARE));
-    public static final Item GLASS_LEGGINGS = ModItems.register("glass_leggings", settings -> new GlassArmour(settings, EquipmentSlot.LEGS, 6), new Settings().maxDamage(375).rarity(Rarity.RARE));
-    public static final Item GLASS_BOOTS = ModItems.register("glass_boots", settings -> new GlassArmour(settings, EquipmentSlot.FEET, 4), new Settings().maxDamage(325).rarity(Rarity.RARE));
+    public static final Item GLASS_HELMET = ModItemsReworked.register("glass_helmet", settings -> new GlassArmour(settings, EquipmentSlot.HEAD, 2), new Settings().maxDamage(325).rarity(Rarity.RARE));
+    public static final Item GLASS_CHESTPLATE = ModItemsReworked.register("glass_chestplate", settings -> new GlassArmour(settings, EquipmentSlot.CHEST, 8), new Settings().maxDamage(400).rarity(Rarity.RARE));
+    public static final Item GLASS_LEGGINGS = ModItemsReworked.register("glass_leggings", settings -> new GlassArmour(settings, EquipmentSlot.LEGS, 6), new Settings().maxDamage(375).rarity(Rarity.RARE));
+    public static final Item GLASS_BOOTS = ModItemsReworked.register("glass_boots", settings -> new GlassArmour(settings, EquipmentSlot.FEET, 4), new Settings().maxDamage(325).rarity(Rarity.RARE));
 
     @Override
     public boolean onHit(ItemStack stack, LivingEntity wearer, World world, DamageSource source) {

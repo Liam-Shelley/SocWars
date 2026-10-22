@@ -2,7 +2,7 @@ package com.soc.items;
 
 import com.soc.items.util.EffectRecord;
 import com.soc.items.util.ItemGroups;
-import com.soc.items.util.ModItems;
+import com.soc.itemsrework.ModItemsReworked;
 import com.soc.networking.s2c.AddVelocityPayload;
 import io.netty.buffer.ByteBuf;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -86,7 +86,7 @@ public class DiceOfFate extends Item {
         ItemGroups.addItemToItemsGroup(DICE_OF_FATE);
     }
 
-    public static final Item DICE_OF_FATE = ModItems.register("dice_of_fate", DiceOfFate::new, new Settings()
+    public static final Item DICE_OF_FATE = ModItemsReworked.register("dice_of_fate", DiceOfFate::new, new Settings()
             .maxCount(1)
             .rarity(Rarity.RARE)
     );

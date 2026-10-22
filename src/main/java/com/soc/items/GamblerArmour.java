@@ -3,8 +3,8 @@ package com.soc.items;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import com.soc.items.util.ArmourItem;
-import com.soc.items.util.ModItems;
 import com.soc.items.util.OnEquipArmour;
+import com.soc.itemsrework.ModItemsReworked;
 import com.soc.util.Random;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.EquippableComponent;
@@ -56,10 +56,10 @@ public class GamblerArmour extends Item implements OnEquipArmour {
         addItemToGroupsAndBaseItemGroup(GAMBLER_BOOTS, ItemGroups.COMBAT);
     }
 
-    public static final Item GAMBLER_HELMET = ModItems.register("gambler_helmet", (settings) -> new GamblerArmour(settings, new int[]{7, 5, 3, 1, 0}, EquipmentSlot.HEAD), new Settings().maxDamage(325).rarity(Rarity.RARE));
-    public static final Item GAMBLER_CHESTPLATE = ModItems.register("gambler_chestplate", (settings) -> new GamblerArmour(settings, new int[]{9 ,7, 5, 3, 1}, EquipmentSlot.CHEST), new Settings().maxDamage(400).rarity(Rarity.RARE));
-    public static final Item GAMBLER_LEGGINGS = ModItems.register("gambler_leggings", (settings) -> new GamblerArmour(settings, new int[]{8, 6, 4, 2, 0}, EquipmentSlot.LEGS), new Settings().maxDamage(375).rarity(Rarity.RARE));
-    public static final Item GAMBLER_BOOTS = ModItems.register("gambler_boots", (settings) -> new GamblerArmour(settings, new int[]{5, 4, 2, 1, 0}, EquipmentSlot.FEET), new Settings().maxDamage(325).rarity(Rarity.RARE));
+    public static final Item GAMBLER_HELMET = ModItemsReworked.register("gambler_helmet", (settings) -> new GamblerArmour(settings, new int[]{7, 5, 3, 1, 0}, EquipmentSlot.HEAD), new Settings().maxDamage(325).rarity(Rarity.RARE));
+    public static final Item GAMBLER_CHESTPLATE = ModItemsReworked.register("gambler_chestplate", (settings) -> new GamblerArmour(settings, new int[]{9 ,7, 5, 3, 1}, EquipmentSlot.CHEST), new Settings().maxDamage(400).rarity(Rarity.RARE));
+    public static final Item GAMBLER_LEGGINGS = ModItemsReworked.register("gambler_leggings", (settings) -> new GamblerArmour(settings, new int[]{8, 6, 4, 2, 0}, EquipmentSlot.LEGS), new Settings().maxDamage(375).rarity(Rarity.RARE));
+    public static final Item GAMBLER_BOOTS = ModItemsReworked.register("gambler_boots", (settings) -> new GamblerArmour(settings, new int[]{5, 4, 2, 1, 0}, EquipmentSlot.FEET), new Settings().maxDamage(325).rarity(Rarity.RARE));
 
     @Override
     public void inventoryTick(ItemStack stack, ServerWorld world, Entity entity, @Nullable EquipmentSlot slot) {

@@ -5,7 +5,7 @@ import com.mojang.datafixers.util.Pair;
 import com.soc.SocWars;
 import com.soc.effects.util.ModEffects;
 import com.soc.items.util.EffectRecord;
-import com.soc.items.util.ModItems;
+import com.soc.itemsrework.ModItemsReworked;
 import net.minecraft.component.type.*;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
@@ -26,6 +26,7 @@ import net.minecraft.util.Rarity;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup;
 import static net.minecraft.component.type.PotionContentsComponent.getEffectText;
 
 public class PotionFood extends Item {
@@ -87,20 +88,20 @@ public class PotionFood extends Item {
     }
 
     public static void initialise() {
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(IRON_APPLE, ItemGroups.FOOD_AND_DRINK);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(COPPER_APPLE, ItemGroups.FOOD_AND_DRINK);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(DIAMOND_APPLE, ItemGroups.FOOD_AND_DRINK);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(EMERALD_APPLE, ItemGroups.FOOD_AND_DRINK);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(NETHERITE_APPLE, ItemGroups.FOOD_AND_DRINK);
-        com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(JELLY_DONUT, ItemGroups.FOOD_AND_DRINK);
+        addItemToGroupsAndBaseItemGroup(IRON_APPLE, ItemGroups.FOOD_AND_DRINK);
+        addItemToGroupsAndBaseItemGroup(COPPER_APPLE, ItemGroups.FOOD_AND_DRINK);
+        addItemToGroupsAndBaseItemGroup(DIAMOND_APPLE, ItemGroups.FOOD_AND_DRINK);
+        addItemToGroupsAndBaseItemGroup(EMERALD_APPLE, ItemGroups.FOOD_AND_DRINK);
+        addItemToGroupsAndBaseItemGroup(NETHERITE_APPLE, ItemGroups.FOOD_AND_DRINK);
+        addItemToGroupsAndBaseItemGroup(JELLY_DONUT, ItemGroups.FOOD_AND_DRINK);
     }
 
-    public static final Item IRON_APPLE = ModItems.register("iron_apple", (settings) -> new PotionFood(settings, IRON_APPLE_EFFECTS, 6, 10), new Settings());
-    public static final Item COPPER_APPLE = ModItems.register("copper_apple", (settings) -> new PotionFood(settings, COPPER_APPLE_EFFECTS, 6, 10), new Settings());
-    public static final Item DIAMOND_APPLE = ModItems.register("diamond_apple", (settings) -> new PotionFood(settings, DIAMOND_APPLE_EFFECTS, 6, 12), new Settings().rarity(Rarity.RARE));
-    public static final Item EMERALD_APPLE = ModItems.register("emerald_apple", (settings) -> new PotionFood(settings, EMERALD_APPLE_EFFECTS, 6, 12), new Settings().rarity(Rarity.RARE));
-    public static final Item NETHERITE_APPLE = ModItems.register("netherite_apple", (settings) -> new PotionFood(settings, NETHERITE_APPLE_EFFECTS, 6, 16), new Settings().rarity(Rarity.EPIC));
-    public static final Item JELLY_DONUT = ModItems.register("jelly_donut", (settings) -> new PotionFood(settings, JELLY_DONUT_EFFECTS, 20, 20), new Settings().rarity(Rarity.EPIC));
+    public static final Item IRON_APPLE = ModItemsReworked.register("iron_apple", (settings) -> new PotionFood(settings, IRON_APPLE_EFFECTS, 6, 10), new Settings());
+    public static final Item COPPER_APPLE = ModItemsReworked.register("copper_apple", (settings) -> new PotionFood(settings, COPPER_APPLE_EFFECTS, 6, 10), new Settings());
+    public static final Item DIAMOND_APPLE = ModItemsReworked.register("diamond_apple", (settings) -> new PotionFood(settings, DIAMOND_APPLE_EFFECTS, 6, 12), new Settings().rarity(Rarity.RARE));
+    public static final Item EMERALD_APPLE = ModItemsReworked.register("emerald_apple", (settings) -> new PotionFood(settings, EMERALD_APPLE_EFFECTS, 6, 12), new Settings().rarity(Rarity.RARE));
+    public static final Item NETHERITE_APPLE = ModItemsReworked.register("netherite_apple", (settings) -> new PotionFood(settings, NETHERITE_APPLE_EFFECTS, 6, 16), new Settings().rarity(Rarity.EPIC));
+    public static final Item JELLY_DONUT = ModItemsReworked.register("jelly_donut", (settings) -> new PotionFood(settings, JELLY_DONUT_EFFECTS, 20, 20), new Settings().rarity(Rarity.EPIC));
 
     @Override
     public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {

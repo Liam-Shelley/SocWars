@@ -1,7 +1,7 @@
 package com.soc.items;
 
 import com.soc.entities.JetShoppingTrolleyEntity;
-import com.soc.items.util.ModItems;
+import com.soc.itemsrework.ModItemsReworked;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
@@ -21,7 +21,7 @@ public class JetShoppingTrolley extends Item {
         super(settings);
     }
 
-    public static final Item JET_SHOPPING_TROLLEY = ModItems.register("jet_shopping_trolley", JetShoppingTrolley::new, new Settings().rarity(Rarity.RARE).maxCount(1));
+    public static final Item JET_SHOPPING_TROLLEY = ModItemsReworked.register("jet_shopping_trolley", JetShoppingTrolley::new, new Settings().rarity(Rarity.RARE).maxCount(1));
 
     @Override
     public ActionResult use(World world, PlayerEntity user, Hand hand) {

@@ -3,8 +3,8 @@ package com.soc.items;
 import com.soc.events.ModEvents;
 import com.soc.items.util.CancelsBlockInteraction;
 import com.soc.items.util.ItemGroups;
-import com.soc.items.util.ModItems;
 import com.soc.items.util.OnAttackButtonPressed;
+import com.soc.itemsrework.ModItemsReworked;
 import com.soc.mixin.AccessDebugStickCycle;
 import com.soc.player.Morph;
 import com.soc.player.PlayerData;
@@ -46,7 +46,7 @@ public class MorphWand extends Item implements CancelsBlockInteraction, OnAttack
 		super(settings);
 	}
 
-	public static final Item MORPH_WAND = ModItems.register("morph_wand", MorphWand::new, new Settings());
+	public static final Item MORPH_WAND = ModItemsReworked.register("morph_wand", MorphWand::new, new Settings());
 
 	@Override
 	public ActionResult useOnBlock(ItemUsageContext context) {

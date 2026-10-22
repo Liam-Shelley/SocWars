@@ -1,7 +1,7 @@
 package com.soc.items;
 
 import com.soc.items.components.ExponComponent;
-import com.soc.items.util.ModItems;
+import com.soc.itemsrework.ModItemsReworked;
 import com.soc.materials.ToolMaterials;
 import com.soc.networking.s2c.AddVelocityPayload;
 import com.soc.util.DamageTypes;
@@ -39,7 +39,7 @@ public class Expon extends Item {
         com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(EXPON, ItemGroups.COMBAT);
     }
 
-    public static final Item EXPON = ModItems.register("expon", Expon::new, new Item.Settings()
+    public static final Item EXPON = ModItemsReworked.register("expon", Expon::new, new Item.Settings()
             .sword(ToolMaterials.BASE, -0.5f, -1.6f)
             .maxDamage(1000)
             .component(EXPON_COMPONENT, ExponComponent.DEFAULT)

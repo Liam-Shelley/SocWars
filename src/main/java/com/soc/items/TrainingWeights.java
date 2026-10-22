@@ -2,7 +2,7 @@ package com.soc.items;
 
 import com.soc.items.components.ModComponents;
 import com.soc.items.util.ArmourItem;
-import com.soc.items.util.ModItems;
+import com.soc.itemsrework.ModItemsReworked;
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.entity.Entity;
@@ -36,7 +36,7 @@ public class TrainingWeights extends ArmourItem {
         com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(TRAINING_WEIGHTS, ItemGroups.COMBAT);
     }
 
-    public static final Item TRAINING_WEIGHTS = ModItems.register("training_weights", settings -> new TrainingWeights(settings, EquipmentSlot.FEET, 2), new Settings()
+    public static final Item TRAINING_WEIGHTS = ModItemsReworked.register("training_weights", settings -> new TrainingWeights(settings, EquipmentSlot.FEET, 2), new Settings()
             .rarity(Rarity.UNCOMMON)
             .maxDamage(275)
     );

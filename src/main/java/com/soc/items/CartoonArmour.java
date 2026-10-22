@@ -3,8 +3,8 @@ package com.soc.items;
 import com.soc.entities.BWFireballEntity;
 import com.soc.entities.util.ModEntities;
 import com.soc.items.util.ArmourItem;
-import com.soc.items.util.ModItems;
 import com.soc.items.util.OnHitArmour;
+import com.soc.itemsrework.ModItemsReworked;
 import com.soc.util.ModBlockTags;
 import com.soc.util.SphereExplosion;
 import net.minecraft.block.Blocks;
@@ -53,7 +53,7 @@ public class CartoonArmour extends ArmourItem implements OnHitArmour {
         addItemToGroupsAndBaseItemGroup(CARTOON_BOOTS, ItemGroups.COMBAT);
     }
 
-    public static final Item CARTOON_HELMET = ModItems.register("cartoon_helmet", settings -> new CartoonArmour(settings, EquipmentSlot.HEAD, 4, (stack, wearer, world, source) -> {
+    public static final Item CARTOON_HELMET = ModItemsReworked.register("cartoon_helmet", settings -> new CartoonArmour(settings, EquipmentSlot.HEAD, 4, (stack, wearer, world, source) -> {
             if (world.isClient) return true;
             final int random = world.random.nextBetween(1, 8);
             switch (random) {
@@ -72,7 +72,7 @@ public class CartoonArmour extends ArmourItem implements OnHitArmour {
 
             return true;
     }), new Settings().maxDamage(325).rarity(Rarity.RARE));
-    public static final Item CARTOON_CHESTPLATE = ModItems.register("cartoon_chestplate", settings -> new CartoonArmour(settings, EquipmentSlot.CHEST, 9, (stack, wearer, world, source) -> {
+    public static final Item CARTOON_CHESTPLATE = ModItemsReworked.register("cartoon_chestplate", settings -> new CartoonArmour(settings, EquipmentSlot.CHEST, 9, (stack, wearer, world, source) -> {
             if (world.isClient) return true;
             final int random = world.random.nextBetween(1, 8);
             switch (random) {
@@ -90,7 +90,7 @@ public class CartoonArmour extends ArmourItem implements OnHitArmour {
 
             return true;
     }), new Settings().maxDamage(400).rarity(Rarity.RARE));
-    public static final Item CARTOON_LEGGINGS = ModItems.register("cartoon_leggings", settings -> new CartoonArmour(settings, EquipmentSlot.LEGS, 7, (stack, wearer, world, source) -> {
+    public static final Item CARTOON_LEGGINGS = ModItemsReworked.register("cartoon_leggings", settings -> new CartoonArmour(settings, EquipmentSlot.LEGS, 7, (stack, wearer, world, source) -> {
             if (world.isClient) return true;
             final int random = world.random.nextBetween(1, 8);
             switch (random) {
@@ -112,7 +112,7 @@ public class CartoonArmour extends ArmourItem implements OnHitArmour {
 
             return true;
     }), new Settings().maxDamage(375).rarity(Rarity.RARE));
-    public static final Item CARTOON_BOOTS = ModItems.register("cartoon_boots", settings -> new CartoonArmour(settings, EquipmentSlot.FEET, 4, (stack, wearer, world, source) -> {
+    public static final Item CARTOON_BOOTS = ModItemsReworked.register("cartoon_boots", settings -> new CartoonArmour(settings, EquipmentSlot.FEET, 4, (stack, wearer, world, source) -> {
             if (world.isClient) return true;
             final int random = world.random.nextBetween(1, 8);
             switch (random) {

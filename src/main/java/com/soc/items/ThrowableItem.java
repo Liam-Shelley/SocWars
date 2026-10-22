@@ -3,8 +3,8 @@ package com.soc.items;
 import com.soc.entities.*;
 import com.soc.entities.util.ModEntities;
 import com.soc.items.util.AppendTooltipFunction;
-import com.soc.items.util.ModItems;
 import com.soc.items.util.SpawnThrowableItemFunction;
+import com.soc.itemsrework.ModItemsReworked;
 import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
@@ -54,24 +54,24 @@ public class ThrowableItem extends Item {
         addItemToGroupsAndBaseItemGroup(POCKET_SAND, COMBAT);
     }
 
-    public static final Item FIREBALL = ModItems.register("fireball", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new BWFireballEntity(ModEntities.FIREBALL, world, user, Vec3d.ZERO, 4f, BWFireballEntity::fireballExplosion), world, user, 1.75f)), new Settings().useCooldown(0.75f));
-    public static final Item WATERBALL = ModItems.register("waterball", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new BWFireballEntity(ModEntities.WATERBALL, world, user, Vec3d.ZERO, 0f, BWFireballEntity::waterballExplosion), world, user, 1.75f)), new Settings().useCooldown(0.75f));
-    public static final Item SNAIL_FIREBALL = ModItems.register("snail_fireball", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new BWFireballEntity(ModEntities.SNAIL_FIREBALL, world, user, Vec3d.ZERO, 20f, BWFireballEntity::snailExplosion), world, user, 0.2f), (stack, consumer) -> consumer.accept(Text.translatable("tooltip.snail_fireball").withColor(0xe6e475))), new Settings().useCooldown(0.75f).rarity(Rarity.EPIC));
-    public static final Item LIGHTNING_ORB = ModItems.register("lightning_orb", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new BWFireballEntity(ModEntities.LIGHTNING_ORB, world, user, Vec3d.ZERO, 0f, BWFireballEntity::lightningOrbExplosion), world, user, 2.0f)), new Settings().useCooldown(0.75f).rarity(Rarity.UNCOMMON));
-    public static final Item DRAGON_FIREBALL = ModItems.register("dragon_fireball", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new DragonFireballEntity(world, user, Vec3d.ZERO), world, user, 1.5f), (stack, consumer) -> consumer.accept(Text.translatable("tooltip.dragon_fireball").withColor(Color.HSBtoRGB(getWorldTime() / 50f, 1f, 1f)))), new Settings().useCooldown(0.75f).rarity(Rarity.UNCOMMON));
-    public static final Item THROWABLE_TNT = ModItems.register("throwable_tnt", settings -> new ThrowableItem(settings, (world, user) -> {
+    public static final Item FIREBALL = ModItemsReworked.register("fireball", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new BWFireballEntity(ModEntities.FIREBALL, world, user, Vec3d.ZERO, 4f, BWFireballEntity::fireballExplosion), world, user, 1.75f)), new Settings().useCooldown(0.75f));
+    public static final Item WATERBALL = ModItemsReworked.register("waterball", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new BWFireballEntity(ModEntities.WATERBALL, world, user, Vec3d.ZERO, 0f, BWFireballEntity::waterballExplosion), world, user, 1.75f)), new Settings().useCooldown(0.75f));
+    public static final Item SNAIL_FIREBALL = ModItemsReworked.register("snail_fireball", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new BWFireballEntity(ModEntities.SNAIL_FIREBALL, world, user, Vec3d.ZERO, 20f, BWFireballEntity::snailExplosion), world, user, 0.2f), (stack, consumer) -> consumer.accept(Text.translatable("tooltip.snail_fireball").withColor(0xe6e475))), new Settings().useCooldown(0.75f).rarity(Rarity.EPIC));
+    public static final Item LIGHTNING_ORB = ModItemsReworked.register("lightning_orb", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new BWFireballEntity(ModEntities.LIGHTNING_ORB, world, user, Vec3d.ZERO, 0f, BWFireballEntity::lightningOrbExplosion), world, user, 2.0f)), new Settings().useCooldown(0.75f).rarity(Rarity.UNCOMMON));
+    public static final Item DRAGON_FIREBALL = ModItemsReworked.register("dragon_fireball", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new DragonFireballEntity(world, user, Vec3d.ZERO), world, user, 1.5f), (stack, consumer) -> consumer.accept(Text.translatable("tooltip.dragon_fireball").withColor(Color.HSBtoRGB(getWorldTime() / 50f, 1f, 1f)))), new Settings().useCooldown(0.75f).rarity(Rarity.UNCOMMON));
+    public static final Item THROWABLE_TNT = ModItemsReworked.register("throwable_tnt", settings -> new ThrowableItem(settings, (world, user) -> {
         final TntEntity tnt = spawnEntityWithVelocity(new TntEntity(world, 0d, 0d, 0d, user), world, user, 0.6f);
         tnt.setFuse(30);
     }), new Settings().useCooldown(0.75f));
-    public static final Item ENDER_BEAM = ModItems.register("ender_beam", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new EnderBeamEntity(world, user), world, user, 1.75f)), new Settings().useCooldown(0.75f));
-    public static final Item HAND_GRENADE = ModItems.register("hand_grenade", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new HandGrenadeEntity(ModEntities.HAND_GRENADE, world, 0.5f, user), world, user, 0.65f), (stack, consumer) -> consumer.accept(Text.translatable("tooltip.hand_grenade"))), new Settings().useCooldown(1f).rarity(Rarity.UNCOMMON));
-    public static final Item HOLY_HAND_GRENADE = ModItems.register("holy_hand_grenade", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new HolyHandGrenadeEntity(ModEntities.HOLY_HAND_GRENADE, world, 0.5f, user), world, user, 0.65f), (stack, consumer) -> {
+    public static final Item ENDER_BEAM = ModItemsReworked.register("ender_beam", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new EnderBeamEntity(world, user), world, user, 1.75f)), new Settings().useCooldown(0.75f));
+    public static final Item HAND_GRENADE = ModItemsReworked.register("hand_grenade", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new HandGrenadeEntity(ModEntities.HAND_GRENADE, world, 0.5f, user), world, user, 0.65f), (stack, consumer) -> consumer.accept(Text.translatable("tooltip.hand_grenade"))), new Settings().useCooldown(1f).rarity(Rarity.UNCOMMON));
+    public static final Item HOLY_HAND_GRENADE = ModItemsReworked.register("holy_hand_grenade", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new HolyHandGrenadeEntity(ModEntities.HOLY_HAND_GRENADE, world, 0.5f, user), world, user, 0.65f), (stack, consumer) -> {
         for (int i = 0; i < 10; i++) {
             consumer.accept(Text.translatable("tooltip.holy_hand_grenade." + i));
         }
     }), new Settings().useCooldown(3f).rarity(Rarity.RARE));
-    public static final Item MOLOTOV_COCKTAIL = ModItems.register("molotov_cocktail", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new MolotovCocktailEntity(ModEntities.MOLOTOV_COCKTAIL, world, user), world, user, 0.7f)), new Settings().useCooldown(0.5f).rarity(Rarity.UNCOMMON));
-    public static final Item POCKET_SAND = ModItems.register("pocket_sand", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new PocketSandEntity(ModEntities.POCKET_SAND, world), world, user, 0.9f), ((stack, consumer) -> consumer.accept(Text.translatable("tooltip.pocket_sand")))), new Settings().useCooldown(0.5f));
+    public static final Item MOLOTOV_COCKTAIL = ModItemsReworked.register("molotov_cocktail", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new MolotovCocktailEntity(ModEntities.MOLOTOV_COCKTAIL, world, user), world, user, 0.7f)), new Settings().useCooldown(0.5f).rarity(Rarity.UNCOMMON));
+    public static final Item POCKET_SAND = ModItemsReworked.register("pocket_sand", settings -> new ThrowableItem(settings, (world, user) -> spawnEntityWithVelocity(new PocketSandEntity(ModEntities.POCKET_SAND, world), world, user, 0.9f), ((stack, consumer) -> consumer.accept(Text.translatable("tooltip.pocket_sand")))), new Settings().useCooldown(0.5f));
 
     @Override
     public ActionResult use(World world, PlayerEntity user, Hand hand) {

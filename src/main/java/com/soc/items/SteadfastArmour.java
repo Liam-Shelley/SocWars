@@ -2,8 +2,8 @@ package com.soc.items;
 
 import com.soc.SocWars;
 import com.soc.items.util.ArmourItem;
-import com.soc.items.util.ModItems;
 import com.soc.items.util.SetBonusArmourItem;
+import com.soc.itemsrework.ModItemsReworked;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.Item;
@@ -29,8 +29,8 @@ public class SteadfastArmour extends SetBonusArmourItem {
         addItemToGroupsAndBaseItemGroup(STEADFAST_BOOTS, ItemGroups.COMBAT);
     }
 
-    public static final Item STEADFAST_HELMET = ModItems.register("steadfast_helmet", (settings) -> new SteadfastArmour(settings, EquipmentSlot.HEAD, 3), new Settings().maxDamage(325).rarity(Rarity.RARE));
-    public static final Item STEADFAST_CHESTPLATE = ModItems.register("steadfast_chestplate", (settings) -> new SteadfastArmour(settings, EquipmentSlot.CHEST, 7), new Settings().maxDamage(400).rarity(Rarity.RARE));
-    public static final Item STEADFAST_LEGGINGS = ModItems.register("steadfast_leggings", (settings) -> new SteadfastArmour(settings, EquipmentSlot.LEGS, 5), new Settings().maxDamage(375).rarity(Rarity.RARE));
-    public static final Item STEADFAST_BOOTS = ModItems.register("steadfast_boots", (settings) -> new SteadfastArmour(settings, EquipmentSlot.FEET, 3), new Settings().maxDamage(325).rarity(Rarity.RARE));
+    public static final Item STEADFAST_HELMET = ModItemsReworked.register("steadfast_helmet", (settings) -> new SteadfastArmour(settings, EquipmentSlot.HEAD, 3), new Settings().maxDamage(325).rarity(Rarity.RARE));
+    public static final Item STEADFAST_CHESTPLATE = ModItemsReworked.register("steadfast_chestplate", (settings) -> new SteadfastArmour(settings, EquipmentSlot.CHEST, 7), new Settings().maxDamage(400).rarity(Rarity.RARE));
+    public static final Item STEADFAST_LEGGINGS = ModItemsReworked.register("steadfast_leggings", (settings) -> new SteadfastArmour(settings, EquipmentSlot.LEGS, 5), new Settings().maxDamage(375).rarity(Rarity.RARE));
+    public static final Item STEADFAST_BOOTS = ModItemsReworked.register("steadfast_boots", (settings) -> new SteadfastArmour(settings, EquipmentSlot.FEET, 3), new Settings().maxDamage(325).rarity(Rarity.RARE));
 }

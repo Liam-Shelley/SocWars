@@ -3,9 +3,9 @@ package com.soc.items;
 import com.soc.items.components.CommandFunctionComponent;
 import com.soc.items.components.ModComponents;
 import com.soc.items.util.ItemGroups;
-import com.soc.items.util.ModItems;
 import com.soc.items.util.OnAttackButtonPressed;
 import com.soc.items.util.UseFunction;
+import com.soc.itemsrework.ModItemsReworked;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -56,7 +56,7 @@ public class BothClickItem extends Item implements OnAttackButtonPressed {
 		ifNotNull(this.leftClickFunction, function -> function.use(player.getWorld(), player, Hand.MAIN_HAND));
 	}
 
-	private static final Item PARKOUR_RESET = ModItems.register("parkour_reset", settings -> new BothClickItem(settings,
+	private static final Item PARKOUR_RESET = ModItemsReworked.register("parkour_reset", settings -> new BothClickItem(settings,
 					(world, user, hand) -> {
 						ifNotNull(user.getStackInHand(hand).get(ModComponents.COMMAND_FUNCTION), component -> component.runLeftClick(user));
 						return ActionResult.SUCCESS;

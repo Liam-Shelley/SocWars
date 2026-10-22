@@ -1,6 +1,7 @@
 package com.soc.items.util;
 
 import com.soc.items.components.ModComponents;
+import com.soc.itemsrework.ModItemsReworked;
 import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -19,7 +20,7 @@ public class DoubleJumpItem extends Item implements DisableOffhandSwapping {
 		ItemGroups.addItemToItemsGroup(PORTABLE_STEPPING_STOOL);
 	}
 
-	public static final Item PORTABLE_STEPPING_STOOL = ModItems.register("portable_stepping_stool", DoubleJumpItem::new, new Settings().rarity(Rarity.RARE).maxCount(1));
+	public static final Item PORTABLE_STEPPING_STOOL = ModItemsReworked.register("portable_stepping_stool", DoubleJumpItem::new, new Settings().rarity(Rarity.RARE).maxCount(1));
 
 	@Override
 	@SuppressWarnings("deprecation")

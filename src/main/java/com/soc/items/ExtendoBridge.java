@@ -1,6 +1,6 @@
 package com.soc.items;
 
-import com.soc.items.util.ModItems;
+import com.soc.itemsrework.ModItemsReworked;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -44,7 +44,7 @@ public class ExtendoBridge extends Item {
         com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(EXTENDO_BRIDGE, ItemGroups.TOOLS);
     }
 
-    public static final Item EXTENDO_BRIDGE = ModItems.register("extendo_bridge", ExtendoBridge::new, new Settings().rarity(Rarity.UNCOMMON).useCooldown(0.25f));
+    public static final Item EXTENDO_BRIDGE = ModItemsReworked.register("extendo_bridge", ExtendoBridge::new, new Settings().rarity(Rarity.UNCOMMON).useCooldown(0.25f));
 
     @Override
     public ActionResult use(World world, PlayerEntity user, Hand hand) {

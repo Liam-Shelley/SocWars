@@ -1,10 +1,9 @@
 package com.soc.items;
 
 import com.soc.SocWars;
-import com.soc.items.components.ModComponents;
 import com.soc.items.util.AppendTooltipFunction;
 import com.soc.items.util.ItemGroups;
-import com.soc.items.util.ModItems;
+import com.soc.itemsrework.ModItemsReworked;
 import net.minecraft.component.type.AttributeModifierSlot;
 import net.minecraft.component.type.AttributeModifiersComponent;
 import net.minecraft.component.type.TooltipDisplayComponent;
@@ -40,13 +39,13 @@ public class BaseItem extends Item {
         ItemGroups.addItemToItemsGroup(BALUSTRADE);
     }
 
-    public static final Item SHARPENED_POKING_STICK = ModItems.register("sharpened_poking_stick", BaseItem::new, new Settings().maxDamage(150).rarity(Rarity.UNCOMMON).attributeModifiers(AttributeModifiersComponent.builder()
+    public static final Item SHARPENED_POKING_STICK = ModItemsReworked.register("sharpened_poking_stick", BaseItem::new, new Settings().maxDamage(150).rarity(Rarity.UNCOMMON).attributeModifiers(AttributeModifiersComponent.builder()
             .add(EntityAttributes.ENTITY_INTERACTION_RANGE, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "stick_reach"), 1.75, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.HAND)
             .add(EntityAttributes.ATTACK_DAMAGE, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "stick_damage"), 5, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.HAND)
             .add(EntityAttributes.ATTACK_SPEED, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "stick_attack_speed"), 0.2, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.HAND)
             .build()
     ));
-    public static final Item BALUSTRADE = ModItems.register("balustrade", Item::new, new Settings());
+    public static final Item BALUSTRADE = ModItemsReworked.register("balustrade", Item::new, new Settings());
 
     @Override
     @SuppressWarnings("deprecation")

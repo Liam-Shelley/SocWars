@@ -1,6 +1,6 @@
 package com.soc.items;
 
-import com.soc.items.util.ModItems;
+import com.soc.itemsrework.ModItemsReworked;
 import com.soc.materials.ToolMaterials;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
@@ -23,7 +23,7 @@ public class GreenSword extends Item {
         com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(GREEN_SWORD, ItemGroups.COMBAT);
     }
 
-    public static final Item GREEN_SWORD = ModItems.register("green_sword", GreenSword::new, new Settings()
+    public static final Item GREEN_SWORD = ModItemsReworked.register("green_sword", GreenSword::new, new Settings()
             .sword(ToolMaterials.BASE, 7f, -2.15f)
             .rarity(Rarity.UNCOMMON)
             .maxDamage(700)

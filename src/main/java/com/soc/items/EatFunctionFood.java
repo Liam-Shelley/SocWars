@@ -1,7 +1,7 @@
 package com.soc.items;
 
 import com.soc.items.util.FinishUsingFunction;
-import com.soc.items.util.ModItems;
+import com.soc.itemsrework.ModItemsReworked;
 import net.minecraft.component.type.FoodComponent;
 import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.entity.LivingEntity;
@@ -39,19 +39,19 @@ public class EatFunctionFood extends Item { //rewrite all of this as consumable 
         addItemToGroupsAndBaseItemGroup(CHORUS_FRUIT_SALAD, ItemGroups.FOOD_AND_DRINK);
     }
 
-    public static final Item SHRINKING_PILLS = ModItems.register("shrinking_pills", settings -> new EatFunctionFood(settings, (stack, world, user) -> {
+    public static final Item SHRINKING_PILLS = ModItemsReworked.register("shrinking_pills", settings -> new EatFunctionFood(settings, (stack, world, user) -> {
         scaleEntity(user, SQRT2 * 0.5f);
         return null;
             }), new Settings()
             .rarity(Rarity.UNCOMMON)
     );
-    public static final Item BIGGENING_PILLS = ModItems.register("biggening_pills", settings -> new EatFunctionFood(settings, (stack, world, user) -> {
+    public static final Item BIGGENING_PILLS = ModItemsReworked.register("biggening_pills", settings -> new EatFunctionFood(settings, (stack, world, user) -> {
         scaleEntity(user, SQRT2);
         return null;
             }), new Settings()
             .rarity(Rarity.UNCOMMON)
     );
-    public static final Item CHORUS_FRUIT_SALAD = ModItems.register("chorus_fruit_salad", settings -> new EatFunctionFood(settings, (stack, world, user) -> {
+    public static final Item CHORUS_FRUIT_SALAD = ModItemsReworked.register("chorus_fruit_salad", settings -> new EatFunctionFood(settings, (stack, world, user) -> {
         if (world.isClient) return null;
 
         final boolean success = randomTeleport(world, user, CHORUS_SALAD_TRIES, 50, 15f);

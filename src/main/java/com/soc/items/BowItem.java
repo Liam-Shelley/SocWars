@@ -4,8 +4,8 @@ import com.soc.SocWars;
 import com.soc.game.manager.AbstractHidingGameManager;
 import com.soc.game.manager.GamesManager;
 import com.soc.items.util.ArrowFactory;
-import com.soc.items.util.ModItems;
 import com.soc.items.util.ScaledUseDuration;
+import com.soc.itemsrework.ModItemsReworked;
 import com.soc.util.DamageTypes;
 import com.soc.util.SphereExplosion;
 import net.minecraft.component.type.AttributeModifierSlot;
@@ -66,7 +66,7 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
         addItemToGroupsAndBaseItemGroup(SEEKING_BOW, ItemGroups.COMBAT);
     }
 
-    public static final Item BOOM_BOW = ModItems.register("boom_bow", settings -> new BowItem(settings, (world, user, projectileStack,weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
+    public static final Item BOOM_BOW = ModItemsReworked.register("boom_bow", settings -> new BowItem(settings, (world, user, projectileStack, weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
                 @Override
                 protected void onHit(LivingEntity target) {
                     super.onHit(target);
@@ -86,7 +86,7 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
             .rarity(Rarity.UNCOMMON)
             .maxDamage(30)
     );
-    public static final Item MEGABOOM_BOW = ModItems.register("megaboom_bow", settings -> new BowItem(settings, (world, user, projectileStack,weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
+    public static final Item MEGABOOM_BOW = ModItemsReworked.register("megaboom_bow", settings -> new BowItem(settings, (world, user, projectileStack, weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
                 @Override
                 protected void onHit(LivingEntity target) {
                     super.onHit(target);
@@ -104,7 +104,7 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
             .rarity(Rarity.RARE)
             .maxDamage(15)
     );
-    public static final Item FALCON_BOW = ModItems.register("falcon_bow", settings -> new BowItem(settings, (world, user, projectileStack,weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
+    public static final Item FALCON_BOW = ModItemsReworked.register("falcon_bow", settings -> new BowItem(settings, (world, user, projectileStack, weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
                 @Override
                 protected void onHit(LivingEntity target) {
                     super.onHit(target);
@@ -120,7 +120,7 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
             .rarity(Rarity.EPIC)
             .maxDamage(15)
     );
-    public static final Item HEATER_BOW = ModItems.register("heater_bow", settings -> new BowItem(settings, (world, user, projectileStack,weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
+    public static final Item HEATER_BOW = ModItemsReworked.register("heater_bow", settings -> new BowItem(settings, (world, user, projectileStack, weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
                 @Override
                 protected void onHit(LivingEntity target) {
                     super.onHit(target);
@@ -138,7 +138,7 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
             .rarity(Rarity.UNCOMMON)
             .maxDamage(250)
     );
-    public static final Item CHORUS_BOW = ModItems.register("chorus_bow", settings -> new BowItem(settings, (world, user, projectileStack,weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
+    public static final Item CHORUS_BOW = ModItemsReworked.register("chorus_bow", settings -> new BowItem(settings, (world, user, projectileStack, weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
                 @Override
                 protected void onHit(LivingEntity target) {
                     super.onHit(target);
@@ -155,7 +155,7 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
             .rarity(Rarity.RARE)
             .maxDamage(75)
     );
-    public static final Item CATASTROPHE_BOW = ModItems.register("catastrophe_bow", settings -> new BowItem(settings, (world, user, projectileStack,weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
+    public static final Item CATASTROPHE_BOW = ModItemsReworked.register("catastrophe_bow", settings -> new BowItem(settings, (world, user, projectileStack, weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
                 @Override
                 protected void onHit(LivingEntity target) {
                     super.onHit(target);
@@ -178,7 +178,7 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
             .rarity(Rarity.EPIC)
             .maxDamage(10)
     );
-    public static final Item SEEKING_BOW = ModItems.register("seeking_bow", settings -> new BowItem(settings, (world, user, projectileStack,weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
+    public static final Item SEEKING_BOW = ModItemsReworked.register("seeking_bow", settings -> new BowItem(settings, (world, user, projectileStack, weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
                 @Override
                 protected void onHit(LivingEntity target) {
                     super.onHit(target);

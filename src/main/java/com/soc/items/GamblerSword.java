@@ -2,7 +2,7 @@ package com.soc.items;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import com.soc.items.util.ModItems;
+import com.soc.itemsrework.ModItemsReworked;
 import com.soc.util.Random;
 import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.entity.Entity;
@@ -42,7 +42,7 @@ public class GamblerSword extends Item {
         com.soc.items.util.ItemGroups.addItemToGroupsAndBaseItemGroup(GAMBLER_SWORD, ItemGroups.COMBAT);
     }
 
-    public static final Item GAMBLER_SWORD = ModItems.register("gambler_sword", (settings) -> new GamblerSword(settings, new int[]{2, 4, 6, 8, 10}), new Settings().maxDamage(500).rarity(Rarity.RARE));
+    public static final Item GAMBLER_SWORD = ModItemsReworked.register("gambler_sword", (settings) -> new GamblerSword(settings, new int[]{2, 4, 6, 8, 10}), new Settings().maxDamage(500).rarity(Rarity.RARE));
 
     @Override
     public void inventoryTick(ItemStack stack, ServerWorld world, Entity entity, @Nullable EquipmentSlot slot) {

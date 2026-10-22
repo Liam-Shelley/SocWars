@@ -3,8 +3,8 @@ package com.soc.items;
 import com.soc.effects.util.ModEffects;
 import com.soc.entities.BlueShellEntity;
 import com.soc.entities.RedShellEntity;
-import com.soc.items.util.ModItems;
 import com.soc.items.util.UseFunction;
+import com.soc.itemsrework.ModItemsReworked;
 import com.soc.lib.Coroutine;
 import com.soc.lib.Coroutines;
 import com.soc.lib.IntBox;
@@ -108,7 +108,7 @@ public class UseFunctionWeapon extends Item {
         addItemToGroupsAndBaseItemGroup(TAUNT_STICK, ItemGroups.COMBAT);
     }
 
-    public static final Item DASHREND = ModItems.register("dashrend", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+    public static final Item DASHREND = ModItemsReworked.register("dashrend", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 final float pitchClosenessToHorizontal = 1f - Math.abs(user.getPitch() / 90f);
                 final float pitchStrength = pitchClosenessToHorizontal * 0.5f + 0.5f;
                 final float dashStrength = (float)Math.sqrt(pitchStrength) * (user.isOnGround() ? 2f : 0.75f) * 0.8f;
@@ -123,7 +123,7 @@ public class UseFunctionWeapon extends Item {
             .useCooldown(3.5f)
             .rarity(Rarity.RARE)
     );
-    public static final Item VELOCITY_STAFF = ModItems.register("velocity_staff", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+    public static final Item VELOCITY_STAFF = ModItemsReworked.register("velocity_staff", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 final float pitchClosenessToHorizontal = 1f - Math.abs(user.getPitch() / 90f);
                 final float pitchStrength = pitchClosenessToHorizontal * 0.5f + 0.5f;
                 final float dashStrength = (float) Math.sqrt(pitchStrength) * (user.isOnGround() ? 2f : 0.75f) * 1.5f;
@@ -138,7 +138,7 @@ public class UseFunctionWeapon extends Item {
             .useCooldown(2f)
             .rarity(Rarity.RARE)
     );
-    public static final Item VEXING_STAFF = ModItems.register("vexing_staff", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+    public static final Item VEXING_STAFF = ModItemsReworked.register("vexing_staff", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 for (int i = 0; i < 2; i++) {
                     VexEntity vex = new VexEntity(EntityType.VEX, world);
                     vex.setPosition(user.getEyePos().add(user.getRotationVector()));
@@ -156,7 +156,7 @@ public class UseFunctionWeapon extends Item {
             .useCooldown(45f)
             .rarity(Rarity.RARE)
     );
-    public static final Item YELLOW_SWORD = ModItems.register("yellow_sword", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+    public static final Item YELLOW_SWORD = ModItemsReworked.register("yellow_sword", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 final ItemStack itemStack = user.getStackInHand(hand);
 
                 if (world instanceof ServerWorld serverWorld) {
@@ -175,7 +175,7 @@ public class UseFunctionWeapon extends Item {
             .useCooldown(1.5f)
             .maxDamage(600)
     );
-    public static final Item GOD_COMPLEX = ModItems.register("god_complex", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+    public static final Item GOD_COMPLEX = ModItemsReworked.register("god_complex", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 user.addStatusEffect(new StatusEffectInstance(ModEffects.FLIGHT, 5 * 20, 0, false, false));
                 user.getStackInHand(hand).decrementUnlessCreative(1, user);
 
@@ -185,7 +185,7 @@ public class UseFunctionWeapon extends Item {
             .component(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true)
             .rarity(Rarity.EPIC)
     );
-    public static final Item SCROLL_OF_EAU = ModItems.register("scroll_of_eau", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+    public static final Item SCROLL_OF_EAU = ModItemsReworked.register("scroll_of_eau", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 final BlockHitResult hit = world.raycast(new RaycastContext(user.getEyePos(), user.getEyePos().add(user.getRotationVector().multiply(25f)), RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.ANY, user));
                 final ItemStack stack = user.getStackInHand(hand);
 
@@ -205,7 +205,7 @@ public class UseFunctionWeapon extends Item {
             .maxDamage(3)
             .rarity(Rarity.UNCOMMON)
     );
-    public static final Item SCROLL_OF_HELLFIRE = ModItems.register("scroll_of_hellfire", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+    public static final Item SCROLL_OF_HELLFIRE = ModItemsReworked.register("scroll_of_hellfire", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 final BlockHitResult hit = world.raycast(new RaycastContext(user.getEyePos(), user.getEyePos().add(user.getRotationVector().multiply(25f)), RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.ANY, user));
                 final ItemStack stack = user.getStackInHand(hand);
 
@@ -224,7 +224,7 @@ public class UseFunctionWeapon extends Item {
             .maxDamage(3)
             .rarity(Rarity.UNCOMMON)
     );
-    public static final Item C_U_E_B = ModItems.register("c_u_e_b", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+    public static final Item C_U_E_B = ModItemsReworked.register("c_u_e_b", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 final BlockPos centre = BlockPos.ofFloored(user.getEyePos().add(user.getRotationVector().multiply(20f)));
 
                 iterateInCube(centre, 5, pos -> {
@@ -239,7 +239,7 @@ public class UseFunctionWeapon extends Item {
             }), new Settings()
             .useCooldown(1f)
     );
-    public static final Item SHRINK_RAY = ModItems.register("shrink_ray", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+    public static final Item SHRINK_RAY = ModItemsReworked.register("shrink_ray", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 shootEntity(user, hand, 1, 10, 2 * 20, entity -> scaleEntity(entity, SQRT2 * 0.5f));
 
                 return ActionResult.SUCCESS;
@@ -247,7 +247,7 @@ public class UseFunctionWeapon extends Item {
             .maxDamage(16)
             .rarity(Rarity.RARE)
     );
-    public static final Item BIGGENING_RAY = ModItems.register("biggening_ray", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+    public static final Item BIGGENING_RAY = ModItemsReworked.register("biggening_ray", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 shootEntity(user, hand, 1, 10, 2 * 20, entity -> scaleEntity(entity, SQRT2));
 
                 return ActionResult.SUCCESS;
@@ -255,7 +255,7 @@ public class UseFunctionWeapon extends Item {
             .maxDamage(16)
             .rarity(Rarity.RARE)
     );
-    public static final Item THE_LINE = ModItems.register("the_line", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+    public static final Item THE_LINE = ModItemsReworked.register("the_line", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 if (world.isClient) return ActionResult.SUCCESS;
 
                 final boolean allowsMovementControl = user.isSneaking();
@@ -285,7 +285,7 @@ public class UseFunctionWeapon extends Item {
             .useCooldown(2f)
             .rarity(Rarity.RARE)
     );
-    public static final Item WHEATENATOR = ModItems.register("wheatenator", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+    public static final Item WHEATENATOR = ModItemsReworked.register("wheatenator", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 final Vec3d rotationVec = user.getRotationVector();
                 final double rotationAngle = Math.atan2(rotationVec.z, rotationVec.x);
 
@@ -309,7 +309,7 @@ public class UseFunctionWeapon extends Item {
             .maxDamage(350)
             .useCooldown(0.25f)
     );
-    public static final Item DEATH_RAIN = ModItems.register("death_rain", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+    public static final Item DEATH_RAIN = ModItemsReworked.register("death_rain", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 rainPositions(world, user.getPos(), 15, 15f, 20f, 35f, pos -> {
                     final TntEntity tnt = new TntEntity(world, pos.x, pos.y, pos.z, user);
 
@@ -324,7 +324,7 @@ public class UseFunctionWeapon extends Item {
             .maxDamage(3)
             .rarity(Rarity.RARE)
     );
-    public static final Item ALPHA_BOW = ModItems.register("alpha_bow", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+    public static final Item ALPHA_BOW = ModItemsReworked.register("alpha_bow", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 final ItemStack itemStack = user.getStackInHand(hand);
 
                 if (world instanceof ServerWorld serverWorld) {
@@ -347,7 +347,7 @@ public class UseFunctionWeapon extends Item {
             .enchantable(2)
             .rarity(Rarity.RARE)
     );
-    public static final Item SNIPER_RIFLE = ModItems.register("sniper_rifle", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
+    public static final Item SNIPER_RIFLE = ModItemsReworked.register("sniper_rifle", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 final ItemStack itemStack = user.getStackInHand(hand);
                 itemStack.damage(1, user, hand);
                 world.playSound(null, user.getX(), user.getY(), user.getZ(), Sounds.SNIPER_RIFLE_SHOT, SoundCategory.PLAYERS);
@@ -405,7 +405,7 @@ public class UseFunctionWeapon extends Item {
             .useCooldown(2f)
             .rarity(Rarity.EPIC)
     );
-    public static final Item RED_SHELL = ModItems.register("red_shell", settings -> new UseFunctionWeapon(settings, (world, player, hand) -> {
+    public static final Item RED_SHELL = ModItemsReworked.register("red_shell", settings -> new UseFunctionWeapon(settings, (world, player, hand) -> {
                 if (world.isClient) return null;
 
                 world.spawnEntity(new RedShellEntity(world, player.getPos(), player));
@@ -416,7 +416,7 @@ public class UseFunctionWeapon extends Item {
             .useCooldown(5f)
             .rarity(Rarity.RARE)
     );
-    public static final Item BLUE_SHELL = ModItems.register("blue_shell", settings -> new UseFunctionWeapon(settings, (world, player, hand) -> {
+    public static final Item BLUE_SHELL = ModItemsReworked.register("blue_shell", settings -> new UseFunctionWeapon(settings, (world, player, hand) -> {
                 if (world.isClient) return null;
 
                 world.spawnEntity(new BlueShellEntity(world, player.getPos(), player));
@@ -427,7 +427,7 @@ public class UseFunctionWeapon extends Item {
             .useCooldown(5f)
             .rarity(Rarity.RARE)
     );
-    public static final Item TAUNT_STICK = ModItems.register("taunt_stick", settings -> new UseFunctionWeapon(settings, (world, player, hand) -> {
+    public static final Item TAUNT_STICK = ModItemsReworked.register("taunt_stick", settings -> new UseFunctionWeapon(settings, (world, player, hand) -> {
                 final SoundEvent soundEvent = TAUNTS[world.random.nextBetween(0, TAUNTS.length - 1)];
                 world.playSound(null, player.getBlockPos(), soundEvent, SoundCategory.MASTER);
 

@@ -14,6 +14,10 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
+import java.util.function.Function;
+
+import static com.soc.itemsrework.ModItemsReworked.register;
+
 public interface ItemGroups {
     RegistryKey<ItemGroup> ITEMS_KEY = RegistryKey.of(Registries.ITEM_GROUP.getKey(), Identifier.of(SocWars.MOD_ID, "items_group"));
     ItemGroup ITEMS_GROUP = FabricItemGroup.builder()
@@ -57,6 +61,17 @@ public interface ItemGroups {
     @SafeVarargs
     static Item addItemToGroupsAndBaseItemGroup(Item item, RegistryKey<ItemGroup>... itemGroups) {
         ItemGroupEvents.modifyEntriesEvent(ITEMS_KEY).register(_itemGroup -> _itemGroup.add(item));
+        for (RegistryKey<ItemGroup> itemGroup : itemGroups) {
+            ItemGroupEvents.modifyEntriesEvent(itemGroup).register(_itemGroup -> _itemGroup.add(item));
+        }
+        return item;
+    }
+
+    @SafeVarargs
+    static Item registerAndGroup(String name, Function<Item.Settings, Item> itemFactory, Item.Settings settings, RegistryKey<ItemGroup>... itemGroups) {
+        final Item item = register(name, itemFactory, settings);
+
+        ItemGroupEvents.modifyEntriesEvent(ITEMS_KEY).register(itemGroup -> itemGroup.add(item));
         for (RegistryKey<ItemGroup> itemGroup : itemGroups) {
             ItemGroupEvents.modifyEntriesEvent(itemGroup).register(_itemGroup -> _itemGroup.add(item));
         }

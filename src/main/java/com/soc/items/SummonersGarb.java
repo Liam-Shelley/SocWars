@@ -1,8 +1,8 @@
 package com.soc.items;
 
 import com.soc.items.util.ArmourItem;
-import com.soc.items.util.ModItems;
 import com.soc.items.util.OnHitArmour;
+import com.soc.itemsrework.ModItemsReworked;
 import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -38,7 +38,7 @@ public class SummonersGarb extends ArmourItem implements OnHitArmour {
         addItemToGroupsAndBaseItemGroup(SUMMONERS_GARB, ItemGroups.COMBAT);
     }
 
-    public static final Item SUMMONERS_GARB = ModItems.register("summoners_garb", settings -> new SummonersGarb(settings, EquipmentSlot.CHEST, 6), new Settings()
+    public static final Item SUMMONERS_GARB = ModItemsReworked.register("summoners_garb", settings -> new SummonersGarb(settings, EquipmentSlot.CHEST, 6), new Settings()
             .rarity(Rarity.RARE)
             .maxDamage(400)
     );

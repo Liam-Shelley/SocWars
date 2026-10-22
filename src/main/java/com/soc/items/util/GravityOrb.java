@@ -1,7 +1,7 @@
 package com.soc.items.util;
 
 import com.soc.effects.util.ModEffects;
-import com.soc.items.UseFunctionWeapon;
+import com.soc.itemsrework.ModItemsReworked;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
@@ -24,7 +24,7 @@ public class GravityOrb extends Item {
 		addItemToGroupsAndBaseItemGroup(GRAVITY_ORB, ItemGroups.TOOLS);
 	}
 
-	public static final Item GRAVITY_ORB = ModItems.register("gravity_orb", GravityOrb::new, new Settings()
+	public static final Item GRAVITY_ORB = ModItemsReworked.register("gravity_orb", GravityOrb::new, new Settings()
 			.useCooldown(7.5f)
 			.rarity(Rarity.UNCOMMON)
 	);

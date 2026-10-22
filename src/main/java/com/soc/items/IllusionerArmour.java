@@ -1,11 +1,10 @@
 package com.soc.items;
 
 import com.soc.items.util.ArmourItem;
-import com.soc.items.util.ModItems;
 import com.soc.items.util.OnHitArmour;
 import com.soc.items.util.TransparentArmour;
+import com.soc.itemsrework.ModItemsReworked;
 import com.soc.player.PlayerDataManager;
-import com.soc.util.DamageTypes;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -16,7 +15,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.equipment.EquipmentAsset;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Rarity;
 import net.minecraft.world.World;
 
@@ -39,10 +37,10 @@ public class IllusionerArmour extends ArmourItem implements OnHitArmour, Transpa
         addItemToGroupsAndBaseItemGroup(ILLUSIONER_BOOTS, ItemGroups.COMBAT);
     }
 
-    public static final Item ILLUSIONER_HELMET = ModItems.register("illusioner_helmet", settings -> new IllusionerArmour(settings, EquipmentSlot.HEAD, 4), new Settings().maxDamage(325).rarity(Rarity.RARE));
-    public static final Item ILLUSIONER_CHESTPLATE = ModItems.register("illusioner_chestplate", settings -> new IllusionerArmour(settings, EquipmentSlot.CHEST, 6), new Settings().maxDamage(400).rarity(Rarity.RARE));
-    public static final Item ILLUSIONER_LEGGINGS = ModItems.register("illusioner_leggings", settings -> new IllusionerArmour(settings, EquipmentSlot.LEGS, 7), new Settings().maxDamage(375).rarity(Rarity.RARE));
-    public static final Item ILLUSIONER_BOOTS = ModItems.register("illusioner_boots", settings -> new IllusionerArmour(settings, EquipmentSlot.FEET, 5), new Settings().maxDamage(325).rarity(Rarity.RARE));
+    public static final Item ILLUSIONER_HELMET = ModItemsReworked.register("illusioner_helmet", settings -> new IllusionerArmour(settings, EquipmentSlot.HEAD, 4), new Settings().maxDamage(325).rarity(Rarity.RARE));
+    public static final Item ILLUSIONER_CHESTPLATE = ModItemsReworked.register("illusioner_chestplate", settings -> new IllusionerArmour(settings, EquipmentSlot.CHEST, 6), new Settings().maxDamage(400).rarity(Rarity.RARE));
+    public static final Item ILLUSIONER_LEGGINGS = ModItemsReworked.register("illusioner_leggings", settings -> new IllusionerArmour(settings, EquipmentSlot.LEGS, 7), new Settings().maxDamage(375).rarity(Rarity.RARE));
+    public static final Item ILLUSIONER_BOOTS = ModItemsReworked.register("illusioner_boots", settings -> new IllusionerArmour(settings, EquipmentSlot.FEET, 5), new Settings().maxDamage(325).rarity(Rarity.RARE));
 
     @Override
     public boolean onHit(ItemStack stack, LivingEntity wearer, World world, DamageSource source) {

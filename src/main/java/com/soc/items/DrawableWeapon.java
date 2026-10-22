@@ -1,7 +1,7 @@
 package com.soc.items;
 
-import com.soc.items.util.ModItems;
 import com.soc.items.util.StopUsingFunction;
+import com.soc.itemsrework.ModItemsReworked;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -44,7 +44,7 @@ public class DrawableWeapon extends Item {
         addItemToGroupsAndBaseItemGroup(MOBBING_STAFF, ItemGroups.COMBAT);
     }
 
-    public static final Item ENDER_STAFF = ModItems.register("ender_staff", settings -> new DrawableWeapon(settings, (stack, world, user, progress) -> {
+    public static final Item ENDER_STAFF = ModItemsReworked.register("ender_staff", settings -> new DrawableWeapon(settings, (stack, world, user, progress) -> {
                 final EnderPearlEntity pearl = new EnderPearlEntity(world, user, Items.ENDER_PEARL.getDefaultStack());
                 pearl.setPosition(user.getEyePos());
                 pearl.setVelocity(user.getRotationVector().multiply(getHoldTimeSeconds(progress) * 1.5f + 0.5f));
@@ -58,7 +58,7 @@ public class DrawableWeapon extends Item {
             .rarity(Rarity.UNCOMMON)
             .useCooldown(0.5f)
     );
-    public static final Item WIND_STAFF = ModItems.register("wind_staff", settings -> new DrawableWeapon(settings, (stack, world, user, progress) -> {
+    public static final Item WIND_STAFF = ModItemsReworked.register("wind_staff", settings -> new DrawableWeapon(settings, (stack, world, user, progress) -> {
                 final WindChargeEntity charge = new WindChargeEntity(EntityType.WIND_CHARGE, world) {
                     @Override
                     protected void createExplosion(Vec3d pos) {
@@ -91,7 +91,7 @@ public class DrawableWeapon extends Item {
             .rarity(Rarity.UNCOMMON)
             .useCooldown(0.5f)
     );
-    public static final Item MOBBING_STAFF = ModItems.register("mobbing_staff", settings -> new DrawableWeapon(settings, (stack, world, user, progress) -> {
+    public static final Item MOBBING_STAFF = ModItemsReworked.register("mobbing_staff", settings -> new DrawableWeapon(settings, (stack, world, user, progress) -> {
                 if (world instanceof ServerWorld serverWorld) {
                     final LivingEntity mob = randomHostileMob(serverWorld, user.getEyePos());
 
