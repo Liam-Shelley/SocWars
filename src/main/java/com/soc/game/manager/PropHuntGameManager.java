@@ -4,7 +4,6 @@ import com.soc.database.stats.PropHuntTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.PropHuntGameMap;
 import com.soc.game.map.SpreadRules;
-import com.soc.items.AttackFunctionWeapon;
 import com.soc.items.BowItem;
 import com.soc.items.MorphWand;
 import com.soc.items.UseFunctionWeapon;

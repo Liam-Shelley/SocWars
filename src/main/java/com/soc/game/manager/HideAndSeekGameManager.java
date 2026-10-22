@@ -6,7 +6,6 @@ import com.soc.database.stats.HideAndSeekTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.HideAndSeekGameMap;
 import com.soc.game.map.SpreadRules;
-import com.soc.items.AttackFunctionWeapon;
 import com.soc.items.BowItem;
 import com.soc.items.UseFunctionWeapon;
 import com.soc.itemsrework.ModItemsReworked;

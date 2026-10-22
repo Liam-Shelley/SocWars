@@ -1,11 +1,5 @@
 {
   "variants": {
-    "colour=empty": {
-      "model": "socwars:block/many_beds_block/empty"
-    },
-    "colour=white": {
-      "model": "socwars:block/many_beds_block/white"
-    },
     "colour=orange": {
       "model": "socwars:block/many_beds_block/orange"
     },

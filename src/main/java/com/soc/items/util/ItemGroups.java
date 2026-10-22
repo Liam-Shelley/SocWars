@@ -2,7 +2,6 @@ package com.soc.items.util;
 
 import com.soc.SocWars;
 import com.soc.blocks.util.ModBlocks;
-import com.soc.items.AttackFunctionWeapon;
 import com.soc.itemsrework.ModItemsReworked;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;

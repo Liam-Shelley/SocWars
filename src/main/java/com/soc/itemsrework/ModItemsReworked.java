@@ -137,10 +137,10 @@ public interface ModItemsReworked {
 					target.addVelocity(velocity);
 				}
 			})
-			.component(DataComponentTypes.LORE, new LoreComponent(List.of(
+			.component(DataComponentTypes.LORE, tooltip(
 					Text.translatable("tooltip.knockforward_sword").formatted(Formatting.GOLD),
 					Text.translatable("tooltip.knockforward_sword.knockback").formatted(Formatting.GRAY)
-			))));
+			)));
 	Item TRANSPORTAS = ModItemsReworked.register("transportas", SocWarsItem::new, new Item.Settings()
 			.rarity(Rarity.RARE)
 			.sword(ToolMaterials.BASE, 5.5f, -2f)
@@ -160,7 +160,7 @@ public interface ModItemsReworked {
 				lightning.setPosition(target.getPos());
 				target.getWorld().spawnEntity(lightning);
 			})
-			.component(DataComponentTypes.LORE, new LoreComponent(List.of(Text.translatable("tooltip.stormageddon"))))
+			.component(DataComponentTypes.LORE, tooltip(Text.translatable("tooltip.stormageddon")))
 	);
 	Item DETONATOR = ModItemsReworked.register("detonator", SocWarsItem::new, new Item.Settings()
 			.rarity(Rarity.RARE)
@@ -205,7 +205,7 @@ public interface ModItemsReworked {
 					attacker.setStackInHand(Hand.MAIN_HAND, ItemStack.EMPTY);
 				}
 			})
-			.component(DataComponentTypes.LORE, new LoreComponent(List.of(Text.translatable("tooltip.spring_sword").formatted(Formatting.YELLOW))))
+			.component(DataComponentTypes.LORE, tooltip(Text.translatable("tooltip.spring_sword").formatted(Formatting.YELLOW)))
 	);
 	Item FLESHY_BLADE = ModItemsReworked.register("fleshy_blade", SocWarsItem::new, new Item.Settings()
 			.sword(ToolMaterials.BASE, 6f, -2.2f)
@@ -241,7 +241,7 @@ public interface ModItemsReworked {
 				target.addStatusEffect(new StatusEffectInstance(ModEffects.ARTHRODESIS, 40 * 20, 0, false, true));
 				stack.decrementUnlessCreative(1, attacker);
 			})
-			.component(DataComponentTypes.LORE, new LoreComponent(List.of(Text.translatable("tooltip.postura"))))
+			.component(DataComponentTypes.LORE, tooltip(Text.translatable("tooltip.postura")))
 	);
 	Item FULL_METAL_SWORD = ModItemsReworked.register("full_metal_sword", SocWarsItem::new, new Item.Settings()
 			.sword(ToolMaterials.BASE, 4.5f, -2.3f)
@@ -250,7 +250,7 @@ public interface ModItemsReworked {
 				attacker.getWorld().playSound(null, attacker.getBlockPos(), Sounds.GET_SOME, SoundCategory.PLAYERS, 1f, 1f);
 			})
 			.component(DAMAGE_TYPE, DamageTypes.FULL_METAL_SWORD)
-			.component(DataComponentTypes.LORE, new LoreComponent(List.of(Text.translatable("tooltip.full_metal_sword"))))
+			.component(DataComponentTypes.LORE, tooltip(Text.translatable("tooltip.full_metal_sword")))
 	);
 	Item SEEKING_STICK = ModItemsReworked.register("seeking_stick", SocWarsItem::new, new Item.Settings()
 			.rarity(Rarity.UNCOMMON)
@@ -266,7 +266,7 @@ public interface ModItemsReworked {
 					}
 				});
 			})
-			.component(DataComponentTypes.LORE, new LoreComponent(List.of(Text.translatable("tooltip.seeking_stick"))))
+			.component(DataComponentTypes.LORE, tooltip(Text.translatable("tooltip.seeking_stick")))
 	);
 
 	static void initialise() {}
@@ -285,6 +285,11 @@ public interface ModItemsReworked {
 	}
 
 
+
+	static LoreComponent tooltip(Text... lines) {
+		final List<Text> linesList = List.of(lines);
+		return new LoreComponent(linesList, linesList);
+	}
 
 
 	//region Garbage section filled with all the code that I don't want to think about for now
