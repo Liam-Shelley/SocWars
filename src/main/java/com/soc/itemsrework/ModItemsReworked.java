@@ -24,6 +24,8 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.SlimeEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
@@ -42,11 +44,16 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static com.soc.items.util.ModItemGroups.registerAndGroup;
@@ -322,6 +329,17 @@ public interface ModItemsReworked {
 			ItemGroups.COMBAT
 	);
 
+
+
+
+
+
+
+
+
+
+
+
 	static void initialise() {}
 
 	static Item register(String name, Function<Item.Settings, Item> itemFactory, Item.Settings settings) {
@@ -339,10 +357,24 @@ public interface ModItemsReworked {
 
 
 
+
 	static LoreComponent tooltip(Text... lines) {
 		final List<Text> linesList = List.of(lines);
 		return new LoreComponent(linesList, linesList);
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 	//region Garbage section filled with all the code that I don't want to think about for now
@@ -371,6 +403,53 @@ public interface ModItemsReworked {
 		} else {
 			handFunction.modifyEquipment(target, null);
 		}
+	}
+
+	private static void shootEntity(PlayerEntity user, Hand hand, int missDamage, int hitDamage, int hitCooldown, Consumer<LivingEntity> effect) {
+		final EntityHitResult hit = ProjectileUtil.raycast(
+				user,
+				user.getEyePos(),
+				user.getEyePos().add(user.getRotationVector().multiply(250d)),
+				user.getBoundingBox().stretch(user.getRotationVector().multiply(250d)),
+				entity -> entity instanceof LivingEntity,
+				250f * 250f
+		);
+
+		final ItemStack stack = user.getStackInHand(hand);
+
+		if (hit == null) {
+			stack.damage(missDamage, user, hand);
+			user.getItemCooldownManager().set(user.getStackInHand(hand), 2);
+		} else {
+			stack.damage(hitDamage, user, hand);
+			user.getItemCooldownManager().set(user.getStackInHand(hand), hitCooldown);
+
+			effect.accept((LivingEntity)hit.getEntity()); //I hereby declare this cast safe because I already filter for living entities
+		}
+	}
+
+	private static void dash(PlayerEntity user, Hand hand, float strength) {
+		final float pitchClosenessToHorizontal = 1f - Math.abs(user.getPitch() / 90f);
+		final float pitchStrength = pitchClosenessToHorizontal * 0.5f + 0.5f;
+		final float dashStrength = (float)Math.sqrt(pitchStrength) * (user.isOnGround() ? 2f : 0.75f) * strength;
+
+		user.addVelocity(user.getRotationVector().multiply(dashStrength));
+
+		user.getStackInHand(hand).damage(Math.round(pitchStrength * 10), user, hand);
+	}
+
+	private static BlockPos shootScroll(World world, PlayerEntity user, Hand hand, Consumer<BlockPos> blockPosConsumer) {
+		final BlockHitResult hit = world.raycast(new RaycastContext(user.getEyePos(), user.getEyePos().add(user.getRotationVector().multiply(25f)), RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.ANY, user));
+		final ItemStack stack = user.getStackInHand(hand);
+
+		if (hit != null && !world.isAir(hit.getBlockPos())) {
+			iterateInSphere(hit.getBlockPos(), 4.5f, 0f, blockPosConsumer);
+			stack.damage(3, user, hand);
+		}
+
+		stack.damage(1, user, hand);
+
+		return mapIfNotNull(hit, BlockHitResult::getBlockPos);
 	}
 	//endregion
 }

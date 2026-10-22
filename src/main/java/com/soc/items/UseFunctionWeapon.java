@@ -51,6 +51,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -109,30 +110,19 @@ public class UseFunctionWeapon extends Item {
     }
 
     public static final Item DASHREND = ModItemsReworked.register("dashrend", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
-                final float pitchClosenessToHorizontal = 1f - Math.abs(user.getPitch() / 90f);
-                final float pitchStrength = pitchClosenessToHorizontal * 0.5f + 0.5f;
-                final float dashStrength = (float)Math.sqrt(pitchStrength) * (user.isOnGround() ? 2f : 0.75f) * 0.8f;
 
-                user.addVelocity(user.getRotationVector().multiply(dashStrength));
+		dash(user, hand, 0.8f);
 
-		        user.getStackInHand(hand).damage(Math.round(pitchStrength * 10), user, hand);
-
-                return ActionResult.SUCCESS;
+        return ActionResult.SUCCESS;
             }), new Settings()
             .sword(ToolMaterials.DASH, 2.5f, -2f)
             .useCooldown(3.5f)
             .rarity(Rarity.RARE)
     );
     public static final Item VELOCITY_STAFF = ModItemsReworked.register("velocity_staff", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
-                final float pitchClosenessToHorizontal = 1f - Math.abs(user.getPitch() / 90f);
-                final float pitchStrength = pitchClosenessToHorizontal * 0.5f + 0.5f;
-                final float dashStrength = (float) Math.sqrt(pitchStrength) * (user.isOnGround() ? 2f : 0.75f) * 1.5f;
+        dash(user, hand, 1.5f);
 
-                user.addVelocity(user.getRotationVector().multiply(dashStrength));
-
-                user.getStackInHand(hand).damage(Math.round(pitchStrength * 10), user, hand);
-
-                return ActionResult.SUCCESS;
+        return ActionResult.SUCCESS;
             }), new Settings()
             .maxDamage(300)
             .useCooldown(2f)
@@ -140,7 +130,7 @@ public class UseFunctionWeapon extends Item {
     );
     public static final Item VEXING_STAFF = ModItemsReworked.register("vexing_staff", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 for (int i = 0; i < 2; i++) {
-                    VexEntity vex = new VexEntity(EntityType.VEX, world);
+                    final VexEntity vex = new VexEntity(EntityType.VEX, world);
                     vex.setPosition(user.getEyePos().add(user.getRotationVector()));
 
                     copyTeam(world, vex, user);
@@ -186,44 +176,29 @@ public class UseFunctionWeapon extends Item {
             .rarity(Rarity.EPIC)
     );
     public static final Item SCROLL_OF_EAU = ModItemsReworked.register("scroll_of_eau", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
-                final BlockHitResult hit = world.raycast(new RaycastContext(user.getEyePos(), user.getEyePos().add(user.getRotationVector().multiply(25f)), RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.ANY, user));
-                final ItemStack stack = user.getStackInHand(hand);
+        final @Nullable BlockPos hitPos = shootScroll(world, user, hand, pos -> {
+            if (world.isAir(pos)) world.setBlockState(pos, Blocks.WATER.getDefaultState().with(Properties.LEVEL_15, 7));
+        });
+        ifNotNull(hitPos, pos -> world.setBlockState(pos.add(0,4,0), Blocks.WATER.getDefaultState()));
 
-                if (hit != null && !world.isAir(hit.getBlockPos())) {
-                    iterateInSphere(hit.getBlockPos(), 4.5f, 0f, pos -> {
-                        if (world.isAir(pos)) world.setBlockState(pos, Blocks.WATER.getDefaultState().with(Properties.LEVEL_15, 7));
-                    });
-                    world.setBlockState(hit.getBlockPos().add(0,4,0), Blocks.WATER.getDefaultState());
-                    stack.damage(3, user, hand);
-                }
-
-                stack.damage(1, user, hand);
-
-                return ActionResult.SUCCESS;
+        return ActionResult.SUCCESS;
             }), new Settings()
             .useCooldown(1f)
             .maxDamage(3)
             .rarity(Rarity.UNCOMMON)
     );
     public static final Item SCROLL_OF_HELLFIRE = ModItemsReworked.register("scroll_of_hellfire", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
-                final BlockHitResult hit = world.raycast(new RaycastContext(user.getEyePos(), user.getEyePos().add(user.getRotationVector().multiply(25f)), RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.ANY, user));
-                final ItemStack stack = user.getStackInHand(hand);
+		shootScroll(world, user, hand, pos -> {
+			if (world.isAir(pos)) world.setBlockState(pos, Blocks.LAVA.getDefaultState());
+		});
 
-                if (hit != null && !world.isAir(hit.getBlockPos())) {
-                    iterateInSphere(hit.getBlockPos(), 4.5f, 0f, pos -> {
-                        if (world.isAir(pos)) world.setBlockState(pos, Blocks.LAVA.getDefaultState());
-                    });
-                    stack.damage(3, user, hand);
-                }
-
-                stack.damage(1, user, hand);
-
-                return ActionResult.SUCCESS;
+        return ActionResult.SUCCESS;
             }), new Settings()
             .useCooldown(1f)
             .maxDamage(3)
             .rarity(Rarity.UNCOMMON)
     );
+
     public static final Item C_U_E_B = ModItemsReworked.register("c_u_e_b", settings -> new UseFunctionWeapon(settings, (world, user, hand) -> {
                 final BlockPos centre = BlockPos.ofFloored(user.getEyePos().add(user.getRotationVector().multiply(20f)));
 
@@ -454,7 +429,7 @@ public class UseFunctionWeapon extends Item {
         }
     }
 
-    public static void shootEntity(PlayerEntity user, Hand hand, int missDamage, int hitDamage, int hitCooldown, Consumer<LivingEntity> effect) {
+    private static void shootEntity(PlayerEntity user, Hand hand, int missDamage, int hitDamage, int hitCooldown, Consumer<LivingEntity> effect) {
         final EntityHitResult hit = ProjectileUtil.raycast(
                 user,
                 user.getEyePos(),
@@ -475,5 +450,29 @@ public class UseFunctionWeapon extends Item {
 
             effect.accept((LivingEntity)hit.getEntity()); //I hereby declare this cast safe because I already filter for living entities
         }
+    }
+
+    private static void dash(PlayerEntity user, Hand hand, float strength) {
+        final float pitchClosenessToHorizontal = 1f - Math.abs(user.getPitch() / 90f);
+        final float pitchStrength = pitchClosenessToHorizontal * 0.5f + 0.5f;
+        final float dashStrength = (float)Math.sqrt(pitchStrength) * (user.isOnGround() ? 2f : 0.75f) * strength;
+
+        user.addVelocity(user.getRotationVector().multiply(dashStrength));
+
+        user.getStackInHand(hand).damage(Math.round(pitchStrength * 10), user, hand);
+    }
+
+    private static BlockPos shootScroll(World world, PlayerEntity user, Hand hand, Consumer<BlockPos> blockPosConsumer) {
+        final BlockHitResult hit = world.raycast(new RaycastContext(user.getEyePos(), user.getEyePos().add(user.getRotationVector().multiply(25f)), RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.ANY, user));
+        final ItemStack stack = user.getStackInHand(hand);
+
+        if (hit != null && !world.isAir(hit.getBlockPos())) {
+            iterateInSphere(hit.getBlockPos(), 4.5f, 0f, blockPosConsumer);
+            stack.damage(3, user, hand);
+        }
+
+        stack.damage(1, user, hand);
+
+        return mapIfNotNull(hit, BlockHitResult::getBlockPos);
     }
 }
