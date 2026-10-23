@@ -7,7 +7,6 @@ import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.HideAndSeekGameMap;
 import com.soc.game.map.SpreadRules;
 import com.soc.items.BowItem;
-import com.soc.items.UseFunctionWeapon;
 import com.soc.itemsrework.ModItemsReworked;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.LivingEntity;
@@ -50,7 +49,7 @@ public class HideAndSeekGameManager extends AbstractHidingGameManager<HideAndSee
         this.map.spawnCages(false, HIDER_COLOUR);
         this.getPlayers(HIDER_COLOUR).forEach(hider -> {
             hider.changeGameMode(GameMode.ADVENTURE);
-            hider.giveItemStack(new ItemStack(UseFunctionWeapon.TAUNT_STICK));
+            hider.giveItemStack(new ItemStack(ModItemsReworked.TAUNT_STICK));
             scaleEntity(hider, 0.75f);
         });
 

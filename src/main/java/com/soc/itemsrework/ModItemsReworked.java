@@ -2,15 +2,25 @@ package com.soc.itemsrework;
 
 import com.soc.SocWars;
 import com.soc.effects.util.ModEffects;
+import com.soc.entities.BlueShellEntity;
+import com.soc.entities.RedShellEntity;
 import com.soc.game.manager.AbstractHidingGameManager;
 import com.soc.game.manager.GamesManager;
 import com.soc.items.util.ModifyEquipmentFunction;
+import com.soc.itemsrework.components.ModItemComponentsReworked;
+import com.soc.lib.Coroutine;
+import com.soc.lib.Coroutines;
+import com.soc.lib.IntBox;
 import com.soc.materials.ToolMaterials;
 import com.soc.mixin.GetAbsorptionAmountDataTracker;
+import com.soc.networking.s2c.BatchParticlePayload;
 import com.soc.util.DamageTypes;
 import com.soc.util.ModBlockTags;
 import com.soc.util.Sounds;
 import com.soc.util.SphereExplosion;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.AttributeModifierSlot;
@@ -24,13 +34,16 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.SlimeEntity;
+import net.minecraft.entity.mob.VexEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ArrowEntity;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroups;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ToolMaterial;
+import net.minecraft.entity.projectile.SpectralArrowEntity;
+import net.minecraft.item.*;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
+import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
@@ -38,24 +51,28 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.state.property.Properties;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Rarity;
+import net.minecraft.util.*;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static com.soc.game.manager.AbstractGameManager.getBlockDamagePredicate;
+import static com.soc.items.BowItem.playBowSound;
 import static com.soc.items.util.ModItemGroups.registerAndGroup;
 import static com.soc.itemsrework.components.ModItemComponentsReworked.DAMAGE_TYPE;
 import static com.soc.itemsrework.components.ModItemComponentsReworked.ITEM_HIT;
@@ -64,6 +81,31 @@ import static com.soc.lib.SocWarsLib.isBlockHidden;
 import static com.soc.util.SphereExplosion.fireExplosion;
 
 public interface ModItemsReworked {
+	//region some garbage that I need to move out
+	SoundEvent[] TAUNTS = {
+			SoundEvents.BLOCK_ANVIL_USE,
+			SoundEvents.ENTITY_PARROT_IMITATE_ILLUSIONER,
+			SoundEvents.BLOCK_BELL_USE,
+			SoundEvents.ENTITY_FROG_DEATH,
+			SoundEvents.BLOCK_NOTE_BLOCK_DIDGERIDOO.value(),
+			SoundEvents.ENTITY_VILLAGER_YES,
+			SoundEvents.ENTITY_VILLAGER_AMBIENT,
+			SoundEvents.ENTITY_CHICKEN_HURT,
+			SoundEvents.ENTITY_FOX_SCREECH,
+			SoundEvents.ENTITY_COD_FLOP,
+			SoundEvents.ENTITY_GENERIC_EXPLODE.value(),
+			SoundEvents.ENTITY_GOAT_SCREAMING_AMBIENT,
+			SoundEvents.ENTITY_GOAT_SCREAMING_DEATH,
+			SoundEvents.ENTITY_GOAT_SCREAMING_PREPARE_RAM
+	};
+	//endregion
+
+
+
+
+
+
+
 	Item BAT = registerAndGroup("bat", Item::new, new Item.Settings()
 			.sword(ToolMaterials.BASE, 4f, -1.9f)
 			.component(DataComponentTypes.LORE, tooltip(Text.translatable("tooltip.bat"))),
@@ -328,9 +370,346 @@ public interface ModItemsReworked {
 			.component(DataComponentTypes.LORE, tooltip(Text.translatable("tooltip.seeking_stick"))),
 			ItemGroups.COMBAT
 	);
+	Item DASHREND = registerAndGroup("dashrend", SocWarsItem::new, new Item.Settings()
+			.sword(ToolMaterials.DASH, 2.5f, -2f)
+			.useCooldown(3.5f)
+			.rarity(Rarity.RARE)
+			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+				dash(user, hand, 0.8f);
 
+				return ActionResult.SUCCESS;
+			}),
+			ItemGroups.COMBAT
+	);
+	Item VELOCITY_STAFF = registerAndGroup("velocity_staff", SocWarsItem::new, new Item.Settings()
+			.maxDamage(300)
+			.useCooldown(2f)
+			.rarity(Rarity.RARE)
+			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+				dash(user, hand, 1.5f);
 
+				return ActionResult.SUCCESS;
+			}),
+			ItemGroups.TOOLS
+	);
+	Item VEXING_STAFF = registerAndGroup("vexing_staff", SocWarsItem::new, new Item.Settings()
+			.maxDamage(5)
+			.useCooldown(45f)
+			.rarity(Rarity.RARE)
+			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+				for (int i = 0; i < 2; i++) {
+					final VexEntity vex = new VexEntity(EntityType.VEX, world);
+					vex.setPosition(user.getEyePos().add(user.getRotationVector()));
 
+					copyTeam(world, vex, user);
+
+					world.spawnEntity(vex);
+
+					user.getStackInHand(hand).damage(1, user, hand);
+				}
+
+				return ActionResult.SUCCESS;
+			}),
+			ItemGroups.TOOLS
+	);
+	Item YELLOW_SWORD = registerAndGroup("yellow_sword", SocWarsItem::new, new Item.Settings()
+			.sword(ToolMaterials.BASE, 6f, -2.1f)
+			.useCooldown(1.5f)
+			.maxDamage(600)
+			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+				final ItemStack itemStack = user.getStackInHand(hand);
+
+				if (world instanceof ServerWorld serverWorld) {
+					SpectralArrowEntity arrow = ProjectileEntity.spawn(new SpectralArrowEntity(world, user, Items.AIR.getDefaultStack(), itemStack), serverWorld, itemStack);
+					arrow.setPosition(user.getEyePos());
+					arrow.setVelocity(user.getRotationVector().multiply(2f));
+					arrow.setPitch(user.getPitch());
+					arrow.setYaw(user.getYaw());
+				}
+
+				itemStack.damage(3, user, hand);
+
+				return ActionResult.SUCCESS;
+			}),
+			ItemGroups.COMBAT
+	);
+	Item GOD_COMPLEX = registerAndGroup("god_complex", SocWarsItem::new, new Item.Settings()
+			.useCooldown(5f)
+			.component(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true)
+			.rarity(Rarity.EPIC)
+			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+				user.addStatusEffect(new StatusEffectInstance(ModEffects.FLIGHT, 5 * 20, 0, false, false));
+				user.getStackInHand(hand).decrementUnlessCreative(1, user);
+
+				return ActionResult.SUCCESS;
+			})
+			.component(DataComponentTypes.LORE, tooltip(Text.translatable("tooltip.god_complex"))),
+			ItemGroups.TOOLS
+	);
+	Item SCROLL_OF_EAU = registerAndGroup("scroll_of_eau", SocWarsItem::new, new Item.Settings()
+			.useCooldown(1f)
+			.maxDamage(3)
+			.rarity(Rarity.UNCOMMON)
+			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+				final @Nullable BlockPos hitPos = shootScroll(world, user, hand, pos -> {
+					if (world.isAir(pos)) world.setBlockState(pos, Blocks.WATER.getDefaultState().with(Properties.LEVEL_15, 7));
+				});
+				ifNotNull(hitPos, pos -> world.setBlockState(pos.add(0,4,0), Blocks.WATER.getDefaultState()));
+
+				return ActionResult.SUCCESS;
+			})
+			.component(DataComponentTypes.LORE, tooltip(Text.translatable("tooltip.scroll_of_eau"))),
+			ItemGroups.TOOLS
+	);
+	Item SCROLL_OF_HELLFIRE = registerAndGroup("scroll_of_hellfire", SocWarsItem::new, new Item.Settings()
+			.useCooldown(1f)
+			.maxDamage(3)
+			.rarity(Rarity.UNCOMMON)
+			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+				shootScroll(world, user, hand, pos -> {
+					if (world.isAir(pos)) world.setBlockState(pos, Blocks.LAVA.getDefaultState());
+				});
+
+				return ActionResult.SUCCESS;
+			})
+			.component(DataComponentTypes.LORE, tooltip(Text.translatable("tooltip.scroll_of_hellfire"))),
+			ItemGroups.TOOLS
+	);
+	Item C_U_E_B = registerAndGroup("c_u_e_b", SocWarsItem::new, new Item.Settings()
+			.useCooldown(1f)
+			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+				final BlockPos centre = BlockPos.ofFloored(user.getEyePos().add(user.getRotationVector().multiply(20f)));
+
+				iterateInCube(centre, 5, pos -> {
+					if (world.isAir(pos)) world.setBlockState(pos, Blocks.IRON_BLOCK.getDefaultState());
+				});
+
+				world.playSound(null, centre, SoundEvents.BLOCK_ANVIL_LAND, SoundCategory.BLOCKS);
+
+				user.getStackInHand(hand).decrementUnlessCreative(1, user);
+
+				return ActionResult.SUCCESS;
+			}),
+			ItemGroups.TOOLS
+	);
+	Item SHRINK_RAY = registerAndGroup("shrink_ray", SocWarsItem::new, new Item.Settings()
+			.maxDamage(16)
+			.rarity(Rarity.RARE)
+			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+				shootEntity(user, hand, 1, 10, 2 * 20, entity -> scaleEntity(entity, SQRT2 * 0.5f));
+
+				return ActionResult.SUCCESS;
+			})
+			.component(DataComponentTypes.LORE, tooltip(Text.translatable("tooltip.shrink_ray"))),
+			ItemGroups.TOOLS
+	);
+	Item BIGGENING_RAY = registerAndGroup("biggening_ray", SocWarsItem::new, new Item.Settings()
+			.maxDamage(16)
+			.rarity(Rarity.RARE)
+			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+				shootEntity(user, hand, 1, 10, 2 * 20, entity -> scaleEntity(entity, SQRT2));
+
+				return ActionResult.SUCCESS;
+			}),
+			ItemGroups.TOOLS
+	);
+	Item THE_LINE = registerAndGroup("the_line", SocWarsItem::new, new Item.Settings()
+			.maxCount(4)
+			.useCooldown(2f)
+			.rarity(Rarity.RARE)
+			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+				if (world.isClient) return ActionResult.SUCCESS;
+
+				final boolean allowsMovementControl = user.isSneaking();
+				final Vec3d cachedPosition = new Vec3d(user.getEyePos().toVector3f());
+
+				final AtomicInteger beginContext = new AtomicInteger(7);
+				final Vec3d cachedDirection = new Vec3d(user.getRotationVector().toVector3f());
+
+				Coroutines.getInstance().startCoroutine(new Coroutine<>(beginContext, context -> {
+					final int i = context.getAndIncrement();
+
+					if (i >= 50) return true;
+					final Vec3d pos = (allowsMovementControl ? user.getEyePos() : cachedPosition).add(cachedDirection.multiply(i));
+
+					final TntEntity tnt = new TntEntity(world, pos.x, pos.y, pos.z, user);
+					tnt.setFuse(20);
+					world.spawnEntity(tnt);
+
+					return !world.getBlockState(BlockPos.ofFloored(pos)).isAir();
+				}));
+
+				user.getStackInHand(hand).decrementUnlessCreative(1, user);
+
+				return ActionResult.SUCCESS;
+			}),
+			ItemGroups.COMBAT
+	);
+	Item WHEATENATOR = registerAndGroup("wheatenator", SocWarsItem::new, new Item.Settings()
+			.sword(ToolMaterials.BASE, 4.5f, -2.4f)
+			.maxDamage(350)
+			.useCooldown(0.25f)
+			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+				final Vec3d rotationVec = user.getRotationVector();
+				final double rotationAngle = Math.atan2(rotationVec.z, rotationVec.x);
+
+				final BiPredicate<BlockPos, BlockState> blockDamagePredicate = getBlockDamagePredicate(world, true, user);
+
+				final BlockPos[] positions = findAdjacentBlocksFromViewAngle(BlockPos.ofFloored(user.getPos().add(rotationVec.getHorizontal().normalize().multiply(0.5f))), rotationAngle);
+				for (int y: new int[] {0, 1}) {
+					for (BlockPos position : positions) {
+						final BlockPos pos = position.up(y);
+						if (blockDamagePredicate.test(pos, world.getBlockState(pos))) {
+							world.setBlockState(pos, Blocks.HAY_BLOCK.getDefaultState());
+						}
+					}
+				}
+
+				user.getStackInHand(hand).damage(5, user, hand);
+
+				return ActionResult.SUCCESS;
+			})
+			.component(DataComponentTypes.LORE, tooltip(Text.translatable("tooltip.wheatenator"))),
+			ItemGroups.COMBAT
+	);
+	Item DEATH_RAIN = registerAndGroup("death_rain", SocWarsItem::new, new Item.Settings()
+			.maxDamage(3)
+			.rarity(Rarity.RARE)
+			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+				rainPositions(world, user.getPos(), 15, 15f, 20f, 35f, pos -> {
+					final TntEntity tnt = new TntEntity(world, pos.x, pos.y, pos.z, user);
+
+					tnt.setFuse(world.random.nextBetween(45, 75));
+					world.spawnEntity(tnt);
+				});
+
+				user.getStackInHand(hand).damage(1, user, hand);
+
+				return ActionResult.SUCCESS;
+			}),
+			ItemGroups.COMBAT
+	);
+	Item ALPHA_BOW = registerAndGroup("alpha_bow", SocWarsItem::new, new Item.Settings()
+			.maxDamage(256)
+			.enchantable(2)
+			.rarity(Rarity.RARE)
+			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+				final ItemStack itemStack = user.getStackInHand(hand);
+
+				if (world instanceof ServerWorld serverWorld) {
+					final ArrowEntity arrow = new ArrowEntity(world, user, Items.AIR.getDefaultStack(), itemStack);
+					arrow.setPosition(user.getEyePos());
+					arrow.setVelocity(user.getRotationVector().multiply(1.75f));
+					arrow.setPitch(-user.getPitch());
+					arrow.setYaw(-user.getYaw());
+
+					ProjectileEntity.spawn(arrow, serverWorld, itemStack);
+				}
+
+				playBowSound(world, user, 1f);
+
+				itemStack.damage(1, user, hand);
+
+				return ActionResult.FAIL;
+			}),
+			ItemGroups.COMBAT
+	);
+	Item SNIPER_RIFLE = registerAndGroup("sniper_rifle", SocWarsItem::new, new Item.Settings()
+			.maxDamage(10)
+			.useCooldown(2f)
+			.rarity(Rarity.EPIC)
+			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+				final ItemStack itemStack = user.getStackInHand(hand);
+				itemStack.damage(1, user, hand);
+				world.playSound(null, user.getX(), user.getY(), user.getZ(), Sounds.SNIPER_RIFLE_SHOT, SoundCategory.PLAYERS);
+
+				//block damage and particles
+				final Set<Vec3d> particlePositions = new HashSet<>();
+				final BiPredicate<BlockPos, BlockState> damage = getBlockDamagePredicate(world, true, user);
+
+				//actually technical stuff setup
+				final double maxDistance = 30d;
+				final double width = 1.5f;
+				final double boxStep = 8d;
+
+				final Vec3d eyePos = user.getEyePos();
+				final Vec3d direction = user.getRotationVector();
+
+				for (double distance = 0; distance < maxDistance;) {
+					final Box checkBox = new Box(eyePos.add(direction.multiply(distance)), eyePos.add(direction.multiply(distance += boxStep))).expand(Math.ceil(width));
+
+					iterateInCube(new IntBox(checkBox), pos -> {
+						if (isPointWithinDistanceOfUnitVector(eyePos, direction, pos.toCenterPos(), width) && !world.isAir(pos)) {
+							if (damage.test(pos, world.getBlockState(pos))) world.setBlockState(pos, Blocks.AIR.getDefaultState());
+							if (world.random.nextFloat() < 0.3f) particlePositions.add(pos.toCenterPos());
+						}
+					});
+				}
+
+				if (world instanceof ServerWorld serverWorld) {
+					final Collection<ServerPlayerEntity> nearbyPlayers = PlayerLookup.around(serverWorld, eyePos, 250d);
+
+					//particles 2: electric boogaloo
+					final Vec3d velocity = direction.multiply(-0.05d).add(0d, 0.025d, 0d);
+					final Vec3d mainParticePosition = eyePos.add(direction);
+					nearbyPlayers.forEach(player -> {
+						ServerPlayNetworking.send(player, new BatchParticlePayload(ParticleTypes.LARGE_SMOKE, particlePositions.stream().toList(), velocity));
+						player.networkHandler.sendPacket(new ParticleS2CPacket(ParticleTypes.FLAME, true, true, mainParticePosition.x, mainParticePosition.y, mainParticePosition.z, 0.07f, 0.07f, 0.07f, 0.1f, 16));
+					});
+
+					//entity damage
+					final List<Entity> entities = new ArrayList<>();
+					EntityHitResult hitResult;
+					do {
+						hitResult = ProjectileUtil.raycast(user, eyePos, eyePos.add(direction.multiply(maxDistance)), new Box(eyePos, eyePos.add(direction.multiply(maxDistance))), entity -> !entities.contains(entity), maxDistance * maxDistance);
+						if (hitResult != null) {
+							entities.add(hitResult.getEntity());
+						}
+					} while (hitResult != null && hitResult.getEntity().squaredDistanceTo(user.getPos()) <= maxDistance * maxDistance);
+
+					entities.forEach(entity -> entity.damage(serverWorld, damageSource(serverWorld, DamageTypes.SNIPER_RIFLE, user), 18f));
+				}
+
+				return ActionResult.SUCCESS;
+			}),
+			ItemGroups.COMBAT
+	);
+	Item RED_SHELL = registerAndGroup("red_shell", SocWarsItem::new, new Item.Settings()
+			.useCooldown(5f)
+			.rarity(Rarity.RARE)
+			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+				if (world.isClient) return null;
+
+				world.spawnEntity(new RedShellEntity(world, user.getPos(), user));
+				user.getStackInHand(hand).decrementUnlessCreative(1, user);
+
+				return ActionResult.SUCCESS;
+			}),
+			ItemGroups.COMBAT
+	);
+	Item BLUE_SHELL = registerAndGroup("blue_shell", SocWarsItem::new, new Item.Settings()
+			.useCooldown(5f)
+			.rarity(Rarity.RARE)
+			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+				if (world.isClient) return null;
+
+				world.spawnEntity(new BlueShellEntity(world, user.getPos(), user));
+				user.getStackInHand(hand).decrementUnlessCreative(1, user);
+
+				return ActionResult.SUCCESS;
+			}),
+			ItemGroups.COMBAT
+	);
+	Item TAUNT_STICK = registerAndGroup("taunt_stick", SocWarsItem::new, new Item.Settings()
+			.rarity(Rarity.UNCOMMON)
+			.useCooldown(0.75f)
+			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+				final SoundEvent soundEvent = TAUNTS[world.random.nextBetween(0, TAUNTS.length - 1)];
+				world.playSound(null, user.getBlockPos(), soundEvent, SoundCategory.MASTER);
+
+				return ActionResult.SUCCESS;
+			})
+	);
 
 
 
@@ -451,5 +830,10 @@ public interface ModItemsReworked {
 
 		return mapIfNotNull(hit, BlockHitResult::getBlockPos);
 	}
+
+
+
+
+
 	//endregion
 }

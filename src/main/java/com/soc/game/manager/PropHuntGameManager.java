@@ -6,7 +6,6 @@ import com.soc.game.map.PropHuntGameMap;
 import com.soc.game.map.SpreadRules;
 import com.soc.items.BowItem;
 import com.soc.items.MorphWand;
-import com.soc.items.UseFunctionWeapon;
 import com.soc.itemsrework.ModItemsReworked;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.Enchantments;
@@ -50,7 +49,7 @@ public class PropHuntGameManager extends AbstractHidingGameManager<PropHuntGameM
 		this.getPlayers(HIDER_COLOUR).forEach(hider -> {
 			hider.changeGameMode(GameMode.SURVIVAL);
 			hider.giveItemStack(new ItemStack(MorphWand.MORPH_WAND));
-			hider.giveItemStack(new ItemStack(UseFunctionWeapon.TAUNT_STICK));
+			hider.giveItemStack(new ItemStack(ModItemsReworked.TAUNT_STICK));
 		});
 
 		final TitleS2CPacket youAreSeekingPacket = new TitleS2CPacket(Text.translatable("game.hiding.you_are_seeking"));
