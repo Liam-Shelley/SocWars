@@ -792,6 +792,16 @@ public interface ModItemsReworked {
 			}),
 			ItemGroups.COMBAT
 	);
+	Item GREEN_SWORD = registerAndGroup("green_sword", SocWarsItem::new, new Item.Settings()
+			.sword(ToolMaterials.BASE, 7f, -2.15f)
+			.rarity(Rarity.UNCOMMON)
+			.maxDamage(700)
+			.attributeModifiers(new AttributeModifiersComponent(List.of(
+					new AttributeModifiersComponent.Entry(EntityAttributes.JUMP_STRENGTH, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "green_sword_jump"), 0.2d, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.MAINHAND),
+					new AttributeModifiersComponent.Entry(EntityAttributes.SAFE_FALL_DISTANCE, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "green_sword_fall_distance"), 2d, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.MAINHAND)
+			))),
+			ItemGroups.COMBAT
+	);
 
 
 

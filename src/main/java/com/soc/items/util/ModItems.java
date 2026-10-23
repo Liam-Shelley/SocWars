@@ -11,7 +11,6 @@ public interface ModItems {
         DrawableWeapon.initialise();
         BowItem.initialise();
 
-        GreenSword.initialise();
         PotionRing.initialise();
         DiceOfFate.initialise();
         PotionFood.initialise();
