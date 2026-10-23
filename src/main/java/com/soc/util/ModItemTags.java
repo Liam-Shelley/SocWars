@@ -8,6 +8,7 @@ import net.minecraft.util.Identifier;
 
 public interface ModItemTags {
 	TagKey<Item> TOOLS = fromString("tools");
+	TagKey<Item> RINGS = fromString("rings");
 	
 	private static TagKey<Item> fromString(String id) {
 		return TagKey.of(RegistryKeys.ITEM, Identifier.of(SocWars.MOD_ID, id));

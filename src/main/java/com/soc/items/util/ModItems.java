@@ -10,9 +10,8 @@ public interface ModItems {
 
         DrawableWeapon.initialise();
         BowItem.initialise();
-
         PotionRing.initialise();
-        DiceOfFate.initialise();
+
         PotionFood.initialise();
         EatFunctionFood.initialise();
         GamblerArmour.initialise();

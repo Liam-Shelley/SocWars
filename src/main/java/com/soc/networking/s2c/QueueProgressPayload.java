@@ -2,14 +2,12 @@ package com.soc.networking.s2c;
 
 import com.soc.SocWars;
 import com.soc.game.manager.GameType;
-import com.soc.items.DiceOfFate;
 import com.soc.networking.helper.QueueProgress;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3d;
 
 import java.util.HashMap;
 import java.util.Map;

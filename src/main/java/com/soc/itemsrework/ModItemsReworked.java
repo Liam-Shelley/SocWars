@@ -14,11 +14,9 @@ import com.soc.lib.Coroutines;
 import com.soc.lib.IntBox;
 import com.soc.materials.ToolMaterials;
 import com.soc.mixin.GetAbsorptionAmountDataTracker;
+import com.soc.networking.s2c.AddVelocityPayload;
 import com.soc.networking.s2c.BatchParticlePayload;
-import com.soc.util.DamageTypes;
-import com.soc.util.ModBlockTags;
-import com.soc.util.Sounds;
-import com.soc.util.SphereExplosion;
+import com.soc.util.*;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
@@ -64,8 +62,10 @@ import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
+import net.minecraft.world.explosion.Explosion;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -82,6 +82,8 @@ import static com.soc.itemsrework.components.ModItemComponentsReworked.ITEM_HIT;
 import static com.soc.lib.SocWarsLib.*;
 import static com.soc.lib.SocWarsLib.isBlockHidden;
 import static com.soc.util.SphereExplosion.fireExplosion;
+import static net.minecraft.item.Items.ENCHANTED_GOLDEN_APPLE;
+import static net.minecraft.item.Items.NETHERITE_SWORD;
 
 @SuppressWarnings("PointlessArithmeticExpression")
 public interface ModItemsReworked {
@@ -115,6 +117,16 @@ public interface ModItemsReworked {
 			new EffectRecord(StatusEffects.DARKNESS, 0, 1 * 20),
 			new EffectRecord(StatusEffects.SLOW_FALLING, 0, 1 * 20),
 			new EffectRecord(StatusEffects.RESISTANCE, 1, 1 * 20),
+	};
+	EffectRecord[] GARBO_EFFECTS = {
+			new EffectRecord(StatusEffects.SLOWNESS, 3),
+			new EffectRecord(StatusEffects.MINING_FATIGUE, 1),
+			new EffectRecord(StatusEffects.NAUSEA, 0),
+			new EffectRecord(StatusEffects.BLINDNESS, 0),
+			new EffectRecord(StatusEffects.HUNGER, 0),
+			new EffectRecord(StatusEffects.WEAKNESS, 3),
+			new EffectRecord(StatusEffects.POISON, 1),
+			new EffectRecord(StatusEffects.GLOWING, 0),
 	};
 	//endregion
 
@@ -802,6 +814,39 @@ public interface ModItemsReworked {
 			))),
 			ItemGroups.COMBAT
 	);
+	Item DICE_OF_FATE = ModItemsReworked.register("dice_of_fate", SocWarsItem::new, new Item.Settings()
+			.maxCount(1)
+			.rarity(Rarity.RARE)
+			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+				if (world.isClient) return ActionResult.SUCCESS;
+
+				final int effect = world.random.nextBetween(0, 5);
+
+				user.getStackInHand(hand).decrementUnlessCreative(1, user);
+				user.sendMessage(Text.translatable("dice_of_fate.roll_result", effect + 1), true);
+
+				switch (effect) {
+					case 0 -> giveItem(user, new ItemStack(NETHERITE_SWORD), hand);
+					case 1 -> giveItem(user, new ItemStack(ENCHANTED_GOLDEN_APPLE), hand);
+					case 2 -> {
+						if (world instanceof ServerWorld serverWorld && serverWorld.getGameRules().getBoolean(GameRules.TNT_EXPLODES)) {
+							user.addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, 1, 1, false, false, false));
+							user.addStatusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, 1, 11, false, false, false));
+							world.createExplosion(null, Explosion.createDamageSource(world, null), null, user.getX(), user.getY(), user.getZ(), 8.0f, false, World.ExplosionSourceType.TNT);
+						}
+					}
+					case 3 -> world.getRegistryManager().getOrThrow(RegistryKeys.ITEM).getOptional(ModItemTags.RINGS).flatMap(entries -> entries.getRandom(world.random)).ifPresent(ring -> giveItem(user, new ItemStack(ring), hand));
+					case 4 -> ServerPlayNetworking.send((ServerPlayerEntity)user, new AddVelocityPayload(new Vec3d(0d, 2.5d, 0d)));
+					case 5 -> {
+						for (EffectRecord effectRecord : GARBO_EFFECTS) {
+							user.addStatusEffect(new StatusEffectInstance(effectRecord.effect(), 20 * 20, effectRecord.amplifier(), false, true, true));
+						}
+					}
+				}
+
+				return ActionResult.FAIL;
+			})
+	);
 
 
 
@@ -826,9 +871,7 @@ public interface ModItemsReworked {
 		return item;
 	}
 
-
-
-
+	//TODO: Maybe move to a lib class or something
 	static LoreComponent tooltip(Text... lines) {
 		final List<Text> linesList = List.of(lines);
 		return new LoreComponent(linesList, linesList);
@@ -924,7 +967,13 @@ public interface ModItemsReworked {
 		return mapIfNotNull(hit, BlockHitResult::getBlockPos);
 	}
 
-
+	private static void giveItem(PlayerEntity user, ItemStack item, Hand hand) {
+		if (user.getStackInHand(hand).isEmpty()) {
+			user.setStackInHand(hand, item);
+		} else {
+			user.giveItemStack(item);
+		}
+	}
 
 
 
