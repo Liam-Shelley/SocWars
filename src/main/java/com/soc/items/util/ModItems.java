@@ -11,8 +11,8 @@ public interface ModItems {
         DrawableWeapon.initialise();
         BowItem.initialise();
         PotionRing.initialise();
-
         PotionFood.initialise();
+
         EatFunctionFood.initialise();
         GamblerArmour.initialise();
         GamblerSword.initialise();

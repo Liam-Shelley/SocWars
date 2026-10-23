@@ -161,18 +161,23 @@ public final class SocWarsLib {
         };
     }
 
-    public static void scaleEntity(LivingEntity entity, float scale) {
-        multiplyAttributeModifier(entity, EntityAttributes.SCALE, SCALE_MODIFIER_ID, scale, MAX_SCALE_FACTOR);
+    public static boolean scaleEntity(LivingEntity entity, float scale) {
+        final boolean success = multiplyAttributeModifier(entity, EntityAttributes.SCALE, SCALE_MODIFIER_ID, scale, MAX_SCALE_FACTOR);
+        if (!success) return false;
+
         multiplyAttributeModifier(entity, EntityAttributes.ENTITY_INTERACTION_RANGE, SCALE_MODIFIER_ID, scale, MAX_SCALE_FACTOR);
         multiplyAttributeModifier(entity, EntityAttributes.BLOCK_INTERACTION_RANGE, SCALE_MODIFIER_ID, scale, MAX_SCALE_FACTOR);
+        return true;
     }
 
-    public static void multiplyAttributeModifier(LivingEntity entity, RegistryEntry<EntityAttribute> attribute, Identifier modifierId, float multiplier, float maxMultiplier) {
+    public static boolean multiplyAttributeModifier(LivingEntity entity, RegistryEntry<EntityAttribute> attribute, Identifier modifierId, float multiplier, float maxMultiplier) {
         final EntityAttributeInstance instance = entity.getAttributeInstance(attribute);
-        if (instance == null) return;
+        if (instance == null) return false;
 
         final double unclampedModifier = instance.getModifier(modifierId) == null ? multiplier - 1f : ((instance.getModifier(modifierId).value() + 1f) * multiplier - 1f);
         final double finalModifier = Math.clamp(unclampedModifier, (1 - maxMultiplier) / maxMultiplier, maxMultiplier - 1);
+
+        if (unclampedModifier == finalModifier) return false;
 
         instance.overwritePersistentModifier(new EntityAttributeModifier(
                 modifierId,
@@ -181,6 +186,8 @@ public final class SocWarsLib {
         );
 
         if (Math.abs(instance.getModifier(modifierId).value()) < 1e-5) instance.removeModifier(modifierId);
+
+        return true;
     }
 
     public static void resetScale(LivingEntity entity) {

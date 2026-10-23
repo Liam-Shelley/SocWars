@@ -8,7 +8,6 @@ import com.soc.game.manager.AbstractHidingGameManager;
 import com.soc.game.manager.GamesManager;
 import com.soc.items.util.EffectRecord;
 import com.soc.items.util.ModifyEquipmentFunction;
-import com.soc.itemsrework.components.ModItemComponentsReworked;
 import com.soc.lib.Coroutine;
 import com.soc.lib.Coroutines;
 import com.soc.lib.IntBox;
@@ -22,10 +21,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.AttributeModifierSlot;
-import net.minecraft.component.type.AttributeModifiersComponent;
-import net.minecraft.component.type.LoreComponent;
-import net.minecraft.component.type.ToolComponent;
+import net.minecraft.component.type.*;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.*;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
@@ -41,6 +37,8 @@ import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.entity.projectile.SpectralArrowEntity;
 import net.minecraft.item.*;
+import net.minecraft.item.consume.ConsumeEffect;
+import net.minecraft.item.consume.UseAction;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
 import net.minecraft.particle.ParticleTypes;
@@ -77,8 +75,6 @@ import java.util.function.Function;
 import static com.soc.game.manager.AbstractGameManager.getBlockDamagePredicate;
 import static com.soc.items.BowItem.playBowSound;
 import static com.soc.items.util.ModItemGroups.registerAndGroup;
-import static com.soc.itemsrework.components.ModItemComponentsReworked.DAMAGE_TYPE;
-import static com.soc.itemsrework.components.ModItemComponentsReworked.ITEM_HIT;
 import static com.soc.lib.SocWarsLib.*;
 import static com.soc.lib.SocWarsLib.isBlockHidden;
 import static com.soc.util.SphereExplosion.fireExplosion;
@@ -136,71 +132,71 @@ public interface ModItemsReworked {
 
 
 
-	Item BAT = registerAndGroup("bat", Item::new, new Item.Settings()
+	Item BAT = registerAndGroup("bat", Item::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, 4f, -1.9f)
-			.component(DataComponentTypes.LORE, tooltip(Text.translatable("tooltip.bat"))),
+			.simpleTooltip(Text.translatable("tooltip.bat")),
 			ItemGroups.COMBAT
 	);
-	Item BARBED_WIRE_BAT = registerAndGroup("barbed_wire_bat", Item::new, new Item.Settings()
+	Item BARBED_WIRE_BAT = registerAndGroup("barbed_wire_bat", Item::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, 5f, -1.95f),
 			ItemGroups.COMBAT
 	);
-	Item NAILED_BAT = registerAndGroup("nailed_bat", Item::new, new Item.Settings()
+	Item NAILED_BAT = registerAndGroup("nailed_bat", Item::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, 6f, -2f)
 			.rarity(Rarity.UNCOMMON),
 			ItemGroups.COMBAT
 	);
-	Item RAZOR_WIRE_BAT = registerAndGroup("razor_wire_bat", Item::new, new Item.Settings()
+	Item RAZOR_WIRE_BAT = registerAndGroup("razor_wire_bat", Item::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, 7.5f, -2.1f)
 			.rarity(Rarity.RARE),
 			ItemGroups.COMBAT
 	);
-	Item SAW_BLADE_BAT = registerAndGroup("saw_blade_bat", Item::new, new Item.Settings()
+	Item SAW_BLADE_BAT = registerAndGroup("saw_blade_bat", Item::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, 9f, -2.4f)
 			.rarity(Rarity.RARE)
-			.component(DataComponentTypes.LORE, tooltip(Text.translatable("tooltip.saw_blade_bat"))),
+			.simpleTooltip(Text.translatable("tooltip.saw_blade_bat")),
 			ItemGroups.COMBAT
 	);
-	Item DEVASTATOR = registerAndGroup("devastator", Item::new, new Item.Settings()
+	Item DEVASTATOR = registerAndGroup("devastator", Item::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.DEVASTATOR, 4f, -3.5f)
 			.rarity(Rarity.RARE),
 			ItemGroups.COMBAT
 	);
-	Item NETHERIGHT_SWORD = registerAndGroup("netheright_sword", Item::new, new Item.Settings()
+	Item NETHERIGHT_SWORD = registerAndGroup("netheright_sword", Item::new, new ExtendedItemSettings()
 			.sword(ToolMaterial.NETHERITE, -4.5f, 12f),
 			ItemGroups.COMBAT
 	);
-	Item LIFETHIEF = registerAndGroup("lifethief", SocWarsItem::new, new Item.Settings()
+	Item LIFETHIEF = registerAndGroup("lifethief", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.RARE)
 			.sword(ToolMaterials.LIFETHIEF, 2.5f, -2.2f)
-			.component(ITEM_HIT, (stack, target, attacker) -> {
-				final int bonusHealth = attacker.getWorld().random.nextBetween(-1, 2);
+			.itemHit((stack, target, attacker) -> {
+						final int bonusHealth = attacker.getWorld().random.nextBetween(-1, 2);
 
-				if (bonusHealth >= 0) {
-					attacker.heal(bonusHealth);
-				} else {
-					final World world = attacker.getWorld();
-					if (attacker instanceof LivingEntity && world instanceof ServerWorld serverWorld) {
-						final DamageSource damageSource = damageSource(world, DamageTypes.LIFETHIEF);
-						attacker.damage(serverWorld, damageSource, 1.0f);
-					}
-				}
-			}),
+						if (bonusHealth >= 0) {
+							attacker.heal(bonusHealth);
+						} else {
+							final World world = attacker.getWorld();
+							if (attacker instanceof LivingEntity && world instanceof ServerWorld serverWorld) {
+								final DamageSource damageSource = damageSource(world, DamageTypes.LIFETHIEF);
+								attacker.damage(serverWorld, damageSource, 1.0f);
+							}
+						}
+					}),
 			ItemGroups.COMBAT
 	);
-	Item DEVASTATOR_PRIME = registerAndGroup("devastator_prime", SocWarsItem::new, new Item.Settings()
+	Item DEVASTATOR_PRIME = registerAndGroup("devastator_prime", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.EPIC)
 			.sword(ToolMaterials.DEVASTATOR, 14.5f, -2.9f)
-			.component(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true)
-			.component(ITEM_HIT, (stack, target, attacker) -> {
-				target.addStatusEffect(new StatusEffectInstance(StatusEffects.WITHER, 3 * 20, 1));
-				target.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 3 * 20, 2));
-			}),
+			.enchantmentGlint()
+			.itemHit((stack, target, attacker) -> {
+						target.addStatusEffect(new StatusEffectInstance(StatusEffects.WITHER, 3 * 20, 1));
+						target.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 3 * 20, 2));
+					}),
 			ItemGroups.COMBAT
 	);
-	Item NETHERWRONG_SWORD = registerAndGroup("netherwrong_sword", SocWarsItem::new, new Item.Settings()
+	Item NETHERWRONG_SWORD = registerAndGroup("netherwrong_sword", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterial.NETHERITE, -3f, -3f)
-			.component(ITEM_HIT, (stack, target, attacker) -> {
+			.itemHit((stack, target, attacker) -> {
 				final World world = attacker.getWorld();
 				if (attacker instanceof LivingEntity && world instanceof ServerWorld serverWorld) {
 					final DamageSource damageSource = damageSource(world, DamageTypes.NETHERWRONG_SWORD);
@@ -209,19 +205,19 @@ public interface ModItemsReworked {
 			}),
 			ItemGroups.COMBAT
 	);
-	Item ORANGE_SWORD = registerAndGroup("orange_sword", SocWarsItem::new, new Item.Settings()
+	Item ORANGE_SWORD = registerAndGroup("orange_sword", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, 5f, -2.1f)
 			.maxDamage(500)
-			.component(ITEM_HIT, (stack, target, attacker) -> {
+			.itemHit((stack, target, attacker) -> {
 				attacker.getWorld().playSound(null, attacker.getBlockPos(), Sounds.VINE_BOOM, SoundCategory.PLAYERS, 1f, 1f);
 			}),
 			ItemGroups.COMBAT
 	);
-	Item BLUE_SWORD = registerAndGroup("blue_sword", SocWarsItem::new, new Item.Settings()
+	Item BLUE_SWORD = registerAndGroup("blue_sword", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.UNCOMMON)
 			.sword(ToolMaterials.BASE, 8f, -2.15f)
 			.maxDamage(800)
-			.component(ITEM_HIT, (stack, target, attacker) -> {
+			.itemHit((stack, target, attacker) -> {
 				if (attacker.getWorld() instanceof ServerWorld serverWorld) {
 					final SlimeEntity slime = new SlimeEntity(EntityType.SLIME, attacker.getWorld());
 					slime.setSize(2, true);
@@ -231,22 +227,22 @@ public interface ModItemsReworked {
 			}),
 			ItemGroups.COMBAT
 	);
-	Item PINK_SWORD = registerAndGroup("pink_sword", SocWarsItem::new, new Item.Settings()
+	Item PINK_SWORD = registerAndGroup("pink_sword", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.EPIC)
 			.sword(ToolMaterials.BASE, 10f, -2.2f)
 			.maxDamage(1000)
-			.component(ITEM_HIT, (stack, target, attacker) -> {
+			.itemHit((stack, target, attacker) -> {
 				float newAbsorption = attacker.getAbsorptionAmount() + 2;
 				attacker.getDataTracker().set(GetAbsorptionAmountDataTracker.getAbsorption_Amount(), newAbsorption);
 			}),
 			ItemGroups.COMBAT
 	);
-	Item KNOCKFORWARD_SWORD = registerAndGroup("knockforward_sword", SocWarsItem::new, new Item.Settings()
+	Item KNOCKFORWARD_SWORD = registerAndGroup("knockforward_sword", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.UNCOMMON)
 			.sword(ToolMaterials.BASE, 5.5f, -2.2f)
-			.component(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true)
+			.enchantmentGlint()
 			.maxDamage(450)
-			.component(ITEM_HIT, (stack, target, attacker) -> {
+			.itemHit((stack, target, attacker) -> {
 				final Vec3d velocity = attacker.getRotationVector().multiply(-1.25f);
 
 				if (target instanceof ServerPlayerEntity serverPlayer) {
@@ -255,58 +251,58 @@ public interface ModItemsReworked {
 					target.addVelocity(velocity);
 				}
 			})
-			.component(DataComponentTypes.LORE, tooltip(
+			.simpleTooltip(
 					Text.translatable("tooltip.knockforward_sword").formatted(Formatting.GOLD),
 					Text.translatable("tooltip.knockforward_sword.knockback").formatted(Formatting.GRAY)
-			)),
+			),
 			ItemGroups.COMBAT
 	);
-	Item TRANSPORTAS = registerAndGroup("transportas", SocWarsItem::new, new Item.Settings()
+	Item TRANSPORTAS = registerAndGroup("transportas", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.RARE)
 			.sword(ToolMaterials.BASE, 5.5f, -2f)
 			.maxDamage(450)
-			.component(ITEM_HIT, (stack, target, attacker) -> {
+			.itemHit((stack, target, attacker) -> {
 				if (target.getWorld().random.nextBetween(1, 4) == 1) {
 					target.setPosition(target.getPos().add(target.getRotationVector().multiply(3f)));
 				}
 			}),
 			ItemGroups.COMBAT
 	);
-	Item STORMAGEDDON = registerAndGroup("stormageddon", SocWarsItem::new, new Item.Settings()
+	Item STORMAGEDDON = registerAndGroup("stormageddon", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.UNCOMMON)
 			.sword(ToolMaterials.BASE, 5f, -2.1f)
 			.maxDamage(500)
-			.component(ITEM_HIT, (stack, target, attacker) -> {
+			.itemHit((stack, target, attacker) -> {
 				final LightningEntity lightning = new LightningEntity(EntityType.LIGHTNING_BOLT, target.getWorld());
 				lightning.setPosition(target.getPos());
 				target.getWorld().spawnEntity(lightning);
 			})
-			.component(DataComponentTypes.LORE, tooltip(Text.translatable("tooltip.stormageddon"))),
+			.simpleTooltip(Text.translatable("tooltip.stormageddon")),
 			ItemGroups.COMBAT
 	);
-	Item DETONATOR = registerAndGroup("detonator", SocWarsItem::new, new Item.Settings()
+	Item DETONATOR = registerAndGroup("detonator", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.RARE)
 			.sword(ToolMaterials.BASE, 4.5f, -2.2f)
 			.maxDamage(400)
-			.component(ITEM_HIT, (stack, target, attacker) -> {
+			.itemHit((stack, target, attacker) -> {
 				SphereExplosion.explode(target.getWorld(), target.getPos(), 2.5f, 0.5f, 1.4f, 0.75f, true, attacker, null);
 			}),
 			ItemGroups.COMBAT
 	);
-	Item SHATTERSTAR = registerAndGroup("shatterstar", SocWarsItem::new, new Item.Settings()
+	Item SHATTERSTAR = registerAndGroup("shatterstar", SocWarsItem::new, new ExtendedItemSettings()
 			.maxCount(1)
 			.rarity(Rarity.RARE)
-			.component(ITEM_HIT, (stack, target, attacker) -> {
+			.itemHit((stack, target, attacker) -> {
 				modifyEquipment(target, attacker, ReplaceMode.PRESENT,
 						(targetEntity, slot) -> target.equipStack(slot, ItemStack.EMPTY),
 						(targetEntity, slot) -> target.setStackInHand(Hand.MAIN_HAND, ItemStack.EMPTY));
 			}),
 			ItemGroups.COMBAT
 	);
-	Item LEATHERER = registerAndGroup("leatherer", SocWarsItem::new, new Item.Settings()
+	Item LEATHERER = registerAndGroup("leatherer", SocWarsItem::new, new ExtendedItemSettings()
 			.maxCount(1)
 			.rarity(Rarity.RARE)
-			.component(ITEM_HIT, (stack, target, attacker) -> {
+			.itemHit((stack, target, attacker) -> {
 				modifyEquipment(target, attacker, ReplaceMode.NOT_LEATHER, (targetEntity, slot) -> {
 					final ItemStack item = leatherArmour(slot).getDefaultStack();
 					item.addEnchantment(enchantmentEntry(target.getWorld(), Enchantments.BINDING_CURSE), 1);
@@ -317,11 +313,11 @@ public interface ModItemsReworked {
 			}),
 			ItemGroups.COMBAT
 	);
-	Item SPRING_SWORD = registerAndGroup("spring_sword", SocWarsItem::new, new Item.Settings()
+	Item SPRING_SWORD = registerAndGroup("spring_sword", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, 8f, -1.2f)
 			.maxDamage(350)
 			.rarity(Rarity.RARE)
-			.component(ITEM_HIT, (stack, target, attacker) -> {
+			.itemHit((stack, target, attacker) -> {
 				if (attacker.getWorld().random.nextBetween(1, attacker.isOnGround() ? 6 : 4) == 1) {
 					final ItemEntity item = attacker.dropItem(stack, true, false);
 					if (item == null) return;
@@ -330,30 +326,30 @@ public interface ModItemsReworked {
 					attacker.setStackInHand(Hand.MAIN_HAND, ItemStack.EMPTY);
 				}
 			})
-			.component(DataComponentTypes.LORE, tooltip(Text.translatable("tooltip.spring_sword").formatted(Formatting.YELLOW))),
+			.simpleTooltip(Text.translatable("tooltip.spring_sword").formatted(Formatting.YELLOW)),
 			ItemGroups.COMBAT
 	);
-	Item FLESHY_BLADE = registerAndGroup("fleshy_blade", SocWarsItem::new, new Item.Settings()
+	Item FLESHY_BLADE = registerAndGroup("fleshy_blade", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, 6f, -2.2f)
-			.component(ITEM_HIT, (stack, target, attacker) -> {
+			.itemHit((stack, target, attacker) -> {
 				attacker.getWorld().playSound(null, target.getBlockPos(), Sounds.FLESH, SoundCategory.MASTER, 1f, 1f);
 			}),
 			ItemGroups.COMBAT
 	);
-	Item FIRESTORM = registerAndGroup("firestorm", SocWarsItem::new, new Item.Settings()
+	Item FIRESTORM = registerAndGroup("firestorm", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, 5.5f, -2.5f)
 			.maxDamage(400)
 			.rarity(Rarity.RARE)
-			.component(ITEM_HIT, (stack, target, attacker) -> {
+			.itemHit((stack, target, attacker) -> {
 				fireExplosion(target.getWorld(), target.getBlockPos(), 4f, attacker);
 			}),
 			ItemGroups.COMBAT
 	);
-	Item CORRUPTED_SWORD = registerAndGroup("corrupted_sword", SocWarsItem::new, new Item.Settings()
+	Item CORRUPTED_SWORD = registerAndGroup("corrupted_sword", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, 5.5f, -2.3f)
 			.maxDamage(550)
 			.rarity(Rarity.UNCOMMON)
-			.component(ITEM_HIT, (stack, target, attacker) -> {
+			.itemHit((stack, target, attacker) -> {
 				final World world = target.getWorld();
 				iterateInSphere(target.getBlockPos(), 4, 0, pos -> {
 					if (world.random.nextFloat() < 0.2f && !isBlockHidden(world, pos) && !world.getBlockState(pos).isIn(ModBlockTags.IMMUNE)) {
@@ -363,70 +359,70 @@ public interface ModItemsReworked {
 			}),
 			ItemGroups.COMBAT
 	);
-	Item POSTURA = registerAndGroup("postura", SocWarsItem::new, new Item.Settings()
+	Item POSTURA = registerAndGroup("postura", SocWarsItem::new, new ExtendedItemSettings()
 			.maxCount(1)
 			.rarity(Rarity.UNCOMMON)
-			.component(ITEM_HIT, (stack, target, attacker) -> {
+			.itemHit((stack, target, attacker) -> {
 				target.addStatusEffect(new StatusEffectInstance(ModEffects.ARTHRODESIS, 40 * 20, 0, false, true));
 				stack.decrementUnlessCreative(1, attacker);
 			})
-			.component(DataComponentTypes.LORE, tooltip(Text.translatable("tooltip.postura"))),
+			.simpleTooltip(Text.translatable("tooltip.postura")),
 			ItemGroups.COMBAT
 	);
-	Item FULL_METAL_SWORD = registerAndGroup("full_metal_sword", SocWarsItem::new, new Item.Settings()
+	Item FULL_METAL_SWORD = registerAndGroup("full_metal_sword", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, 4.5f, -2.3f)
 			.maxDamage(500)
-			.component(ITEM_HIT, (stack, target, attacker) -> {
+			.itemHit((stack, target, attacker) -> {
 				attacker.getWorld().playSound(null, attacker.getBlockPos(), Sounds.GET_SOME, SoundCategory.PLAYERS, 1f, 1f);
 			})
-			.component(DAMAGE_TYPE, DamageTypes.FULL_METAL_SWORD)
-			.component(DataComponentTypes.LORE, tooltip(Text.translatable("tooltip.full_metal_sword"))),
+			.damageType(DamageTypes.FULL_METAL_SWORD)
+			.simpleTooltip(Text.translatable("tooltip.full_metal_sword")),
 			ItemGroups.COMBAT
 	);
-	Item SEEKING_STICK = registerAndGroup("seeking_stick", SocWarsItem::new, new Item.Settings()
+	Item SEEKING_STICK = registerAndGroup("seeking_stick", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.UNCOMMON)
 			.attributeModifiers(new AttributeModifiersComponent(List.of(
 					new AttributeModifiersComponent.Entry(EntityAttributes.ENTITY_INTERACTION_RANGE, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "seeking_stick_range"), 1d, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.MAINHAND, AttributeModifiersComponent.Display.getDefault()),
 					new AttributeModifiersComponent.Entry(EntityAttributes.MOVEMENT_SPEED, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "seeking_stick_speed"), 0.05d, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.MAINHAND, AttributeModifiersComponent.Display.getHidden()),
 					new AttributeModifiersComponent.Entry(EntityAttributes.ATTACK_DAMAGE, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "seeking_stick_damage"), 6.5d, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.MAINHAND)
 			)))
-			.component(ITEM_HIT, (stack, target, attacker) -> {
+			.itemHit((stack, target, attacker) -> {
 				GamesManager.getInstance().getGame(target).ifPresent(game -> {
 					if (game instanceof AbstractHidingGameManager<?, ?, ?> hidingGameManager) {
 						hidingGameManager.tryFindPlayer(attacker, (ServerPlayerEntity)target);
 					}
 				});
 			})
-			.component(DataComponentTypes.LORE, tooltip(Text.translatable("tooltip.seeking_stick"))),
+			.simpleTooltip(Text.translatable("tooltip.seeking_stick")),
 			ItemGroups.COMBAT
 	);
-	Item DASHREND = registerAndGroup("dashrend", SocWarsItem::new, new Item.Settings()
+	Item DASHREND = registerAndGroup("dashrend", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.DASH, 2.5f, -2f)
 			.useCooldown(3.5f)
 			.rarity(Rarity.RARE)
-			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+			.itemUse((world, user, hand) -> {
 				dash(user, hand, 0.8f);
 
 				return ActionResult.SUCCESS;
 			}),
 			ItemGroups.COMBAT
 	);
-	Item VELOCITY_STAFF = registerAndGroup("velocity_staff", SocWarsItem::new, new Item.Settings()
+	Item VELOCITY_STAFF = registerAndGroup("velocity_staff", SocWarsItem::new, new ExtendedItemSettings()
 			.maxDamage(300)
 			.useCooldown(2f)
 			.rarity(Rarity.RARE)
-			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+			.itemUse((world, user, hand) -> {
 				dash(user, hand, 1.5f);
 
 				return ActionResult.SUCCESS;
 			}),
 			ItemGroups.TOOLS
 	);
-	Item VEXING_STAFF = registerAndGroup("vexing_staff", SocWarsItem::new, new Item.Settings()
+	Item VEXING_STAFF = registerAndGroup("vexing_staff", SocWarsItem::new, new ExtendedItemSettings()
 			.maxDamage(5)
 			.useCooldown(45f)
 			.rarity(Rarity.RARE)
-			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+			.itemUse((world, user, hand) -> {
 				for (int i = 0; i < 2; i++) {
 					final VexEntity vex = new VexEntity(EntityType.VEX, world);
 					vex.setPosition(user.getEyePos().add(user.getRotationVector()));
@@ -442,11 +438,11 @@ public interface ModItemsReworked {
 			}),
 			ItemGroups.TOOLS
 	);
-	Item YELLOW_SWORD = registerAndGroup("yellow_sword", SocWarsItem::new, new Item.Settings()
+	Item YELLOW_SWORD = registerAndGroup("yellow_sword", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, 6f, -2.1f)
 			.useCooldown(1.5f)
 			.maxDamage(600)
-			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+			.itemUse((world, user, hand) -> {
 				final ItemStack itemStack = user.getStackInHand(hand);
 
 				if (world instanceof ServerWorld serverWorld) {
@@ -463,24 +459,24 @@ public interface ModItemsReworked {
 			}),
 			ItemGroups.COMBAT
 	);
-	Item GOD_COMPLEX = registerAndGroup("god_complex", SocWarsItem::new, new Item.Settings()
+	Item GOD_COMPLEX = registerAndGroup("god_complex", SocWarsItem::new, new ExtendedItemSettings()
 			.useCooldown(5f)
-			.component(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true)
+			.enchantmentGlint()
 			.rarity(Rarity.EPIC)
-			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+			.itemUse((world, user, hand) -> {
 				user.addStatusEffect(new StatusEffectInstance(ModEffects.FLIGHT, 5 * 20, 0, false, false));
 				user.getStackInHand(hand).decrementUnlessCreative(1, user);
 
 				return ActionResult.SUCCESS;
 			})
-			.component(DataComponentTypes.LORE, tooltip(Text.translatable("tooltip.god_complex"))),
+			.simpleTooltip(Text.translatable("tooltip.god_complex")),
 			ItemGroups.TOOLS
 	);
-	Item SCROLL_OF_EAU = registerAndGroup("scroll_of_eau", SocWarsItem::new, new Item.Settings()
+	Item SCROLL_OF_EAU = registerAndGroup("scroll_of_eau", SocWarsItem::new, new ExtendedItemSettings()
 			.useCooldown(1f)
 			.maxDamage(3)
 			.rarity(Rarity.UNCOMMON)
-			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+			.itemUse((world, user, hand) -> {
 				final @Nullable BlockPos hitPos = shootScroll(world, user, hand, pos -> {
 					if (world.isAir(pos)) world.setBlockState(pos, Blocks.WATER.getDefaultState().with(Properties.LEVEL_15, 7));
 				});
@@ -488,26 +484,26 @@ public interface ModItemsReworked {
 
 				return ActionResult.SUCCESS;
 			})
-			.component(DataComponentTypes.LORE, tooltip(Text.translatable("tooltip.scroll_of_eau"))),
+			.simpleTooltip(Text.translatable("tooltip.scroll_of_eau")),
 			ItemGroups.TOOLS
 	);
-	Item SCROLL_OF_HELLFIRE = registerAndGroup("scroll_of_hellfire", SocWarsItem::new, new Item.Settings()
+	Item SCROLL_OF_HELLFIRE = registerAndGroup("scroll_of_hellfire", SocWarsItem::new, new ExtendedItemSettings()
 			.useCooldown(1f)
 			.maxDamage(3)
 			.rarity(Rarity.UNCOMMON)
-			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+			.itemUse((world, user, hand) -> {
 				shootScroll(world, user, hand, pos -> {
 					if (world.isAir(pos)) world.setBlockState(pos, Blocks.LAVA.getDefaultState());
 				});
 
 				return ActionResult.SUCCESS;
 			})
-			.component(DataComponentTypes.LORE, tooltip(Text.translatable("tooltip.scroll_of_hellfire"))),
+			.simpleTooltip(Text.translatable("tooltip.scroll_of_hellfire")),
 			ItemGroups.TOOLS
 	);
-	Item C_U_E_B = registerAndGroup("c_u_e_b", SocWarsItem::new, new Item.Settings()
+	Item C_U_E_B = registerAndGroup("c_u_e_b", SocWarsItem::new, new ExtendedItemSettings()
 			.useCooldown(1f)
-			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+			.itemUse((world, user, hand) -> {
 				final BlockPos centre = BlockPos.ofFloored(user.getEyePos().add(user.getRotationVector().multiply(20f)));
 
 				iterateInCube(centre, 5, pos -> {
@@ -522,32 +518,32 @@ public interface ModItemsReworked {
 			}),
 			ItemGroups.TOOLS
 	);
-	Item SHRINK_RAY = registerAndGroup("shrink_ray", SocWarsItem::new, new Item.Settings()
+	Item SHRINK_RAY = registerAndGroup("shrink_ray", SocWarsItem::new, new ExtendedItemSettings()
 			.maxDamage(16)
 			.rarity(Rarity.RARE)
-			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+			.itemUse((world, user, hand) -> {
 				shootEntity(user, hand, 1, 10, 2 * 20, entity -> scaleEntity(entity, SQRT2 * 0.5f));
 
 				return ActionResult.SUCCESS;
 			})
-			.component(DataComponentTypes.LORE, tooltip(Text.translatable("tooltip.shrink_ray"))),
+			.simpleTooltip(Text.translatable("tooltip.shrink_ray")),
 			ItemGroups.TOOLS
 	);
-	Item BIGGENING_RAY = registerAndGroup("biggening_ray", SocWarsItem::new, new Item.Settings()
+	Item BIGGENING_RAY = registerAndGroup("biggening_ray", SocWarsItem::new, new ExtendedItemSettings()
 			.maxDamage(16)
 			.rarity(Rarity.RARE)
-			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+			.itemUse((world, user, hand) -> {
 				shootEntity(user, hand, 1, 10, 2 * 20, entity -> scaleEntity(entity, SQRT2));
 
 				return ActionResult.SUCCESS;
 			}),
 			ItemGroups.TOOLS
 	);
-	Item THE_LINE = registerAndGroup("the_line", SocWarsItem::new, new Item.Settings()
+	Item THE_LINE = registerAndGroup("the_line", SocWarsItem::new, new ExtendedItemSettings()
 			.maxCount(4)
 			.useCooldown(2f)
 			.rarity(Rarity.RARE)
-			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+			.itemUse((world, user, hand) -> {
 				if (world.isClient) return ActionResult.SUCCESS;
 
 				final boolean allowsMovementControl = user.isSneaking();
@@ -575,11 +571,11 @@ public interface ModItemsReworked {
 			}),
 			ItemGroups.COMBAT
 	);
-	Item WHEATENATOR = registerAndGroup("wheatenator", SocWarsItem::new, new Item.Settings()
+	Item WHEATENATOR = registerAndGroup("wheatenator", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, 4.5f, -2.4f)
 			.maxDamage(350)
 			.useCooldown(0.25f)
-			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+			.itemUse((world, user, hand) -> {
 				final Vec3d rotationVec = user.getRotationVector();
 				final double rotationAngle = Math.atan2(rotationVec.z, rotationVec.x);
 
@@ -599,13 +595,13 @@ public interface ModItemsReworked {
 
 				return ActionResult.SUCCESS;
 			})
-			.component(DataComponentTypes.LORE, tooltip(Text.translatable("tooltip.wheatenator"))),
+			.simpleTooltip(Text.translatable("tooltip.wheatenator")),
 			ItemGroups.COMBAT
 	);
-	Item DEATH_RAIN = registerAndGroup("death_rain", SocWarsItem::new, new Item.Settings()
+	Item DEATH_RAIN = registerAndGroup("death_rain", SocWarsItem::new, new ExtendedItemSettings()
 			.maxDamage(3)
 			.rarity(Rarity.RARE)
-			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+			.itemUse((world, user, hand) -> {
 				rainPositions(world, user.getPos(), 15, 15f, 20f, 35f, pos -> {
 					final TntEntity tnt = new TntEntity(world, pos.x, pos.y, pos.z, user);
 
@@ -619,11 +615,11 @@ public interface ModItemsReworked {
 			}),
 			ItemGroups.COMBAT
 	);
-	Item ALPHA_BOW = registerAndGroup("alpha_bow", SocWarsItem::new, new Item.Settings()
+	Item ALPHA_BOW = registerAndGroup("alpha_bow", SocWarsItem::new, new ExtendedItemSettings()
 			.maxDamage(256)
 			.enchantable(2)
 			.rarity(Rarity.RARE)
-			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+			.itemUse((world, user, hand) -> {
 				final ItemStack itemStack = user.getStackInHand(hand);
 
 				if (world instanceof ServerWorld serverWorld) {
@@ -644,11 +640,11 @@ public interface ModItemsReworked {
 			}),
 			ItemGroups.COMBAT
 	);
-	Item SNIPER_RIFLE = registerAndGroup("sniper_rifle", SocWarsItem::new, new Item.Settings()
+	Item SNIPER_RIFLE = registerAndGroup("sniper_rifle", SocWarsItem::new, new ExtendedItemSettings()
 			.maxDamage(10)
 			.useCooldown(2f)
 			.rarity(Rarity.EPIC)
-			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+			.itemUse((world, user, hand) -> {
 				final ItemStack itemStack = user.getStackInHand(hand);
 				itemStack.damage(1, user, hand);
 				world.playSound(null, user.getX(), user.getY(), user.getZ(), Sounds.SNIPER_RIFLE_SHOT, SoundCategory.PLAYERS);
@@ -704,10 +700,10 @@ public interface ModItemsReworked {
 			}),
 			ItemGroups.COMBAT
 	);
-	Item RED_SHELL = registerAndGroup("red_shell", SocWarsItem::new, new Item.Settings()
+	Item RED_SHELL = registerAndGroup("red_shell", SocWarsItem::new, new ExtendedItemSettings()
 			.useCooldown(5f)
 			.rarity(Rarity.RARE)
-			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+			.itemUse((world, user, hand) -> {
 				if (world.isClient) return null;
 
 				world.spawnEntity(new RedShellEntity(world, user.getPos(), user));
@@ -717,10 +713,10 @@ public interface ModItemsReworked {
 			}),
 			ItemGroups.COMBAT
 	);
-	Item BLUE_SHELL = registerAndGroup("blue_shell", SocWarsItem::new, new Item.Settings()
+	Item BLUE_SHELL = registerAndGroup("blue_shell", SocWarsItem::new, new ExtendedItemSettings()
 			.useCooldown(5f)
 			.rarity(Rarity.RARE)
-			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+			.itemUse((world, user, hand) -> {
 				if (world.isClient) return null;
 
 				world.spawnEntity(new BlueShellEntity(world, user.getPos(), user));
@@ -730,40 +726,40 @@ public interface ModItemsReworked {
 			}),
 			ItemGroups.COMBAT
 	);
-	Item TAUNT_STICK = registerAndGroup("taunt_stick", SocWarsItem::new, new Item.Settings()
+	Item TAUNT_STICK = registerAndGroup("taunt_stick", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.UNCOMMON)
 			.useCooldown(0.75f)
-			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+			.itemUse((world, user, hand) -> {
 				final SoundEvent soundEvent = TAUNTS[world.random.nextBetween(0, TAUNTS.length - 1)];
 				world.playSound(null, user.getBlockPos(), soundEvent, SoundCategory.MASTER);
 
 				return ActionResult.SUCCESS;
 			})
 	);
-	Item BIOHACKER = registerAndGroup("biohacker", SocWarsItem::new, new Item.Settings()
+	Item BIOHACKER = registerAndGroup("biohacker", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.POTIONWEAPON, 2.5f, -2.2f)
 			.rarity(Rarity.RARE)
 			.maxDamage(300)
-			.component(ITEM_HIT, (stack, target, attacker) -> {
+			.itemHit((stack, target, attacker) -> {
 				if (target.getRandom().nextFloat() < 0.25f) target.addStatusEffect(new StatusEffectInstance(StatusEffects.POISON, 3 * 20, 1, false, true));
 			}),
 			ItemGroups.COMBAT
 	);
-	Item GOO_SHOVEL = registerAndGroup("goo_shovel", SocWarsItem::new, new Item.Settings()
+	Item GOO_SHOVEL = registerAndGroup("goo_shovel", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.POTIONWEAPON, -2f, -3f)
 			.component(DataComponentTypes.TOOL, new ToolComponent(List.of(ToolComponent.Rule.ofNeverDropping(Registries.createEntryLookup(Registries.BLOCK).getOrThrow(BlockTags.INCORRECT_FOR_DIAMOND_TOOL)), ToolComponent.Rule.ofAlwaysDropping(Registries.createEntryLookup(Registries.BLOCK).getOrThrow(BlockTags.SHOVEL_MINEABLE), 6.5f)), 1.0f, 1, true))
-			.rarity(Rarity.UNCOMMON) //The code above is definitely okay and not terrible whatsoever
+			.rarity(Rarity.UNCOMMON) //The code above is definitely okay and not terrible whatsoever //TODO: Make some custom method in ExtendedItemSettings to do this for me in an "elegant" way
 			.maxDamage(20)
-			.component(ITEM_HIT, (stack, target, attacker) -> {
+			.itemHit((stack, target, attacker) -> {
 				target.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 5 * 20, 1, false, true));
 			}),
 			ItemGroups.COMBAT
 	);
-	Item STATUE_BLADE = registerAndGroup("statue_blade", SocWarsItem::new, new Item.Settings()
+	Item STATUE_BLADE = registerAndGroup("statue_blade", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.POTIONWEAPON, 3.5f, -2.3f)
 			.rarity(Rarity.RARE)
 			.maxDamage(300)
-			.component(ITEM_HIT, (stack, target, attacker) -> {
+			.itemHit((stack, target, attacker) -> {
 				final Consumer<LivingEntity> effectApplicator = entity -> { //TODO: Extract this to a lib file because this is gross
 					entity.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 3 * 20, 6, false, true));
 					//entity.addStatusEffect(new StatusEffectInstance(ModEffects.NO_JUMPING, 3 * 20, 6, false, true)); //TODO: Make an effect that prevents jumping
@@ -773,11 +769,11 @@ public interface ModItemsReworked {
 			}),
 			ItemGroups.COMBAT
 	);
-	Item ALCHEMISM = registerAndGroup("alchemism", SocWarsItem::new, new Item.Settings()
+	Item ALCHEMISM = registerAndGroup("alchemism", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.POTIONWEAPON, 4f, -2.5f)
 			.rarity(Rarity.EPIC)
 			.maxDamage(500)
-			.component(ITEM_HIT, (stack, target, attacker) -> {
+			.itemHit((stack, target, attacker) -> {
 				for (EffectRecord effect : ALCHEMISM_EFFECTS) {
 					target.addStatusEffect(new StatusEffectInstance(effect.effect(), effect.duration(), effect.amplifier(), false, true));
 					if (effect.effect().value().isBeneficial()) {
@@ -787,24 +783,24 @@ public interface ModItemsReworked {
 			}),
 			ItemGroups.COMBAT
 	);
-	Item RED_SWORD = registerAndGroup("red_sword", SocWarsItem::new, new Item.Settings()
-			.sword(ToolMaterials.POTIONWEAPON, 1f, -2.1f)
-			.maxDamage(400)
-			.component(ITEM_HIT, (stack, target, attacker) -> {
+	Item RED_SWORD = registerAndGroup("red_sword", SocWarsItem::new, new ExtendedItemSettings()
+			.itemHit((stack, target, attacker) -> {
 				target.addStatusEffect(new StatusEffectInstance(StatusEffects.WEAKNESS, 5 * 20, 0, false, true));
-			}),
+			})
+			.sword(ToolMaterials.POTIONWEAPON, 1f, -2.1f)
+			.maxDamage(400),
 			ItemGroups.COMBAT
 	);
-	Item PURPLE_SWORD = registerAndGroup("purple_sword", SocWarsItem::new, new Item.Settings()
+	Item PURPLE_SWORD = registerAndGroup("purple_sword", SocWarsItem::new, new ExtendedItemSettings()
+			.itemHit((stack, target, attacker) -> {
+				attacker.addStatusEffect(new StatusEffectInstance(StatusEffects.INVISIBILITY, 1 * 20, 0, false, true));
+			})
 			.sword(ToolMaterials.POTIONWEAPON, 1f, -2.2f)
 			.rarity(Rarity.RARE)
-			.maxDamage(900)
-			.component(ITEM_HIT, (stack, target, attacker) -> {
-				attacker.addStatusEffect(new StatusEffectInstance(StatusEffects.INVISIBILITY, 1 * 20, 0, false, true));
-			}),
+			.maxDamage(900),
 			ItemGroups.COMBAT
 	);
-	Item GREEN_SWORD = registerAndGroup("green_sword", SocWarsItem::new, new Item.Settings()
+	Item GREEN_SWORD = registerAndGroup("green_sword", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, 7f, -2.15f)
 			.rarity(Rarity.UNCOMMON)
 			.maxDamage(700)
@@ -814,10 +810,10 @@ public interface ModItemsReworked {
 			))),
 			ItemGroups.COMBAT
 	);
-	Item DICE_OF_FATE = ModItemsReworked.register("dice_of_fate", SocWarsItem::new, new Item.Settings()
+	Item DICE_OF_FATE = registerAndGroup("dice_of_fate", SocWarsItem::new, new ExtendedItemSettings()
 			.maxCount(1)
 			.rarity(Rarity.RARE)
-			.component(ModItemComponentsReworked.ITEM_USE, (world, user, hand) -> {
+			.itemUse((world, user, hand) -> {
 				if (world.isClient) return ActionResult.SUCCESS;
 
 				final int effect = world.random.nextBetween(0, 5);
@@ -847,7 +843,23 @@ public interface ModItemsReworked {
 				return ActionResult.FAIL;
 			})
 	);
+	Item SHRINKING_PILLS = registerAndGroup("shrinking_pills", Item::new, new ExtendedItemSettings()
+			.rarity(Rarity.UNCOMMON)
 
+
+
+			.component(DataComponentTypes.CONSUMABLE, new ConsumableComponent(0.8f, UseAction.DRINK, SoundEvents.ENTITY_GENERIC_EAT, true, List.of(new ConsumeEffect() {
+				@Override
+				public Type<? extends ConsumeEffect> getType() {
+					return null;
+				}
+
+				@Override
+				public boolean onConsume(World world, ItemStack stack, LivingEntity user) {
+					return scaleEntity(user, SQRT2 * 0.5f);
+				}
+			})))
+	);
 
 
 
@@ -870,14 +882,6 @@ public interface ModItemsReworked {
 
 		return item;
 	}
-
-	//TODO: Maybe move to a lib class or something
-	static LoreComponent tooltip(Text... lines) {
-		final List<Text> linesList = List.of(lines);
-		return new LoreComponent(linesList, linesList);
-	}
-
-
 
 
 

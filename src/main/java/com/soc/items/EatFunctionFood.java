@@ -34,17 +34,17 @@ public class EatFunctionFood extends Item { //rewrite all of this as consumable 
     }
 
     public static void initialise() {
-        addItemToGroupsAndBaseItemGroup(SHRINKING_PILLS, ItemGroups.FOOD_AND_DRINK);
+    //    addItemToGroupsAndBaseItemGroup(SHRINKING_PILLS, ItemGroups.FOOD_AND_DRINK);
         addItemToGroupsAndBaseItemGroup(BIGGENING_PILLS, ItemGroups.FOOD_AND_DRINK);
         addItemToGroupsAndBaseItemGroup(CHORUS_FRUIT_SALAD, ItemGroups.FOOD_AND_DRINK);
     }
 
-    public static final Item SHRINKING_PILLS = ModItemsReworked.register("shrinking_pills", settings -> new EatFunctionFood(settings, (stack, world, user) -> {
-        scaleEntity(user, SQRT2 * 0.5f);
-        return null;
-            }), new Settings()
-            .rarity(Rarity.UNCOMMON)
-    );
+    //public static final Item SHRINKING_PILLS = ModItemsReworked.register("shrinking_pills", settings -> new EatFunctionFood(settings, (stack, world, user) -> {
+    //    scaleEntity(user, SQRT2 * 0.5f);
+    //    return null;
+    //        }), new Settings()
+    //        .rarity(Rarity.UNCOMMON)
+    //);
     public static final Item BIGGENING_PILLS = ModItemsReworked.register("biggening_pills", settings -> new EatFunctionFood(settings, (stack, world, user) -> {
         scaleEntity(user, SQRT2);
         return null;
