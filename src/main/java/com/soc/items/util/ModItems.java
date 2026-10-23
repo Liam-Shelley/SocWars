@@ -8,9 +8,9 @@ public interface ModItems {
 
         HardCodes.initialise();
 
-        PotionWeapon.initialise();
         DrawableWeapon.initialise();
         BowItem.initialise();
+
         GreenSword.initialise();
         PotionRing.initialise();
         DiceOfFate.initialise();

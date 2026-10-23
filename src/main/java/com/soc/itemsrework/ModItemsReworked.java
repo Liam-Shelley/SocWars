@@ -6,6 +6,7 @@ import com.soc.entities.BlueShellEntity;
 import com.soc.entities.RedShellEntity;
 import com.soc.game.manager.AbstractHidingGameManager;
 import com.soc.game.manager.GamesManager;
+import com.soc.items.util.EffectRecord;
 import com.soc.items.util.ModifyEquipmentFunction;
 import com.soc.itemsrework.components.ModItemComponentsReworked;
 import com.soc.lib.Coroutine;
@@ -26,6 +27,7 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.AttributeModifierSlot;
 import net.minecraft.component.type.AttributeModifiersComponent;
 import net.minecraft.component.type.LoreComponent;
+import net.minecraft.component.type.ToolComponent;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.*;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
@@ -48,6 +50,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -80,6 +83,7 @@ import static com.soc.lib.SocWarsLib.*;
 import static com.soc.lib.SocWarsLib.isBlockHidden;
 import static com.soc.util.SphereExplosion.fireExplosion;
 
+@SuppressWarnings("PointlessArithmeticExpression")
 public interface ModItemsReworked {
 	//region some garbage that I need to move out
 	SoundEvent[] TAUNTS = {
@@ -97,6 +101,20 @@ public interface ModItemsReworked {
 			SoundEvents.ENTITY_GOAT_SCREAMING_AMBIENT,
 			SoundEvents.ENTITY_GOAT_SCREAMING_DEATH,
 			SoundEvents.ENTITY_GOAT_SCREAMING_PREPARE_RAM
+	};
+	EffectRecord[] ALCHEMISM_EFFECTS = {
+			new EffectRecord(StatusEffects.INSTANT_DAMAGE, 0, 1),
+			new EffectRecord(StatusEffects.INSTANT_HEALTH, 0, 1),
+			new EffectRecord(StatusEffects.POISON, 1, 1 * 20),
+			new EffectRecord(StatusEffects.WITHER, 1, 1 * 20),
+			new EffectRecord(StatusEffects.SPEED, 0, 1 * 20),
+			new EffectRecord(StatusEffects.REGENERATION, 1, 1 * 20),
+			new EffectRecord(StatusEffects.BLINDNESS, 0, 1 * 20),
+			new EffectRecord(StatusEffects.NAUSEA, 0, 1 * 20),
+			new EffectRecord(StatusEffects.JUMP_BOOST, 1, 1 * 20),
+			new EffectRecord(StatusEffects.DARKNESS, 0, 1 * 20),
+			new EffectRecord(StatusEffects.SLOW_FALLING, 0, 1 * 20),
+			new EffectRecord(StatusEffects.RESISTANCE, 1, 1 * 20),
 	};
 	//endregion
 
@@ -710,6 +728,70 @@ public interface ModItemsReworked {
 				return ActionResult.SUCCESS;
 			})
 	);
+	Item BIOHACKER = registerAndGroup("biohacker", SocWarsItem::new, new Item.Settings()
+			.sword(ToolMaterials.POTIONWEAPON, 2.5f, -2.2f)
+			.rarity(Rarity.RARE)
+			.maxDamage(300)
+			.component(ITEM_HIT, (stack, target, attacker) -> {
+				if (target.getRandom().nextFloat() < 0.25f) target.addStatusEffect(new StatusEffectInstance(StatusEffects.POISON, 3 * 20, 1, false, true));
+			}),
+			ItemGroups.COMBAT
+	);
+	Item GOO_SHOVEL = registerAndGroup("goo_shovel", SocWarsItem::new, new Item.Settings()
+			.sword(ToolMaterials.POTIONWEAPON, -2f, -3f)
+			.component(DataComponentTypes.TOOL, new ToolComponent(List.of(ToolComponent.Rule.ofNeverDropping(Registries.createEntryLookup(Registries.BLOCK).getOrThrow(BlockTags.INCORRECT_FOR_DIAMOND_TOOL)), ToolComponent.Rule.ofAlwaysDropping(Registries.createEntryLookup(Registries.BLOCK).getOrThrow(BlockTags.SHOVEL_MINEABLE), 6.5f)), 1.0f, 1, true))
+			.rarity(Rarity.UNCOMMON) //The code above is definitely okay and not terrible whatsoever
+			.maxDamage(20)
+			.component(ITEM_HIT, (stack, target, attacker) -> {
+				target.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 5 * 20, 1, false, true));
+			}),
+			ItemGroups.COMBAT
+	);
+	Item STATUE_BLADE = registerAndGroup("statue_blade", SocWarsItem::new, new Item.Settings()
+			.sword(ToolMaterials.POTIONWEAPON, 3.5f, -2.3f)
+			.rarity(Rarity.RARE)
+			.maxDamage(300)
+			.component(ITEM_HIT, (stack, target, attacker) -> {
+				final Consumer<LivingEntity> effectApplicator = entity -> { //TODO: Extract this to a lib file because this is gross
+					entity.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 3 * 20, 6, false, true));
+					//entity.addStatusEffect(new StatusEffectInstance(ModEffects.NO_JUMPING, 3 * 20, 6, false, true)); //TODO: Make an effect that prevents jumping
+				};
+				effectApplicator.accept(target);
+				effectApplicator.accept(attacker);
+			}),
+			ItemGroups.COMBAT
+	);
+	Item ALCHEMISM = registerAndGroup("alchemism", SocWarsItem::new, new Item.Settings()
+			.sword(ToolMaterials.POTIONWEAPON, 4f, -2.5f)
+			.rarity(Rarity.EPIC)
+			.maxDamage(500)
+			.component(ITEM_HIT, (stack, target, attacker) -> {
+				for (EffectRecord effect : ALCHEMISM_EFFECTS) {
+					target.addStatusEffect(new StatusEffectInstance(effect.effect(), effect.duration(), effect.amplifier(), false, true));
+					if (effect.effect().value().isBeneficial()) {
+						attacker.addStatusEffect(new StatusEffectInstance(effect.effect(), effect.duration(), effect.amplifier(), false, true));
+					}
+				}
+			}),
+			ItemGroups.COMBAT
+	);
+	Item RED_SWORD = registerAndGroup("red_sword", SocWarsItem::new, new Item.Settings()
+			.sword(ToolMaterials.POTIONWEAPON, 1f, -2.1f)
+			.maxDamage(400)
+			.component(ITEM_HIT, (stack, target, attacker) -> {
+				target.addStatusEffect(new StatusEffectInstance(StatusEffects.WEAKNESS, 5 * 20, 0, false, true));
+			}),
+			ItemGroups.COMBAT
+	);
+	Item PURPLE_SWORD = registerAndGroup("purple_sword", SocWarsItem::new, new Item.Settings()
+			.sword(ToolMaterials.POTIONWEAPON, 1f, -2.2f)
+			.rarity(Rarity.RARE)
+			.maxDamage(900)
+			.component(ITEM_HIT, (stack, target, attacker) -> {
+				attacker.addStatusEffect(new StatusEffectInstance(StatusEffects.INVISIBILITY, 1 * 20, 0, false, true));
+			}),
+			ItemGroups.COMBAT
+	);
 
 
 
@@ -784,6 +866,7 @@ public interface ModItemsReworked {
 		}
 	}
 
+	@SuppressWarnings("SameParameterValue")
 	private static void shootEntity(PlayerEntity user, Hand hand, int missDamage, int hitDamage, int hitCooldown, Consumer<LivingEntity> effect) {
 		final EntityHitResult hit = ProjectileUtil.raycast(
 				user,
