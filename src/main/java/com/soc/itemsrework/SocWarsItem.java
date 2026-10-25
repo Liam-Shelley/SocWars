@@ -23,7 +23,7 @@ import java.util.function.Consumer;
 
 import static com.soc.lib.SocWarsLib.*;
 
-public class SocWarsItem extends Item {
+public class SocWarsItem extends Item { //I wonder if I should just turn this into a mixin for Item
 	public SocWarsItem(Settings settings) {
 		super(settings);
 	}
@@ -35,7 +35,13 @@ public class SocWarsItem extends Item {
 
 	@Override
 	public ActionResult use(World world, PlayerEntity user, Hand hand) {
-		return mapIfNotNull(user.getStackInHand(hand).get(ModItemComponentsReworked.ITEM_USE), itemUse -> itemUse.use(world, user, hand), ActionResult.PASS);
+		return mapIfNotNull(user.getStackInHand(hand).get(ModItemComponentsReworked.ITEM_USE), itemUse -> itemUse.use(world, user, hand), super.use(world, user, hand));
+	}
+
+	@Override
+	public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
+		ifNotNull(stack.get(ModItemComponentsReworked.FINISH_USE), finishUse -> finishUse.finishUsing(stack, world, user));
+		return super.finishUsing(stack, world, user);
 	}
 
 	@Override

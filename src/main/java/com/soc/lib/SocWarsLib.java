@@ -64,8 +64,8 @@ public final class SocWarsLib {
     public static final DecimalFormat TWO_DIGIT_NUMBER_FORMAT = new DecimalFormat("00");
     public static final Identifier SCALE_MODIFIER_ID = Identifier.of(SocWars.MOD_ID, "scale");
     public static final EquipmentSlot[] ARMOUR_SLOTS = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
-    public static final float SQRT2 = 1.4142135f;
-    public static final float MAX_SCALE_FACTOR = 4f;
+    public static final double SQRT2 = 1.4142135623730951d;
+    public static final double MAX_SCALE_FACTOR = 4d;
 
     public static <T, U> Multimap<T, U> multimapFromCollections(Collection<T> t1, Collection<U> t2) {
         ImmutableMultimap.Builder<T, U> builder = ImmutableMultimap.builder();
@@ -161,33 +161,45 @@ public final class SocWarsLib {
         };
     }
 
-    public static boolean scaleEntity(LivingEntity entity, float scale) {
-        final boolean success = multiplyAttributeModifier(entity, EntityAttributes.SCALE, SCALE_MODIFIER_ID, scale, MAX_SCALE_FACTOR);
-        if (!success) return false;
+    public static boolean scaleEntity(LivingEntity entity, double scale) {
+        if (!canMultiplyAttribute(entity, EntityAttributes.SCALE, SCALE_MODIFIER_ID, scale, MAX_SCALE_FACTOR)) return false;
 
-        multiplyAttributeModifier(entity, EntityAttributes.ENTITY_INTERACTION_RANGE, SCALE_MODIFIER_ID, scale, MAX_SCALE_FACTOR);
-        multiplyAttributeModifier(entity, EntityAttributes.BLOCK_INTERACTION_RANGE, SCALE_MODIFIER_ID, scale, MAX_SCALE_FACTOR);
+        multiplyAttributeModifier(entity, EntityAttributes.SCALE, SCALE_MODIFIER_ID, scale);
+
+        multiplyAttributeModifier(entity, EntityAttributes.ENTITY_INTERACTION_RANGE, SCALE_MODIFIER_ID, scale);
+        multiplyAttributeModifier(entity, EntityAttributes.BLOCK_INTERACTION_RANGE, SCALE_MODIFIER_ID, scale);
+        //multiplyAttributeModifier(entity, EntityAttributes.ATTACK_DAMAGE, SCALE_MODIFIER_ID, (1 - scale));
+        //multiplyAttributeModifier(entity, EntityAttributes.ATTACK_DAMAGE, SCALE_MODIFIER_ID, scale);
         return true;
     }
 
-    public static boolean multiplyAttributeModifier(LivingEntity entity, RegistryEntry<EntityAttribute> attribute, Identifier modifierId, float multiplier, float maxMultiplier) {
+    public static boolean canMultiplyAttribute(LivingEntity entity, RegistryEntry<EntityAttribute> attribute, Identifier modifierId, double multiplier, double maxMultiplier) {
         final EntityAttributeInstance instance = entity.getAttributeInstance(attribute);
         if (instance == null) return false;
 
-        final double unclampedModifier = instance.getModifier(modifierId) == null ? multiplier - 1f : ((instance.getModifier(modifierId).value() + 1f) * multiplier - 1f);
-        final double finalModifier = Math.clamp(unclampedModifier, (1 - maxMultiplier) / maxMultiplier, maxMultiplier - 1);
+        final double newModifier = Math.round((getCurrentModifier(modifierId, instance) * multiplier - 1d) * 1000d); //I hate float imprecision
+        final double max = Math.round((maxMultiplier - 1d) * 1000d);
+        final double min = Math.round(((1d - maxMultiplier) / maxMultiplier) * 1000d);
+        return !(newModifier > max || newModifier < min);
+	}
 
-        if (unclampedModifier == finalModifier) return false;
+    public static void multiplyAttributeModifier(LivingEntity entity, RegistryEntry<EntityAttribute> attribute, Identifier modifierId, double multiplier) {
+        final EntityAttributeInstance instance = entity.getAttributeInstance(attribute);
+        if (instance == null) return;
+
+		final double newModifier = getCurrentModifier(modifierId, instance) * multiplier - 1d;
 
         instance.overwritePersistentModifier(new EntityAttributeModifier(
                 modifierId,
-                finalModifier,
+                newModifier,
                 EntityAttributeModifier.Operation.ADD_VALUE)
         );
 
         if (Math.abs(instance.getModifier(modifierId).value()) < 1e-5) instance.removeModifier(modifierId);
+    }
 
-        return true;
+    private static double getCurrentModifier(Identifier modifierId, EntityAttributeInstance instance) {
+        return instance.getModifier(modifierId) == null ? 1d : instance.getModifier(modifierId).value() + 1d;
     }
 
     public static void resetScale(LivingEntity entity) {

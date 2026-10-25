@@ -1,7 +1,9 @@
 package com.soc.itemsrework.components;
 
+import com.mojang.serialization.Codec;
 import com.soc.SocWars;
 import net.minecraft.component.ComponentType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -10,6 +12,8 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextCodecs;
 import net.minecraft.util.Identifier;
+
+import java.util.function.Predicate;
 
 public interface ModItemComponentsReworked {
 	ComponentType<ItemHitComponent> ITEM_HIT = Registry.register(
@@ -27,9 +31,14 @@ public interface ModItemComponentsReworked {
 			Identifier.of(SocWars.MOD_ID, "damage_type"),
 			ComponentType.<RegistryKey<DamageType>>builder().codec(RegistryKey.createCodec(RegistryKeys.DAMAGE_TYPE)).build()
 	);
-	ComponentType<Text> SIMPLE_TOOLTIP = Registry.register(
+	ComponentType<Predicate<LivingEntity>> CAN_CONDITIONALLY_CONSUME = Registry.register(
 			Registries.DATA_COMPONENT_TYPE,
-			Identifier.of(SocWars.MOD_ID, "simple_tooltip"),
-			ComponentType.<Text>builder().codec(TextCodecs.CODEC).build()
+			Identifier.of(SocWars.MOD_ID, "can_conditionally_consume"),
+			ComponentType.<Predicate<LivingEntity>>builder().codec(Codec.unit(entity -> true)).build()
+	);
+	ComponentType<FinishUseComponent> FINISH_USE = Registry.register(
+			Registries.DATA_COMPONENT_TYPE,
+			Identifier.of(SocWars.MOD_ID, "finish_use"),
+			ComponentType.<FinishUseComponent>builder().codec(FinishUseComponent.CODEC).build()
 	);
 }

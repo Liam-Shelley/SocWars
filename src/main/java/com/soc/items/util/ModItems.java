@@ -12,8 +12,6 @@ public interface ModItems {
         BowItem.initialise();
         PotionRing.initialise();
         PotionFood.initialise();
-
-        EatFunctionFood.initialise();
         GamblerArmour.initialise();
         GamblerSword.initialise();
         SteadfastArmour.initialise();
@@ -21,6 +19,7 @@ public interface ModItems {
         GlassArmour.initialise();
         DemolitionistArmour.initialise();
         IllusionerArmour.initialise();
+
         TrainingWeights.initialise();
         SummonersGarb.initialise();
         Expon.initialise();

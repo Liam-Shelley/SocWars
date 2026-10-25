@@ -39,7 +39,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.soc.items.EatFunctionFood.CHORUS_SALAD_TRIES;
 import static com.soc.items.util.ModItemGroups.addItemToGroupsAndBaseItemGroup;
 import static com.soc.lib.SocWarsLib.*;
 import static com.soc.util.SphereExplosion.fireExplosion;
@@ -143,7 +142,7 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
                 protected void onHit(LivingEntity target) {
                     super.onHit(target);
                     this.discard();
-                    randomTeleport(world, target, CHORUS_SALAD_TRIES, 7, 1f);
+                    randomTeleport(world, target, 75, 7, 1f);
                 }
 
                 @Override

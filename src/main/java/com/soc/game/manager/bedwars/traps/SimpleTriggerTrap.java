@@ -3,7 +3,6 @@ package com.soc.game.manager.bedwars.traps;
 import com.soc.SocWars;
 import com.soc.effects.util.ModEffects;
 import com.soc.game.manager.AbstractGameManager;
-import com.soc.items.EatFunctionFood;
 import com.soc.itemsrework.ModItemsReworked;
 import com.soc.lib.Events;
 import com.soc.networking.s2c.JumpscarePayload;
@@ -56,7 +55,7 @@ public class SimpleTriggerTrap extends AbstractTrap {
         }
     }));
     public static final AbstractTrap PERPLEXITY = register(new SimpleTriggerTrap("perplexity", Items.DIAMOND_HOE.getDefaultStack(), 6 * 20, ModEffects.PERPLEXITY, 0));
-    public static final AbstractTrap ENLARGEMENT = register(new SimpleTriggerTrap("enlargement", EatFunctionFood.BIGGENING_PILLS.getDefaultStack(), 10 * 20, (enemy, trapAmplifier) -> {
+    public static final AbstractTrap ENLARGEMENT = register(new SimpleTriggerTrap("enlargement", ModItemsReworked.BIGGENING_PILLS.getDefaultStack(), 10 * 20, (enemy, trapAmplifier) -> {
         scaleEntity(enemy, 2f);
         Events.getInstance().scheduleEvent(() -> resetScale(enemy), (int)(trapAmplifier * 10 * 20));
     }));

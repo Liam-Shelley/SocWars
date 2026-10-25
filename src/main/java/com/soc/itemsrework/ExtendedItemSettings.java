@@ -1,20 +1,26 @@
 package com.soc.itemsrework;
 
+import com.soc.itemsrework.components.FinishUseComponent;
 import com.soc.itemsrework.components.ItemHitComponent;
 import com.soc.itemsrework.components.ItemUseComponent;
 import com.soc.itemsrework.components.ModItemComponentsReworked;
 import net.minecraft.component.ComponentType;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.AttributeModifiersComponent;
+import net.minecraft.component.type.ConsumableComponent;
 import net.minecraft.component.type.LoreComponent;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ToolMaterial;
+import net.minecraft.item.consume.UseAction;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Rarity;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 public class ExtendedItemSettings extends Item.Settings {
 	public ExtendedItemSettings itemHit(ItemHitComponent component) {
@@ -26,7 +32,8 @@ public class ExtendedItemSettings extends Item.Settings {
 	}
 
 	public ExtendedItemSettings simpleTooltip(Text... lines) {
-		return this.component(DataComponentTypes.LORE, tooltip(lines));
+		final List<Text> linesList = List.of(lines);
+		return this.component(DataComponentTypes.LORE, new LoreComponent(linesList, linesList));
 	}
 
 	public ExtendedItemSettings damageType(RegistryKey<DamageType> damageType) {
@@ -37,10 +44,16 @@ public class ExtendedItemSettings extends Item.Settings {
 		return this.component(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
 	}
 
+	public ExtendedItemSettings consumable(float consumeTime, FinishUseComponent onConsumeEffect) {
+		return this
+				.component(DataComponentTypes.CONSUMABLE, new ConsumableComponent(consumeTime, UseAction.EAT, SoundEvents.ENTITY_GENERIC_EAT, true, List.of()))
+				.component(ModItemComponentsReworked.FINISH_USE, onConsumeEffect);
+	}
 
-	static LoreComponent tooltip(Text... lines) {
-		final List<Text> linesList = List.of(lines);
-		return new LoreComponent(linesList, linesList);
+	public ExtendedItemSettings conditionallyConsumable(float consumeTime, FinishUseComponent onConsumeEffect, Predicate<LivingEntity> canConsume) {
+		return this
+				.consumable(consumeTime, onConsumeEffect)
+				.component(ModItemComponentsReworked.CAN_CONDITIONALLY_CONSUME, canConsume);
 	}
 
 	//region Overrides so that I can call my extended functions after the superclass functions

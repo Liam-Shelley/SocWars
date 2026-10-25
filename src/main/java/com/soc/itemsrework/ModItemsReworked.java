@@ -37,8 +37,6 @@ import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.entity.projectile.SpectralArrowEntity;
 import net.minecraft.item.*;
-import net.minecraft.item.consume.ConsumeEffect;
-import net.minecraft.item.consume.UseAction;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
 import net.minecraft.particle.ParticleTypes;
@@ -710,7 +708,8 @@ public interface ModItemsReworked {
 				user.getStackInHand(hand).decrementUnlessCreative(1, user);
 
 				return ActionResult.SUCCESS;
-			}),
+			})
+			.simpleTooltip(Text.translatable("tooltip.red_shell")),
 			ItemGroups.COMBAT
 	);
 	Item BLUE_SHELL = registerAndGroup("blue_shell", SocWarsItem::new, new ExtendedItemSettings()
@@ -843,24 +842,37 @@ public interface ModItemsReworked {
 				return ActionResult.FAIL;
 			})
 	);
-	Item SHRINKING_PILLS = registerAndGroup("shrinking_pills", Item::new, new ExtendedItemSettings()
+	Item SHRINKING_PILLS = registerAndGroup("shrinking_pills", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.UNCOMMON)
-
-
-
-			.component(DataComponentTypes.CONSUMABLE, new ConsumableComponent(0.8f, UseAction.DRINK, SoundEvents.ENTITY_GENERIC_EAT, true, List.of(new ConsumeEffect() {
-				@Override
-				public Type<? extends ConsumeEffect> getType() {
-					return null;
-				}
-
-				@Override
-				public boolean onConsume(World world, ItemStack stack, LivingEntity user) {
-					return scaleEntity(user, SQRT2 * 0.5f);
-				}
-			})))
+			.conditionallyConsumable(0.8f, (stack, world, user) -> {
+				scaleEntity(user, SQRT2 * 0.5f);
+			}, user -> {
+				return canMultiplyAttribute(user, EntityAttributes.SCALE, SCALE_MODIFIER_ID, SQRT2 * 0.5f, MAX_SCALE_FACTOR);
+			})
+			.simpleTooltip(Text.translatable("tooltip.shrinking_pills")),
+			ItemGroups.FOOD_AND_DRINK
 	);
+	Item BIGGENING_PILLS = registerAndGroup("biggening_pills", SocWarsItem::new, new ExtendedItemSettings()
+			.rarity(Rarity.UNCOMMON)
+			.conditionallyConsumable(0.8f, (stack, world, user) -> {
+				scaleEntity(user, SQRT2);
+			}, user -> {
+				return canMultiplyAttribute(user, EntityAttributes.SCALE, SCALE_MODIFIER_ID, SQRT2, MAX_SCALE_FACTOR);
+			})
+			.simpleTooltip(Text.translatable("tooltip.biggening_pills")),
+			ItemGroups.FOOD_AND_DRINK
+	);
+	Item CHORUS_FRUIT_SALAD = registerAndGroup("chorus_fruit_salad", SocWarsItem::new, new ExtendedItemSettings()
+			.useCooldown(5f)
+			.consumable(1.6f, (stack, world, user) -> {
+				if (world.isClient) return;
 
+				final boolean success = randomTeleport(world, user, 75, 50, 15f);
+				if (!success && user instanceof PlayerEntity player) player.sendMessage(Text.translatable("chorus_fruit_salad.fail"), false);
+			})
+			.rarity(Rarity.RARE),
+			ItemGroups.FOOD_AND_DRINK
+	);
 
 
 
