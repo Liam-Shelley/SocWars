@@ -2,8 +2,7 @@ package com.soc.itemsrework;
 
 import com.soc.SocWars;
 import com.soc.effects.util.ModEffects;
-import com.soc.entities.BlueShellEntity;
-import com.soc.entities.RedShellEntity;
+import com.soc.entities.*;
 import com.soc.game.manager.AbstractHidingGameManager;
 import com.soc.game.manager.GamesManager;
 import com.soc.items.util.EffectRecord;
@@ -32,10 +31,7 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.SlimeEntity;
 import net.minecraft.entity.mob.VexEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ArrowEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.entity.projectile.ProjectileUtil;
-import net.minecraft.entity.projectile.SpectralArrowEntity;
+import net.minecraft.entity.projectile.*;
 import net.minecraft.item.*;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
@@ -64,7 +60,9 @@ import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
@@ -331,7 +329,8 @@ public interface ModItemsReworked {
 			.sword(ToolMaterials.BASE, 6f, -2.2f)
 			.itemHit((stack, target, attacker) -> {
 				attacker.getWorld().playSound(null, target.getBlockPos(), Sounds.FLESH, SoundCategory.MASTER, 1f, 1f);
-			}),
+			})
+			.dynamicTooltip(time -> List.of(Text.translatable(time % 25 > 2 ? "tooltip.fleshy_blade" : "tooltip.fleshy_blade.wet").formatted(Formatting.RED))),
 			ItemGroups.COMBAT
 	);
 	Item FIRESTORM = registerAndGroup("firestorm", SocWarsItem::new, new ExtendedItemSettings()
@@ -864,7 +863,7 @@ public interface ModItemsReworked {
 	);
 	Item CHORUS_FRUIT_SALAD = registerAndGroup("chorus_fruit_salad", SocWarsItem::new, new ExtendedItemSettings()
 			.useCooldown(5f)
-			.consumable(1.6f, (stack, world, user) -> {
+			.consumable(2.4f, (stack, world, user) -> {
 				if (world.isClient) return;
 
 				final boolean success = randomTeleport(world, user, 75, 50, 15f);
@@ -873,6 +872,72 @@ public interface ModItemsReworked {
 			.rarity(Rarity.RARE),
 			ItemGroups.FOOD_AND_DRINK
 	);
+	Item FIREBALL = registerAndGroup("fireball", SocWarsItem::new, new ExtendedItemSettings()
+			.useCooldown(0.75f)
+			.throwable(BWFireballEntity::fireball, 1.75f),
+			ItemGroups.COMBAT
+	);
+	Item WATERBALL = registerAndGroup("waterball", SocWarsItem::new, new ExtendedItemSettings()
+			.useCooldown(0.75f)
+			.throwable(BWFireballEntity::waterball, 1.75f),
+			ItemGroups.COMBAT
+	);
+	Item SNAIL_FIREBALL = registerAndGroup("snail_fireball", SocWarsItem::new, new ExtendedItemSettings()
+			.useCooldown(0.75f)
+			.rarity(Rarity.EPIC)
+			.throwable(BWFireballEntity::snail, 0.175f)
+			.simpleTooltip(Text.translatable("tooltip.snail_fireball").withColor(0xe6e475)),
+			ItemGroups.COMBAT
+	);
+	Item LIGHTNING_ORB = registerAndGroup("lightning_orb", SocWarsItem::new, new ExtendedItemSettings()
+			.useCooldown(0.75f)
+			.throwable(BWFireballEntity::lightningOrb, 2f)
+			.rarity(Rarity.UNCOMMON),
+			ItemGroups.COMBAT
+	);
+	Item DRAGON_FIREBALL = registerAndGroup("dragon_fireball", SocWarsItem::new, new ExtendedItemSettings()
+			.useCooldown(0.75f)
+			.throwable(BWFireballEntity::dragonFireball, 1.5f)
+			.dynamicTooltip(time -> List.of(Text.translatable("tooltip.dragon_fireball").withColor(Color.HSBtoRGB(time / 50f, 1f, 1f))))
+			.rarity(Rarity.UNCOMMON),
+			ItemGroups.COMBAT
+	);
+	Item THROWABLE_TNT = registerAndGroup("throwable_tnt", SocWarsItem::new, new ExtendedItemSettings()
+			.throwable(BWFireballEntity::throwableTnt, 0.6f)
+			.useCooldown(0.75f)
+	);
+	Item ENDER_BEAM = registerAndGroup("ender_beam", SocWarsItem::new, new ExtendedItemSettings()
+			.useCooldown(0.75f)
+			.throwable(EnderBeamEntity::new, 2.5f),
+			ItemGroups.TOOLS
+	);
+	Item HAND_GRENADE = registerAndGroup("hand_grenade", SocWarsItem::new, new ExtendedItemSettings()
+			.useCooldown(1f)
+			.rarity(Rarity.UNCOMMON)
+			.throwable(HandGrenadeEntity::new, 0.8f)
+			.simpleTooltip(Text.translatable("tooltip.hand_grenade")),
+			ItemGroups.COMBAT
+	);
+	Item HOLY_HAND_GRENADE = registerAndGroup("holy_hand_grenade", SocWarsItem::new, new ExtendedItemSettings()
+			.useCooldown(3f)
+			.rarity(Rarity.RARE)
+			.throwable(HolyHandGrenadeEntity::new, 0.65f)
+			.simpleIterTooltip(10, i -> Text.translatable("tooltip.holy_hand_grenade." + i)),
+			ItemGroups.COMBAT
+	);
+	Item MOLOTOV_COCKTAIL = registerAndGroup("molotov_cocktail", SocWarsItem::new, new ExtendedItemSettings()
+			.useCooldown(0.5f)
+			.throwable(MolotovCocktailEntity::new, 0.7f)
+			.rarity(Rarity.UNCOMMON),
+			ItemGroups.COMBAT
+	);
+	Item POCKET_SAND = registerAndGroup("pocket_sand", SocWarsItem::new, new ExtendedItemSettings()
+			.useCooldown(0.5f)
+			.throwable(PocketSandEntity::new, 0.9f)
+			.simpleTooltip(Text.translatable("tooltip.pocket_sand")),
+			ItemGroups.COMBAT
+	);
+
 
 
 
@@ -990,8 +1055,5 @@ public interface ModItemsReworked {
 			user.giveItemStack(item);
 		}
 	}
-
-
-
 	//endregion
 }

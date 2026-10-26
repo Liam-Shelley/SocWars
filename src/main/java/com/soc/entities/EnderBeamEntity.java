@@ -17,6 +17,11 @@ public class EnderBeamEntity extends EnderPearlEntity {
         this.setOwner(owner);
     }
 
+    public EnderBeamEntity(LivingEntity owner) {
+        this(ModEntities.ENDER_BEAM, owner.getWorld());
+        this.setOwner(owner);
+    }
+
     @Override
     protected double getGravity() {
         return 0;

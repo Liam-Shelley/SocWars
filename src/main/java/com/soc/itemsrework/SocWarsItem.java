@@ -1,17 +1,13 @@
 package com.soc.itemsrework;
 
-import com.soc.items.ThrowableItem;
 import com.soc.itemsrework.components.ModItemComponentsReworked;
 import net.minecraft.component.type.TooltipDisplayComponent;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
@@ -50,10 +46,10 @@ public class SocWarsItem extends Item { //I wonder if I should just turn this in
 	}
 
 	@Override
-	@SuppressWarnings({"deprecation", "SwitchStatementWithTooFewBranches"})
+	@SuppressWarnings("deprecation")
 	public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
-		switch (stack.getItem().toString()) {
-			case "socwars:fleshy_blade" -> textConsumer.accept(Text.translatable(ThrowableItem.getWorldTime() % 25 > 2 ? "tooltip.fleshy_blade" : "tooltip.fleshy_blade.wet").formatted(Formatting.RED));
-		}
+		ifNotNull(stack.get(ModItemComponentsReworked.DYNAMIC_TOOLTIP), creator -> {
+			creator.create(getWorldTime()).forEach(textConsumer);
+		});
 	}
 }

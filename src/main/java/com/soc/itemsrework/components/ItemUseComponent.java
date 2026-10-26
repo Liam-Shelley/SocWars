@@ -6,6 +6,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
+@FunctionalInterface
 public interface ItemUseComponent {
 	Codec<ItemUseComponent> CODEC = Codec.unit(null);
 

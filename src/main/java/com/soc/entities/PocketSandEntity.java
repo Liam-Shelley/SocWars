@@ -1,5 +1,6 @@
 package com.soc.entities;
 
+import com.soc.entities.util.ModEntities;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.data.DataTracker;
@@ -14,6 +15,10 @@ import net.minecraft.world.World;
 public class PocketSandEntity extends ThrownEntity {
     public PocketSandEntity(EntityType<PocketSandEntity> entityType, World world) {
         super(entityType, world);
+    }
+
+    public PocketSandEntity(LivingEntity user) {
+        super(ModEntities.POCKET_SAND, user.getWorld());
     }
 
     @Override

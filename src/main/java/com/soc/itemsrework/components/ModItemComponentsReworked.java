@@ -41,4 +41,9 @@ public interface ModItemComponentsReworked {
 			Identifier.of(SocWars.MOD_ID, "finish_use"),
 			ComponentType.<FinishUseComponent>builder().codec(FinishUseComponent.CODEC).build()
 	);
+	ComponentType<DynamicTooltipComponent> DYNAMIC_TOOLTIP = Registry.register(
+			Registries.DATA_COMPONENT_TYPE,
+			Identifier.of(SocWars.MOD_ID, "dynamic_tooltip"),
+			ComponentType.<DynamicTooltipComponent>builder().codec(DynamicTooltipComponent.CODEC).build()
+	);
 }

@@ -732,4 +732,9 @@ public final class SocWarsLib {
     public static <T> T getRandomElement(List<T> list, Random random) {
         return list.get(random.nextBetween(0, list.size() - 1));
     }
+
+    public static Long getWorldTime() { //Refactor this at some point because it also gets used in AttackFunctionWeapon
+        //I'm setting this in a client mixin because I'm too lazy to think of a better way to do it
+        return 0L;
+    }
 }

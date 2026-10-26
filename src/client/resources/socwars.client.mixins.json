@@ -9,7 +9,7 @@
     "CancelItemInteractionClient",
     "CollectibleBlockEntitySparkles",
     "DisableSwapOffhandInput",
-    "DragonFireballTooltip",
+    "SemiServerSideTime",
     "FovTweaks",
     "GamePlayerList",
     "GetLoadedModelGroups",

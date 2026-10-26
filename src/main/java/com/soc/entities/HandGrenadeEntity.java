@@ -1,9 +1,11 @@
 package com.soc.entities;
 
+import com.soc.entities.util.ModEntities;
 import com.soc.util.DamageTypes;
 import com.soc.util.SphereExplosion;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MovementType;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
@@ -28,10 +30,12 @@ public class HandGrenadeEntity extends ThrownEntity {
     }
 
     public HandGrenadeEntity(EntityType<? extends ThrownEntity> type, World world, float detonationTime, Entity owner) {
-        super(type, world);
-        this.detonationTime = detonationTime;
-
+        this(type, world, detonationTime);
         this.setOwner(owner);
+    }
+
+    public HandGrenadeEntity(LivingEntity user) {
+        this(ModEntities.HAND_GRENADE, user.getWorld(), 0.5f, user);
     }
 
     @Override

@@ -1,11 +1,14 @@
 package com.soc.entities;
 
 import com.soc.entities.util.ExplodeFunction;
+import com.soc.entities.util.ModEntities;
+import com.soc.itemsrework.ExtendedItemSettings;
 import com.soc.lib.Events;
 import com.soc.util.SphereExplosion;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.*;
 import net.minecraft.entity.damage.DamageTypes;
+import net.minecraft.entity.projectile.DragonFireballEntity;
 import net.minecraft.entity.projectile.FireballEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.hit.EntityHitResult;
@@ -88,6 +91,32 @@ public class BWFireballEntity extends FireballEntity {
 
     public boolean shouldSpawnParticles() {
         return this.explosionPower > 0f;
+    }
+
+    public static BWFireballEntity fireball(LivingEntity user) {
+        return new BWFireballEntity(ModEntities.FIREBALL, user.getWorld(), user, Vec3d.ZERO, 4f, BWFireballEntity::fireballExplosion);
+    }
+
+    public static BWFireballEntity waterball(LivingEntity user) {
+        return new BWFireballEntity(ModEntities.WATERBALL, user.getWorld(), user, Vec3d.ZERO, 0f, BWFireballEntity::waterballExplosion);
+    }
+
+    public static BWFireballEntity snail(LivingEntity user) {
+        return new BWFireballEntity(ModEntities.SNAIL_FIREBALL, user.getWorld(), user, Vec3d.ZERO, 20f, BWFireballEntity::snailExplosion);
+    }
+
+    public static BWFireballEntity lightningOrb(LivingEntity user) {
+        return new BWFireballEntity(ModEntities.LIGHTNING_ORB, user.getWorld(), user, Vec3d.ZERO, 0f, BWFireballEntity::lightningOrbExplosion);
+    }
+
+    public static DragonFireballEntity dragonFireball(LivingEntity user) {
+        return new DragonFireballEntity(user.getWorld(), user, Vec3d.ZERO);
+    }
+
+    public static TntEntity throwableTnt(LivingEntity user) {
+        final TntEntity tnt = new TntEntity(user.getWorld(), 0d, 0d, 0d, user);
+        tnt.setFuse(30);
+        return tnt;
     }
 }
 

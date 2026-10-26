@@ -5,6 +5,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+@FunctionalInterface
 public interface FinishUseComponent {
 	Codec<FinishUseComponent> CODEC = Codec.unit(null);
 

@@ -19,11 +19,10 @@ public interface ModItems {
         GlassArmour.initialise();
         DemolitionistArmour.initialise();
         IllusionerArmour.initialise();
-
         TrainingWeights.initialise();
         SummonersGarb.initialise();
         Expon.initialise();
-        ThrowableItem.initialise();
+
         ExtendoBridge.initialise();
         BlockItems.initialise();
         BaseTool.initialise();

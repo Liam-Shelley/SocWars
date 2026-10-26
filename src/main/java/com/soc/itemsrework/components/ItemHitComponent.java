@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 
+@FunctionalInterface
 public interface ItemHitComponent {
 	Codec<ItemHitComponent> CODEC = Codec.unit(null);
 
