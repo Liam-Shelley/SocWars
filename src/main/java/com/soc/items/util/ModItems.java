@@ -22,7 +22,6 @@ public interface ModItems {
         TrainingWeights.initialise();
         SummonersGarb.initialise();
 
-        ExtendoBridge.initialise();
         BlockItems.initialise();
         BaseTool.initialise();
         BaseItem.initialise();

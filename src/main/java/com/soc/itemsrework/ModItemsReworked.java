@@ -19,6 +19,7 @@ import com.soc.networking.s2c.BatchParticlePayload;
 import com.soc.util.*;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.component.DataComponentTypes;
@@ -121,6 +122,20 @@ public interface ModItemsReworked {
 			new EffectRecord(StatusEffects.WEAKNESS, 3),
 			new EffectRecord(StatusEffects.POISON, 1),
 			new EffectRecord(StatusEffects.GLOWING, 0),
+	};
+	Block[] BLOCKS = {
+			Blocks.OAK_PLANKS,
+			Blocks.BIRCH_PLANKS,
+			Blocks.JUNGLE_PLANKS,
+			Blocks.SPRUCE_PLANKS,
+			Blocks.DARK_OAK_PLANKS,
+			Blocks.ACACIA_PLANKS,
+			Blocks.MANGROVE_PLANKS,
+			Blocks.PALE_OAK_PLANKS,
+			Blocks.WARPED_PLANKS,
+			Blocks.CRIMSON_PLANKS,
+			Blocks.BAMBOO_PLANKS,
+			Blocks.CHERRY_PLANKS
 	};
 	//endregion
 
@@ -944,9 +959,39 @@ public interface ModItemsReworked {
 			.maxDamage(300)
 			.component(ModItemComponentsReworked.EXPON, new ExponComponent())
 			.rarity(Rarity.UNCOMMON)
-			.simpleTooltip(Text.translatable("tooltip.expon"))
+			.simpleTooltip(Text.translatable("tooltip.expon")),
+			ItemGroups.COMBAT
 	);
+	Item EXTENDO_BRIDGE = registerAndGroup("extendo_bridge", SocWarsItem::new, new ExtendedItemSettings()
+			.rarity(Rarity.UNCOMMON)
+			.useCooldown(0.25f)
+			.itemUse((world, user, hand) -> {
+				final BlockState block = BLOCKS[world.random.nextBetween(0, BLOCKS.length - 1)].getDefaultState();
 
+				float lengthMarched = 0f;
+
+				final Vec3d direction = user.getRotationVector().multiply(1f, 0f, 1f).normalize();
+
+				Vec3d currentPosition = new Vec3d(user.getX() - 0.5f, Math.floor(user.getY() - 0.75f), user.getZ() - 0.5f);
+
+				final float stepSize = 0.1f;
+
+				while (lengthMarched < 16f) {
+					final BlockPos pos = new BlockPos((int)currentPosition.x, (int)currentPosition.y, (int)currentPosition.z);
+					if (world.getBlockState(pos) == Blocks.AIR.getDefaultState()) {
+						world.setBlockState(pos, block);
+					}
+
+					currentPosition = currentPosition.add(direction.multiply(stepSize));
+					lengthMarched += stepSize;
+				}
+
+				user.getStackInHand(hand).decrementUnlessCreative(1, user);
+
+				return ActionResult.SUCCESS;
+			}),
+			ItemGroups.TOOLS
+	);
 
 
 
