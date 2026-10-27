@@ -103,7 +103,7 @@ public interface ModEntities {
             .maxTrackingRange(8)
             .eyeHeight(0.1f)
     );
-    EntityType<PocketSandEntity> POCKET_SAND = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "pocket_sand"), EntityType.Builder.create(PocketSandEntity::new, SpawnGroup.MISC)
+    EntityType<PocketSandEntity> POCKET_SAND = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "pocket_sand"), EntityType.Builder.<PocketSandEntity>create(PocketSandEntity::new, SpawnGroup.MISC)
             .dropsNothing()
             .dimensions(0.3f, 0.3f)
             .maxTrackingRange(8)

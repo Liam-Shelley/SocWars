@@ -21,7 +21,6 @@ public interface ModItems {
         IllusionerArmour.initialise();
         TrainingWeights.initialise();
         SummonersGarb.initialise();
-        Expon.initialise();
 
         ExtendoBridge.initialise();
         BlockItems.initialise();

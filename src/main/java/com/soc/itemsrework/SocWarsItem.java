@@ -1,5 +1,6 @@
 package com.soc.itemsrework;
 
+import com.soc.itemsrework.components.ItemHitComponent;
 import com.soc.itemsrework.components.ModItemComponentsReworked;
 import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.entity.LivingEntity;
@@ -26,7 +27,7 @@ public class SocWarsItem extends Item { //I wonder if I should just turn this in
 
 	@Override
 	public void postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-		ifNotNull(stack.get(ModItemComponentsReworked.ITEM_HIT), itemHit -> itemHit.postHit(stack, target, attacker));
+		stack.streamAll(ItemHitComponent.class).forEach(itemHit -> itemHit.postHit(stack, target, attacker));
 	}
 
 	@Override

@@ -49,19 +49,18 @@ public class ExtendoBridge extends Item {
 
     @Override
     public ActionResult use(World world, PlayerEntity user, Hand hand) {
-        BlockState block = BLOCKS[world.random.nextBetween(0, BLOCKS.length - 1)].getDefaultState();
+        final BlockState block = BLOCKS[world.random.nextBetween(0, BLOCKS.length - 1)].getDefaultState();
 
         float lengthMarched = 0f;
 
-        Vec3d direction = user.getRotationVector();
-        direction = direction.multiply(1f, 0f, 1f).normalize();
+        final Vec3d direction = user.getRotationVector().multiply(1f, 0f, 1f).normalize();
 
         Vec3d currentPosition = new Vec3d(user.getX() - 0.5f, Math.floor(user.getY() - 0.75f), user.getZ() - 0.5f);
 
-        float stepSize = 0.1f;
+        final float stepSize = 0.1f;
 
         while (lengthMarched < 16f) {
-            BlockPos pos = new BlockPos((int)currentPosition.x, (int)currentPosition.y, (int)currentPosition.z);
+            final BlockPos pos = new BlockPos((int)currentPosition.x, (int)currentPosition.y, (int)currentPosition.z);
             if (world.getBlockState(pos) == Blocks.AIR.getDefaultState()) {
                 world.setBlockState(pos, block);
             }

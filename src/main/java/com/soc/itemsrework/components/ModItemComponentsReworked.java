@@ -9,8 +9,6 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextCodecs;
 import net.minecraft.util.Identifier;
 
 import java.util.function.Predicate;
@@ -23,8 +21,13 @@ public interface ModItemComponentsReworked {
 	);
 	ComponentType<ItemUseComponent> ITEM_USE = Registry.register(
 			Registries.DATA_COMPONENT_TYPE,
-			Identifier.of(SocWars.MOD_ID, "use_item"),
+			Identifier.of(SocWars.MOD_ID, "item_use"),
 			ComponentType.<ItemUseComponent>builder().codec(ItemUseComponent.CODEC).build()
+	);
+	ComponentType<ItemTickComponent> ITEM_TICK = Registry.register(
+			Registries.DATA_COMPONENT_TYPE,
+			Identifier.of(SocWars.MOD_ID, "item_tick"),
+			ComponentType.<ItemTickComponent>builder().codec(ItemTickComponent.CODEC).build()
 	);
 	ComponentType<RegistryKey<DamageType>> DAMAGE_TYPE = Registry.register(
 			Registries.DATA_COMPONENT_TYPE,
@@ -45,5 +48,10 @@ public interface ModItemComponentsReworked {
 			Registries.DATA_COMPONENT_TYPE,
 			Identifier.of(SocWars.MOD_ID, "dynamic_tooltip"),
 			ComponentType.<DynamicTooltipComponent>builder().codec(DynamicTooltipComponent.CODEC).build()
+	);
+	ComponentType<ExponComponent> EXPON = Registry.register(
+			Registries.DATA_COMPONENT_TYPE,
+			Identifier.of(SocWars.MOD_ID, "expon"),
+			ComponentType.<ExponComponent>builder().codec(ExponComponent.CODEC).build()
 	);
 }

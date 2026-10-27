@@ -7,6 +7,8 @@ import com.soc.game.manager.AbstractHidingGameManager;
 import com.soc.game.manager.GamesManager;
 import com.soc.items.util.EffectRecord;
 import com.soc.items.util.ModifyEquipmentFunction;
+import com.soc.itemsrework.components.ExponComponent;
+import com.soc.itemsrework.components.ModItemComponentsReworked;
 import com.soc.lib.Coroutine;
 import com.soc.lib.Coroutines;
 import com.soc.lib.IntBox;
@@ -936,6 +938,13 @@ public interface ModItemsReworked {
 			.throwable(PocketSandEntity::new, 0.9f)
 			.simpleTooltip(Text.translatable("tooltip.pocket_sand")),
 			ItemGroups.COMBAT
+	);
+	Item EXPON = registerAndGroup("expon", TickingSocWarsItem::new, new ExtendedItemSettings()
+			.sword(ToolMaterials.BASE, -0.5f, -1.6f)
+			.maxDamage(300)
+			.component(ModItemComponentsReworked.EXPON, new ExponComponent())
+			.rarity(Rarity.UNCOMMON)
+			.simpleTooltip(Text.translatable("tooltip.expon"))
 	);
 
 

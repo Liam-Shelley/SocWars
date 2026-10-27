@@ -2,17 +2,14 @@ package com.soc.items.components;
 
 import com.mojang.serialization.Codec;
 import com.soc.SocWars;
-import com.soc.game.map.ResourceGenerator;
 import com.soc.networking.helper.BlockLocation;
 import net.minecraft.component.ComponentType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Unit;
-import net.minecraft.util.math.Vec3d;
 
 import java.util.Optional;
-import java.util.UUID;
 
 public interface ModComponents {
     ComponentType<RingItemComponent> RING_ITEM_COMPONENT = Registry.register(
@@ -24,11 +21,6 @@ public interface ModComponents {
             Registries.DATA_COMPONENT_TYPE,
             Identifier.of(SocWars.MOD_ID, "training_weights"),
             ComponentType.<Integer>builder().codec(Codec.INT).build()
-    );
-    ComponentType<ExponComponent> EXPON_COMPONENT = Registry.register(
-            Registries.DATA_COMPONENT_TYPE,
-            Identifier.of(SocWars.MOD_ID, "expon"),
-            ComponentType.<ExponComponent>builder().codec(ExponComponent.CODEC).build()
     );
     ComponentType<Unit> RESOURCE_COUNTED = Registry.register(
             Registries.DATA_COMPONENT_TYPE,
