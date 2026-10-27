@@ -21,10 +21,9 @@ public interface ModItems {
         IllusionerArmour.initialise();
         TrainingWeights.initialise();
         SummonersGarb.initialise();
-
         BlockItems.initialise();
         BaseTool.initialise();
-        BaseItem.initialise();
+
         DoubleJumpItem.initialise();
         JetShoppingTrolley.initialise();
         MorphWand.initialise();
