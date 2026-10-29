@@ -3,8 +3,8 @@ package com.soc.items;
 import com.soc.events.ModEvents;
 import com.soc.items.util.CancelsBlockInteraction;
 import com.soc.items.util.ModItemGroups;
-import com.soc.items.util.OnAttackButtonPressed;
 import com.soc.itemsrework.ModItemsReworked;
+import com.soc.itemsrework.SocWarsItem;
 import com.soc.mixin.AccessDebugStickCycle;
 import com.soc.player.Morph;
 import com.soc.player.PlayerData;
@@ -28,7 +28,7 @@ import java.util.List;
 
 import static com.soc.items.util.ModItemGroups.addItemToGroupsAndBaseItemGroup;
 
-public class MorphWand extends Item implements CancelsBlockInteraction, OnAttackButtonPressed {
+public class MorphWand extends SocWarsItem implements CancelsBlockInteraction {
 	private static final List<Property<?>> CYCLING_PROPERTIES = List.of(
 			Properties.AXIS,
 			Properties.FACING,

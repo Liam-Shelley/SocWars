@@ -5,6 +5,7 @@ import com.soc.effects.util.ModEffects;
 import com.soc.entities.*;
 import com.soc.game.manager.AbstractHidingGameManager;
 import com.soc.game.manager.GamesManager;
+import com.soc.items.components.CommandFunctionComponent;
 import com.soc.items.util.EffectRecord;
 import com.soc.items.util.ModifyEquipmentFunction;
 import com.soc.itemsrework.components.ExponComponent;
@@ -992,16 +993,51 @@ public interface ModItemsReworked {
 			}),
 			ItemGroups.TOOLS
 	);
-	Item SHARPENED_POKING_STICK = ModItemsReworked.register("sharpened_poking_stick", Item::new, new ExtendedItemSettings()
+	Item SHARPENED_POKING_STICK = registerAndGroup("sharpened_poking_stick", Item::new, new ExtendedItemSettings()
 			.maxDamage(150)
 			.rarity(Rarity.UNCOMMON)
-			.attributeModifiers(AttributeModifiersComponent.builder()
-					.add(EntityAttributes.ENTITY_INTERACTION_RANGE, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "stick_reach"), 1.75, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.HAND)
-					.add(EntityAttributes.ATTACK_DAMAGE, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "stick_damage"), 5, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.HAND)
-					.add(EntityAttributes.ATTACK_SPEED, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "stick_attack_speed"), 0.2, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.HAND)
-					.build()
-	));
-	Item BALUSTRADE = ModItemsReworked.register("balustrade", Item::new, new ExtendedItemSettings());
+			.attributeModifiers(new AttributeModifiersComponent(List.of(
+					new AttributeModifiersComponent.Entry(EntityAttributes.ENTITY_INTERACTION_RANGE, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "stick_reach"), 1.75, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.HAND),
+					new AttributeModifiersComponent.Entry(EntityAttributes.ATTACK_DAMAGE, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "stick_damage"), 5, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.HAND),
+					new AttributeModifiersComponent.Entry(EntityAttributes.ATTACK_SPEED, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "stick_attack_speed"), 0.2, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.HAND)
+			))),
+			ItemGroups.COMBAT
+	);
+	Item BALUSTRADE = registerAndGroup("balustrade", Item::new, new ExtendedItemSettings());
+	Item PORTABLE_STEPPING_STOOL = registerAndGroup("portable_stepping_stool", SocWarsItem::new, new ExtendedItemSettings()
+			.maxCount(1)
+			.rarity(Rarity.RARE)
+			.component(ModItemComponentsReworked.DOUBLE_JUMP, true)
+			.simpleTooltip(Text.translatable("tooltip.portable_stepping_stool"))
+	);
+	Item JET_SHOPPING_TROLLEY = registerAndGroup("jet_shopping_trolley", SocWarsItem::new, new ExtendedItemSettings()
+			.maxCount(1)
+			.rarity(Rarity.RARE)
+			.itemUse((world, user, hand) -> {
+				user.getStackInHand(hand).decrementUnlessCreative(1, user);
+				world.spawnEntity(new JetShoppingTrolleyEntity(user));
+
+				return ActionResult.SUCCESS;
+			})
+	);
+	Item PARKOUR_RESET = registerAndGroup("parkour_reset", SocWarsItem::new, new ExtendedItemSettings()
+			.component(ModItemComponentsReworked.COMMAND_FUNCTION, new CommandFunctionComponent("parkour:cancel", "parkour:checkpoint"))
+	);
+	Item GRAVITY_ORB = registerAndGroup("gravity_orb", SocWarsItem::new, new ExtendedItemSettings()
+			.useCooldown(7.5f)
+			.rarity(Rarity.UNCOMMON)
+			.itemHit((stack, target, attacker) -> {
+				target.addStatusEffect(new StatusEffectInstance(ModEffects.ANTI_GRAVITY, (int) 7.5 * 20, 2, false, false));
+				attacker.getStackInHand(Hand.MAIN_HAND).decrementUnlessCreative(1, attacker);
+			})
+			.itemUse((world, user, hand) -> {
+				user.addStatusEffect(new StatusEffectInstance(ModEffects.ANTI_GRAVITY, (int) 7.5 * 20, 2, false, false));
+				user.getStackInHand(hand).decrementUnlessCreative(1, user);
+
+				return ActionResult.SUCCESS;
+			}),
+			ItemGroups.TOOLS
+	);
 
 
 

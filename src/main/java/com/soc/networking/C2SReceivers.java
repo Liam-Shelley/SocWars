@@ -4,13 +4,19 @@ import com.soc.blocks.blockentities.KitBlockEntity;
 import com.soc.blocks.blockentities.MapBlockEntity;
 import com.soc.game.manager.GameType;
 import com.soc.game.manager.GamesManager;
-import com.soc.items.util.OnAttackButtonPressed;
+import com.soc.itemsrework.SocWarsItem;
+import com.soc.itemsrework.components.ModItemComponentsReworked;
 import com.soc.networking.c2s.*;
 import com.soc.networking.s2c.OpenQueueScreenPayload;
 import com.soc.networking.s2c.QueuePayload;
 import com.soc.player.PlayerDataManager;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.item.ItemStack;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+
+import static com.soc.lib.SocWarsLib.ifNotNull;
 
 public class C2SReceivers {
     public static void initialise() {
@@ -51,10 +57,17 @@ public class C2SReceivers {
 			}
         });
         ServerPlayNetworking.registerGlobalReceiver(OnAttackButtonPressedPayload.ID, (payload, context) -> {
-            ((OnAttackButtonPressed)payload.stack().getItem()).onAttackButtonPressed(context.player(), payload.stack());
+            ((SocWarsItem)payload.stack().getItem()).onAttackButtonPressed(context.player(), payload.stack());
         });
         ServerPlayNetworking.registerGlobalReceiver(BuyKitPayload.ID, (payload, context) -> {
             PlayerDataManager.buyKit(context.player(), payload);
+        });
+        ServerPlayNetworking.registerGlobalReceiver(UpdateDoubleJumpPayload.ID, (payload, context) -> {
+            final ServerPlayerEntity player = context.player();
+            for (Hand hand : Hand.values()) {
+                final ItemStack stack = player.getStackInHand(hand);
+                ifNotNull(stack.get(ModItemComponentsReworked.DOUBLE_JUMP), doubleJump -> stack.set(ModItemComponentsReworked.DOUBLE_JUMP, payload.allow()));
+            }
         });
     }
 

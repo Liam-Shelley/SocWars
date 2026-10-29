@@ -1,6 +1,6 @@
 package com.soc.mixin.client;
 
-import com.soc.items.util.OnAttackButtonPressed;
+import com.soc.itemsrework.SocWarsItem;
 import com.soc.networking.c2s.OnAttackButtonPressedPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
@@ -21,8 +21,8 @@ abstract class OnAttackButtonPressedMixin {
 	@Inject(method = "doAttack", at = @At("HEAD"))
 	private void socwars_onAttackButtonPress(CallbackInfoReturnable<Boolean> cir) {
 		final ItemStack stack = this.player.getStackInHand(Hand.MAIN_HAND);
-		if (stack.getItem() instanceof OnAttackButtonPressed onAttackButtonPressed) {
-			onAttackButtonPressed.onAttackButtonPressed(this.player, stack);
+		if (stack.getItem() instanceof SocWarsItem socwarsItem) {
+			socwarsItem.onAttackButtonPressed(this.player, stack);
 			ClientPlayNetworking.send(new OnAttackButtonPressedPayload(stack));
 		}
 	}

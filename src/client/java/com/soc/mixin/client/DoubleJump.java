@@ -1,6 +1,8 @@
-package com.soc.mixin;
+package com.soc.mixin.client;
 
-import com.soc.items.components.ModComponents;
+import com.soc.itemsrework.components.ModItemComponentsReworked;
+import com.soc.networking.c2s.UpdateDoubleJumpPayload;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -24,10 +26,9 @@ public abstract class DoubleJump {
 
 			for (Hand hand : Hand.values()) {
 				final ItemStack stack = player.getStackInHand(hand);
-				final Boolean stackIsActive = stack.get(ModComponents.DOUBLE_JUMP);
-				final boolean unBoxed = stackIsActive != null && stackIsActive;
-				if (unBoxed) {
-					stack.set(ModComponents.DOUBLE_JUMP, false);
+				if (Boolean.TRUE.equals(stack.get(ModItemComponentsReworked.DOUBLE_JUMP))) {
+					stack.set(ModItemComponentsReworked.DOUBLE_JUMP, false);
+					ClientPlayNetworking.send(new UpdateDoubleJumpPayload(false));
 					player.swingHand(hand);
 					canDoubleJump = true;
 				}

@@ -1,6 +1,8 @@
 package com.soc.itemsrework;
 
+import com.soc.itemsrework.components.ItemHitAllComponent;
 import com.soc.itemsrework.components.ItemHitComponent;
+import com.soc.itemsrework.components.ItemUseComponent;
 import com.soc.itemsrework.components.ModItemComponentsReworked;
 import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.entity.LivingEntity;
@@ -30,9 +32,16 @@ public class SocWarsItem extends Item { //I wonder if I should just turn this in
 		stack.streamAll(ItemHitComponent.class).forEach(itemHit -> itemHit.postHit(stack, target, attacker));
 	}
 
+	public void onAttackButtonPressed(PlayerEntity player, ItemStack stack) {
+		stack.streamAll(ItemHitAllComponent.class).forEach(itemHitAll -> itemHitAll.hit(player, stack));
+	}
+
 	@Override
 	public ActionResult use(World world, PlayerEntity user, Hand hand) {
-		return mapIfNotNull(user.getStackInHand(hand).get(ModItemComponentsReworked.ITEM_USE), itemUse -> itemUse.use(world, user, hand), super.use(world, user, hand));
+		return user.getStackInHand(hand)
+				.streamAll(ItemUseComponent.class)
+				.map(itemUse -> itemUse.use(world, user, hand))
+				.reduce(super.use(world, user, hand), (a, b) -> b.isAccepted() ? a : a.isAccepted() ? b : a); //Honestly I have no idea how I actually want to handle this
 	}
 
 	@Override

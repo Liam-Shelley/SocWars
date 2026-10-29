@@ -21,7 +21,6 @@
     "DisableAdvancementNotifications",
     "DisableEntityDismount",
     "DisableTrampling",
-    "DoubleJump",
     "DropSelectedItemOnDropTrigger",
     "EnderChestDepositableProperty",
     "EntityGetBoundingBox",

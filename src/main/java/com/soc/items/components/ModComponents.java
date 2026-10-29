@@ -37,20 +37,10 @@ public interface ModComponents {
             Identifier.of(SocWars.MOD_ID, "game_tool"),
             ComponentType.<Integer>builder().codec(Codec.INT).build()
     );
-    ComponentType<Boolean> DOUBLE_JUMP = Registry.register(
-            Registries.DATA_COMPONENT_TYPE,
-            Identifier.of(SocWars.MOD_ID, "double_jump"),
-            ComponentType.<Boolean>builder().codec(Codec.BOOL).build()
-    );
     ComponentType<Integer> GENERATOR_REFERENCE = Registry.register(
             Registries.DATA_COMPONENT_TYPE,
             Identifier.of(SocWars.MOD_ID, "generator_reference"),
             ComponentType.<Integer>builder().codec(Codec.INT).build()
-    );
-    ComponentType<CommandFunctionComponent> COMMAND_FUNCTION = Registry.register(
-            Registries.DATA_COMPONENT_TYPE,
-            Identifier.of(SocWars.MOD_ID, "command_function"),
-            ComponentType.<CommandFunctionComponent>builder().codec(CommandFunctionComponent.CODEC).build()
     );
     ComponentType<Optional<BlockLocation>> STASIS_POSITION = Registry.register(
             Registries.DATA_COMPONENT_TYPE,

@@ -22,12 +22,8 @@ public interface ModItems {
         TrainingWeights.initialise();
         SummonersGarb.initialise();
         BlockItems.initialise();
-        BaseTool.initialise();
-
-        DoubleJumpItem.initialise();
-        JetShoppingTrolley.initialise();
         MorphWand.initialise();
-        BothClickItem.initialise();
-        GravityOrb.initialise();
+
+        BaseTool.initialise();
     }
 }

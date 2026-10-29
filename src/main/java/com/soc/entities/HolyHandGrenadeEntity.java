@@ -24,6 +24,6 @@ public class HolyHandGrenadeEntity extends HandGrenadeEntity {
 
 	@Override
     protected void detonate() {
-        SphereExplosion.explode(this.getWorld(), this.getPos(), 8f, 1.5f, 10f, 1f, false, this.getOwner(), DamageTypes.HOLY_HAND_GRENADE);
+        SphereExplosion.explode(this.getWorld(), this.getPos(), 8f, 1.5f, 7f, 1f, false, this.getOwner(), DamageTypes.HOLY_HAND_GRENADE);
     }
 }
