@@ -5,6 +5,7 @@ import com.soc.effects.util.ModEffects;
 import com.soc.entities.*;
 import com.soc.game.manager.AbstractHidingGameManager;
 import com.soc.game.manager.GamesManager;
+import com.soc.items.BaseTool;
 import com.soc.items.components.CommandFunctionComponent;
 import com.soc.items.util.EffectRecord;
 import com.soc.items.util.ModifyEquipmentFunction;
@@ -40,10 +41,8 @@ import net.minecraft.item.*;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.*;
+import net.minecraft.registry.entry.RegistryEntryList;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -1036,6 +1035,73 @@ public interface ModItemsReworked {
 
 				return ActionResult.SUCCESS;
 			}),
+			ItemGroups.TOOLS
+	);
+	Item STONE_SHEARS = registerAndGroup("stone_shears", Item::new, new ExtendedItemSettings()
+			.shears(ToolMaterial.STONE),
+			ItemGroups.TOOLS
+	);
+	Item DIAMOND_SHEARS = registerAndGroup("diamond_shears", Item::new, new ExtendedItemSettings()
+			.shears(ToolMaterial.DIAMOND),
+			ItemGroups.TOOLS
+	);
+	Item EMERALD_PICKAXE = registerAndGroup("emerald_pickaxe", Item::new, new ExtendedItemSettings()
+			.pickaxe(ToolMaterials.EMERALD, 1f, -2.8f),
+			ItemGroups.TOOLS
+	);
+	Item EMERALD_AXE = registerAndGroup("emerald_axe", Item::new, new ExtendedItemSettings()
+			.axe(ToolMaterials.EMERALD, 5f, -3f),
+			ItemGroups.TOOLS
+	);
+	Item UNOBTANIUM_PICKAXE = registerAndGroup("unobtanium_pickaxe", Item::new, new ExtendedItemSettings()
+			.pickaxe(ToolMaterials.UNOBTANIUM, 1f, -2.8f),
+			ItemGroups.TOOLS
+	);
+	Item UNOBTANIUM_AXE = registerAndGroup("unobtanium_axe", Item::new, new ExtendedItemSettings()
+			.axe(ToolMaterials.UNOBTANIUM, 5f, -3f),
+			ItemGroups.TOOLS
+	);
+	Item UNOBTANIUM_SHEARS = registerAndGroup("unobtanium_shears", Item::new, new ExtendedItemSettings()
+			.shears(ToolMaterials.UNOBTANIUM),
+			ItemGroups.TOOLS
+	);
+	Item BEDROCK_PICKAXE = registerAndGroup("bedrock_pickaxe", Item::new, new ExtendedItemSettings()
+			.pickaxe(ToolMaterials.BEDROCK, 1f, -2.8f)
+			.rarity(Rarity.UNCOMMON),
+			ItemGroups.TOOLS
+	);
+	Item BEDROCK_AXE = registerAndGroup("bedrock_axe", Item::new, new ExtendedItemSettings()
+			.axe(ToolMaterials.BEDROCK, 5f, -3f)
+			.rarity(Rarity.UNCOMMON),
+			ItemGroups.TOOLS
+	);
+	Item THE_PICKAXE = registerAndGroup("the_pickaxe", Item::new, new ExtendedItemSettings()
+			.pickaxe(ToolMaterials.FISH, 1f, -2.8f)
+			.rarity(Rarity.RARE),
+			ItemGroups.TOOLS
+	);
+	Item THE_AXE = registerAndGroup("the_axe", Item::new, new ExtendedItemSettings()
+			.axe(ToolMaterials.FISH, 5f, -3f)
+			.rarity(Rarity.RARE),
+			ItemGroups.TOOLS
+	);
+	Item THE_SHEARS = registerAndGroup("the_shears", Item::new, new ExtendedItemSettings()
+			.shears(ToolMaterials.FISH)
+			.rarity(Rarity.RARE),
+			ItemGroups.TOOLS
+	);
+	Item FISHAXE = registerAndGroup("fishaxe", Item::new, new ExtendedItemSettings()
+			.component(DataComponentTypes.TOOL, new ToolComponent(List.of(
+					ToolComponent.Rule.ofNeverDropping(Registries.createEntryLookup(Registries.BLOCK).getOrThrow(BlockTags.INCORRECT_FOR_NETHERITE_TOOL)),
+					ToolComponent.Rule.ofAlwaysDropping(Registries.createEntryLookup(Registries.BLOCK).getOrThrow(BlockTags.PICKAXE_MINEABLE), ToolMaterials.FISH.speed()),
+					ToolComponent.Rule.ofAlwaysDropping(Registries.createEntryLookup(Registries.BLOCK).getOrThrow(BlockTags.AXE_MINEABLE), ToolMaterials.FISH.speed()),
+					ToolComponent.Rule.ofAlwaysDropping(Registries.createEntryLookup(Registries.BLOCK).getOrThrow(BlockTags.SHOVEL_MINEABLE), ToolMaterials.FISH.speed()),
+					ToolComponent.Rule.ofAlwaysDropping(Registries.createEntryLookup(Registries.BLOCK).getOrThrow(BlockTags.HOE_MINEABLE), ToolMaterials.FISH.speed()) //TODO: Shears Mineable tag?
+			), ToolMaterials.FISH.speed(), 1, true))
+			.component(DataComponentTypes.WEAPON, new WeaponComponent(1, 2.5f))
+			.enchantable(50)
+			.maxDamage(ToolMaterials.FISH.durability() * 3/2)
+			.rarity(Rarity.EPIC),
 			ItemGroups.TOOLS
 	);
 

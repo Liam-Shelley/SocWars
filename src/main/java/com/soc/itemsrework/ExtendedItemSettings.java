@@ -1,18 +1,25 @@
 package com.soc.itemsrework;
 
 import com.soc.itemsrework.components.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.component.ComponentType;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.AttributeModifiersComponent;
 import net.minecraft.component.type.ConsumableComponent;
 import net.minecraft.component.type.LoreComponent;
+import net.minecraft.component.type.ToolComponent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.item.consume.UseAction;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.entry.RegistryEntryList;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
@@ -75,6 +82,25 @@ public class ExtendedItemSettings extends Item.Settings {
 			user.getStackInHand(hand).decrementUnlessCreative(1, user);
 			return ActionResult.SUCCESS;
 		});
+	}
+
+	public ExtendedItemSettings shears(ToolMaterial toolMaterial) {
+		final RegistryEntryLookup<Block> registryEntryLookup = Registries.createEntryLookup(Registries.BLOCK);
+		final float speed = toolMaterial.speed();
+
+		final ToolComponent toolComponent = new ToolComponent(
+				List.of(
+						ToolComponent.Rule.ofAlwaysDropping(RegistryEntryList.of(Blocks.COBWEB.getRegistryEntry()), speed),
+						ToolComponent.Rule.of(registryEntryLookup.getOrThrow(BlockTags.LEAVES), speed * 0.75f),
+						ToolComponent.Rule.of(registryEntryLookup.getOrThrow(BlockTags.WOOL), speed * 0.65f),
+						ToolComponent.Rule.of(RegistryEntryList.of(Blocks.VINE.getRegistryEntry(), Blocks.GLOW_LICHEN.getRegistryEntry()), speed * 0.25f)
+				),1, 1, true
+		);
+
+		return this
+				.component(DataComponentTypes.TOOL, toolComponent)
+				.maxDamage(toolMaterial.durability())
+				.enchantable(toolMaterial.enchantmentValue());
 	}
 
 

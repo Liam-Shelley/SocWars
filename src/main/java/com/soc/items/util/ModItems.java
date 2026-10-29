@@ -23,7 +23,5 @@ public interface ModItems {
         SummonersGarb.initialise();
         BlockItems.initialise();
         MorphWand.initialise();
-
-        BaseTool.initialise();
     }
 }
