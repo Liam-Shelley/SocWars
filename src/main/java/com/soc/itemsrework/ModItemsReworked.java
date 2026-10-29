@@ -350,7 +350,7 @@ public interface ModItemsReworked {
 			.itemHit((stack, target, attacker) -> {
 				attacker.getWorld().playSound(null, target.getBlockPos(), Sounds.FLESH, SoundCategory.MASTER, 1f, 1f);
 			})
-			.dynamicTooltip(time -> List.of(Text.translatable(time % 25 > 2 ? "tooltip.fleshy_blade" : "tooltip.fleshy_blade.wet").formatted(Formatting.RED))),
+			.dynamicTooltip((stack, time) -> List.of(Text.translatable(time % 25 > 2 ? "tooltip.fleshy_blade" : "tooltip.fleshy_blade.wet").formatted(Formatting.RED))),
 			ItemGroups.COMBAT
 	);
 	Item FIRESTORM = registerAndGroup("firestorm", SocWarsItem::new, new ExtendedItemSettings()
@@ -918,7 +918,7 @@ public interface ModItemsReworked {
 	Item DRAGON_FIREBALL = registerAndGroup("dragon_fireball", SocWarsItem::new, new ExtendedItemSettings()
 			.useCooldown(0.75f)
 			.throwable(BWFireballEntity::dragonFireball, 1.5f)
-			.dynamicTooltip(time -> List.of(Text.translatable("tooltip.dragon_fireball").withColor(Color.HSBtoRGB(time / 50f, 1f, 1f))))
+			.dynamicTooltip((stack, time) -> List.of(Text.translatable("tooltip.dragon_fireball").withColor(Color.HSBtoRGB(time / 50f, 1f, 1f))))
 			.rarity(Rarity.UNCOMMON),
 			ItemGroups.COMBAT
 	);

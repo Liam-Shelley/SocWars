@@ -1,9 +1,6 @@
 package com.soc.itemsrework;
 
-import com.soc.itemsrework.components.ItemHitAllComponent;
-import com.soc.itemsrework.components.ItemHitComponent;
-import com.soc.itemsrework.components.ItemUseComponent;
-import com.soc.itemsrework.components.ModItemComponentsReworked;
+import com.soc.itemsrework.components.*;
 import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
@@ -13,7 +10,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -58,8 +54,6 @@ public class SocWarsItem extends Item { //I wonder if I should just turn this in
 	@Override
 	@SuppressWarnings("deprecation")
 	public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
-		ifNotNull(stack.get(ModItemComponentsReworked.DYNAMIC_TOOLTIP), creator -> {
-			creator.create(getWorldTime()).forEach(textConsumer);
-		});
+		stack.streamAll(DynamicTooltipComponent.class).forEach(creator -> creator.create(stack, getWorldTime()).forEach(textConsumer));
 	}
 }

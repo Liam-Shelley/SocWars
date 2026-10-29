@@ -63,7 +63,7 @@ public class TrainingWeights extends ArmourItem {
                 user.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 20, 0, false, false));
             }
 
-            stack.applyChanges(ComponentChanges.builder().add(ModComponents.TRAINING_WEIGHTS_COMPONENT, storedTime).build());
+            stack.applyChanges(ComponentChanges.builder().add(ModComponents.TRAINING_WEIGHTS_COMPONENT, storedTime).build()); //I am so sorry garbage collector
         }
     }
 

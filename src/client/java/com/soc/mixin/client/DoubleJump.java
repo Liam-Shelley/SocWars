@@ -24,11 +24,11 @@ public abstract class DoubleJump {
 
 			boolean canDoubleJump = false;
 
+			ClientPlayNetworking.send(new UpdateDoubleJumpPayload(false));
 			for (Hand hand : Hand.values()) {
 				final ItemStack stack = player.getStackInHand(hand);
 				if (Boolean.TRUE.equals(stack.get(ModItemComponentsReworked.DOUBLE_JUMP))) {
 					stack.set(ModItemComponentsReworked.DOUBLE_JUMP, false);
-					ClientPlayNetworking.send(new UpdateDoubleJumpPayload(false));
 					player.swingHand(hand);
 					canDoubleJump = true;
 				}
