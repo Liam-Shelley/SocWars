@@ -1,3 +1,4 @@
 accessWidener v1 named
 
 accessible method net/minecraft/item/consume/ConsumeEffect$Type register (Ljava/lang/String;Lcom/mojang/serialization/MapCodec;Lnet/minecraft/network/codec/PacketCodec;)Lnet/minecraft/item/consume/ConsumeEffect$Type;
+accessible method net/minecraft/item/DebugStickItem cycle (Lnet/minecraft/block/BlockState;Lnet/minecraft/state/property/Property;Z)Lnet/minecraft/block/BlockState;

@@ -1,6 +1,6 @@
 package com.soc.mixin;
 
-import com.soc.items.BlockItems;
+import com.soc.itemsrework.ModItemsReworked;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.EnderChestBlock;
 import net.minecraft.entity.player.PlayerEntity;
@@ -32,6 +32,6 @@ public abstract class DepositableEnderChest extends AbstractBlockMixin {
 
 	@Override
 	protected void socwars_pickStack(WorldView world, BlockPos pos, BlockState state, boolean includeData, CallbackInfoReturnable<ItemStack> cir) {
-		cir.setReturnValue(new ItemStack(state.get(DEPOSITABLE) ? BlockItems.DEPOSITABLE_ENDER_CHEST : Items.ENDER_CHEST));
+		cir.setReturnValue(new ItemStack(state.get(DEPOSITABLE) ? ModItemsReworked.DEPOSITABLE_ENDER_CHEST : Items.ENDER_CHEST));
 	}
 }

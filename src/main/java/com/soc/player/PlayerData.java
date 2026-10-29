@@ -169,6 +169,14 @@ public class PlayerData {
         return this.morph;
     }
 
+    public void clearMorph(PlayerEntity player) {
+        this.setMorph(null, player);
+    }
+
+    public void rotateMorph(PlayerEntity player, boolean reverse) {
+        ifNotNull(this.getMorph(), morph -> morph.rotate(player, this, reverse));
+    }
+
     public void addIllusion(World world, EquipmentSlot slot) {
         final long expiryTime = world.getTime() + 3 * 20;
 

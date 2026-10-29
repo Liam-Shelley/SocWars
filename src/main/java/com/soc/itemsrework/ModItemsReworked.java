@@ -5,9 +5,11 @@ import com.soc.effects.util.ModEffects;
 import com.soc.entities.*;
 import com.soc.game.manager.AbstractHidingGameManager;
 import com.soc.game.manager.GamesManager;
+import com.soc.game.map.DyeColourWithEmpty;
+import com.soc.items.DepositableChestBlockItem;
+import com.soc.items.DepositableEnderChestBlockItem;
 import com.soc.items.components.CommandFunctionComponent;
-import com.soc.items.util.EffectRecord;
-import com.soc.items.util.ModifyEquipmentFunction;
+import com.soc.items.util.*;
 import com.soc.itemsrework.components.ExponComponent;
 import com.soc.itemsrework.components.ModItemComponentsReworked;
 import com.soc.lib.Coroutine;
@@ -68,7 +70,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
+import static com.soc.blocks.util.ModBlocks.CHEST_PLACEHOLDER;
+import static com.soc.blocks.util.ModBlocks.MANY_BEDS_BLOCK;
 import static com.soc.game.manager.AbstractGameManager.getBlockDamagePredicate;
 import static com.soc.items.BowItem.playBowSound;
 import static com.soc.items.util.ModItemGroups.registerAndGroup;
@@ -1102,6 +1107,23 @@ public interface ModItemsReworked {
 			.rarity(Rarity.EPIC),
 			ItemGroups.TOOLS
 	);
+
+
+
+
+	Item DEPOSITABLE_CHEST = registerAndGroup("depositable_chest", DepositableChestBlockItem::new, new ExtendedItemSettings(),
+			ModItemGroups.MAP_MAKING_TOOLS_KEY
+	);
+	Item DEPOSITABLE_ENDER_CHEST = registerAndGroup("depositable_ender_chest", DepositableEnderChestBlockItem::new, new ExtendedItemSettings(),
+			ModItemGroups.MAP_MAKING_TOOLS_KEY
+	);
+	List<Item> CHEST_PLACEHOLDERS = mapFromRange(0, 4, i -> registerAndGroup("chest_placeholder_tier_" + i, settings -> new TierBlockItem(CHEST_PLACEHOLDER, settings, i), new ExtendedItemSettings(),
+			ModItemGroups.MAP_MAKING_TOOLS_KEY)
+	);
+	Map<DyeColourWithEmpty, Item> MANY_BEDS_BLOCKS = Arrays.stream(DyeColourWithEmpty.values()).filter(DyeColourWithEmpty::isPresent).collect(Collectors.toMap(Function.identity(), colour -> registerAndGroup("many_beds_block_" + colour.asString(), settings -> new ColourStateBlockItem(MANY_BEDS_BLOCK, settings, colour), new ExtendedItemSettings(),
+			ModItemGroups.BLOCKS_KEY))
+	);
+
 
 
 

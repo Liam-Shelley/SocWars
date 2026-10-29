@@ -1,7 +1,7 @@
 package com.soc.mixin;
 
 import com.soc.game.manager.GamesManager;
-import com.soc.items.BlockItems;
+import com.soc.itemsrework.ModItemsReworked;
 import net.minecraft.block.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
@@ -43,6 +43,6 @@ public abstract class DepositableChest extends AbstractBlockMixin {
 
 	@Override
 	protected void socwars_pickStack(WorldView world, BlockPos pos, BlockState state, boolean includeData, CallbackInfoReturnable<ItemStack> cir) {
-		cir.setReturnValue(new ItemStack(state.get(DEPOSITABLE) ? BlockItems.DEPOSITABLE_CHEST : Items.CHEST));
+		cir.setReturnValue(new ItemStack(state.get(DEPOSITABLE) ? ModItemsReworked.DEPOSITABLE_CHEST : Items.CHEST));
 	}
 }

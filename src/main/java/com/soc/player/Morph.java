@@ -6,25 +6,36 @@ import com.soc.SocWars;
 import com.soc.networking.ModPacketCodecs;
 import com.soc.util.ModCodecs;
 import io.netty.buffer.ByteBuf;
-import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.DebugStickItem;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
+import net.minecraft.state.property.Properties;
 import net.minecraft.state.property.Property;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.dynamic.Codecs;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
 
-import static oshi.util.FormatUtil.roundToInt;
+import java.util.List;
 
 public record Morph(BlockState blockState, Box boundingBox, float health) {
+	private static final List<Property<?>> CYCLING_PROPERTIES = List.of(
+			Properties.AXIS,
+			Properties.FACING,
+			Properties.HORIZONTAL_FACING,
+			Properties.BLOCK_FACE,
+			Properties.ROTATION,
+			Properties.SLAB_TYPE
+	);
+
 	public static final Codec<Morph> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			BlockState.CODEC.fieldOf("block_state").orElse(null).forGetter(Morph::blockState),
 			ModCodecs.BOX.fieldOf("bounding_box").orElse(VoxelShapes.fullCube().getBoundingBox()).forGetter(Morph::boundingBox),
@@ -76,5 +87,12 @@ public record Morph(BlockState blockState, Box boundingBox, float health) {
 	public boolean shouldSnap(boolean isSneaking, BlockView world, BlockPos pos) {
 		final BlockState stateAtPos = world.getBlockState(pos);
 		return isSneaking && !this.blockState.isReplaceable() && stateAtPos.isReplaceable();
+	}
+
+	public void rotate(PlayerEntity player, PlayerData playerData, boolean reverse) { //TODO: Cycle between multiple properties of a block when applicable
+		CYCLING_PROPERTIES.stream().filter(this::hasProperty).findFirst().ifPresent(property -> {
+			playerData.setMorph(DebugStickItem.cycle(this.blockState(), property, reverse), player);
+			player.getItemCooldownManager().set(player.getStackInHand(Hand.OFF_HAND), 3 * 20);
+		});
 	}
 }

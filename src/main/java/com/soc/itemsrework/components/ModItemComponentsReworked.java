@@ -11,6 +11,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Unit;
 
 import java.util.function.Predicate;
 
@@ -70,5 +71,10 @@ public interface ModItemComponentsReworked {
 			Registries.DATA_COMPONENT_TYPE,
 			Identifier.of(SocWars.MOD_ID, "command_function"),
 			ComponentType.<CommandFunctionComponent>builder().codec(CommandFunctionComponent.CODEC).build()
+	);
+	ComponentType<Unit> CANCEL_BLOCK_INTERACTION = Registry.register(
+			Registries.DATA_COMPONENT_TYPE,
+			Identifier.of(SocWars.MOD_ID, "cancel_block_interaction"),
+			ComponentType.<Unit>builder().codec(Unit.CODEC).build()
 	);
 }

@@ -25,12 +25,12 @@ public interface ModComponents {
     ComponentType<Unit> RESOURCE_COUNTED = Registry.register(
             Registries.DATA_COMPONENT_TYPE,
             Identifier.of(SocWars.MOD_ID, "resource_counted"),
-            ComponentType.<Unit>builder().codec(Codec.unit(Unit.INSTANCE)).build()
+            ComponentType.<Unit>builder().codec(Unit.CODEC).build()
     );
     ComponentType<Unit> RESOURCE_SPLIT = Registry.register(
             Registries.DATA_COMPONENT_TYPE,
             Identifier.of(SocWars.MOD_ID, "resource_split"),
-            ComponentType.<Unit>builder().codec(Codec.unit(Unit.INSTANCE)).build()
+            ComponentType.<Unit>builder().codec(Unit.CODEC).build()
     );
     ComponentType<Integer> GAME_TOOL = Registry.register(
             Registries.DATA_COMPONENT_TYPE,

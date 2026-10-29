@@ -1,13 +1,10 @@
 package com.soc.items;
 
 import com.soc.events.ModEvents;
-import com.soc.items.util.CancelsBlockInteraction;
 import com.soc.items.util.ModItemGroups;
 import com.soc.itemsrework.ModItemsReworked;
 import com.soc.itemsrework.SocWarsItem;
-import com.soc.mixin.AccessDebugStickCycle;
-import com.soc.player.Morph;
-import com.soc.player.PlayerData;
+import com.soc.itemsrework.components.ModItemComponentsReworked;
 import com.soc.player.PlayerDataManager;
 import com.soc.util.ModBlockTags;
 import net.minecraft.block.BlockState;
@@ -16,34 +13,22 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.state.property.Properties;
-import net.minecraft.state.property.Property;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Unit;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
 import static com.soc.items.util.ModItemGroups.addItemToGroupsAndBaseItemGroup;
 
-public class MorphWand extends SocWarsItem implements CancelsBlockInteraction {
-	private static final List<Property<?>> CYCLING_PROPERTIES = List.of(
-			Properties.AXIS,
-			Properties.FACING,
-			Properties.HORIZONTAL_FACING,
-			Properties.BLOCK_FACE,
-			Properties.ROTATION,
-			Properties.SLAB_TYPE
-	);
-
+public class MorphWand extends SocWarsItem {
 	public static void initialise() {
 		addItemToGroupsAndBaseItemGroup(MORPH_WAND, ModItemGroups.ITEMS_KEY);
 	}
 
 	public MorphWand(Settings settings) {
-		super(settings);
+		super(settings.component(ModItemComponentsReworked.CANCEL_BLOCK_INTERACTION, Unit.INSTANCE));
 	}
 
 	public static final Item MORPH_WAND = ModItemsReworked.register("morph_wand", MorphWand::new, new Settings());
@@ -68,7 +53,7 @@ public class MorphWand extends SocWarsItem implements CancelsBlockInteraction {
 
 	@Override
 	public void onAttackButtonPressed(PlayerEntity player, ItemStack stack) {
-		rotateMorph(player, player.isSneaking());
+		if (player instanceof ServerPlayerEntity serverPlayer) rotateMorph(serverPlayer, serverPlayer.isSneaking());
 	}
 
 	private static ActionResult use(World world, ServerPlayerEntity player, Hand hand, @Nullable BlockState blockState) {
@@ -102,18 +87,7 @@ public class MorphWand extends SocWarsItem implements CancelsBlockInteraction {
 		return ActionResult.SUCCESS;
 	}
 
-	private static void rotateMorph(PlayerEntity player, boolean reverse) {
-		final PlayerData playerData = PlayerDataManager.getSideLocalPlayerData(player);
-		final Morph morph = playerData.getMorph();
-
-		if (morph != null) CYCLING_PROPERTIES.stream().filter(morph::hasProperty).findFirst().ifPresent(property -> {
-			playerData.setMorph(AccessDebugStickCycle.cycle(morph.blockState(), property, reverse), player);
-			player.getItemCooldownManager().set(player.getStackInHand(Hand.OFF_HAND), 3 * 20);
-		});
-	}
-
-	@Override
-	public boolean shouldCancelInteraction() {
-		return true;
+	private static void rotateMorph(ServerPlayerEntity serverPlayer, boolean reverse) {
+		PlayerDataManager.getPlayerData(serverPlayer).rotateMorph(serverPlayer, reverse);
 	}
 }
