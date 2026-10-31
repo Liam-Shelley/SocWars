@@ -21,6 +21,9 @@
 		],
 		"client": [
 			"com.soc.SocWarsClient"
+		],
+		"fabric-datagen": [
+			"com.soc.datagen.SocWarsDataGenerator"
 		]
 	},
 	"mixins": [
