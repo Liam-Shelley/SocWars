@@ -1192,6 +1192,48 @@ public interface ModItemsReworked {
 			.rarity(Rarity.EPIC),
 			ItemGroups.FOOD_AND_DRINK
 	);
+	Item LESSER_SPEED_RING = registerAndGroup("lesser_speed_ring", SocWarsItem::new, new ExtendedItemSettings()
+			.maxDamage(30 * 20)
+			.rarity(Rarity.UNCOMMON)
+			.potionRing(StatusEffects.SPEED, 0)
+			.enchantmentGlint(),
+			ItemGroups.FOOD_AND_DRINK
+	);
+	Item GREATER_SPEED_RING = registerAndGroup("greater_speed_ring", SocWarsItem::new, new ExtendedItemSettings()
+			.maxDamage(20 * 20)
+			.rarity(Rarity.UNCOMMON)
+			.potionRing(StatusEffects.SPEED, 1)
+			.enchantmentGlint(),
+			ItemGroups.FOOD_AND_DRINK
+	);
+	Item LESSER_JUMP_RING = registerAndGroup("lesser_jump_ring", SocWarsItem::new, new ExtendedItemSettings()
+			.maxDamage(15 * 20)
+			.rarity(Rarity.UNCOMMON)
+			.potionRing(StatusEffects.JUMP_BOOST, 1)
+			.enchantmentGlint(),
+			ItemGroups.FOOD_AND_DRINK
+	);
+	Item GREATER_JUMP_RING = registerAndGroup("greater_jump_ring", SocWarsItem::new, new ExtendedItemSettings()
+			.maxDamage(5 * 20)
+			.rarity(Rarity.UNCOMMON)
+			.potionRing(StatusEffects.JUMP_BOOST, 3)
+			.enchantmentGlint(),
+			ItemGroups.FOOD_AND_DRINK
+	);
+	Item INVISIBILITY_RING = registerAndGroup("invisibility_ring", SocWarsItem::new, new ExtendedItemSettings()
+			.maxDamage(20 * 20)
+			.rarity(Rarity.EPIC)
+			.potionRing(StatusEffects.INVISIBILITY, 1)
+			.enchantmentGlint(),
+			ItemGroups.FOOD_AND_DRINK
+	);
+	Item INFLATABLE_IRON_INGOT = registerAndGroup("inflatable_iron_ingot", SocWarsItem::new, new ExtendedItemSettings()
+			.maxDamage(20 * 20)
+			.rarity(Rarity.EPIC)
+			.potionRing(StatusEffects.LEVITATION, 1, StatusEffects.SLOW_FALLING, 0)
+			.enchantmentGlint(),
+			ItemGroups.FOOD_AND_DRINK
+	);
 
 
 

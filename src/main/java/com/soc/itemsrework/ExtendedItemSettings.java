@@ -9,6 +9,8 @@ import net.minecraft.component.type.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageType;
+import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.Item;
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.item.consume.ApplyEffectsConsumeEffect;
@@ -16,6 +18,7 @@ import net.minecraft.item.consume.UseAction;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.entry.RegistryEntryList;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.world.ServerWorld;
@@ -30,11 +33,12 @@ import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static net.minecraft.component.type.PotionContentsComponent.buildTooltip;
 
 public class ExtendedItemSettings extends Item.Settings {
+	int RING_GRACE_TICKS = 9;
+
 	public ExtendedItemSettings itemHit(ItemHitComponent component) {
 		return this.component(ModItemComponentsReworked.ITEM_HIT, component);
 	}
@@ -49,6 +53,21 @@ public class ExtendedItemSettings extends Item.Settings {
 
 	public ExtendedItemSettings itemUseOnBlock(ItemUseOnBlockComponent component) {
 		return this.component(ModItemComponentsReworked.ITEM_USE_ON_BLOCK, component);
+	}
+
+	public ExtendedItemSettings potionRing(RegistryEntry<StatusEffect> effect, int amplifier) {
+		return this.itemUse((world, user, hand) -> {
+			user.addStatusEffect(new StatusEffectInstance(effect, RING_GRACE_TICKS, amplifier, false, false, false));
+			return ActionResult.FAIL;
+		});
+	}
+
+	public ExtendedItemSettings potionRing(RegistryEntry<StatusEffect> effect1, int amplifier1, RegistryEntry<StatusEffect> effect2, int amplifier2) { //Too lazy to do something fancy here I don't really think I need more than 2 effects anyway
+		return this.itemUse((world, user, hand) -> {
+			user.addStatusEffect(new StatusEffectInstance(effect1, RING_GRACE_TICKS, amplifier1, false, false, false));
+			user.addStatusEffect(new StatusEffectInstance(effect2, RING_GRACE_TICKS, amplifier2, false, false, false));
+			return ActionResult.FAIL;
+		});
 	}
 
 	public ExtendedItemSettings simpleTooltip(Text... lines) {
