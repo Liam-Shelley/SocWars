@@ -12,6 +12,7 @@ import com.soc.items.components.CommandFunctionComponent;
 import com.soc.items.util.*;
 import com.soc.itemsrework.components.ExponComponent;
 import com.soc.itemsrework.components.ModItemComponentsReworked;
+import com.soc.itemsrework.util.GenerateItem;
 import com.soc.itemsrework.util.ModConsumeEffects;
 import com.soc.lib.Coroutine;
 import com.soc.lib.Coroutines;
@@ -79,6 +80,8 @@ import static com.soc.blocks.util.ModBlocks.MANY_BEDS_BLOCK;
 import static com.soc.game.manager.AbstractGameManager.getBlockDamagePredicate;
 import static com.soc.items.BowItem.playBowSound;
 import static com.soc.items.util.ModItemGroups.registerAndGroup;
+import static com.soc.itemsrework.util.GenerateItem.Model.GENERATED;
+import static com.soc.itemsrework.util.GenerateItem.Model.HANDHELD;
 import static com.soc.lib.SocWarsLib.*;
 import static com.soc.lib.SocWarsLib.isBlockHidden;
 import static com.soc.util.SphereExplosion.fireExplosion;
@@ -150,37 +153,38 @@ public interface ModItemsReworked {
 
 
 
-	Item BAT = registerAndGroup("bat", Item::new, new ExtendedItemSettings()
+	@GenerateItem(HANDHELD)
+	Item BAT = registerAndGroup("bat", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, 4f, -1.9f)
 			.simpleTooltip(Text.translatable("tooltip.bat")),
 			ItemGroups.COMBAT
 	);
-	Item BARBED_WIRE_BAT = registerAndGroup("barbed_wire_bat", Item::new, new ExtendedItemSettings()
+	Item BARBED_WIRE_BAT = registerAndGroup("barbed_wire_bat", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, 5f, -1.95f),
 			ItemGroups.COMBAT
 	);
-	Item NAILED_BAT = registerAndGroup("nailed_bat", Item::new, new ExtendedItemSettings()
+	Item NAILED_BAT = registerAndGroup("nailed_bat", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, 6f, -2f)
 			.rarity(Rarity.UNCOMMON),
 			ItemGroups.COMBAT
 	);
-	Item RAZOR_WIRE_BAT = registerAndGroup("razor_wire_bat", Item::new, new ExtendedItemSettings()
+	Item RAZOR_WIRE_BAT = registerAndGroup("razor_wire_bat", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, 7.5f, -2.1f)
 			.rarity(Rarity.RARE),
 			ItemGroups.COMBAT
 	);
-	Item SAW_BLADE_BAT = registerAndGroup("saw_blade_bat", Item::new, new ExtendedItemSettings()
+	Item SAW_BLADE_BAT = registerAndGroup("saw_blade_bat", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, 9f, -2.4f)
 			.rarity(Rarity.RARE)
 			.simpleTooltip(Text.translatable("tooltip.saw_blade_bat")),
 			ItemGroups.COMBAT
 	);
-	Item DEVASTATOR = registerAndGroup("devastator", Item::new, new ExtendedItemSettings()
+	Item DEVASTATOR = registerAndGroup("devastator", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.DEVASTATOR, 4f, -3.5f)
 			.rarity(Rarity.RARE),
 			ItemGroups.COMBAT
 	);
-	Item NETHERIGHT_SWORD = registerAndGroup("netheright_sword", Item::new, new ExtendedItemSettings()
+	Item NETHERIGHT_SWORD = registerAndGroup("netheright_sword", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterial.NETHERITE, -4.5f, 12f),
 			ItemGroups.COMBAT
 	);
@@ -1042,59 +1046,72 @@ public interface ModItemsReworked {
 			}),
 			ItemGroups.TOOLS
 	);
+	@GenerateItem(HANDHELD)
 	Item STONE_SHEARS = registerAndGroup("stone_shears", SocWarsItem::new, new ExtendedItemSettings()
 			.shears(ToolMaterial.STONE),
 			ItemGroups.TOOLS
 	);
+	@GenerateItem(HANDHELD)
 	Item DIAMOND_SHEARS = registerAndGroup("diamond_shears", SocWarsItem::new, new ExtendedItemSettings()
 			.shears(ToolMaterial.DIAMOND),
 			ItemGroups.TOOLS
 	);
+	@GenerateItem(HANDHELD)
 	Item EMERALD_PICKAXE = registerAndGroup("emerald_pickaxe", SocWarsItem::new, new ExtendedItemSettings()
 			.pickaxe(ToolMaterials.EMERALD, 1f, -2.8f),
 			ItemGroups.TOOLS
 	);
+	@GenerateItem(HANDHELD)
 	Item EMERALD_AXE = registerAndGroup("emerald_axe", SocWarsItem::new, new ExtendedItemSettings()
 			.axe(ToolMaterials.EMERALD, 5f, -3f),
 			ItemGroups.TOOLS
 	);
+	@GenerateItem(HANDHELD)
 	Item UNOBTANIUM_PICKAXE = registerAndGroup("unobtanium_pickaxe", SocWarsItem::new, new ExtendedItemSettings()
 			.pickaxe(ToolMaterials.UNOBTANIUM, 1f, -2.8f),
 			ItemGroups.TOOLS
 	);
+	@GenerateItem(HANDHELD)
 	Item UNOBTANIUM_AXE = registerAndGroup("unobtanium_axe", SocWarsItem::new, new ExtendedItemSettings()
 			.axe(ToolMaterials.UNOBTANIUM, 5f, -3f),
 			ItemGroups.TOOLS
 	);
+	@GenerateItem(HANDHELD)
 	Item UNOBTANIUM_SHEARS = registerAndGroup("unobtanium_shears", SocWarsItem::new, new ExtendedItemSettings()
 			.shears(ToolMaterials.UNOBTANIUM),
 			ItemGroups.TOOLS
 	);
+	@GenerateItem(HANDHELD)
 	Item BEDROCK_PICKAXE = registerAndGroup("bedrock_pickaxe", SocWarsItem::new, new ExtendedItemSettings()
 			.pickaxe(ToolMaterials.BEDROCK, 1f, -2.8f)
 			.rarity(Rarity.UNCOMMON),
 			ItemGroups.TOOLS
 	);
+	@GenerateItem(HANDHELD)
 	Item BEDROCK_AXE = registerAndGroup("bedrock_axe", SocWarsItem::new, new ExtendedItemSettings()
 			.axe(ToolMaterials.BEDROCK, 5f, -3f)
 			.rarity(Rarity.UNCOMMON),
 			ItemGroups.TOOLS
 	);
+	@GenerateItem(HANDHELD)
 	Item THE_PICKAXE = registerAndGroup("the_pickaxe", SocWarsItem::new, new ExtendedItemSettings()
 			.pickaxe(ToolMaterials.FISH, 1f, -2.8f)
 			.rarity(Rarity.RARE),
 			ItemGroups.TOOLS
 	);
+	@GenerateItem(HANDHELD)
 	Item THE_AXE = registerAndGroup("the_axe", SocWarsItem::new, new ExtendedItemSettings()
 			.axe(ToolMaterials.FISH, 5f, -3f)
 			.rarity(Rarity.RARE),
 			ItemGroups.TOOLS
 	);
+	@GenerateItem(HANDHELD)
 	Item THE_SHEARS = registerAndGroup("the_shears", SocWarsItem::new, new ExtendedItemSettings()
 			.shears(ToolMaterials.FISH)
 			.rarity(Rarity.RARE),
 			ItemGroups.TOOLS
 	);
+	@GenerateItem(HANDHELD)
 	Item FISHAXE = registerAndGroup("fishaxe", SocWarsItem::new, new ExtendedItemSettings()
 			.component(DataComponentTypes.TOOL, new ToolComponent(List.of(
 					ToolComponent.Rule.ofNeverDropping(Registries.createEntryLookup(Registries.BLOCK).getOrThrow(BlockTags.INCORRECT_FOR_NETHERITE_TOOL)),
@@ -1109,6 +1126,7 @@ public interface ModItemsReworked {
 			.rarity(Rarity.EPIC),
 			ItemGroups.TOOLS
 	);
+	@GenerateItem(HANDHELD)
 	Item MORPH_WAND = registerAndGroup("morph_wand", SocWarsItem::new, new ExtendedItemSettings()
 			.itemUse((world, user, hand) -> {
 				if (user instanceof ServerPlayerEntity serverPlayer && user.isSneaking()) {
@@ -1135,29 +1153,35 @@ public interface ModItemsReworked {
 				if (player instanceof ServerPlayerEntity serverPlayer) Morph.rotateMorph(serverPlayer, serverPlayer.isSneaking());
 			})
 	);
+	@GenerateItem(GENERATED)
 	Item IRON_APPLE = registerAndGroup("iron_apple", SocWarsItem::new, new ExtendedItemSettings()
 			.foodWithPotionTooltip(new FoodComponent(6, 10, true), ModConsumeEffects.IRON_APPLE),
 			ItemGroups.FOOD_AND_DRINK
 	);
+	@GenerateItem(GENERATED)
 	Item COPPER_APPLE = registerAndGroup("copper_apple", SocWarsItem::new, new ExtendedItemSettings()
 			.foodWithPotionTooltip(new FoodComponent(6, 10, true), ModConsumeEffects.COPPER_APPLE),
 			ItemGroups.FOOD_AND_DRINK
 	);
+	@GenerateItem(GENERATED)
 	Item DIAMOND_APPLE = registerAndGroup("diamond_apple", SocWarsItem::new, new ExtendedItemSettings()
 			.foodWithPotionTooltip(new FoodComponent(6, 12, true), ModConsumeEffects.DIAMOND_APPLE)
 			.rarity(Rarity.UNCOMMON),
 			ItemGroups.FOOD_AND_DRINK
 	);
+	@GenerateItem(GENERATED)
 	Item EMERALD_APPLE = registerAndGroup("emerald_apple", SocWarsItem::new, new ExtendedItemSettings()
 			.foodWithPotionTooltip(new FoodComponent(6, 12, true), ModConsumeEffects.EMERALD_APPLE)
 			.rarity(Rarity.RARE),
 			ItemGroups.FOOD_AND_DRINK
 	);
+	@GenerateItem(GENERATED)
 	Item NETHERITE_APPLE = registerAndGroup("netherite_apple", SocWarsItem::new, new ExtendedItemSettings()
 			.foodWithPotionTooltip(new FoodComponent(6, 16, true), ModConsumeEffects.NETHERITE_APPLE)
 			.rarity(Rarity.EPIC),
 			ItemGroups.FOOD_AND_DRINK
 	);
+	@GenerateItem(GENERATED)
 	Item JELLY_DONUT = registerAndGroup("jelly_donut", SocWarsItem::new, new ExtendedItemSettings()
 			.foodWithPotionTooltip(new FoodComponent(20, 20, true), ModConsumeEffects.JELLY_DONUT)
 			.rarity(Rarity.EPIC)
@@ -1192,6 +1216,7 @@ public interface ModItemsReworked {
 			.rarity(Rarity.EPIC),
 			ItemGroups.FOOD_AND_DRINK
 	);
+	@GenerateItem(GENERATED)
 	Item LESSER_SPEED_RING = registerAndGroup("lesser_speed_ring", SocWarsItem::new, new ExtendedItemSettings()
 			.maxDamage(30 * 20)
 			.rarity(Rarity.UNCOMMON)
@@ -1199,6 +1224,7 @@ public interface ModItemsReworked {
 			.enchantmentGlint(),
 			ItemGroups.FOOD_AND_DRINK
 	);
+	@GenerateItem(GENERATED)
 	Item GREATER_SPEED_RING = registerAndGroup("greater_speed_ring", SocWarsItem::new, new ExtendedItemSettings()
 			.maxDamage(20 * 20)
 			.rarity(Rarity.UNCOMMON)
@@ -1206,6 +1232,7 @@ public interface ModItemsReworked {
 			.enchantmentGlint(),
 			ItemGroups.FOOD_AND_DRINK
 	);
+	@GenerateItem(GENERATED)
 	Item LESSER_JUMP_RING = registerAndGroup("lesser_jump_ring", SocWarsItem::new, new ExtendedItemSettings()
 			.maxDamage(15 * 20)
 			.rarity(Rarity.UNCOMMON)
@@ -1213,6 +1240,7 @@ public interface ModItemsReworked {
 			.enchantmentGlint(),
 			ItemGroups.FOOD_AND_DRINK
 	);
+	@GenerateItem(GENERATED)
 	Item GREATER_JUMP_RING = registerAndGroup("greater_jump_ring", SocWarsItem::new, new ExtendedItemSettings()
 			.maxDamage(5 * 20)
 			.rarity(Rarity.UNCOMMON)
@@ -1220,6 +1248,7 @@ public interface ModItemsReworked {
 			.enchantmentGlint(),
 			ItemGroups.FOOD_AND_DRINK
 	);
+	@GenerateItem(GENERATED)
 	Item INVISIBILITY_RING = registerAndGroup("invisibility_ring", SocWarsItem::new, new ExtendedItemSettings()
 			.maxDamage(20 * 20)
 			.rarity(Rarity.EPIC)
@@ -1227,6 +1256,7 @@ public interface ModItemsReworked {
 			.enchantmentGlint(),
 			ItemGroups.FOOD_AND_DRINK
 	);
+	@GenerateItem(GENERATED)
 	Item INFLATABLE_IRON_INGOT = registerAndGroup("inflatable_iron_ingot", SocWarsItem::new, new ExtendedItemSettings()
 			.maxDamage(20 * 20)
 			.rarity(Rarity.EPIC)
