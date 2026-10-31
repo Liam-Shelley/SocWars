@@ -8,6 +8,8 @@ public interface ModItems {
 
         HardCodes.initialise();
 
+
+
         DrawableWeapon.initialise();
         BowItem.initialise();
 

@@ -3,6 +3,7 @@ package com.soc.blocks.util;
 import com.soc.SocWars;
 import com.soc.blocks.*;
 import com.soc.entities.BigTntEntity;
+import com.soc.items.DoomBlockItem;
 import com.soc.items.FeatherBlockItem;
 import com.soc.items.util.ModItemGroups;
 import com.soc.itemsrework.ModItemsReworked;
@@ -73,6 +74,7 @@ public interface ModBlocks {
 
     Block NUCLEAR_BOMB = ModBlocks.register("nuclear_bomb", settings -> new BigTntBlock(settings, BigTntEntity.BigTntType.NUCLEAR), AbstractBlock.Settings.create().breakInstantly().sounds(BlockSoundGroup.GRASS), true, ModItemGroups.BLOCKS_KEY);
     Block HYDROGEN_BOMB = ModBlocks.register("hydrogen_bomb", settings -> new BigTntBlock(settings, BigTntEntity.BigTntType.HYDROGEN), AbstractBlock.Settings.create().breakInstantly().sounds(BlockSoundGroup.GRASS), true, ModItemGroups.BLOCKS_KEY);
+    Block DOOM = ModBlocks.register("doom", settings -> new BigTntBlock(settings, BigTntEntity.BigTntType.DOOM), AbstractBlock.Settings.create().breakInstantly().sounds(BlockSoundGroup.GRASS), DoomBlockItem::new, ModItemGroups.BLOCKS_KEY);
     Block COLLECTIBLE_BLOCK = ModBlocks.register("collectible_block", CollectibleBlock::new, AbstractBlock.Settings.create().sounds(BlockSoundGroup.IRON).nonOpaque().luminance(state -> 2).hardness(1000000f).resistance(1000000f), true, ModItemGroups.BLOCKS_KEY); //No collision?
     Block DISPLAY_BLOCK = ModBlocks.register("display_block", DisplayBlock::new, AbstractBlock.Settings.create().nonOpaque().noCollision(), true, ModItemGroups.BLOCKS_KEY);
     Block KIT_BLOCK = ModBlocks.register("kit_block", KitBlock::new, AbstractBlock.Settings.create().nonOpaque(), true, ModItemGroups.BLOCKS_KEY);

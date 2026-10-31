@@ -73,7 +73,7 @@ public record ExponComponent(long lastTimeUsed, int damageStage) implements Item
 			if (lastTimeUsed == 0) return;
 
 			final boolean shouldReset = world.getTime() - lastTimeUsed > 4 * 20;
-			if (shouldReset) stack.set(ModItemComponentsReworked.EXPON, ExponComponent.DEFAULT);
+			if (shouldReset) stack.set(ModItemComponentsReworked.EXPON, DEFAULT);
 		});
 	}
 }

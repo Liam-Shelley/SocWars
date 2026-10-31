@@ -13,13 +13,13 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-import static com.soc.entities.util.ModEntities.HYDROGEN_BOMB;
-import static com.soc.entities.util.ModEntities.NUCLEAR_BOMB;
+import static com.soc.entities.util.ModEntities.*;
 
 public class BigTntEntity extends Entity implements Ownable {
     public enum BigTntType {
         NUCLEAR(10.5f, 4 * 20),
-        HYDROGEN(15f, 6 * 20);
+        HYDROGEN(15f, 6 * 20),
+        DOOM(100f, 15 * 20);
 
         public final float explosionRadius;
         public final int fuse;
@@ -50,6 +50,7 @@ public class BigTntEntity extends Entity implements Ownable {
         this(switch (tntType) {
             case NUCLEAR -> NUCLEAR_BOMB;
             case HYDROGEN -> HYDROGEN_BOMB;
+            case DOOM -> DOOM;
         }, world);
         
         this.setPosition(position);
@@ -86,7 +87,7 @@ public class BigTntEntity extends Entity implements Ownable {
     }
 
     private void explode() {
-        SphereExplosion.explode(this.getWorld(), this.getPos(), this.tntType.explosionRadius, 2f, 10f, 2f, true, LazyEntityReference.resolve(this.igniter, this.getWorld(), LivingEntity.class), null);
+        SphereExplosion.explode(this.getWorld(), this.getPos(), this.tntType.explosionRadius, this.tntType.explosionRadius < 20 ? 2f : 5f, 10f, 2f, true, LazyEntityReference.resolve(this.igniter, this.getWorld(), LivingEntity.class), null);
     }
 
     protected void writeCustomData(WriteView view) {

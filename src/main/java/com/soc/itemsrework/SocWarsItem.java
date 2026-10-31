@@ -71,6 +71,7 @@ public class SocWarsItem extends Item { //I wonder if I should just turn this in
 	@Override
 	@SuppressWarnings("deprecation")
 	public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
+		stack.streamAll(SocWarsTooltipAppender.class).forEach(appender -> appender.appendTooltip(context, textConsumer, type, this.getComponents()));
 		stack.streamAll(DynamicTooltipComponent.class).forEach(creator -> creator.create(stack, getWorldTime()).forEach(textConsumer));
 	}
 }

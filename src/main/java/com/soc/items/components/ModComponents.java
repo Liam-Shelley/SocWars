@@ -42,11 +42,6 @@ public interface ModComponents {
             Identifier.of(SocWars.MOD_ID, "generator_reference"),
             ComponentType.<Integer>builder().codec(Codec.INT).build()
     );
-    ComponentType<Optional<BlockLocation>> STASIS_POSITION = Registry.register(
-            Registries.DATA_COMPONENT_TYPE,
-            Identifier.of(SocWars.MOD_ID, "stasis_position"),
-            ComponentType.<Optional<BlockLocation>>builder().codec(BlockLocation.OPTIONAL_CODEC).build()
-    );
 
     static void initialise() {}
 }

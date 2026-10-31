@@ -55,6 +55,14 @@ public interface ModEntities {
             .maxTrackingRange(10)
             .trackingTickInterval(10)
     );
+    EntityType<BigTntEntity> DOOM = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "doom"), EntityType.Builder.<BigTntEntity>create((type, world) -> new BigTntEntity(type, world, BigTntEntity.BigTntType.DOOM), SpawnGroup.MISC)
+            .dropsNothing()
+            .makeFireImmune()
+            .dimensions(0.98f, 0.98f)
+            .eyeHeight(0.15f)
+            .maxTrackingRange(10)
+            .trackingTickInterval(10)
+    );
     EntityType<EnderBeamEntity> ENDER_BEAM = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "ender_beam"), EntityType.Builder.<EnderBeamEntity>create(EnderBeamEntity::new, SpawnGroup.MISC)
             .dropsNothing()
             .dimensions(0.25f, 0.25f)

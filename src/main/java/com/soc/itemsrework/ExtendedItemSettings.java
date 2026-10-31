@@ -128,7 +128,7 @@ public class ExtendedItemSettings extends Item.Settings {
 			}
 			user.getStackInHand(hand).decrementUnlessCreative(1, user);
 			return ActionResult.SUCCESS;
-		});
+		}); //Change this to a throwable component field that is then checked in use()
 	}
 
 	public ExtendedItemSettings shears(ToolMaterial toolMaterial) {

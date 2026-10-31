@@ -21,6 +21,7 @@ public class BigTntRenderState extends EntityRenderState {
         return (switch (this.tntType) {
             case NUCLEAR -> ModBlocks.NUCLEAR_BOMB;
             case HYDROGEN -> ModBlocks.HYDROGEN_BOMB;
+            case DOOM -> ModBlocks.DOOM;
         }).getDefaultState();
     }
 }

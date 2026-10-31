@@ -12,6 +12,7 @@ public interface EntityRenderers {
     static void initialise() {
         EntityRendererRegistry.register(ModEntities.NUCLEAR_BOMB, BigTntRenderer::new);
         EntityRendererRegistry.register(ModEntities.HYDROGEN_BOMB, BigTntRenderer::new);
+        EntityRendererRegistry.register(ModEntities.DOOM, BigTntRenderer::new);
         EntityRendererRegistry.register(ModEntities.FIREBALL, context -> new SimpleBillboardEntityRenderer(context, Identifier.ofVanilla("textures/item/fire_charge.png")));
         EntityRendererRegistry.register(ModEntities.WATERBALL, context -> new SimpleBillboardEntityRenderer(context, Identifier.of(SocWars.MOD_ID, "textures/item/waterball.png")));
         EntityRendererRegistry.register(ModEntities.SNAIL_FIREBALL, context -> new SimpleBillboardEntityRenderer(context, Identifier.of(SocWars.MOD_ID, "textures/item/snail_fireball.png")));

@@ -12,6 +12,7 @@ import com.soc.items.components.CommandFunctionComponent;
 import com.soc.items.util.*;
 import com.soc.itemsrework.components.ExponComponent;
 import com.soc.itemsrework.components.ModItemComponentsReworked;
+import com.soc.itemsrework.components.StasisChamberComponent;
 import com.soc.itemsrework.util.GenerateItem;
 import com.soc.itemsrework.util.ModConsumeEffects;
 import com.soc.lib.Coroutine;
@@ -903,6 +904,12 @@ public interface ModItemsReworked {
 			.throwable(BWFireballEntity::fireball, 1.75f),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(GENERATED)
+	Item KINETICALLY_CHARGED_FIREBALL = registerAndGroup("kinetic_fireball", SocWarsItem::new, new ExtendedItemSettings()
+			.useCooldown(0.75f)
+			.throwable(BWFireballEntity::kineticFireball, 3f),
+			ItemGroups.COMBAT
+	);
 	Item WATERBALL = registerAndGroup("waterball", SocWarsItem::new, new ExtendedItemSettings()
 			.useCooldown(0.75f)
 			.throwable(BWFireballEntity::waterball, 1.75f),
@@ -1222,7 +1229,7 @@ public interface ModItemsReworked {
 			.rarity(Rarity.UNCOMMON)
 			.potionRing(StatusEffects.SPEED, 0)
 			.enchantmentGlint(),
-			ItemGroups.FOOD_AND_DRINK
+			ItemGroups.TOOLS
 	);
 	@GenerateItem(GENERATED)
 	Item GREATER_SPEED_RING = registerAndGroup("greater_speed_ring", SocWarsItem::new, new ExtendedItemSettings()
@@ -1230,7 +1237,7 @@ public interface ModItemsReworked {
 			.rarity(Rarity.UNCOMMON)
 			.potionRing(StatusEffects.SPEED, 1)
 			.enchantmentGlint(),
-			ItemGroups.FOOD_AND_DRINK
+			ItemGroups.TOOLS
 	);
 	@GenerateItem(GENERATED)
 	Item LESSER_JUMP_RING = registerAndGroup("lesser_jump_ring", SocWarsItem::new, new ExtendedItemSettings()
@@ -1238,7 +1245,7 @@ public interface ModItemsReworked {
 			.rarity(Rarity.UNCOMMON)
 			.potionRing(StatusEffects.JUMP_BOOST, 1)
 			.enchantmentGlint(),
-			ItemGroups.FOOD_AND_DRINK
+			ItemGroups.TOOLS
 	);
 	@GenerateItem(GENERATED)
 	Item GREATER_JUMP_RING = registerAndGroup("greater_jump_ring", SocWarsItem::new, new ExtendedItemSettings()
@@ -1246,7 +1253,7 @@ public interface ModItemsReworked {
 			.rarity(Rarity.UNCOMMON)
 			.potionRing(StatusEffects.JUMP_BOOST, 3)
 			.enchantmentGlint(),
-			ItemGroups.FOOD_AND_DRINK
+			ItemGroups.TOOLS
 	);
 	@GenerateItem(GENERATED)
 	Item INVISIBILITY_RING = registerAndGroup("invisibility_ring", SocWarsItem::new, new ExtendedItemSettings()
@@ -1254,7 +1261,7 @@ public interface ModItemsReworked {
 			.rarity(Rarity.EPIC)
 			.potionRing(StatusEffects.INVISIBILITY, 1)
 			.enchantmentGlint(),
-			ItemGroups.FOOD_AND_DRINK
+			ItemGroups.TOOLS
 	);
 	@GenerateItem(GENERATED)
 	Item INFLATABLE_IRON_INGOT = registerAndGroup("inflatable_iron_ingot", SocWarsItem::new, new ExtendedItemSettings()
@@ -1262,7 +1269,36 @@ public interface ModItemsReworked {
 			.rarity(Rarity.EPIC)
 			.potionRing(StatusEffects.LEVITATION, 1, StatusEffects.SLOW_FALLING, 0)
 			.enchantmentGlint(),
-			ItemGroups.FOOD_AND_DRINK
+			ItemGroups.TOOLS
+	);
+	@GenerateItem(HANDHELD)
+	Item ONE_HIT_WONDER = registerAndGroup("one_hit_wonder", SocWarsItem::new, new ExtendedItemSettings()
+			.maxDamage(1)
+			.rarity(Rarity.EPIC) //TODO: Mythic
+			.itemHit((stack, target, attacker) -> {
+				stack.decrementUnlessCreative(1, attacker);
+				final World world = target.getWorld();
+
+				if (!world.isClient) {
+					GamesManager.getInstance().getGame(target).ifPresentOrElse(
+							game -> game.onPlayerDeath((ServerPlayerEntity)target, damageSource(world, net.minecraft.entity.damage.DamageTypes.GENERIC, attacker), target.getHealth()),
+							() -> target.kill((ServerWorld)world)
+					);
+				}
+			})
+			.simpleTooltip( //TODO: Colour this tooltip nicely
+					Text.translatable("tooltip.one_hit_wonder"),
+					Text.empty(),
+					Text.translatable("item.modifiers.mainhand"),
+					Text.literal(" ").append(Text.translatable("attribute.modifier.equals.0", "1,000,000", Text.translatable("attribute.name.attack_damage"))).formatted(Formatting.DARK_GREEN)
+			),
+			ItemGroups.COMBAT
+	);
+	Item STASIS_CHAMBER = registerAndGroup("stasis_chamber", SocWarsItem::new, new ExtendedItemSettings()
+			.maxDamage(2)
+			.rarity(Rarity.EPIC)
+			.component(ModItemComponentsReworked.STASIS_CHAMBER, StasisChamberComponent.DEFAULT),
+			ItemGroups.TOOLS
 	);
 
 

@@ -3,6 +3,7 @@ package com.soc.itemsrework.components;
 import com.mojang.serialization.Codec;
 import com.soc.SocWars;
 import com.soc.items.components.CommandFunctionComponent;
+import com.soc.networking.helper.BlockLocation;
 import net.minecraft.component.ComponentType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageType;
@@ -13,6 +14,7 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Unit;
 
+import java.util.Optional;
 import java.util.function.Predicate;
 
 public interface ModItemComponentsReworked {
@@ -81,5 +83,15 @@ public interface ModItemComponentsReworked {
 			Registries.DATA_COMPONENT_TYPE,
 			Identifier.of(SocWars.MOD_ID, "cancel_block_interaction"),
 			ComponentType.<Unit>builder().codec(Unit.CODEC).build()
+	);
+	ComponentType<StasisChamberComponent> STASIS_CHAMBER = Registry.register(
+			Registries.DATA_COMPONENT_TYPE,
+			Identifier.of(SocWars.MOD_ID, "stasis_chamber"),
+			ComponentType.<StasisChamberComponent>builder().codec(StasisChamberComponent.CODEC).build()
+	);
+	ComponentType<Boolean> STASIS_CHAMBER_PRESENT = Registry.register(
+			Registries.DATA_COMPONENT_TYPE,
+			Identifier.of(SocWars.MOD_ID, "stasis_chamber_present"),
+			ComponentType.<Boolean>builder().codec(Codec.BOOL).build()
 	);
 }

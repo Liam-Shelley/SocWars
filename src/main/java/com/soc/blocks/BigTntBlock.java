@@ -50,7 +50,7 @@ public class BigTntBlock extends Block {
     }
 
     private void ignite(World world, BlockPos pos, PlayerEntity player) {
-        BigTntEntity entity = new BigTntEntity(world, pos.toBottomCenterPos(), player, tntType);
+        final BigTntEntity entity = new BigTntEntity(world, pos.toBottomCenterPos(), player, tntType);
         world.spawnEntity(entity);
         world.playSound(null, pos, Sounds.NUCLEAR_SIREN, SoundCategory.BLOCKS,1, 1);
         world.removeBlock(pos, false);

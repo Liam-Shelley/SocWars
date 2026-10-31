@@ -2,7 +2,6 @@ package com.soc.entities;
 
 import com.soc.entities.util.ExplodeFunction;
 import com.soc.entities.util.ModEntities;
-import com.soc.itemsrework.ExtendedItemSettings;
 import com.soc.lib.Events;
 import com.soc.util.SphereExplosion;
 import net.minecraft.block.Blocks;
@@ -62,6 +61,11 @@ public class BWFireballEntity extends FireballEntity {
         SphereExplosion.fireExplosion(world, BlockPos.ofFloored(pos), explosionPower, 0.2f, owner);
     }
 
+    public static void kineticFireballExplosion(ServerWorld world, Vec3d pos, float explosionPower, Entity owner) {
+        SphereExplosion.explode(world, pos, explosionPower, 1.5f, 1.1f, 3f, true, owner, null);
+        SphereExplosion.fireExplosion(world, BlockPos.ofFloored(pos), explosionPower, 0.2f, owner);
+    }
+
     public static void snailExplosion(ServerWorld world, Vec3d pos, float explosionPower, Entity owner) {
         world.createExplosion(owner, damageSource(world, DamageTypes.EXPLOSION, owner), new ExplosionBehavior() {
             @Override
@@ -95,6 +99,10 @@ public class BWFireballEntity extends FireballEntity {
 
     public static BWFireballEntity fireball(LivingEntity user) {
         return new BWFireballEntity(ModEntities.FIREBALL, user.getWorld(), user, Vec3d.ZERO, 4f, BWFireballEntity::fireballExplosion);
+    }
+
+    public static Entity kineticFireball(LivingEntity user) {
+        return new BWFireballEntity(ModEntities.FIREBALL, user.getWorld(), user, Vec3d.ZERO, 4f, BWFireballEntity::kineticFireballExplosion);
     }
 
     public static BWFireballEntity waterball(LivingEntity user) {
