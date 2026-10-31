@@ -3,7 +3,9 @@ package com.soc.player;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.soc.SocWars;
+import com.soc.events.ModEvents;
 import com.soc.networking.ModPacketCodecs;
+import com.soc.util.ModBlockTags;
 import com.soc.util.ModCodecs;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.BlockState;
@@ -11,8 +13,11 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.DebugStickItem;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.state.property.Properties;
 import net.minecraft.state.property.Property;
+import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.dynamic.Codecs;
@@ -94,5 +99,28 @@ public record Morph(BlockState blockState, Box boundingBox, float health) {
 			playerData.setMorph(DebugStickItem.cycle(this.blockState(), property, reverse), player);
 			player.getItemCooldownManager().set(player.getStackInHand(Hand.OFF_HAND), 3 * 20);
 		});
+	}
+
+	public static void clearMorph(ServerPlayerEntity serverPlayer) { //Some serious spaghetti code going on here
+		PlayerDataManager.getPlayerData(serverPlayer).clearMorph(serverPlayer);
+	}
+
+	public static void rotateMorph(ServerPlayerEntity serverPlayer, boolean reverse) {
+		PlayerDataManager.getPlayerData(serverPlayer).rotateMorph(serverPlayer, reverse);
+	}
+
+	public static boolean attemptMorph(ServerPlayerEntity player, BlockState blockState) {
+		if (blockState.isIn(ModBlockTags.DISALLOW_MORPH)) {
+			player.sendMessage(Text.literal("Nice try ;)"));
+			return false;
+		}
+
+		final boolean allowMorph = ModEvents.ON_PLAYER_MORPHED.invoker().onPlayerMorphed(player, blockState);
+		if (allowMorph) {
+			PlayerDataManager.getPlayerData(player).setMorph(blockState, player);
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

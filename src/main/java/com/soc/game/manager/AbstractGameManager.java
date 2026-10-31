@@ -7,13 +7,13 @@ import com.soc.database.stats.BaseGameTable;
 import com.soc.database.stats.CombatTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.SpreadRules;
-import com.soc.items.MorphWand;
 import com.soc.lib.Events;
 import com.soc.lib.ScoreboardHelper;
 import com.soc.networking.s2c.EventQueuePayload;
 import com.soc.networking.s2c.JoinGamePayload;
 import com.soc.networking.s2c.LeaveGamePayload;
 import com.soc.networking.s2c.UpdateHotbarPayload;
+import com.soc.player.Morph;
 import com.soc.player.PlayerDataManager;
 import com.soc.util.ModBlockTags;
 import net.fabricmc.fabric.api.event.Event;
@@ -598,7 +598,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     }
 
     protected final void removePlayersMorphs() {
-        this.getPlayers().forEach(MorphWand::clearMorph); //TODO: Maybe move this to a more sensible location
+        this.getPlayers().forEach(Morph::clearMorph); //TODO: Maybe move this to a more sensible location
     }
 
     protected final void clearPlayerInventoriesAndEnderChests() {

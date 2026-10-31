@@ -32,6 +32,11 @@ public interface ModItemComponentsReworked {
 			Identifier.of(SocWars.MOD_ID, "item_use"),
 			ComponentType.<ItemUseComponent>builder().codec(ItemUseComponent.CODEC).build()
 	);
+	ComponentType<ItemUseOnBlockComponent> ITEM_USE_ON_BLOCK = Registry.register(
+			Registries.DATA_COMPONENT_TYPE,
+			Identifier.of(SocWars.MOD_ID, "item_use_on_block"),
+			ComponentType.<ItemUseOnBlockComponent>builder().codec(ItemUseOnBlockComponent.CODEC).build()
+	);
 	ComponentType<ItemTickComponent> ITEM_TICK = Registry.register(
 			Registries.DATA_COMPONENT_TYPE,
 			Identifier.of(SocWars.MOD_ID, "item_tick"),

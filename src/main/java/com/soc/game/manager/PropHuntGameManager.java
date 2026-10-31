@@ -5,7 +5,6 @@ import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.PropHuntGameMap;
 import com.soc.game.map.SpreadRules;
 import com.soc.items.BowItem;
-import com.soc.items.MorphWand;
 import com.soc.itemsrework.ModItemsReworked;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.Enchantments;
@@ -29,7 +28,7 @@ import java.util.function.Function;
 
 import static com.soc.game.map.AbstractHidingGameMap.HIDER_COLOUR;
 import static com.soc.game.map.AbstractHidingGameMap.SEEKER_COLOUR;
-import static com.soc.items.MorphWand.clearMorph;
+import static com.soc.player.Morph.clearMorph;
 import static com.soc.lib.SocWarsLib.*;
 
 public class PropHuntGameManager extends AbstractHidingGameManager<PropHuntGameMap, PropHuntTable, PropHuntGameManager> {
@@ -48,7 +47,7 @@ public class PropHuntGameManager extends AbstractHidingGameManager<PropHuntGameM
 		this.map.spawnCages(false, HIDER_COLOUR);
 		this.getPlayers(HIDER_COLOUR).forEach(hider -> {
 			hider.changeGameMode(GameMode.SURVIVAL);
-			hider.giveItemStack(new ItemStack(MorphWand.MORPH_WAND));
+			hider.giveItemStack(new ItemStack(ModItemsReworked.MORPH_WAND));
 			hider.giveItemStack(new ItemStack(ModItemsReworked.TAUNT_STICK));
 		});
 

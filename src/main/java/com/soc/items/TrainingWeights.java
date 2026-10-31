@@ -45,7 +45,7 @@ public class TrainingWeights extends ArmourItem {
     @Override
     public void inventoryTick(ItemStack stack, ServerWorld world, Entity entity, @Nullable EquipmentSlot slot) {
         if (entity instanceof LivingEntity user) {
-            int multiplier = user.isSneaking() ? 2 : 1;
+            final int multiplier = user.isSneaking() ? 2 : 1;
             if (slot == EquipmentSlot.FEET) {
                 user.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 2, multiplier - 1, false, false));
             }

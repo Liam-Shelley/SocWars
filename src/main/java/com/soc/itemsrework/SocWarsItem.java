@@ -7,10 +7,12 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,6 +40,21 @@ public class SocWarsItem extends Item { //I wonder if I should just turn this in
 				.streamAll(ItemUseComponent.class)
 				.map(itemUse -> itemUse.use(world, user, hand))
 				.reduce(super.use(world, user, hand), (a, b) -> b.isAccepted() ? a : a.isAccepted() ? b : a); //Honestly I have no idea how I actually want to handle this
+	}
+
+	@Override
+	public ActionResult useOnBlock(ItemUsageContext context) {
+		final PlayerEntity user = context.getPlayer();
+		if (user == null) return super.useOnBlock(context);
+
+		final World world = context.getWorld();
+		final Hand hand = context.getHand();
+		final BlockPos pos = context.getBlockPos();
+
+		return user.getStackInHand(hand)
+				.streamAll(ItemUseOnBlockComponent.class)
+				.map(itemUse -> itemUse.use(world, user, hand, world.getBlockState(pos), pos))
+				.reduce(super.useOnBlock(context), (a, b) -> b.isAccepted() ? a : a.isAccepted() ? b : a); //Ditto
 	}
 
 	@Override

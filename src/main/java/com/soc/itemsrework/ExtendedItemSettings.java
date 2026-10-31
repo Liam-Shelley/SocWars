@@ -37,8 +37,16 @@ public class ExtendedItemSettings extends Item.Settings {
 		return this.component(ModItemComponentsReworked.ITEM_HIT, component);
 	}
 
+	public ExtendedItemSettings itemHitAll(ItemHitAllComponent component) {
+		return this.component(ModItemComponentsReworked.ITEM_HIT_ALL, component);
+	}
+
 	public ExtendedItemSettings itemUse(ItemUseComponent component) {
 		return this.component(ModItemComponentsReworked.ITEM_USE, component);
+	}
+
+	public ExtendedItemSettings itemUseOnBlock(ItemUseOnBlockComponent component) {
+		return this.component(ModItemComponentsReworked.ITEM_USE_ON_BLOCK, component);
 	}
 
 	public ExtendedItemSettings simpleTooltip(Text... lines) {

@@ -19,6 +19,7 @@ import com.soc.materials.ToolMaterials;
 import com.soc.mixin.GetAbsorptionAmountDataTracker;
 import com.soc.networking.s2c.AddVelocityPayload;
 import com.soc.networking.s2c.BatchParticlePayload;
+import com.soc.player.Morph;
 import com.soc.util.*;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -76,6 +77,7 @@ import static com.soc.blocks.util.ModBlocks.CHEST_PLACEHOLDER;
 import static com.soc.blocks.util.ModBlocks.MANY_BEDS_BLOCK;
 import static com.soc.game.manager.AbstractGameManager.getBlockDamagePredicate;
 import static com.soc.items.BowItem.playBowSound;
+import static com.soc.player.Morph.attemptMorph;
 import static com.soc.items.util.ModItemGroups.registerAndGroup;
 import static com.soc.lib.SocWarsLib.*;
 import static com.soc.lib.SocWarsLib.isBlockHidden;
@@ -1106,6 +1108,32 @@ public interface ModItemsReworked {
 			.maxDamage(ToolMaterials.FISH.durability() * 3/2)
 			.rarity(Rarity.EPIC),
 			ItemGroups.TOOLS
+	);
+	Item MORPH_WAND = ModItemsReworked.register("morph_wand", SocWarsItem::new, new ExtendedItemSettings()
+			.itemUse((world, user, hand) -> {
+				if (user instanceof ServerPlayerEntity serverPlayer && user.isSneaking()) {
+					Morph.clearMorph(serverPlayer);
+					return ActionResult.SUCCESS_SERVER;
+				}
+				return ActionResult.PASS;
+			})
+			.itemUseOnBlock((world, user, hand, state, pos) -> {
+				if (user instanceof ServerPlayerEntity serverPlayer) {
+					if (user.isSneaking()) {
+						Morph.clearMorph(serverPlayer);
+					} else {
+						final boolean acceptedMorph = Morph.attemptMorph(serverPlayer, state);
+						if (!acceptedMorph) return ActionResult.FAIL;
+
+						user.getItemCooldownManager().set(user.getStackInHand(hand), 15 * 20);
+					}
+					return ActionResult.SUCCESS_SERVER;
+				}
+				return ActionResult.PASS;
+			})
+			.itemHitAll((player, stack) -> {
+				if (player instanceof ServerPlayerEntity serverPlayer) Morph.rotateMorph(serverPlayer, serverPlayer.isSneaking());
+			})
 	);
 
 
