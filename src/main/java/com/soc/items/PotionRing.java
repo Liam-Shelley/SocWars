@@ -25,7 +25,7 @@ public class PotionRing extends RingItem {
 
     public PotionRing(final Settings settings, final EffectRecord... effects) {
         super(settings);
-        this.effects = Arrays.stream(effects).toList();
+        this.effects = List.of(effects);
     }
 
     public static void initialise() {

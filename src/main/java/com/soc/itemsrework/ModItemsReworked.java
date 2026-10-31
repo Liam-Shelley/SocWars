@@ -12,6 +12,7 @@ import com.soc.items.components.CommandFunctionComponent;
 import com.soc.items.util.*;
 import com.soc.itemsrework.components.ExponComponent;
 import com.soc.itemsrework.components.ModItemComponentsReworked;
+import com.soc.itemsrework.util.ModConsumeEffects;
 import com.soc.lib.Coroutine;
 import com.soc.lib.Coroutines;
 import com.soc.lib.IntBox;
@@ -77,7 +78,6 @@ import static com.soc.blocks.util.ModBlocks.CHEST_PLACEHOLDER;
 import static com.soc.blocks.util.ModBlocks.MANY_BEDS_BLOCK;
 import static com.soc.game.manager.AbstractGameManager.getBlockDamagePredicate;
 import static com.soc.items.BowItem.playBowSound;
-import static com.soc.player.Morph.attemptMorph;
 import static com.soc.items.util.ModItemGroups.registerAndGroup;
 import static com.soc.lib.SocWarsLib.*;
 import static com.soc.lib.SocWarsLib.isBlockHidden;
@@ -997,7 +997,7 @@ public interface ModItemsReworked {
 			}),
 			ItemGroups.TOOLS
 	);
-	Item SHARPENED_POKING_STICK = registerAndGroup("sharpened_poking_stick", Item::new, new ExtendedItemSettings()
+	Item SHARPENED_POKING_STICK = registerAndGroup("sharpened_poking_stick", SocWarsItem::new, new ExtendedItemSettings()
 			.maxDamage(150)
 			.rarity(Rarity.UNCOMMON)
 			.attributeModifiers(new AttributeModifiersComponent(List.of(
@@ -1007,7 +1007,7 @@ public interface ModItemsReworked {
 			))),
 			ItemGroups.COMBAT
 	);
-	Item BALUSTRADE = registerAndGroup("balustrade", Item::new, new ExtendedItemSettings());
+	Item BALUSTRADE = registerAndGroup("balustrade", SocWarsItem::new, new ExtendedItemSettings());
 	Item PORTABLE_STEPPING_STOOL = registerAndGroup("portable_stepping_stool", SocWarsItem::new, new ExtendedItemSettings()
 			.maxCount(1)
 			.rarity(Rarity.RARE)
@@ -1042,60 +1042,60 @@ public interface ModItemsReworked {
 			}),
 			ItemGroups.TOOLS
 	);
-	Item STONE_SHEARS = registerAndGroup("stone_shears", Item::new, new ExtendedItemSettings()
+	Item STONE_SHEARS = registerAndGroup("stone_shears", SocWarsItem::new, new ExtendedItemSettings()
 			.shears(ToolMaterial.STONE),
 			ItemGroups.TOOLS
 	);
-	Item DIAMOND_SHEARS = registerAndGroup("diamond_shears", Item::new, new ExtendedItemSettings()
+	Item DIAMOND_SHEARS = registerAndGroup("diamond_shears", SocWarsItem::new, new ExtendedItemSettings()
 			.shears(ToolMaterial.DIAMOND),
 			ItemGroups.TOOLS
 	);
-	Item EMERALD_PICKAXE = registerAndGroup("emerald_pickaxe", Item::new, new ExtendedItemSettings()
+	Item EMERALD_PICKAXE = registerAndGroup("emerald_pickaxe", SocWarsItem::new, new ExtendedItemSettings()
 			.pickaxe(ToolMaterials.EMERALD, 1f, -2.8f),
 			ItemGroups.TOOLS
 	);
-	Item EMERALD_AXE = registerAndGroup("emerald_axe", Item::new, new ExtendedItemSettings()
+	Item EMERALD_AXE = registerAndGroup("emerald_axe", SocWarsItem::new, new ExtendedItemSettings()
 			.axe(ToolMaterials.EMERALD, 5f, -3f),
 			ItemGroups.TOOLS
 	);
-	Item UNOBTANIUM_PICKAXE = registerAndGroup("unobtanium_pickaxe", Item::new, new ExtendedItemSettings()
+	Item UNOBTANIUM_PICKAXE = registerAndGroup("unobtanium_pickaxe", SocWarsItem::new, new ExtendedItemSettings()
 			.pickaxe(ToolMaterials.UNOBTANIUM, 1f, -2.8f),
 			ItemGroups.TOOLS
 	);
-	Item UNOBTANIUM_AXE = registerAndGroup("unobtanium_axe", Item::new, new ExtendedItemSettings()
+	Item UNOBTANIUM_AXE = registerAndGroup("unobtanium_axe", SocWarsItem::new, new ExtendedItemSettings()
 			.axe(ToolMaterials.UNOBTANIUM, 5f, -3f),
 			ItemGroups.TOOLS
 	);
-	Item UNOBTANIUM_SHEARS = registerAndGroup("unobtanium_shears", Item::new, new ExtendedItemSettings()
+	Item UNOBTANIUM_SHEARS = registerAndGroup("unobtanium_shears", SocWarsItem::new, new ExtendedItemSettings()
 			.shears(ToolMaterials.UNOBTANIUM),
 			ItemGroups.TOOLS
 	);
-	Item BEDROCK_PICKAXE = registerAndGroup("bedrock_pickaxe", Item::new, new ExtendedItemSettings()
+	Item BEDROCK_PICKAXE = registerAndGroup("bedrock_pickaxe", SocWarsItem::new, new ExtendedItemSettings()
 			.pickaxe(ToolMaterials.BEDROCK, 1f, -2.8f)
 			.rarity(Rarity.UNCOMMON),
 			ItemGroups.TOOLS
 	);
-	Item BEDROCK_AXE = registerAndGroup("bedrock_axe", Item::new, new ExtendedItemSettings()
+	Item BEDROCK_AXE = registerAndGroup("bedrock_axe", SocWarsItem::new, new ExtendedItemSettings()
 			.axe(ToolMaterials.BEDROCK, 5f, -3f)
 			.rarity(Rarity.UNCOMMON),
 			ItemGroups.TOOLS
 	);
-	Item THE_PICKAXE = registerAndGroup("the_pickaxe", Item::new, new ExtendedItemSettings()
+	Item THE_PICKAXE = registerAndGroup("the_pickaxe", SocWarsItem::new, new ExtendedItemSettings()
 			.pickaxe(ToolMaterials.FISH, 1f, -2.8f)
 			.rarity(Rarity.RARE),
 			ItemGroups.TOOLS
 	);
-	Item THE_AXE = registerAndGroup("the_axe", Item::new, new ExtendedItemSettings()
+	Item THE_AXE = registerAndGroup("the_axe", SocWarsItem::new, new ExtendedItemSettings()
 			.axe(ToolMaterials.FISH, 5f, -3f)
 			.rarity(Rarity.RARE),
 			ItemGroups.TOOLS
 	);
-	Item THE_SHEARS = registerAndGroup("the_shears", Item::new, new ExtendedItemSettings()
+	Item THE_SHEARS = registerAndGroup("the_shears", SocWarsItem::new, new ExtendedItemSettings()
 			.shears(ToolMaterials.FISH)
 			.rarity(Rarity.RARE),
 			ItemGroups.TOOLS
 	);
-	Item FISHAXE = registerAndGroup("fishaxe", Item::new, new ExtendedItemSettings()
+	Item FISHAXE = registerAndGroup("fishaxe", SocWarsItem::new, new ExtendedItemSettings()
 			.component(DataComponentTypes.TOOL, new ToolComponent(List.of(
 					ToolComponent.Rule.ofNeverDropping(Registries.createEntryLookup(Registries.BLOCK).getOrThrow(BlockTags.INCORRECT_FOR_NETHERITE_TOOL)),
 					ToolComponent.Rule.ofAlwaysDropping(Registries.createEntryLookup(Registries.BLOCK).getOrThrow(BlockTags.PICKAXE_MINEABLE), ToolMaterials.FISH.speed()),
@@ -1109,7 +1109,7 @@ public interface ModItemsReworked {
 			.rarity(Rarity.EPIC),
 			ItemGroups.TOOLS
 	);
-	Item MORPH_WAND = ModItemsReworked.register("morph_wand", SocWarsItem::new, new ExtendedItemSettings()
+	Item MORPH_WAND = registerAndGroup("morph_wand", SocWarsItem::new, new ExtendedItemSettings()
 			.itemUse((world, user, hand) -> {
 				if (user instanceof ServerPlayerEntity serverPlayer && user.isSneaking()) {
 					Morph.clearMorph(serverPlayer);
@@ -1134,6 +1134,63 @@ public interface ModItemsReworked {
 			.itemHitAll((player, stack) -> {
 				if (player instanceof ServerPlayerEntity serverPlayer) Morph.rotateMorph(serverPlayer, serverPlayer.isSneaking());
 			})
+	);
+	Item IRON_APPLE = registerAndGroup("iron_apple", SocWarsItem::new, new ExtendedItemSettings()
+			.foodWithPotionTooltip(new FoodComponent(6, 10, true), ModConsumeEffects.IRON_APPLE),
+			ItemGroups.FOOD_AND_DRINK
+	);
+	Item COPPER_APPLE = registerAndGroup("copper_apple", SocWarsItem::new, new ExtendedItemSettings()
+			.foodWithPotionTooltip(new FoodComponent(6, 10, true), ModConsumeEffects.COPPER_APPLE),
+			ItemGroups.FOOD_AND_DRINK
+	);
+	Item DIAMOND_APPLE = registerAndGroup("diamond_apple", SocWarsItem::new, new ExtendedItemSettings()
+			.foodWithPotionTooltip(new FoodComponent(6, 12, true), ModConsumeEffects.DIAMOND_APPLE)
+			.rarity(Rarity.UNCOMMON),
+			ItemGroups.FOOD_AND_DRINK
+	);
+	Item EMERALD_APPLE = registerAndGroup("emerald_apple", SocWarsItem::new, new ExtendedItemSettings()
+			.foodWithPotionTooltip(new FoodComponent(6, 12, true), ModConsumeEffects.EMERALD_APPLE)
+			.rarity(Rarity.RARE),
+			ItemGroups.FOOD_AND_DRINK
+	);
+	Item NETHERITE_APPLE = registerAndGroup("netherite_apple", SocWarsItem::new, new ExtendedItemSettings()
+			.foodWithPotionTooltip(new FoodComponent(6, 16, true), ModConsumeEffects.NETHERITE_APPLE)
+			.rarity(Rarity.EPIC),
+			ItemGroups.FOOD_AND_DRINK
+	);
+	Item JELLY_DONUT = registerAndGroup("jelly_donut", SocWarsItem::new, new ExtendedItemSettings()
+			.foodWithPotionTooltip(new FoodComponent(20, 20, true), ModConsumeEffects.JELLY_DONUT)
+			.rarity(Rarity.EPIC)
+			.simpleTooltip(Text.translatable("tooltip.jelly_donut")),
+			ItemGroups.FOOD_AND_DRINK
+	);
+	Item ENCHANTED_IRON_APPLE = registerAndGroup("enchanted_iron_apple", SocWarsItem::new, new ExtendedItemSettings()
+			.foodWithPotionTooltip(new FoodComponent(6, 10, true), ModConsumeEffects.ENCHANTED_IRON_APPLE)
+			.enchantmentGlint(),
+			ItemGroups.FOOD_AND_DRINK
+	);
+	Item ENCHANTED_COPPER_APPLE = registerAndGroup("enchanted_copper_apple", SocWarsItem::new, new ExtendedItemSettings()
+			.foodWithPotionTooltip(new FoodComponent(6, 10, true), ModConsumeEffects.ENCHANTED_COPPER_APPLE)
+			.enchantmentGlint(),
+			ItemGroups.FOOD_AND_DRINK
+	);
+	Item ENCHANTED_DIAMOND_APPLE = registerAndGroup("enchanted_diamond_apple", SocWarsItem::new, new ExtendedItemSettings()
+			.foodWithPotionTooltip(new FoodComponent(6, 12, true), ModConsumeEffects.ENCHANTED_DIAMOND_APPLE)
+			.enchantmentGlint()
+			.rarity(Rarity.UNCOMMON),
+			ItemGroups.FOOD_AND_DRINK
+	);
+	Item ENCHANTED_EMERALD_APPLE = registerAndGroup("enchanted_emerald_apple", SocWarsItem::new, new ExtendedItemSettings()
+			.foodWithPotionTooltip(new FoodComponent(8, 12, true), ModConsumeEffects.ENCHANTED_EMERALD_APPLE)
+			.enchantmentGlint()
+			.rarity(Rarity.RARE),
+			ItemGroups.FOOD_AND_DRINK
+	);
+	Item ENCHANTED_NETHERITE_APPLE = registerAndGroup("enchanted_netherite_apple", SocWarsItem::new, new ExtendedItemSettings()
+			.foodWithPotionTooltip(new FoodComponent(12, 16, true), ModConsumeEffects.ENCHANTED_NETHERITE_APPLE)
+			.enchantmentGlint()
+			.rarity(Rarity.EPIC),
+			ItemGroups.FOOD_AND_DRINK
 	);
 
 

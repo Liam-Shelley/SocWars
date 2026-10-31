@@ -5,15 +5,13 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.component.ComponentType;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.AttributeModifiersComponent;
-import net.minecraft.component.type.ConsumableComponent;
-import net.minecraft.component.type.LoreComponent;
-import net.minecraft.component.type.ToolComponent;
+import net.minecraft.component.type.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ToolMaterial;
+import net.minecraft.item.consume.ApplyEffectsConsumeEffect;
 import net.minecraft.item.consume.UseAction;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryEntryLookup;
@@ -26,11 +24,15 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Rarity;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+import static net.minecraft.component.type.PotionContentsComponent.buildTooltip;
 
 public class ExtendedItemSettings extends Item.Settings {
 	public ExtendedItemSettings itemHit(ItemHitComponent component) {
@@ -80,6 +82,24 @@ public class ExtendedItemSettings extends Item.Settings {
 		return this
 				.consumable(consumeTime, onConsumeEffect)
 				.component(ModItemComponentsReworked.CAN_CONDITIONALLY_CONSUME, canConsume);
+	}
+
+	@SuppressWarnings("unchecked")
+	public ExtendedItemSettings foodWithPotionTooltip(FoodComponent foodComponent, ConsumableComponent consumableComponent) {
+		final List<ApplyEffectsConsumeEffect> effectsComponents = (List<ApplyEffectsConsumeEffect>)(Object)consumableComponent.onConsumeEffects().stream().filter(effect -> effect instanceof ApplyEffectsConsumeEffect).toList();
+		if (effectsComponents.isEmpty()) return this.food(foodComponent, consumableComponent);
+
+		final Text[] lines = effectsComponents.stream().flatMap(effectComponent -> {
+			final List<Text> componentLines = new ArrayList<>(effectComponent.effects().size());
+
+			buildTooltip(effectComponent.effects(), componentLines::add, 1, 1);
+
+			return componentLines.stream();
+		}).toArray(Text[]::new);
+
+		return this
+				.food(foodComponent, consumableComponent)
+				.simpleTooltip(lines);
 	}
 
 	public <T extends Entity> ExtendedItemSettings throwable(Function<LivingEntity, T> entityCreator, float speed) {
@@ -167,5 +187,11 @@ public class ExtendedItemSettings extends Item.Settings {
 	public ExtendedItemSettings enchantable(int enchantability) {
 		return (ExtendedItemSettings)super.enchantable(enchantability);
 	}
+
+	@Override
+	public ExtendedItemSettings food(FoodComponent foodComponent, ConsumableComponent consumableComponent) {
+		return (ExtendedItemSettings)super.food(foodComponent, consumableComponent);
+	}
+
 	//endregion
 }

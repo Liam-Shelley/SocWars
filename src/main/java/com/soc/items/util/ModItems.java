@@ -23,7 +23,5 @@ public interface ModItems {
         IllusionerArmour.initialise();
         TrainingWeights.initialise();
         SummonersGarb.initialise();
-
-        PotionFood.initialise();
     }
 }

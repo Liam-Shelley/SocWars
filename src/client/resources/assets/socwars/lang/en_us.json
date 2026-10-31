@@ -563,8 +563,6 @@
   "message.shout.not_in_game": "",
   "message.chat_message": "%s §8>> %s",
   "potion.potency.100": "(Full Heal)",
-  "potion_apple.when_eaten": "When Eaten:",
-  "potion_apple.with_duration": "%s %s",
   "powerup.socwars.eccentric": "Eccentric",
   "powerup.socwars.eccentric.info": "Your taunts will come from a random location 10 blocks away from you for the next minute!",
   "powerup.socwars.extra_life": "Extra Life",
