@@ -94,4 +94,15 @@ public interface ModItemComponentsReworked {
 			Identifier.of(SocWars.MOD_ID, "stasis_chamber_present"),
 			ComponentType.<Boolean>builder().codec(Codec.BOOL).build()
 	);
+	ComponentType<GamblerSwordComponent> GAMBLER_SWORD = Registry.register(
+			Registries.DATA_COMPONENT_TYPE,
+			Identifier.of(SocWars.MOD_ID, "gambler_sword"),
+			ComponentType.<GamblerSwordComponent>builder().codec(GamblerSwordComponent.CODEC).build()
+	);
+	ComponentType<Unit> NO_COMPONENT_UPDATE_BOB = Registry.register(
+			Registries.DATA_COMPONENT_TYPE,
+			Identifier.of(SocWars.MOD_ID, "no_component_update_bob"),
+			ComponentType.<Unit>builder().codec(Unit.CODEC).build()
+	);
+
 }

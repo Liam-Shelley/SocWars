@@ -159,12 +159,7 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
                 protected void onHit(LivingEntity target) {
                     super.onHit(target);
                     this.discard();
-                    if (!world.isClient) {
-                        GamesManager.getInstance().getGame(target).ifPresentOrElse(
-                                game -> game.onPlayerDeath((ServerPlayerEntity)target, damageSource(world, DamageTypes.CATASTROPHE_BOW, user), target.getHealth()),
-                                () -> target.kill((ServerWorld)world)
-                        );
-                    }
+                    forceKillTarget(target, user);
                 }
             }, stack -> 3f, stack -> 6f) {
                 @Override
@@ -177,6 +172,7 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
             .rarity(Rarity.EPIC)
             .maxDamage(10)
     );
+
     public static final Item SEEKING_BOW = ModItemsReworked.register("seeking_bow", settings -> new BowItem(settings, (world, user, projectileStack, weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
                 @Override
                 protected void onHit(LivingEntity target) {

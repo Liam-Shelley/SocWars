@@ -11,6 +11,7 @@ import com.soc.items.DepositableEnderChestBlockItem;
 import com.soc.items.components.CommandFunctionComponent;
 import com.soc.items.util.*;
 import com.soc.itemsrework.components.ExponComponent;
+import com.soc.itemsrework.components.GamblerSwordComponent;
 import com.soc.itemsrework.components.ModItemComponentsReworked;
 import com.soc.itemsrework.components.StasisChamberComponent;
 import com.soc.itemsrework.util.GenerateItem;
@@ -973,7 +974,7 @@ public interface ModItemsReworked {
 	Item EXPON = registerAndGroup("expon", TickingSocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, -0.5f, -1.6f)
 			.maxDamage(300)
-			.component(ModItemComponentsReworked.EXPON, new ExponComponent())
+			.component(ModItemComponentsReworked.EXPON, ExponComponent.DEFAULT)
 			.rarity(Rarity.UNCOMMON)
 			.simpleTooltip(Text.translatable("tooltip.expon")),
 			ItemGroups.COMBAT
@@ -1277,14 +1278,7 @@ public interface ModItemsReworked {
 			.rarity(Rarity.EPIC) //TODO: Mythic
 			.itemHit((stack, target, attacker) -> {
 				if (attacker instanceof PlayerEntity playerEntity) stack.damage(1, playerEntity);
-				final World world = target.getWorld();
-
-				if (!world.isClient) {
-					GamesManager.getInstance().getGame(target).ifPresentOrElse(
-							game -> game.onPlayerDeath((ServerPlayerEntity)target, damageSource(world, net.minecraft.entity.damage.DamageTypes.GENERIC, attacker), target.getHealth()),
-							() -> target.kill((ServerWorld)world)
-					);
-				}
+				forceKillTarget(target, attacker);
 			})
 			.simpleTooltip( //TODO: Colour this tooltip nicely
 					Text.translatable("tooltip.one_hit_wonder"),
@@ -1306,6 +1300,13 @@ public interface ModItemsReworked {
 			.maxDamage(1000)
 			.rarity(Rarity.RARE)
 			.simpleTooltip(Text.translatable("tooltip.alpha_sword")),
+			ItemGroups.COMBAT
+	);
+	Item GAMBLER_SWORD = registerAndGroup("gambler_sword", TickingSocWarsItem::new, new ExtendedItemSettings()
+			.maxDamage(500)
+			.rarity(Rarity.RARE)
+			.component(ModItemComponentsReworked.GAMBLER_SWORD, GamblerSwordComponent.DEFAULT)
+			.noComponentUpdateBob(),
 			ItemGroups.COMBAT
 	);
 

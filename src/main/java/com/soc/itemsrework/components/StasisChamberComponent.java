@@ -1,7 +1,6 @@
 package com.soc.itemsrework.components;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.JavaOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.component.ComponentsAccess;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,15 +18,11 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 public record StasisChamberComponent(Optional<Vec3d> pos) implements ItemUseComponent, SocWarsTooltipAppender {
-	public static final StasisChamberComponent DEFAULT = new StasisChamberComponent();
+	public static final StasisChamberComponent DEFAULT = new StasisChamberComponent(Optional.empty());
 
 	public static final Codec<StasisChamberComponent> CODEC = RecordCodecBuilder.create(builder -> builder.group(
 			Codecs.optional(Vec3d.CODEC).fieldOf("pos").forGetter(StasisChamberComponent::pos)
 	).apply(builder, StasisChamberComponent::new));
-
-	public StasisChamberComponent() {
-		this(Optional.empty());
-	}
 
 	public StasisChamberComponent(Vec3d pos) {
 		this(Optional.of(pos));

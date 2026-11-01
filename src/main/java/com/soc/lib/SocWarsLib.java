@@ -3,9 +3,11 @@ package com.soc.lib;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import com.soc.SocWars;
+import com.soc.game.manager.GamesManager;
 import com.soc.mixin.GetItemSettingsComponent;
 import com.soc.mixin.GetItemSettingsComponentsMap;
 import com.soc.mixin.MostRecentDamage;
+import com.soc.util.DamageTypes;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.ComponentType;
 import net.minecraft.component.DataComponentTypes;
@@ -37,6 +39,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.scoreboard.Scoreboard;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -737,4 +740,16 @@ public final class SocWarsLib {
         //I'm setting this in a client mixin because I'm too lazy to think of a better way to do it
         return 0L;
     }
+
+	public static void forceKillTarget(LivingEntity target, LivingEntity user) {
+		if (!target.getWorld().isClient) {
+			GamesManager.getInstance().getGame(target).ifPresentOrElse(
+					game -> game.onPlayerDeath((ServerPlayerEntity) target, damageSource(target.getWorld(), DamageTypes.CATASTROPHE_BOW, user), target.getHealth()),
+					() -> {
+						target.kill((ServerWorld)target.getWorld());
+						if (target.isAlive()) target.setHealth(0f);
+					}
+			);
+		}
+	}
 }

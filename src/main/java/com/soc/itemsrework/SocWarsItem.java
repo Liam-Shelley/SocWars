@@ -74,4 +74,9 @@ public class SocWarsItem extends Item { //I wonder if I should just turn this in
 		stack.streamAll(SocWarsTooltipAppender.class).forEach(appender -> appender.appendTooltip(context, textConsumer, type, this.getComponents()));
 		stack.streamAll(DynamicTooltipComponent.class).forEach(creator -> creator.create(stack, getWorldTime()).forEach(textConsumer));
 	}
+
+	@Override
+	public boolean allowComponentsUpdateAnimation(PlayerEntity player, Hand hand, ItemStack oldStack, ItemStack newStack) {
+		return oldStack.get(ModItemComponentsReworked.NO_COMPONENT_UPDATE_BOB) == null;
+	}
 }

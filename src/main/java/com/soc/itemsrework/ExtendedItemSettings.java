@@ -26,6 +26,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Rarity;
+import net.minecraft.util.Unit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,6 +90,10 @@ public class ExtendedItemSettings extends Item.Settings {
 
 	public ExtendedItemSettings enchantmentGlint() {
 		return this.component(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
+	}
+
+	public ExtendedItemSettings noComponentUpdateBob() {
+		return this.component(ModItemComponentsReworked.NO_COMPONENT_UPDATE_BOB, Unit.INSTANCE);
 	}
 
 	public ExtendedItemSettings consumable(float consumeTime, FinishUseComponent onConsumeEffect) {

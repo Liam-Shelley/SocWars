@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 import java.util.Optional;
 
-public record OptionalProperty(Identifier component, String field, @NotNull Cache cache) implements BooleanProperty { //TODO: Nuke this whole thing into orbit
+public record OptionalProperty(Identifier component, String field, @NotNull Cache cache) implements BooleanProperty { //TODO: Nuke this whole thing into orbit - maybe it's actually not that bad now that I cache it?
 	public static final MapCodec<OptionalProperty> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			Identifier.CODEC.fieldOf("component").forGetter(OptionalProperty::component),
 			Codec.STRING.fieldOf("field").forGetter(OptionalProperty::field)
@@ -41,7 +41,10 @@ public record OptionalProperty(Identifier component, String field, @NotNull Cach
 		final JsonElement element = serialise(componentValue, componentType.get().getCodec());
 		if (element == null || !element.isJsonObject()) return false;
 
-		final boolean result = element.getAsJsonObject().get(this.field).toString().length() > 2;
+		final JsonElement fieldElement = element.getAsJsonObject().get(this.field);
+		if (fieldElement == null) return false;
+
+		final boolean result = fieldElement.toString().length() > 2;
 		this.cache.update(componentValue, result);
 		return result;
 	}

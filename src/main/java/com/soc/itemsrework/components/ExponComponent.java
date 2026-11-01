@@ -5,7 +5,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.soc.networking.s2c.AddVelocityPayload;
 import com.soc.util.DamageTypes;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.component.ComponentChanges;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -25,16 +24,12 @@ import static com.soc.lib.SocWarsLib.ifNotNull;
 public record ExponComponent(long lastTimeUsed, int damageStage) implements ItemHitComponent, ItemTickComponent { //0 is a signal value for unset time
 	//public static final int MAX_DAMAGE_STAGE = 8; //Final damage is (1 << stage) * 0.5f; this caps it to 32 damage
 
-	public static final ExponComponent DEFAULT = new ExponComponent();
+	public static final ExponComponent DEFAULT = new ExponComponent(0L, 0);
 
 	public static final Codec<ExponComponent> CODEC = RecordCodecBuilder.create(builder -> builder.group(
 			Codec.LONG.fieldOf("last_time_used").forGetter(ExponComponent::lastTimeUsed),
 			Codec.INT.fieldOf("damage").forGetter(ExponComponent::damageStage)
 	).apply(builder, ExponComponent::new));
-
-	public ExponComponent() {
-		this(0L, 0);
-	}
 
 	public int getDamage() {
 		return 1 << this.damageStage;
