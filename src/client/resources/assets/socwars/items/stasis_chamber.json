@@ -3,16 +3,14 @@
     "type": "minecraft:condition",
     "on_false": {
       "type": "minecraft:model",
-      "model": "socwars:item/boom_bow/base"
+      "model": "socwars:item/stasis_chamber/empty"
     },
     "on_true": {
       "type": "minecraft:model",
-      "model": "socwars:item/megaboom_bow/base"
+      "model": "socwars:item/stasis_chamber/full"
     },
-    "fallback": {
-      "type": "minecraft:model",
-      "model": "socwars:item/falcon_bow/base"
-    },
-    "property": "socwars:stasis_chamber_present"
+    "property": "socwars:optional_property",
+    "component": "socwars:stasis_chamber",
+    "field": "pos"
   }
 }

@@ -6,6 +6,7 @@ import com.soc.gui.hud.sidebar.EventsHud;
 import com.soc.gui.hud.sidebar.QueueHud;
 import com.soc.gui.hud.sidebar.SkywarsTeamsHud;
 import com.soc.gui.screen.HandledScreens;
+import com.soc.item.ModItemProperties;
 import com.soc.items.FeatherBlockItem;
 import com.soc.lib.Coroutines;
 import com.soc.lib.Events;
@@ -53,6 +54,8 @@ public class SocWarsClient implements ClientModInitializer {
 		EntityRenderers.initialise();
 		BlockEntityRenderers.initialise();
 		BlockRenderLayers.initialise();
+
+		ModItemProperties.initialise();
 
 		ClientTickEvents.START_CLIENT_TICK.register(client -> {
 			if (!client.isIntegratedServerRunning()) {

@@ -37,7 +37,7 @@ public record StasisChamberComponent(Optional<Vec3d> pos) implements ItemUseComp
 	public ActionResult use(World world, PlayerEntity user, Hand hand) {
 		final ItemStack stack = user.getStackInHand(hand);
 
-		stack.decrementUnlessCreative(1, user);
+		stack.damage(1, user);
 
 		if (this.pos.isEmpty()) {
 			stack.set(ModItemComponentsReworked.STASIS_CHAMBER, new StasisChamberComponent(user.getPos()));

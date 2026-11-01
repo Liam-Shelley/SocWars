@@ -1276,7 +1276,7 @@ public interface ModItemsReworked {
 			.maxDamage(1)
 			.rarity(Rarity.EPIC) //TODO: Mythic
 			.itemHit((stack, target, attacker) -> {
-				stack.decrementUnlessCreative(1, attacker);
+				if (attacker instanceof PlayerEntity playerEntity) stack.damage(1, playerEntity);
 				final World world = target.getWorld();
 
 				if (!world.isClient) {
@@ -1289,7 +1289,7 @@ public interface ModItemsReworked {
 			.simpleTooltip( //TODO: Colour this tooltip nicely
 					Text.translatable("tooltip.one_hit_wonder"),
 					Text.empty(),
-					Text.translatable("item.modifiers.mainhand"),
+					Text.translatable("item.modifiers.mainhand").formatted(Formatting.GRAY),
 					Text.literal(" ").append(Text.translatable("attribute.modifier.equals.0", "1,000,000", Text.translatable("attribute.name.attack_damage"))).formatted(Formatting.DARK_GREEN)
 			),
 			ItemGroups.COMBAT
@@ -1299,6 +1299,14 @@ public interface ModItemsReworked {
 			.rarity(Rarity.EPIC)
 			.component(ModItemComponentsReworked.STASIS_CHAMBER, StasisChamberComponent.DEFAULT),
 			ItemGroups.TOOLS
+	);
+	@GenerateItem(HANDHELD)
+	Item ALPHA_SWORD = registerAndGroup("alpha_sword", SocWarsItem::new, new ExtendedItemSettings()
+			.sword(ToolMaterials.BASE, 5f, 16f)
+			.maxDamage(1000)
+			.rarity(Rarity.RARE)
+			.simpleTooltip(Text.translatable("tooltip.alpha_sword")),
+			ItemGroups.COMBAT
 	);
 
 

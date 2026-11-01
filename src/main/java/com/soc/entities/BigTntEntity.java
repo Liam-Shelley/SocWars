@@ -17,8 +17,8 @@ import static com.soc.entities.util.ModEntities.*;
 
 public class BigTntEntity extends Entity implements Ownable {
     public enum BigTntType {
-        NUCLEAR(10.5f, 4 * 20),
-        HYDROGEN(15f, 6 * 20),
+        NUCLEAR(11f, 4 * 20),
+        HYDROGEN(16.5f, 6 * 20),
         DOOM(100f, 15 * 20);
 
         public final float explosionRadius;

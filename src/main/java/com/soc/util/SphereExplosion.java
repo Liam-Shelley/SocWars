@@ -31,12 +31,13 @@ public class SphereExplosion {
     private SphereExplosion() {}
 
     public static void explode(World world, Vec3d centre, float explosionRadius, float explosionVariance, float damageFactor, float knockbackFactor, boolean blockDamage, @Nullable Entity causingEntity, @Nullable RegistryKey<DamageType> damageType) {
-        final BiPredicate<BlockPos, BlockState> damage = getBlockDamagePredicate(world, blockDamage, causingEntity);
+        final BiPredicate<BlockPos, BlockState> baseDamage = getBlockDamagePredicate(world, blockDamage, causingEntity);
+        final BiPredicate<BlockPos, BlockState> damage = explosionRadius > 10f ? ((BiPredicate<BlockPos, BlockState>)((blockPos, blockState) -> !blockState.getFluidState().isEmpty())).or(baseDamage) : baseDamage;
 
         iterateInSphere(BlockPos.ofFloored(centre), explosionRadius, explosionVariance, pos -> {
                 final BlockState currentState = world.getBlockState(pos);
 
-                if (currentState == Blocks.WATER.getDefaultState()) trySpawnSteam(world, pos);
+                if (!currentState.getFluidState().isEmpty()) trySpawnSteam(world, pos, explosionRadius);
 
                 if (damage.test(pos, currentState)) world.setBlockState(pos, Blocks.AIR.getDefaultState());
         });
@@ -50,12 +51,12 @@ public class SphereExplosion {
 
         nearbyEntities.forEach(entity -> {
             final Vec3d pos = entity.getPos();
-            final float distance = (float)pos.distanceTo(centre);
+            final float distance = (float)pos.squaredDistanceTo(centre);
 
             if (distance > explosionRadius * 2f) return;
 
-            //Check obstruction
-            final float intensity = Math.min(1f / distance, 1.5f) * explosionRadius;
+            //TODO: Check obstruction
+            final float intensity = Math.min(1f / (float)Math.pow(distance, 0.25d), 1.5f) * explosionRadius;
 
             final Vec3d knockback = pos.subtract(centre.subtract(0d, 0.5d, 0d)).normalize().multiply(intensity * knockbackFactor * 0.25f);
             if (entity instanceof ServerPlayerEntity serverPlayer) {
@@ -79,14 +80,16 @@ public class SphereExplosion {
         }
     }
 
-    private static void trySpawnSteam(World world, float x, float y, float z) {
+    private static void trySpawnSteam(World world, float x, float y, float z, float explosionRadius) {
+        final float threshold = explosionRadius < 25f ? 0.6f : 0.15f;
+
         final float random = world.random.nextFloat();
-        if (random < 0.6f) return;
+        if (random < threshold) return;
         world.addParticleClient(ParticleTypes.CAMPFIRE_COSY_SMOKE, x, y, z, 0f, random - 0.5f, 0f);
     }
 
-    private static void trySpawnSteam(World world, Vec3i pos) {
-        trySpawnSteam(world, pos.getX(), pos.getY(), pos.getZ());
+    private static void trySpawnSteam(World world, Vec3i pos, float explosionRadius) {
+        trySpawnSteam(world, pos.getX(), pos.getY(), pos.getZ(), explosionRadius);
     }
 
     public static void fireExplosion(World world, BlockPos centre, float radius, float fireChance, Entity owner) {
