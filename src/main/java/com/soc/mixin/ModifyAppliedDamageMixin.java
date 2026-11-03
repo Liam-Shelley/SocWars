@@ -1,6 +1,6 @@
 package com.soc.mixin;
 
-import com.soc.lib.EntityAttributes;
+import com.soc.lib.ModEntityAttributes;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.damage.DamageSource;
@@ -18,6 +18,6 @@ public abstract class ModifyAppliedDamageMixin {
 
     @Inject(method = "modifyAppliedDamage", at = @At("RETURN"), cancellable = true)
     void a(DamageSource source, float amount, CallbackInfoReturnable<Float> cir) {
-        if (source.isIn(DamageTypeTags.IS_EXPLOSION)) cir.setReturnValue(amount * (1f - (float)this.getAttributeValue(EntityAttributes.EXPLOSION_RESISTANCE)));
+        if (source.isIn(DamageTypeTags.IS_EXPLOSION)) cir.setReturnValue(amount * (1f - (float)this.getAttributeValue(ModEntityAttributes.EXPLOSION_RESISTANCE)));
     }
 }

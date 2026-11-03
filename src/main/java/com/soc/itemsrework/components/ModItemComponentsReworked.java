@@ -3,7 +3,6 @@ package com.soc.itemsrework.components;
 import com.mojang.serialization.Codec;
 import com.soc.SocWars;
 import com.soc.items.components.CommandFunctionComponent;
-import com.soc.networking.helper.BlockLocation;
 import net.minecraft.component.ComponentType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageType;
@@ -14,7 +13,6 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Unit;
 
-import java.util.Optional;
 import java.util.function.Predicate;
 
 public interface ModItemComponentsReworked {
@@ -33,6 +31,11 @@ public interface ModItemComponentsReworked {
 			Registries.DATA_COMPONENT_TYPE,
 			Identifier.of(SocWars.MOD_ID, "item_use"),
 			ComponentType.<ItemUseComponent>builder().codec(ItemUseComponent.CODEC).build()
+	);
+	ComponentType<ItemStopUsingComponent> ITEM_STOP_USING = Registry.register(
+			Registries.DATA_COMPONENT_TYPE,
+			Identifier.of(SocWars.MOD_ID, "item_stop_using"),
+			ComponentType.<ItemStopUsingComponent>builder().codec(ItemStopUsingComponent.CODEC).build()
 	);
 	ComponentType<ItemUseOnBlockComponent> ITEM_USE_ON_BLOCK = Registry.register(
 			Registries.DATA_COMPONENT_TYPE,
@@ -104,5 +107,9 @@ public interface ModItemComponentsReworked {
 			Identifier.of(SocWars.MOD_ID, "no_component_update_bob"),
 			ComponentType.<Unit>builder().codec(Unit.CODEC).build()
 	);
-
+	ComponentType<ArmourSetBonus> ARMOUR_SET_BONUS = Registry.register(
+			Registries.DATA_COMPONENT_TYPE,
+			Identifier.of(SocWars.MOD_ID, "armour_set_bonus"),
+			ComponentType.<ArmourSetBonus>builder().codec(ArmourSetBonus.CODEC).build()
+	);
 }

@@ -4,6 +4,7 @@ import com.soc.items.components.ModComponents;
 import com.soc.items.util.ArmourItem;
 import com.soc.items.util.ModItemGroups;
 import com.soc.itemsrework.ModItemsReworked;
+import com.soc.itemsrework.armour.ModArmourMaterials;
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.entity.Entity;
@@ -27,7 +28,7 @@ import java.util.function.Consumer;
 import static com.soc.lib.SocWarsLib.getTimeFromTicksDynColours;
 
 public class TrainingWeights extends ArmourItem {
-    private static final RegistryKey<EquipmentAsset> TRAINING_WEIGHTS_MODEL_KEY = ArmourItem.registerEquipmentAsset("training_weights");
+    private static final RegistryKey<EquipmentAsset> TRAINING_WEIGHTS_MODEL_KEY = ModArmourMaterials.registerEquipmentAsset("training_weights");
 
     public TrainingWeights(Settings settings, EquipmentSlot slot, int armour) {
         super(settings.component(ModComponents.TRAINING_WEIGHTS_COMPONENT, 0), slot, armour, TRAINING_WEIGHTS_MODEL_KEY);

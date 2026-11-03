@@ -10,6 +10,8 @@ import com.soc.items.DepositableChestBlockItem;
 import com.soc.items.DepositableEnderChestBlockItem;
 import com.soc.items.components.CommandFunctionComponent;
 import com.soc.items.util.*;
+import com.soc.itemsrework.armour.ArmourSetBonuses;
+import com.soc.itemsrework.armour.ModArmourMaterials;
 import com.soc.itemsrework.components.ExponComponent;
 import com.soc.itemsrework.components.GamblerSwordComponent;
 import com.soc.itemsrework.components.ModItemComponentsReworked;
@@ -44,6 +46,7 @@ import net.minecraft.entity.mob.VexEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.*;
 import net.minecraft.item.*;
+import net.minecraft.item.equipment.EquipmentType;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
 import net.minecraft.particle.ParticleTypes;
@@ -913,7 +916,7 @@ public interface ModItemsReworked {
 	);
 	Item WATERBALL = registerAndGroup("waterball", SocWarsItem::new, new ExtendedItemSettings()
 			.useCooldown(0.75f)
-			.throwable(BWFireballEntity::waterball, 1.75f),
+			.throwable(BWFireballEntity::waterball, 3f),
 			ItemGroups.COMBAT
 	);
 	Item SNAIL_FIREBALL = registerAndGroup("snail_fireball", SocWarsItem::new, new ExtendedItemSettings()
@@ -1302,12 +1305,53 @@ public interface ModItemsReworked {
 			.simpleTooltip(Text.translatable("tooltip.alpha_sword")),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(HANDHELD)
 	Item GAMBLER_SWORD = registerAndGroup("gambler_sword", TickingSocWarsItem::new, new ExtendedItemSettings()
 			.maxDamage(500)
 			.rarity(Rarity.RARE)
 			.component(ModItemComponentsReworked.GAMBLER_SWORD, GamblerSwordComponent.DEFAULT)
 			.noComponentUpdateBob(),
 			ItemGroups.COMBAT
+	);
+	@GenerateItem(GENERATED)
+	Item DEMOLITIONIST_HELMET = ModItemsReworked.register("demolitionist_helmet", SocWarsItem::new, new ExtendedItemSettings()
+			.rarity(Rarity.UNCOMMON)
+			.armourWithSetBonus(ModArmourMaterials.DEMOLITIONIST, EquipmentType.HELMET, ArmourSetBonuses.DEMOLITIONIST)
+	);
+	@GenerateItem(GENERATED)
+	Item DEMOLITIONIST_CHESTPLATE = ModItemsReworked.register("demolitionist_chestplate", SocWarsItem::new, new ExtendedItemSettings()
+			.rarity(Rarity.UNCOMMON)
+			.armourWithSetBonus(ModArmourMaterials.DEMOLITIONIST, EquipmentType.CHESTPLATE, ArmourSetBonuses.DEMOLITIONIST)
+	);
+	@GenerateItem(GENERATED)
+	Item DEMOLITIONIST_LEGGINGS = ModItemsReworked.register("demolitionist_leggings", SocWarsItem::new, new ExtendedItemSettings()
+			.rarity(Rarity.UNCOMMON)
+			.armourWithSetBonus(ModArmourMaterials.DEMOLITIONIST, EquipmentType.LEGGINGS, ArmourSetBonuses.DEMOLITIONIST)
+	);
+	@GenerateItem(GENERATED)
+	Item DEMOLITIONIST_BOOTS = ModItemsReworked.register("demolitionist_boots", SocWarsItem::new, new ExtendedItemSettings()
+			.rarity(Rarity.UNCOMMON)
+			.armourWithSetBonus(ModArmourMaterials.DEMOLITIONIST, EquipmentType.BOOTS, ArmourSetBonuses.DEMOLITIONIST)
+	);
+	@GenerateItem(GENERATED)
+	Item STEADFAST_HELMET = ModItemsReworked.register("steadfast_helmet", SocWarsItem::new, new ExtendedItemSettings()
+			.rarity(Rarity.UNCOMMON)
+			.armourWithSetBonus(ModArmourMaterials.STEADFAST, EquipmentType.HELMET, ArmourSetBonuses.STEADFAST)
+	);
+	@GenerateItem(GENERATED)
+	Item STEADFAST_CHESTPLATE = ModItemsReworked.register("steadfast_chestplate", SocWarsItem::new, new ExtendedItemSettings()
+			.rarity(Rarity.UNCOMMON)
+			.armourWithSetBonus(ModArmourMaterials.STEADFAST, EquipmentType.CHESTPLATE, ArmourSetBonuses.STEADFAST)
+	);
+	@GenerateItem(GENERATED)
+	Item STEADFAST_LEGGINGS = ModItemsReworked.register("steadfast_leggings", SocWarsItem::new, new ExtendedItemSettings()
+			.rarity(Rarity.UNCOMMON)
+			.armourWithSetBonus(ModArmourMaterials.STEADFAST, EquipmentType.LEGGINGS, ArmourSetBonuses.STEADFAST)
+	);
+	@GenerateItem(GENERATED)
+	Item STEADFAST_BOOTS = ModItemsReworked.register("steadfast_boots", SocWarsItem::new, new ExtendedItemSettings()
+			.rarity(Rarity.UNCOMMON)
+			.armourWithSetBonus(ModArmourMaterials.STEADFAST, EquipmentType.BOOTS, ArmourSetBonuses.STEADFAST)
 	);
 
 

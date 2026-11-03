@@ -4,6 +4,7 @@ import com.soc.items.util.ArmourItem;
 import com.soc.items.util.OnHitArmour;
 import com.soc.items.util.TransparentArmour;
 import com.soc.itemsrework.ModItemsReworked;
+import com.soc.itemsrework.armour.ModArmourMaterials;
 import com.soc.player.PlayerDataManager;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.EquipmentSlot;
@@ -24,7 +25,7 @@ import static com.soc.items.util.ModItemGroups.addItemToGroupsAndBaseItemGroup;
 import static com.soc.lib.SocWarsLib.damageSource;
 
 public class IllusionerArmour extends ArmourItem implements OnHitArmour, TransparentArmour {
-    private static final RegistryKey<EquipmentAsset> ILLUSIONER_MODEL_KEY = ArmourItem.registerEquipmentAsset("illusioner");
+    private static final RegistryKey<EquipmentAsset> ILLUSIONER_MODEL_KEY = ModArmourMaterials.registerEquipmentAsset("illusioner");
 
     public IllusionerArmour(Settings settings, EquipmentSlot slot, int armour) {
         super(settings, slot, armour, ILLUSIONER_MODEL_KEY);

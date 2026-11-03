@@ -14,10 +14,8 @@ public interface ModItems {
         BowItem.initialise();
 
         GamblerArmour.initialise();
-        SteadfastArmour.initialise();
         CartoonArmour.initialise();
         GlassArmour.initialise();
-        DemolitionistArmour.initialise();
         IllusionerArmour.initialise();
         TrainingWeights.initialise();
         SummonersGarb.initialise();

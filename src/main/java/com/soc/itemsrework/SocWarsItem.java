@@ -43,6 +43,14 @@ public class SocWarsItem extends Item { //I wonder if I should just turn this in
 	}
 
 	@Override
+	public boolean onStoppedUsing(ItemStack stack, World world, LivingEntity user, int remainingUseTicks) {
+		return stack
+				.streamAll(ItemStopUsingComponent.class)
+				.map(itemStopUsing -> itemStopUsing.onStoppedUsing(stack, world, user, remainingUseTicks))
+				.reduce(false, Boolean::logicalOr);
+	}
+
+	@Override
 	public ActionResult useOnBlock(ItemUsageContext context) {
 		final PlayerEntity user = context.getPlayer();
 		if (user == null) return super.useOnBlock(context);

@@ -17,7 +17,7 @@ import com.soc.items.components.ModComponents;
 import com.soc.items.util.ModItems;
 import com.soc.itemsrework.ModItemsReworked;
 import com.soc.lib.Coroutines;
-import com.soc.lib.EntityAttributes;
+import com.soc.lib.ModEntityAttributes;
 import com.soc.lib.Events;
 import com.soc.networking.C2SPayloads;
 import com.soc.networking.C2SReceivers;
@@ -61,7 +61,7 @@ public class SocWars implements ModInitializer {
 		ResourceManager.initialise();
 		ModCommands.initialise();
 		ScreenHandlers.initialise();
-		EntityAttributes.initialise();
+		ModEntityAttributes.initialise();
 
 		ModItemTags.initialise();
 		ModBlockTags.initialise();

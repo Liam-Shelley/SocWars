@@ -5,6 +5,7 @@ import com.soc.entities.util.ModEntities;
 import com.soc.items.util.ArmourItem;
 import com.soc.items.util.OnHitArmour;
 import com.soc.itemsrework.ModItemsReworked;
+import com.soc.itemsrework.armour.ModArmourMaterials;
 import com.soc.util.ModBlockTags;
 import com.soc.util.SphereExplosion;
 import net.minecraft.block.Blocks;
@@ -39,7 +40,7 @@ import static com.soc.lib.SocWarsLib.*;
 public class CartoonArmour extends ArmourItem implements OnHitArmour {
     private final OnHitArmour onHitEffect;
 
-    private static final RegistryKey<EquipmentAsset> CARTOON_MODEL_KEY = ArmourItem.registerEquipmentAsset("cartoon");
+    private static final RegistryKey<EquipmentAsset> CARTOON_MODEL_KEY = ModArmourMaterials.registerEquipmentAsset("cartoon");
 
     public CartoonArmour(Settings settings, EquipmentSlot slot, int armour, final OnHitArmour onHitEffect) {
         super(settings, slot, armour, CARTOON_MODEL_KEY);

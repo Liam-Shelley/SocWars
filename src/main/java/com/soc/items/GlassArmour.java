@@ -4,6 +4,7 @@ import com.soc.items.util.ArmourItem;
 import com.soc.items.util.OnHitArmour;
 import com.soc.items.util.TransparentArmour;
 import com.soc.itemsrework.ModItemsReworked;
+import com.soc.itemsrework.armour.ModArmourMaterials;
 import com.soc.util.DamageTypes;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -21,7 +22,7 @@ import static com.soc.items.util.ModItemGroups.addItemToGroupsAndBaseItemGroup;
 import static com.soc.lib.SocWarsLib.damageSource;
 
 public class GlassArmour extends ArmourItem implements OnHitArmour, TransparentArmour {
-    private static final RegistryKey<EquipmentAsset> GLASS_MODEL_KEY = ArmourItem.registerEquipmentAsset("glass");
+    private static final RegistryKey<EquipmentAsset> GLASS_MODEL_KEY = ModArmourMaterials.registerEquipmentAsset("glass");
 
     public GlassArmour(Settings settings, EquipmentSlot slot, int armour) {
         super(settings, slot, armour, GLASS_MODEL_KEY);

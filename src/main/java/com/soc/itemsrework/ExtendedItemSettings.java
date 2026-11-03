@@ -1,6 +1,7 @@
 package com.soc.itemsrework;
 
 import com.soc.itemsrework.components.*;
+import com.soc.itemsrework.components.ArmourSetBonus;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.component.ComponentType;
@@ -15,6 +16,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.item.consume.ApplyEffectsConsumeEffect;
 import net.minecraft.item.consume.UseAction;
+import net.minecraft.item.equipment.ArmorMaterial;
+import net.minecraft.item.equipment.EquipmentType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.RegistryKey;
@@ -106,6 +109,12 @@ public class ExtendedItemSettings extends Item.Settings {
 		return this
 				.consumable(consumeTime, onConsumeEffect)
 				.component(ModItemComponentsReworked.CAN_CONDITIONALLY_CONSUME, canConsume);
+	}
+
+	public ExtendedItemSettings armourWithSetBonus(ArmorMaterial armourMaterial, EquipmentType piece, ArmourSetBonus setBonus) {
+		return this
+				.armor(armourMaterial, piece)
+				.component(ModItemComponentsReworked.ARMOUR_SET_BONUS, setBonus);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -217,5 +226,9 @@ public class ExtendedItemSettings extends Item.Settings {
 		return (ExtendedItemSettings)super.food(foodComponent, consumableComponent);
 	}
 
+	@Override
+	public ExtendedItemSettings armor(ArmorMaterial material, EquipmentType type) {
+		return (ExtendedItemSettings)super.armor(material, type);
+	}
 	//endregion
 }

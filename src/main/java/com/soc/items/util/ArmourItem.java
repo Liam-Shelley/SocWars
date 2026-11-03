@@ -5,22 +5,14 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.AttributeModifierSlot;
 import net.minecraft.component.type.AttributeModifiersComponent;
 import net.minecraft.component.type.EquippableComponent;
-import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.equipment.ArmorMaterials;
 import net.minecraft.item.equipment.EquipmentAsset;
-import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-
-import java.util.List;
-import java.util.function.Consumer;
 
 import static com.soc.lib.SocWarsLib.getComponentFromSettingsBuilder;
 
@@ -48,7 +40,4 @@ public abstract class ArmourItem extends Item {
         return settings;
     }
 
-    public static RegistryKey<EquipmentAsset> registerEquipmentAsset(String name) {
-        return RegistryKey.of(RegistryKey.ofRegistry(Identifier.ofVanilla("equipment_asset")), Identifier.of("socwars:" + name));
-    }
 }

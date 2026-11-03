@@ -3,6 +3,7 @@ package com.soc.items;
 import com.soc.items.util.ArmourItem;
 import com.soc.items.util.OnHitArmour;
 import com.soc.itemsrework.ModItemsReworked;
+import com.soc.itemsrework.armour.ModArmourMaterials;
 import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -28,7 +29,7 @@ import static com.soc.lib.SocWarsLib.randomHostileMob;
 public class SummonersGarb extends ArmourItem implements OnHitArmour {
     public static final float HIT_SPAWN_CHANCE = 0.4f;
 
-    private static final RegistryKey<EquipmentAsset> SUMMONERS_GARB_MODEL_KEY = ArmourItem.registerEquipmentAsset("summoners_garb");
+    private static final RegistryKey<EquipmentAsset> SUMMONERS_GARB_MODEL_KEY = ModArmourMaterials.registerEquipmentAsset("summoners_garb");
 
     public SummonersGarb(Settings settings, EquipmentSlot slot, int armour) {
         super(settings, slot, armour, SUMMONERS_GARB_MODEL_KEY);

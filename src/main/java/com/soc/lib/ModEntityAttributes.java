@@ -8,7 +8,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 
-public interface EntityAttributes {
+public interface ModEntityAttributes {
     static void initialise() {}
 
     RegistryEntry<EntityAttribute> EXPLOSION_RESISTANCE = register(
