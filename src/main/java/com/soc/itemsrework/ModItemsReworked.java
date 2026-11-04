@@ -12,10 +12,7 @@ import com.soc.items.components.CommandFunctionComponent;
 import com.soc.items.util.*;
 import com.soc.itemsrework.armour.ArmourSetBonuses;
 import com.soc.itemsrework.armour.ModArmourMaterials;
-import com.soc.itemsrework.components.ExponComponent;
-import com.soc.itemsrework.components.GamblerSwordComponent;
-import com.soc.itemsrework.components.ModItemComponentsReworked;
-import com.soc.itemsrework.components.StasisChamberComponent;
+import com.soc.itemsrework.components.*;
 import com.soc.itemsrework.util.GenerateItem;
 import com.soc.itemsrework.util.ModConsumeEffects;
 import com.soc.lib.Coroutine;
@@ -1352,6 +1349,30 @@ public interface ModItemsReworked {
 	Item STEADFAST_BOOTS = ModItemsReworked.register("steadfast_boots", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.UNCOMMON)
 			.armourWithSetBonus(ModArmourMaterials.STEADFAST, EquipmentType.BOOTS, ArmourSetBonuses.STEADFAST)
+	);
+	@GenerateItem(GENERATED)
+	Item GAMBLER_HELMET = ModItemsReworked.register("gambler_helmet", TickingSocWarsItem::new, new ExtendedItemSettings()
+			.rarity(Rarity.RARE)
+			.armorWithoutAttributes(ModArmourMaterials.GAMBLER, EquipmentType.HELMET)
+			.component(ModItemComponentsReworked.GAMBLER_ARMOUR, GamblerArmourComponent.DEFAULT)
+	);
+	@GenerateItem(GENERATED)
+	Item GAMBLER_CHESTPLATE = ModItemsReworked.register("gambler_chestplate", TickingSocWarsItem::new, new ExtendedItemSettings()
+			.rarity(Rarity.RARE)
+			.armorWithoutAttributes(ModArmourMaterials.GAMBLER, EquipmentType.CHESTPLATE)
+			.component(ModItemComponentsReworked.GAMBLER_ARMOUR, GamblerArmourComponent.DEFAULT)
+	);
+	@GenerateItem(GENERATED)
+	Item GAMBLER_LEGGINGS = ModItemsReworked.register("gambler_leggings", TickingSocWarsItem::new, new ExtendedItemSettings()
+			.rarity(Rarity.RARE)
+			.armorWithoutAttributes(ModArmourMaterials.GAMBLER, EquipmentType.LEGGINGS)
+			.component(ModItemComponentsReworked.GAMBLER_ARMOUR, GamblerArmourComponent.DEFAULT)
+	);
+	@GenerateItem(GENERATED)
+	Item GAMBLER_BOOTS = ModItemsReworked.register("gambler_boots", TickingSocWarsItem::new, new ExtendedItemSettings()
+			.rarity(Rarity.RARE)
+			.armorWithoutAttributes(ModArmourMaterials.GAMBLER, EquipmentType.BOOTS)
+			.component(ModItemComponentsReworked.GAMBLER_ARMOUR, GamblerArmourComponent.DEFAULT)
 	);
 
 

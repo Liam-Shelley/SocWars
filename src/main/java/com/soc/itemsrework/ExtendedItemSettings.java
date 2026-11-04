@@ -24,6 +24,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.entry.RegistryEntryList;
 import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
@@ -115,6 +116,16 @@ public class ExtendedItemSettings extends Item.Settings {
 		return this
 				.armor(armourMaterial, piece)
 				.component(ModItemComponentsReworked.ARMOUR_SET_BONUS, setBonus);
+	}
+
+	public ExtendedItemSettings armorWithoutAttributes(ArmorMaterial material, EquipmentType type) {
+		return this
+				.maxDamage(type.getMaxDamage(material.durability()))
+				.enchantable(material.enchantmentValue())
+				.component(
+						DataComponentTypes.EQUIPPABLE, EquippableComponent.builder(type.getEquipmentSlot()).equipSound(material.equipSound()).model(material.assetId()).build()
+				)
+				.repairable(material.repairIngredient());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -230,5 +241,11 @@ public class ExtendedItemSettings extends Item.Settings {
 	public ExtendedItemSettings armor(ArmorMaterial material, EquipmentType type) {
 		return (ExtendedItemSettings)super.armor(material, type);
 	}
+
+	@Override
+	public ExtendedItemSettings repairable(TagKey<Item> repairIngredientsTag) {
+		return (ExtendedItemSettings)super.repairable(repairIngredientsTag);
+	}
+
 	//endregion
 }

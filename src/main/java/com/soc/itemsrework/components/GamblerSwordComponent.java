@@ -57,7 +57,7 @@ public record GamblerSwordComponent(int damage, long nextChangeTime) implements 
 	}
 
 	@Override
-	public List<AttributeModifiersComponent.Entry> getModifiers() {
+	public List<AttributeModifiersComponent.Entry> getModifiers(EquipmentSlot slot) {
 		return List.of(new AttributeModifiersComponent.Entry(EntityAttributes.ATTACK_DAMAGE, new EntityAttributeModifier(ATTRIBUTE_ID, this.damage - 1, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.MAINHAND));
 	}
 }

@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.function.BiConsumer;
 
 public interface ComponentWithAttributeModifiers {
-	List<AttributeModifiersComponent.Entry> getModifiers();
+	List<AttributeModifiersComponent.Entry> getModifiers(EquipmentSlot slot);
 
 	default void applyModifiers(EquipmentSlot slot, BiConsumer<RegistryEntry<EntityAttribute>, EntityAttributeModifier> attributeConsumer) {
-		this.getModifiers().forEach(entry -> {
+		this.getModifiers(slot).forEach(entry -> {
 			if (entry.slot().matches(slot)) {
 				attributeConsumer.accept(entry.attribute(), entry.modifier());
 			}

@@ -13,7 +13,6 @@ public interface ModItems {
         DrawableWeapon.initialise();
         BowItem.initialise();
 
-        GamblerArmour.initialise();
         CartoonArmour.initialise();
         GlassArmour.initialise();
         IllusionerArmour.initialise();

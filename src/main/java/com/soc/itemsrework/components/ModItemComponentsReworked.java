@@ -102,6 +102,11 @@ public interface ModItemComponentsReworked {
 			Identifier.of(SocWars.MOD_ID, "gambler_sword"),
 			ComponentType.<GamblerSwordComponent>builder().codec(GamblerSwordComponent.CODEC).build()
 	);
+	ComponentType<GamblerArmourComponent> GAMBLER_ARMOUR = Registry.register(
+			Registries.DATA_COMPONENT_TYPE,
+			Identifier.of(SocWars.MOD_ID, "gambler_armour"),
+			ComponentType.<GamblerArmourComponent>builder().codec(GamblerArmourComponent.CODEC).build()
+	);
 	ComponentType<Unit> NO_COMPONENT_UPDATE_BOB = Registry.register(
 			Registries.DATA_COMPONENT_TYPE,
 			Identifier.of(SocWars.MOD_ID, "no_component_update_bob"),
