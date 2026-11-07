@@ -1,6 +1,7 @@
 package com.soc.items.util;
 
 import com.soc.items.*;
+import com.soc.itemsrework.SocWarsBowItem;
 
 public interface ModItems {
     static void initialise() {
@@ -10,6 +11,6 @@ public interface ModItems {
 
 
         DrawableWeapon.initialise();
-        BowItem.initialise();
+        SocWarsBowItem.initialise();
     }
 }

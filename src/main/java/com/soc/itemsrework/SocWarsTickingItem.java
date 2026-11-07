@@ -7,8 +7,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import org.jetbrains.annotations.Nullable;
 
-public class TickingSocWarsItem extends SocWarsItem {
-	public TickingSocWarsItem(Settings settings) {
+public class SocWarsTickingItem extends SocWarsItem {
+	public SocWarsTickingItem(Settings settings) {
 		super(settings);
 	}
 

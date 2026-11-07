@@ -13,7 +13,6 @@ import com.soc.game.manager.bedwars.traps.Abilities;
 import com.soc.game.manager.bedwars.shopitems.*;
 import com.soc.game.manager.bedwars.tickfunctions.TickFunctions;
 import com.soc.game.manager.bedwars.traps.Traps;
-import com.soc.items.components.ModComponents;
 import com.soc.items.util.ModItems;
 import com.soc.itemsrework.ModItemsReworked;
 import com.soc.lib.Coroutines;
@@ -46,7 +45,6 @@ public class SocWars implements ModInitializer {
 		ModItemsReworked.initialise();
 
 		Sounds.initialise();
-		ModComponents.initialise();
 		ModBlocks.initialise();
 		ModEntities.initialise();
 		ModBlockEntities.initialise();

@@ -2,7 +2,7 @@ package com.soc.game.manager.bedwars.shopitems;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.soc.items.components.ModComponents;
+import com.soc.itemsrework.components.ModItemComponentsReworked;
 import com.soc.resourcedata.deserialisation.Cost;
 import com.soc.resourcedata.deserialisation.CostAndStack;
 import com.soc.screenhandler.AbstractShopScreenHandler;
@@ -89,20 +89,20 @@ public class UpgradeableShopItem implements ShopItem<UpgradeableShopItem>, Toolt
 
         boolean gaveStack;
         if (this.tier == 0) {
-            gaveStack = this.giveStack(this.getStack(), player, OptionalInt.empty(), stack -> stack.set(ModComponents.GAME_TOOL, this.slotTrackingId));
+            gaveStack = this.giveStack(this.getStack(), player, OptionalInt.empty(), stack -> stack.set(ModItemComponentsReworked.GAME_TOOL, this.slotTrackingId));
         } else {
             final PlayerInventory inventory = player.getInventory();
 
             OptionalInt slot = OptionalInt.empty();
             for (int i = 0; i < PlayerInventory.MAIN_SIZE; i++) {
-                final Integer component = inventory.getStack(i).get(ModComponents.GAME_TOOL);
+                final Integer component = inventory.getStack(i).get(ModItemComponentsReworked.GAME_TOOL);
                 if (component != null && component == this.slotTrackingId) {
                     slot = OptionalInt.of(i);
                     break;
                 }
             }
 
-            gaveStack = this.giveStack(this.getStack(), player, slot, stack -> stack.set(ModComponents.GAME_TOOL, this.slotTrackingId));
+            gaveStack = this.giveStack(this.getStack(), player, slot, stack -> stack.set(ModItemComponentsReworked.GAME_TOOL, this.slotTrackingId));
         }
 
         if (gaveStack) {
@@ -140,7 +140,7 @@ public class UpgradeableShopItem implements ShopItem<UpgradeableShopItem>, Toolt
             return ItemStack.EMPTY;
         } else {
             final ItemStack stack = this.stacks.get(this.tier - 1).stack().copy();
-            stack.set(ModComponents.GAME_TOOL, this.slotTrackingId);
+            stack.set(ModItemComponentsReworked.GAME_TOOL, this.slotTrackingId);
             return stack;
         }
     }

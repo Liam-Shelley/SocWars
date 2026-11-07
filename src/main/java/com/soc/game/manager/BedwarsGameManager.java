@@ -11,7 +11,7 @@ import com.soc.game.manager.bedwars.traps.AbstractAbility;
 import com.soc.game.manager.bedwars.traps.AbstractTrap;
 import com.soc.game.manager.bedwars.traps.TrapManager;
 import com.soc.game.map.*;
-import com.soc.items.components.ModComponents;
+import com.soc.itemsrework.components.ModItemComponentsReworked;
 import com.soc.lib.Events;
 import com.soc.networking.helper.BedwarsTeam;
 import com.soc.networking.s2c.bedwars.LeaveBedwarsPayload;
@@ -79,8 +79,8 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
     );
     @SuppressWarnings("DataFlowIssue")
     private static final Map<ComponentType<?>, TriConsumer<ItemStack, ServerPlayerEntity, BedwarsGameManager>> ITEM_PICKUP_COMPONENT_FUNCTION_MAP = Map.of(
-            ModComponents.RESOURCE_SPLIT, (stack, player, manager) -> {
-                stack.remove(ModComponents.RESOURCE_SPLIT);
+            ModItemComponentsReworked.RESOURCE_SPLIT, (stack, player, manager) -> {
+                stack.remove(ModItemComponentsReworked.RESOURCE_SPLIT);
                 if (manager.map.isWithinSplitRange(player)) {
                     manager.getPlayers().stream().filter(pickUpPlayer -> manager.map.isWithinSplitRange(pickUpPlayer) && pickUpPlayer.isTeammate(player) && pickUpPlayer != player).forEach(otherPlayer -> {
                         final ItemStack giveStack = stack.copy();
@@ -89,13 +89,13 @@ public class BedwarsGameManager extends AbstractGameManager<BedwarsGameMap, Bedw
                     });
                 }
             },
-            ModComponents.RESOURCE_COUNTED, (stack, player, manager) -> {
-                stack.remove(ModComponents.RESOURCE_COUNTED);
+            ModItemComponentsReworked.RESOURCE_COUNTED, (stack, player, manager) -> {
+                stack.remove(ModItemComponentsReworked.RESOURCE_COUNTED);
                 manager.getDbTable(player).collectItem(stack);
             },
-            ModComponents.GENERATOR_REFERENCE, (stack, player, manager) -> {
-                manager.map.getResourceGenerator(stack.get(ModComponents.GENERATOR_REFERENCE)).ifPresent(ResourceGenerator::checkItemCap);
-                stack.remove(ModComponents.GENERATOR_REFERENCE);
+            ModItemComponentsReworked.GENERATOR_REFERENCE, (stack, player, manager) -> {
+                manager.map.getResourceGenerator(stack.get(ModItemComponentsReworked.GENERATOR_REFERENCE)).ifPresent(ResourceGenerator::checkItemCap);
+                stack.remove(ModItemComponentsReworked.GENERATOR_REFERENCE);
             }
     );
 

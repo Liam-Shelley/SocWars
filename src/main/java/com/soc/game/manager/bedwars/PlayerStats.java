@@ -1,6 +1,6 @@
 package com.soc.game.manager.bedwars;
 
-import com.soc.items.components.ModComponents;
+import com.soc.itemsrework.components.ModItemComponentsReworked;
 import com.soc.resourcedata.containers.BedwarsShopDataContainer;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
@@ -15,7 +15,6 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.world.World;
 
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -56,7 +55,7 @@ public class PlayerStats {
 
         final PlayerInventory inventory = player.getInventory();
         for (int i = 0; i < inventory.size(); i++) {
-            final Integer component = inventory.getStack(i).get(ModComponents.GAME_TOOL);
+            final Integer component = inventory.getStack(i).get(ModItemComponentsReworked.GAME_TOOL);
             if (component != null) this.toolSlotMap.put(component.intValue(), i);
         }
     }

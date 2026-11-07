@@ -1,21 +1,16 @@
 package com.soc.game.map;
 
-import com.soc.items.components.ModComponents;
+import com.soc.itemsrework.components.ModItemComponentsReworked;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.TypeFilter;
 import net.minecraft.util.Unit;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ResourceGenerator {
@@ -62,9 +57,9 @@ public class ResourceGenerator {
     private ItemStack getItemStack(int countToSpawn) {
         final ItemStack itemStack = new ItemStack(this.item, countToSpawn);
 
-        itemStack.set(ModComponents.RESOURCE_COUNTED, Unit.INSTANCE);
-        if (this.splitsDrops) itemStack.set(ModComponents.RESOURCE_SPLIT, Unit.INSTANCE);
-        itemStack.set(ModComponents.GENERATOR_REFERENCE, id);
+        itemStack.set(ModItemComponentsReworked.RESOURCE_COUNTED, Unit.INSTANCE);
+        if (this.splitsDrops) itemStack.set(ModItemComponentsReworked.RESOURCE_SPLIT, Unit.INSTANCE);
+        itemStack.set(ModItemComponentsReworked.GENERATOR_REFERENCE, id);
 
         return itemStack;
     }
@@ -104,7 +99,7 @@ public class ResourceGenerator {
         if (this.currentCount == 0) return; //Hopefully a worthy optimisation that won't break everything
 
         this.currentCount = this.world
-                .getEntitiesByType(TypeFilter.instanceOf(ItemEntity.class), new Box(this.pos.getX() - 5, this.pos.getY() - 5, this.pos.getZ() - 5, this.pos.getX() + 5, this.pos.getY() + 5, this.pos.getZ() + 5), itemEntity -> itemEntity.getStack().get(ModComponents.RESOURCE_COUNTED) != null && itemEntity.getStack().isOf(this.item))
+                .getEntitiesByType(TypeFilter.instanceOf(ItemEntity.class), new Box(this.pos.getX() - 5, this.pos.getY() - 5, this.pos.getZ() - 5, this.pos.getX() + 5, this.pos.getY() + 5, this.pos.getZ() + 5), itemEntity -> itemEntity.getStack().get(ModItemComponentsReworked.RESOURCE_COUNTED) != null && itemEntity.getStack().isOf(this.item))
                 .stream()
                 .map(itemEntity -> itemEntity.getStack().getCount())
                 .reduce(0, Integer::sum);

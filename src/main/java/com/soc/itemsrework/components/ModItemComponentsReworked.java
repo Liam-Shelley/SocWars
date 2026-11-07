@@ -2,7 +2,6 @@ package com.soc.itemsrework.components;
 
 import com.mojang.serialization.Codec;
 import com.soc.SocWars;
-import com.soc.items.components.CommandFunctionComponent;
 import com.soc.itemsrework.TrainingWeightsComponent;
 import net.minecraft.component.ComponentType;
 import net.minecraft.entity.LivingEntity;
@@ -142,5 +141,25 @@ public interface ModItemComponentsReworked {
 			Registries.DATA_COMPONENT_TYPE,
 			Identifier.of(SocWars.MOD_ID, "training_weights"),
 			ComponentType.<TrainingWeightsComponent>builder().codec(TrainingWeightsComponent.CODEC).build()
+	);
+	ComponentType<Unit> RESOURCE_COUNTED = Registry.register(
+			Registries.DATA_COMPONENT_TYPE,
+			Identifier.of(SocWars.MOD_ID, "resource_counted"),
+			ComponentType.<Unit>builder().codec(Unit.CODEC).build()
+	);
+	ComponentType<Unit> RESOURCE_SPLIT = Registry.register(
+			Registries.DATA_COMPONENT_TYPE,
+			Identifier.of(SocWars.MOD_ID, "resource_split"),
+			ComponentType.<Unit>builder().codec(Unit.CODEC).build()
+	);
+	ComponentType<Integer> GAME_TOOL = Registry.register(
+			Registries.DATA_COMPONENT_TYPE,
+			Identifier.of(SocWars.MOD_ID, "game_tool"),
+			ComponentType.<Integer>builder().codec(Codec.INT).build()
+	);
+	ComponentType<Integer> GENERATOR_REFERENCE = Registry.register(
+			Registries.DATA_COMPONENT_TYPE,
+			Identifier.of(SocWars.MOD_ID, "generator_reference"),
+			ComponentType.<Integer>builder().codec(Codec.INT).build()
 	);
 }

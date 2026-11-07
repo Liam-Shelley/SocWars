@@ -1,11 +1,10 @@
-package com.soc.items;
+package com.soc.itemsrework;
 
 import com.soc.SocWars;
 import com.soc.game.manager.AbstractHidingGameManager;
 import com.soc.game.manager.GamesManager;
 import com.soc.items.util.ArrowFactory;
 import com.soc.items.util.ScaledUseDuration;
-import com.soc.itemsrework.ModItemsReworked;
 import com.soc.util.DamageTypes;
 import com.soc.util.SphereExplosion;
 import net.minecraft.component.type.AttributeModifierSlot;
@@ -43,12 +42,12 @@ import static com.soc.items.util.ModItemGroups.addItemToGroupsAndBaseItemGroup;
 import static com.soc.lib.SocWarsLib.*;
 import static com.soc.util.SphereExplosion.fireExplosion;
 
-public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
+public class SocWarsBowItem extends RangedWeaponItem implements ScaledUseDuration {
     private final ArrowFactory<? extends ArrowEntity> arrowFactory;
     private final Function<ItemStack, Float> drawTime;
     private final Function<ItemStack, Float> speed;
 
-    public BowItem(Settings settings, ArrowFactory<? extends ArrowEntity> arrowFactory, Function<ItemStack, Float> drawTime, Function<ItemStack, Float> speed) {
+    public SocWarsBowItem(Settings settings, ArrowFactory<? extends ArrowEntity> arrowFactory, Function<ItemStack, Float> drawTime, Function<ItemStack, Float> speed) {
         super(settings.enchantable(2));
         this.arrowFactory = arrowFactory;
         this.drawTime = drawTime;
@@ -65,7 +64,7 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
         addItemToGroupsAndBaseItemGroup(SEEKING_BOW, ItemGroups.COMBAT);
     }
 
-    public static final Item BOOM_BOW = ModItemsReworked.register("boom_bow", settings -> new BowItem(settings, (world, user, projectileStack, weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
+    public static final Item BOOM_BOW = ModItemsReworked.register("boom_bow", settings -> new SocWarsBowItem(settings, (world, user, projectileStack, weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
                 @Override
                 protected void onHit(LivingEntity target) {
                     super.onHit(target);
@@ -85,7 +84,7 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
             .rarity(Rarity.UNCOMMON)
             .maxDamage(30)
     );
-    public static final Item MEGABOOM_BOW = ModItemsReworked.register("megaboom_bow", settings -> new BowItem(settings, (world, user, projectileStack, weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
+    public static final Item MEGABOOM_BOW = ModItemsReworked.register("megaboom_bow", settings -> new SocWarsBowItem(settings, (world, user, projectileStack, weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
                 @Override
                 protected void onHit(LivingEntity target) {
                     super.onHit(target);
@@ -103,7 +102,7 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
             .rarity(Rarity.RARE)
             .maxDamage(15)
     );
-    public static final Item FALCON_BOW = ModItemsReworked.register("falcon_bow", settings -> new BowItem(settings, (world, user, projectileStack, weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
+    public static final Item FALCON_BOW = ModItemsReworked.register("falcon_bow", settings -> new SocWarsBowItem(settings, (world, user, projectileStack, weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
                 @Override
                 protected void onHit(LivingEntity target) {
                     super.onHit(target);
@@ -119,7 +118,7 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
             .rarity(Rarity.EPIC)
             .maxDamage(15)
     );
-    public static final Item HEATER_BOW = ModItemsReworked.register("heater_bow", settings -> new BowItem(settings, (world, user, projectileStack, weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
+    public static final Item HEATER_BOW = ModItemsReworked.register("heater_bow", settings -> new SocWarsBowItem(settings, (world, user, projectileStack, weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
                 @Override
                 protected void onHit(LivingEntity target) {
                     super.onHit(target);
@@ -137,7 +136,7 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
             .rarity(Rarity.UNCOMMON)
             .maxDamage(250)
     );
-    public static final Item CHORUS_BOW = ModItemsReworked.register("chorus_bow", settings -> new BowItem(settings, (world, user, projectileStack, weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
+    public static final Item CHORUS_BOW = ModItemsReworked.register("chorus_bow", settings -> new SocWarsBowItem(settings, (world, user, projectileStack, weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
                 @Override
                 protected void onHit(LivingEntity target) {
                     super.onHit(target);
@@ -154,7 +153,7 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
             .rarity(Rarity.RARE)
             .maxDamage(75)
     );
-    public static final Item CATASTROPHE_BOW = ModItemsReworked.register("catastrophe_bow", settings -> new BowItem(settings, (world, user, projectileStack, weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
+    public static final Item CATASTROPHE_BOW = ModItemsReworked.register("catastrophe_bow", settings -> new SocWarsBowItem(settings, (world, user, projectileStack, weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
                 @Override
                 protected void onHit(LivingEntity target) {
                     super.onHit(target);
@@ -173,7 +172,7 @@ public class BowItem extends RangedWeaponItem implements ScaledUseDuration {
             .maxDamage(10)
     );
 
-    public static final Item SEEKING_BOW = ModItemsReworked.register("seeking_bow", settings -> new BowItem(settings, (world, user, projectileStack, weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
+    public static final Item SEEKING_BOW = ModItemsReworked.register("seeking_bow", settings -> new SocWarsBowItem(settings, (world, user, projectileStack, weaponStack) -> new ArrowEntity(world, user, projectileStack, weaponStack) {
                 @Override
                 protected void onHit(LivingEntity target) {
                     super.onHit(target);

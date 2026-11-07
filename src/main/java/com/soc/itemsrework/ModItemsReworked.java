@@ -9,7 +9,7 @@ import com.soc.game.manager.GamesManager;
 import com.soc.game.map.DyeColourWithEmpty;
 import com.soc.items.DepositableChestBlockItem;
 import com.soc.items.DepositableEnderChestBlockItem;
-import com.soc.items.components.CommandFunctionComponent;
+import com.soc.itemsrework.components.CommandFunctionComponent;
 import com.soc.items.util.*;
 import com.soc.itemsrework.armour.ArmourSetBonuses;
 import com.soc.itemsrework.armour.ModArmourMaterials;
@@ -83,7 +83,7 @@ import java.util.stream.Collectors;
 import static com.soc.blocks.util.ModBlocks.CHEST_PLACEHOLDER;
 import static com.soc.blocks.util.ModBlocks.MANY_BEDS_BLOCK;
 import static com.soc.game.manager.AbstractGameManager.getBlockDamagePredicate;
-import static com.soc.items.BowItem.playBowSound;
+import static com.soc.itemsrework.SocWarsBowItem.playBowSound;
 import static com.soc.items.util.ModItemGroups.registerAndGroup;
 import static com.soc.itemsrework.ExtendedItemSettings.spawnEntityWithVelocity;
 import static com.soc.itemsrework.util.GenerateItem.Model.GENERATED;
@@ -449,7 +449,7 @@ public interface ModItemsReworked {
 	);
 	Item VEXING_STAFF = registerAndGroup("vexing_staff", SocWarsItem::new, new ExtendedItemSettings()
 			.maxDamage(5)
-			.useCooldown(45f)
+			.useCooldown(30f)
 			.rarity(Rarity.RARE)
 			.itemUse((world, user, hand) -> {
 				for (int i = 0; i < 2; i++) {
@@ -975,7 +975,7 @@ public interface ModItemsReworked {
 			.simpleTooltip(Text.translatable("tooltip.pocket_sand")),
 			ItemGroups.COMBAT
 	);
-	Item EXPON = registerAndGroup("expon", TickingSocWarsItem::new, new ExtendedItemSettings()
+	Item EXPON = registerAndGroup("expon", SocWarsTickingItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, -0.5f, -1.6f)
 			.maxDamage(300)
 			.component(ModItemComponentsReworked.EXPON, ExponComponent.DEFAULT)
@@ -1307,7 +1307,7 @@ public interface ModItemsReworked {
 			ItemGroups.COMBAT
 	);
 	@GenerateItem(HANDHELD)
-	Item GAMBLER_SWORD = registerAndGroup("gambler_sword", TickingSocWarsItem::new, new ExtendedItemSettings()
+	Item GAMBLER_SWORD = registerAndGroup("gambler_sword", SocWarsTickingItem::new, new ExtendedItemSettings()
 			.maxDamage(500)
 			.rarity(Rarity.RARE)
 			.component(ModItemComponentsReworked.GAMBLER_SWORD, GamblerSwordComponent.DEFAULT)
@@ -1363,28 +1363,28 @@ public interface ModItemsReworked {
 			ItemGroups.COMBAT
 	);
 	@GenerateItem(GENERATED)
-	Item GAMBLER_HELMET = registerAndGroup("gambler_helmet", TickingSocWarsItem::new, new ExtendedItemSettings()
+	Item GAMBLER_HELMET = registerAndGroup("gambler_helmet", SocWarsTickingItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.RARE)
 			.armourWithoutAttributes(ModArmourMaterials.GAMBLER, EquipmentType.HELMET)
 			.component(ModItemComponentsReworked.GAMBLER_ARMOUR, GamblerArmourComponent.DEFAULT),
 			ItemGroups.COMBAT
 	);
 	@GenerateItem(GENERATED)
-	Item GAMBLER_CHESTPLATE = registerAndGroup("gambler_chestplate", TickingSocWarsItem::new, new ExtendedItemSettings()
+	Item GAMBLER_CHESTPLATE = registerAndGroup("gambler_chestplate", SocWarsTickingItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.RARE)
 			.armourWithoutAttributes(ModArmourMaterials.GAMBLER, EquipmentType.CHESTPLATE)
 			.component(ModItemComponentsReworked.GAMBLER_ARMOUR, GamblerArmourComponent.DEFAULT),
 			ItemGroups.COMBAT
 	);
 	@GenerateItem(GENERATED)
-	Item GAMBLER_LEGGINGS = registerAndGroup("gambler_leggings", TickingSocWarsItem::new, new ExtendedItemSettings()
+	Item GAMBLER_LEGGINGS = registerAndGroup("gambler_leggings", SocWarsTickingItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.RARE)
 			.armourWithoutAttributes(ModArmourMaterials.GAMBLER, EquipmentType.LEGGINGS)
 			.component(ModItemComponentsReworked.GAMBLER_ARMOUR, GamblerArmourComponent.DEFAULT),
 			ItemGroups.COMBAT
 	);
 	@GenerateItem(GENERATED)
-	Item GAMBLER_BOOTS = registerAndGroup("gambler_boots", TickingSocWarsItem::new, new ExtendedItemSettings()
+	Item GAMBLER_BOOTS = registerAndGroup("gambler_boots", SocWarsTickingItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.RARE)
 			.armourWithoutAttributes(ModArmourMaterials.GAMBLER, EquipmentType.BOOTS)
 			.component(ModItemComponentsReworked.GAMBLER_ARMOUR, GamblerArmourComponent.DEFAULT),
@@ -1601,6 +1601,24 @@ public interface ModItemsReworked {
 	//		.noComponentUpdateBob(),
 	//		ItemGroups.COMBAT
 	//);
+	Item ENDER_STAFF = registerAndGroup("ender_staff", SocWarsItem::new, new ExtendedItemSettings()
+			.maxDamage(6)
+			.rarity(Rarity.UNCOMMON)
+			.useCooldown(0.5f),
+			ItemGroups.TOOLS
+	);
+	Item WIND_STAFF = registerAndGroup("wind_staff", SocWarsItem::new, new ExtendedItemSettings()
+			.maxDamage(12)
+			.rarity(Rarity.UNCOMMON)
+			.useCooldown(0.5f),
+			ItemGroups.TOOLS
+	);
+	Item MOBBING_STAFF = registerAndGroup("mobbing_staff", SocWarsItem::new, new ExtendedItemSettings()
+			.maxDamage(40)
+			.rarity(Rarity.RARE)
+			.useCooldown(5f),
+			ItemGroups.COMBAT
+	);
 
 
 

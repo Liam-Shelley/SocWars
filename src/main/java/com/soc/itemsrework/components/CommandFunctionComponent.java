@@ -1,9 +1,7 @@
-package com.soc.items.components;
+package com.soc.itemsrework.components;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.soc.itemsrework.components.ItemHitAllComponent;
-import com.soc.itemsrework.components.ItemUseComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.CommandOutput;
