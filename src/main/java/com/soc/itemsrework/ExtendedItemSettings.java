@@ -100,13 +100,13 @@ public class ExtendedItemSettings extends Item.Settings {
 		return this.component(ModItemComponentsReworked.NO_COMPONENT_UPDATE_BOB, Unit.INSTANCE);
 	}
 
-	public ExtendedItemSettings consumable(float consumeTime, FinishUseComponent onConsumeEffect) {
+	public ExtendedItemSettings consumable(float consumeTime, ItemFinishUseComponent onConsumeEffect) {
 		return this
 				.component(DataComponentTypes.CONSUMABLE, new ConsumableComponent(consumeTime, UseAction.EAT, SoundEvents.ENTITY_GENERIC_EAT, true, List.of()))
 				.component(ModItemComponentsReworked.FINISH_USE, onConsumeEffect);
 	}
 
-	public ExtendedItemSettings conditionallyConsumable(float consumeTime, FinishUseComponent onConsumeEffect, Predicate<LivingEntity> canConsume) {
+	public ExtendedItemSettings conditionallyConsumable(float consumeTime, ItemFinishUseComponent onConsumeEffect, Predicate<LivingEntity> canConsume) {
 		return this
 				.consumable(consumeTime, onConsumeEffect)
 				.component(ModItemComponentsReworked.CAN_CONDITIONALLY_CONSUME, canConsume);
@@ -118,7 +118,7 @@ public class ExtendedItemSettings extends Item.Settings {
 				.component(ModItemComponentsReworked.ARMOUR_SET_BONUS, setBonus);
 	}
 
-	public ExtendedItemSettings armorWithoutAttributes(ArmorMaterial material, EquipmentType type) {
+	public ExtendedItemSettings armourWithoutAttributes(ArmorMaterial material, EquipmentType type) {
 		return this
 				.maxDamage(type.getMaxDamage(material.durability()))
 				.enchantable(material.enchantmentValue())
@@ -126,6 +126,12 @@ public class ExtendedItemSettings extends Item.Settings {
 						DataComponentTypes.EQUIPPABLE, EquippableComponent.builder(type.getEquipmentSlot()).equipSound(material.equipSound()).model(material.assetId()).build()
 				)
 				.repairable(material.repairIngredient());
+	}
+
+
+
+	public ExtendedItemSettings transparentArmour() {
+		return this.component(ModItemComponentsReworked.TRANSPARENT_ARMOUR, Unit.INSTANCE);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -240,6 +246,11 @@ public class ExtendedItemSettings extends Item.Settings {
 	@Override
 	public ExtendedItemSettings armor(ArmorMaterial material, EquipmentType type) {
 		return (ExtendedItemSettings)super.armor(material, type);
+	}
+
+	//I am a pedant
+	public ExtendedItemSettings armour(ArmorMaterial material, EquipmentType type) {
+		return this.armor(material, type);
 	}
 
 	@Override

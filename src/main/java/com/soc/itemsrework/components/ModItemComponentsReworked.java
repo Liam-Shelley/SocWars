@@ -3,6 +3,7 @@ package com.soc.itemsrework.components;
 import com.mojang.serialization.Codec;
 import com.soc.SocWars;
 import com.soc.items.components.CommandFunctionComponent;
+import com.soc.itemsrework.TrainingWeightsComponent;
 import net.minecraft.component.ComponentType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageType;
@@ -57,10 +58,10 @@ public interface ModItemComponentsReworked {
 			Identifier.of(SocWars.MOD_ID, "can_conditionally_consume"),
 			ComponentType.<Predicate<LivingEntity>>builder().codec(Codec.unit(entity -> true)).build()
 	);
-	ComponentType<FinishUseComponent> FINISH_USE = Registry.register(
+	ComponentType<ItemFinishUseComponent> FINISH_USE = Registry.register(
 			Registries.DATA_COMPONENT_TYPE,
-			Identifier.of(SocWars.MOD_ID, "finish_use"),
-			ComponentType.<FinishUseComponent>builder().codec(FinishUseComponent.CODEC).build()
+			Identifier.of(SocWars.MOD_ID, "item_finish_use"),
+			ComponentType.<ItemFinishUseComponent>builder().codec(ItemFinishUseComponent.CODEC).build()
 	);
 	ComponentType<DynamicTooltipComponent> DYNAMIC_TOOLTIP = Registry.register(
 			Registries.DATA_COMPONENT_TYPE,
@@ -116,5 +117,30 @@ public interface ModItemComponentsReworked {
 			Registries.DATA_COMPONENT_TYPE,
 			Identifier.of(SocWars.MOD_ID, "armour_set_bonus"),
 			ComponentType.<ArmourSetBonus>builder().codec(ArmourSetBonus.CODEC).build()
+	);
+	ComponentType<ArmourHitComponent> ARMOUR_HIT = Registry.register(
+			Registries.DATA_COMPONENT_TYPE,
+			Identifier.of(SocWars.MOD_ID, "armour_hit"),
+			ComponentType.<ArmourHitComponent>builder().codec(ArmourHitComponent.CODEC).build()
+	);
+	ComponentType<GlassArmourComponent> GLASS_ARMOUR = Registry.register(
+			Registries.DATA_COMPONENT_TYPE,
+			Identifier.of(SocWars.MOD_ID, "glass_armour"),
+			ComponentType.<GlassArmourComponent>builder().codec(GlassArmourComponent.CODEC).build()
+	);
+	ComponentType<IllusionerArmourComponent> ILLUSIONER_ARMOUR = Registry.register(
+			Registries.DATA_COMPONENT_TYPE,
+			Identifier.of(SocWars.MOD_ID, "illusioner_armour"),
+			ComponentType.<IllusionerArmourComponent>builder().codec(IllusionerArmourComponent.CODEC).build()
+	);
+	ComponentType<Unit> TRANSPARENT_ARMOUR = Registry.register(
+			Registries.DATA_COMPONENT_TYPE,
+			Identifier.of(SocWars.MOD_ID, "transparent_armour"),
+			ComponentType.<Unit>builder().codec(Unit.CODEC).build()
+	);
+	ComponentType<TrainingWeightsComponent> TRAINING_WEIGHTS = Registry.register(
+			Registries.DATA_COMPONENT_TYPE,
+			Identifier.of(SocWars.MOD_ID, "training_weights"),
+			ComponentType.<TrainingWeightsComponent>builder().codec(TrainingWeightsComponent.CODEC).build()
 	);
 }

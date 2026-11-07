@@ -347,7 +347,7 @@ public final class SocWarsLib {
     public static void copyTeam(World world, LivingEntity assignee, LivingEntity source) {
         Scoreboard scoreboard = world.getScoreboard();
         if (source.getScoreboardTeam() == null && source instanceof PlayerEntity player) {
-            player.sendMessage(Text.literal("You are not assigned to options team, go yell at Liam"), false);
+            player.sendMessage(Text.literal("You are not assigned to a team, go yell at Liam"), false);
         } else {
             scoreboard.addScoreHolderToTeam(assignee.getNameForScoreboard(), source.getScoreboardTeam());
         }

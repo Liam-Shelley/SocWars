@@ -34,7 +34,7 @@
     "JadeBlockMorphSpoof",
     "JadeCrashFix",
     "LightweightKnockbackModifier",
-    "LivingEntityAttributesMixin",
+    "LivingEntityMixin",
     "ModifyAppliedDamageMixin",
     "MorphBoundingBox",
     "MostRecentDamage",

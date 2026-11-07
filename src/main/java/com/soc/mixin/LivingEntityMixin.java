@@ -1,8 +1,10 @@
 package com.soc.mixin;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import com.soc.itemsrework.components.ModItemComponentsReworked;
 import com.soc.itemsrework.components.ArmourSetBonus;
 import com.soc.lib.ModEntityAttributes;
+import com.soc.util.MutableBoolean;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.EquippableComponent;
 import net.minecraft.entity.EquipmentSlot;
@@ -10,7 +12,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.AttributeContainer;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttribute;
-import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.entry.RegistryEntry;
 import org.objectweb.asm.Opcodes;
@@ -32,7 +33,7 @@ import java.util.stream.Collectors;
 import static com.soc.lib.SocWarsLib.ifNotNull;
 
 @Mixin(LivingEntity.class)
-public abstract class LivingEntityAttributesMixin {
+public abstract class LivingEntityMixin {
     @Shadow
     public abstract ItemStack getEquippedStack(EquipmentSlot slot);
 
@@ -48,8 +49,17 @@ public abstract class LivingEntityAttributesMixin {
     }
 
     @Inject(method = "getEquipmentChanges", at = @At(value = "JUMP", opcode = Opcodes.IFNULL, shift = At.Shift.AFTER))
-    private void socwars_checkEquipmentChangesSetBonus(CallbackInfoReturnable<Map<EquipmentSlot, ItemStack>> cir) {
-        this.applyArmourSetBonuses();
+    private void socwars_checkEquipmentChangesSetBonus(CallbackInfoReturnable<Map<EquipmentSlot, ItemStack>> cir, @Local Map<EquipmentSlot, ItemStack> map) {
+        final MutableBoolean hasSetBonus = new MutableBoolean(false);
+
+        map.forEach((slot, stack) -> { //Kinda gross multi purpous loop to avoid iterating twice
+
+            hasSetBonus.orEquals(stack.get(ModItemComponentsReworked.ARMOUR_SET_BONUS) != null);
+        });
+
+        if (hasSetBonus.getValue()) {
+            this.applyArmourSetBonuses();
+        } //Probably make this more robust; maybe another layer of abstraction over the appliesattributemodifiers thing
     }
 
     @Inject(method = "onEquipmentRemoved", at = @At("HEAD"))
@@ -58,7 +68,7 @@ public abstract class LivingEntityAttributesMixin {
         if (equippableComponent == null || equippableComponent.slot() != slot) return;
 
         final ArmourSetBonus setBonus = removedEquipment.get(ModItemComponentsReworked.ARMOUR_SET_BONUS);
-        if (setBonus == null) return;
+        if (setBonus == null) return; //Same thing here
 
         this.removeSetBonus(setBonus);
         this.applyArmourSetBonuses();

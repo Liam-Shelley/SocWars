@@ -166,12 +166,6 @@
     "pool": 2
   },
   {
-    "id": "socwars:training_weights",
-    "tier_1_weight": 13,
-    "tier_2_weight": 10,
-    "pool": 2
-  },
-  {
     "id": "socwars:summoners_garb",
     "tier_3_weight": 15,
     "pool": 2

@@ -9,14 +9,7 @@ public interface ModItems {
         HardCodes.initialise();
 
 
-
         DrawableWeapon.initialise();
         BowItem.initialise();
-
-        CartoonArmour.initialise();
-        GlassArmour.initialise();
-        IllusionerArmour.initialise();
-        TrainingWeights.initialise();
-        SummonersGarb.initialise();
     }
 }

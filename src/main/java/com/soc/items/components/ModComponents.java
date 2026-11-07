@@ -12,16 +12,6 @@ import net.minecraft.util.Unit;
 import java.util.Optional;
 
 public interface ModComponents {
-    ComponentType<RingItemComponent> RING_ITEM_COMPONENT = Registry.register(
-            Registries.DATA_COMPONENT_TYPE,
-            Identifier.of(SocWars.MOD_ID, "ring_item"),
-            ComponentType.<RingItemComponent>builder().codec(RingItemComponent.CODEC).build()
-    );
-    ComponentType<Integer> TRAINING_WEIGHTS_COMPONENT = Registry.register(
-            Registries.DATA_COMPONENT_TYPE,
-            Identifier.of(SocWars.MOD_ID, "training_weights"),
-            ComponentType.<Integer>builder().codec(Codec.INT).build()
-    );
     ComponentType<Unit> RESOURCE_COUNTED = Registry.register(
             Registries.DATA_COMPONENT_TYPE,
             Identifier.of(SocWars.MOD_ID, "resource_counted"),

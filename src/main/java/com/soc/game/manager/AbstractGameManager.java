@@ -218,7 +218,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     }
 
     public void giveKits() {
-        this.playersForEach((team, player) -> PlayerDataManager.getPlayerData(player).tryApplyKit(this.gameType, player));
+        this.playersForEach((team, player) -> ifNotNullElse(PlayerDataManager.getPlayerData(player), playerData -> playerData.tryApplyKit(this.gameType, player), () -> SocWars.LOGGER.warn("Failed to apply kit for: {} as playerdata was null", player.getNameForScoreboard())));
     }
 
     @MustBeInvokedByOverriders

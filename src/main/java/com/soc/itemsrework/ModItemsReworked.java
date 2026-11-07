@@ -3,6 +3,7 @@ package com.soc.itemsrework;
 import com.soc.SocWars;
 import com.soc.effects.util.ModEffects;
 import com.soc.entities.*;
+import com.soc.entities.util.ModEntities;
 import com.soc.game.manager.AbstractHidingGameManager;
 import com.soc.game.manager.GamesManager;
 import com.soc.game.map.DyeColourWithEmpty;
@@ -38,8 +39,10 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.mob.RavagerEntity;
 import net.minecraft.entity.mob.SlimeEntity;
 import net.minecraft.entity.mob.VexEntity;
+import net.minecraft.entity.passive.CodEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.*;
 import net.minecraft.item.*;
@@ -82,6 +85,7 @@ import static com.soc.blocks.util.ModBlocks.MANY_BEDS_BLOCK;
 import static com.soc.game.manager.AbstractGameManager.getBlockDamagePredicate;
 import static com.soc.items.BowItem.playBowSound;
 import static com.soc.items.util.ModItemGroups.registerAndGroup;
+import static com.soc.itemsrework.ExtendedItemSettings.spawnEntityWithVelocity;
 import static com.soc.itemsrework.util.GenerateItem.Model.GENERATED;
 import static com.soc.itemsrework.util.GenerateItem.Model.HANDHELD;
 import static com.soc.lib.SocWarsLib.*;
@@ -1311,69 +1315,293 @@ public interface ModItemsReworked {
 			ItemGroups.COMBAT
 	);
 	@GenerateItem(GENERATED)
-	Item DEMOLITIONIST_HELMET = ModItemsReworked.register("demolitionist_helmet", SocWarsItem::new, new ExtendedItemSettings()
+	Item DEMOLITIONIST_HELMET = registerAndGroup("demolitionist_helmet", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.UNCOMMON)
-			.armourWithSetBonus(ModArmourMaterials.DEMOLITIONIST, EquipmentType.HELMET, ArmourSetBonuses.DEMOLITIONIST)
+			.armourWithSetBonus(ModArmourMaterials.DEMOLITIONIST, EquipmentType.HELMET, ArmourSetBonuses.DEMOLITIONIST),
+			ItemGroups.COMBAT
 	);
 	@GenerateItem(GENERATED)
-	Item DEMOLITIONIST_CHESTPLATE = ModItemsReworked.register("demolitionist_chestplate", SocWarsItem::new, new ExtendedItemSettings()
+	Item DEMOLITIONIST_CHESTPLATE = registerAndGroup("demolitionist_chestplate", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.UNCOMMON)
-			.armourWithSetBonus(ModArmourMaterials.DEMOLITIONIST, EquipmentType.CHESTPLATE, ArmourSetBonuses.DEMOLITIONIST)
+			.armourWithSetBonus(ModArmourMaterials.DEMOLITIONIST, EquipmentType.CHESTPLATE, ArmourSetBonuses.DEMOLITIONIST),
+			ItemGroups.COMBAT
 	);
 	@GenerateItem(GENERATED)
-	Item DEMOLITIONIST_LEGGINGS = ModItemsReworked.register("demolitionist_leggings", SocWarsItem::new, new ExtendedItemSettings()
+	Item DEMOLITIONIST_LEGGINGS = registerAndGroup("demolitionist_leggings", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.UNCOMMON)
-			.armourWithSetBonus(ModArmourMaterials.DEMOLITIONIST, EquipmentType.LEGGINGS, ArmourSetBonuses.DEMOLITIONIST)
+			.armourWithSetBonus(ModArmourMaterials.DEMOLITIONIST, EquipmentType.LEGGINGS, ArmourSetBonuses.DEMOLITIONIST),
+			ItemGroups.COMBAT
 	);
 	@GenerateItem(GENERATED)
-	Item DEMOLITIONIST_BOOTS = ModItemsReworked.register("demolitionist_boots", SocWarsItem::new, new ExtendedItemSettings()
+	Item DEMOLITIONIST_BOOTS = registerAndGroup("demolitionist_boots", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.UNCOMMON)
-			.armourWithSetBonus(ModArmourMaterials.DEMOLITIONIST, EquipmentType.BOOTS, ArmourSetBonuses.DEMOLITIONIST)
+			.armourWithSetBonus(ModArmourMaterials.DEMOLITIONIST, EquipmentType.BOOTS, ArmourSetBonuses.DEMOLITIONIST),
+			ItemGroups.COMBAT
 	);
 	@GenerateItem(GENERATED)
-	Item STEADFAST_HELMET = ModItemsReworked.register("steadfast_helmet", SocWarsItem::new, new ExtendedItemSettings()
+	Item STEADFAST_HELMET = registerAndGroup("steadfast_helmet", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.UNCOMMON)
-			.armourWithSetBonus(ModArmourMaterials.STEADFAST, EquipmentType.HELMET, ArmourSetBonuses.STEADFAST)
+			.armourWithSetBonus(ModArmourMaterials.STEADFAST, EquipmentType.HELMET, ArmourSetBonuses.STEADFAST),
+			ItemGroups.COMBAT
 	);
 	@GenerateItem(GENERATED)
-	Item STEADFAST_CHESTPLATE = ModItemsReworked.register("steadfast_chestplate", SocWarsItem::new, new ExtendedItemSettings()
+	Item STEADFAST_CHESTPLATE = registerAndGroup("steadfast_chestplate", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.UNCOMMON)
-			.armourWithSetBonus(ModArmourMaterials.STEADFAST, EquipmentType.CHESTPLATE, ArmourSetBonuses.STEADFAST)
+			.armourWithSetBonus(ModArmourMaterials.STEADFAST, EquipmentType.CHESTPLATE, ArmourSetBonuses.STEADFAST),
+			ItemGroups.COMBAT
 	);
 	@GenerateItem(GENERATED)
-	Item STEADFAST_LEGGINGS = ModItemsReworked.register("steadfast_leggings", SocWarsItem::new, new ExtendedItemSettings()
+	Item STEADFAST_LEGGINGS = registerAndGroup("steadfast_leggings", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.UNCOMMON)
-			.armourWithSetBonus(ModArmourMaterials.STEADFAST, EquipmentType.LEGGINGS, ArmourSetBonuses.STEADFAST)
+			.armourWithSetBonus(ModArmourMaterials.STEADFAST, EquipmentType.LEGGINGS, ArmourSetBonuses.STEADFAST),
+			ItemGroups.COMBAT
 	);
 	@GenerateItem(GENERATED)
-	Item STEADFAST_BOOTS = ModItemsReworked.register("steadfast_boots", SocWarsItem::new, new ExtendedItemSettings()
+	Item STEADFAST_BOOTS = registerAndGroup("steadfast_boots", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.UNCOMMON)
-			.armourWithSetBonus(ModArmourMaterials.STEADFAST, EquipmentType.BOOTS, ArmourSetBonuses.STEADFAST)
+			.armourWithSetBonus(ModArmourMaterials.STEADFAST, EquipmentType.BOOTS, ArmourSetBonuses.STEADFAST),
+			ItemGroups.COMBAT
 	);
 	@GenerateItem(GENERATED)
-	Item GAMBLER_HELMET = ModItemsReworked.register("gambler_helmet", TickingSocWarsItem::new, new ExtendedItemSettings()
+	Item GAMBLER_HELMET = registerAndGroup("gambler_helmet", TickingSocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.RARE)
-			.armorWithoutAttributes(ModArmourMaterials.GAMBLER, EquipmentType.HELMET)
-			.component(ModItemComponentsReworked.GAMBLER_ARMOUR, GamblerArmourComponent.DEFAULT)
+			.armourWithoutAttributes(ModArmourMaterials.GAMBLER, EquipmentType.HELMET)
+			.component(ModItemComponentsReworked.GAMBLER_ARMOUR, GamblerArmourComponent.DEFAULT),
+			ItemGroups.COMBAT
 	);
 	@GenerateItem(GENERATED)
-	Item GAMBLER_CHESTPLATE = ModItemsReworked.register("gambler_chestplate", TickingSocWarsItem::new, new ExtendedItemSettings()
+	Item GAMBLER_CHESTPLATE = registerAndGroup("gambler_chestplate", TickingSocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.RARE)
-			.armorWithoutAttributes(ModArmourMaterials.GAMBLER, EquipmentType.CHESTPLATE)
-			.component(ModItemComponentsReworked.GAMBLER_ARMOUR, GamblerArmourComponent.DEFAULT)
+			.armourWithoutAttributes(ModArmourMaterials.GAMBLER, EquipmentType.CHESTPLATE)
+			.component(ModItemComponentsReworked.GAMBLER_ARMOUR, GamblerArmourComponent.DEFAULT),
+			ItemGroups.COMBAT
 	);
 	@GenerateItem(GENERATED)
-	Item GAMBLER_LEGGINGS = ModItemsReworked.register("gambler_leggings", TickingSocWarsItem::new, new ExtendedItemSettings()
+	Item GAMBLER_LEGGINGS = registerAndGroup("gambler_leggings", TickingSocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.RARE)
-			.armorWithoutAttributes(ModArmourMaterials.GAMBLER, EquipmentType.LEGGINGS)
-			.component(ModItemComponentsReworked.GAMBLER_ARMOUR, GamblerArmourComponent.DEFAULT)
+			.armourWithoutAttributes(ModArmourMaterials.GAMBLER, EquipmentType.LEGGINGS)
+			.component(ModItemComponentsReworked.GAMBLER_ARMOUR, GamblerArmourComponent.DEFAULT),
+			ItemGroups.COMBAT
 	);
 	@GenerateItem(GENERATED)
-	Item GAMBLER_BOOTS = ModItemsReworked.register("gambler_boots", TickingSocWarsItem::new, new ExtendedItemSettings()
+	Item GAMBLER_BOOTS = registerAndGroup("gambler_boots", TickingSocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.RARE)
-			.armorWithoutAttributes(ModArmourMaterials.GAMBLER, EquipmentType.BOOTS)
-			.component(ModItemComponentsReworked.GAMBLER_ARMOUR, GamblerArmourComponent.DEFAULT)
+			.armourWithoutAttributes(ModArmourMaterials.GAMBLER, EquipmentType.BOOTS)
+			.component(ModItemComponentsReworked.GAMBLER_ARMOUR, GamblerArmourComponent.DEFAULT),
+			ItemGroups.COMBAT
 	);
+	@GenerateItem(GENERATED)
+	Item GLASS_HELMET = registerAndGroup("glass_helmet", SocWarsItem::new, new ExtendedItemSettings()
+			.rarity(Rarity.RARE)
+			.armour(ModArmourMaterials.GLASS, EquipmentType.HELMET)
+			.component(ModItemComponentsReworked.GLASS_ARMOUR, GlassArmourComponent.INSTANCE)
+			.transparentArmour(),
+			ItemGroups.COMBAT
+	);
+	@GenerateItem(GENERATED)
+	Item GLASS_CHESTPLATE = registerAndGroup("glass_chestplate", SocWarsItem::new, new ExtendedItemSettings()
+			.rarity(Rarity.RARE)
+			.armour(ModArmourMaterials.GLASS, EquipmentType.CHESTPLATE)
+			.component(ModItemComponentsReworked.GLASS_ARMOUR, GlassArmourComponent.INSTANCE)
+			.transparentArmour(),
+			ItemGroups.COMBAT
+	);
+	@GenerateItem(GENERATED)
+	Item GLASS_LEGGINGS = registerAndGroup("glass_leggings", SocWarsItem::new, new ExtendedItemSettings()
+			.rarity(Rarity.RARE)
+			.armour(ModArmourMaterials.GLASS, EquipmentType.LEGGINGS)
+			.component(ModItemComponentsReworked.GLASS_ARMOUR, GlassArmourComponent.INSTANCE)
+			.transparentArmour(),
+			ItemGroups.COMBAT
+	);
+	@GenerateItem(GENERATED)
+	Item GLASS_BOOTS = registerAndGroup("glass_boots", SocWarsItem::new, new ExtendedItemSettings()
+			.rarity(Rarity.RARE)
+			.armour(ModArmourMaterials.GLASS, EquipmentType.BOOTS)
+			.component(ModItemComponentsReworked.GLASS_ARMOUR, GlassArmourComponent.INSTANCE)
+			.transparentArmour(),
+			ItemGroups.COMBAT
+	);
+	@GenerateItem(GENERATED)
+	Item ILLUSIONER_HELMET = registerAndGroup("illusioner_helmet", SocWarsItem::new, new ExtendedItemSettings()
+			.rarity(Rarity.RARE)
+			.armour(ModArmourMaterials.ILLUSIONER, EquipmentType.HELMET)
+			.component(ModItemComponentsReworked.ILLUSIONER_ARMOUR, IllusionerArmourComponent.INSTANCE),
+			ItemGroups.COMBAT
+	);
+	@GenerateItem(GENERATED)
+	Item ILLUSIONER_CHESTPLATE = registerAndGroup("illusioner_chestplate", SocWarsItem::new, new ExtendedItemSettings()
+			.rarity(Rarity.RARE)
+			.armour(ModArmourMaterials.ILLUSIONER, EquipmentType.CHESTPLATE)
+			.component(ModItemComponentsReworked.ILLUSIONER_ARMOUR, IllusionerArmourComponent.INSTANCE),
+			ItemGroups.COMBAT
+	);
+	@GenerateItem(GENERATED)
+	Item ILLUSIONER_LEGGINGS = registerAndGroup("illusioner_leggings", SocWarsItem::new, new ExtendedItemSettings()
+			.rarity(Rarity.RARE)
+			.armour(ModArmourMaterials.ILLUSIONER, EquipmentType.LEGGINGS)
+			.component(ModItemComponentsReworked.ILLUSIONER_ARMOUR, IllusionerArmourComponent.INSTANCE),
+			ItemGroups.COMBAT
+	);
+	@GenerateItem(GENERATED)
+	Item ILLUSIONER_BOOTS = registerAndGroup("illusioner_boots", SocWarsItem::new, new ExtendedItemSettings()
+			.rarity(Rarity.RARE)
+			.armour(ModArmourMaterials.ILLUSIONER, EquipmentType.BOOTS)
+			.component(ModItemComponentsReworked.ILLUSIONER_ARMOUR, IllusionerArmourComponent.INSTANCE),
+			ItemGroups.COMBAT
+	);
+	@GenerateItem(GENERATED)
+	Item CARTOON_HELMET = registerAndGroup("cartoon_helmet", SocWarsItem::new, new ExtendedItemSettings()
+			.armour(ModArmourMaterials.CARTOON, EquipmentType.HELMET)
+			.component(ModItemComponentsReworked.ARMOUR_HIT, (stack, wearer, world, source) -> {
+				if (world.isClient) return true;
+				final int random = world.random.nextBetween(1, 8);
+				switch (random) {
+					case 1 -> wearer.requestTeleport(wearer.getX(), wearer.getY() + 3d, wearer.getZ());
+					case 2 -> wearer.addStatusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, -1, 0, false, false));
+					case 3 -> world.playSound(null, wearer.getX(), wearer.getY(), wearer.getZ(), SoundEvents.ENTITY_ITEM_BREAK.value(), SoundCategory.PLAYERS);
+					case 4 -> {
+						final PlayerEntity other = world.getClosestPlayer(wearer.getX(), wearer.getY(), wearer.getZ(), 100f, entity -> entity != wearer && entity instanceof ServerPlayerEntity serverPlayer && serverPlayer.getGameMode().isSurvivalLike());
+						if (other != null) {
+							swapPositions(wearer, other);
+						} else {
+							randomTeleport(world, wearer, 10, 20, 5f);
+						}
+					}
+				}
+
+				return true;
+			})
+			.rarity(Rarity.RARE),
+			ItemGroups.COMBAT
+	);
+	@GenerateItem(GENERATED)
+	Item CARTOON_CHESTPLATE = registerAndGroup("cartoon_chestplate", SocWarsItem::new, new ExtendedItemSettings()
+			.armour(ModArmourMaterials.CARTOON, EquipmentType.CHESTPLATE)
+			.component(ModItemComponentsReworked.ARMOUR_HIT, (stack, wearer, world, source) -> {
+				if (world.isClient) return true;
+				final int random = world.random.nextBetween(1, 8);
+				switch (random) {
+					case 1 -> { return false; }
+					case 2 -> {
+						wearer.addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, 1, 4, false, true));
+						SphereExplosion.explode(world, wearer.getPos(), 4.5f, 1.5f, 0.8f, 0.75f, true, wearer, null);
+					}
+					case 3 -> {
+						iterateInPlane(wearer.getBlockPos(), 1, pos -> world.setBlockState(pos, Blocks.AIR.getDefaultState()));
+						iterateInPlane(wearer.getBlockPos().down(), 1, pos -> world.setBlockState(pos, Blocks.SLIME_BLOCK.getDefaultState()));
+					}
+					case 4 -> wearer.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 2 * 20, 2, false, true));
+				}
+
+				return true;
+			})
+			.rarity(Rarity.RARE),
+			ItemGroups.COMBAT
+	);
+	@GenerateItem(GENERATED)
+	Item CARTOON_LEGGINGS = registerAndGroup("cartoon_leggings", SocWarsItem::new, new ExtendedItemSettings()
+			.armour(ModArmourMaterials.CARTOON, EquipmentType.LEGGINGS)
+			.component(ModItemComponentsReworked.ARMOUR_HIT, (stack, wearer, world, source) -> {
+				if (world.isClient) return true;
+				final int random = world.random.nextBetween(1, 8);
+				switch (random) {
+					case 1 -> wearer.addStatusEffect(new StatusEffectInstance(StatusEffects.JUMP_BOOST, 3 * 20, 2, false, true));
+					case 2 -> spawnEntityWithVelocity(new BWFireballEntity(ModEntities.FIREBALL, world, wearer, Vec3d.ZERO, 3f, BWFireballEntity::fireballExplosion), (ServerWorld)world, wearer, 0.8f);
+					case 3 -> rainPositions(world, wearer.getPos(), 150, 22f, 10f, 250f, pos -> {
+						final CodEntity cod = new CodEntity(EntityType.COD, world);
+
+						cod.setPosition(pos);
+						world.spawnEntity(cod);
+					});
+					case 4 -> {
+						final PlayerEntity player = world.getClosestPlayer(wearer.getX(), wearer.getY(), wearer.getZ(), 100f, entity -> entity != wearer);
+						if (player != null) player.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 2 * 20, 9, false, false));
+					}
+				}
+
+				return true;
+			})
+			.rarity(Rarity.RARE),
+			ItemGroups.COMBAT
+	);
+	@GenerateItem(GENERATED)
+	Item CARTOON_BOOTS = registerAndGroup("cartoon_boots", SocWarsItem::new, new ExtendedItemSettings()
+			.armour(ModArmourMaterials.CARTOON, EquipmentType.BOOTS)
+			.component(ModItemComponentsReworked.ARMOUR_HIT, (stack, wearer, world, source) -> {
+				if (world.isClient) return true;
+				final int random = world.random.nextBetween(1, 8);
+				switch (random) {
+					case 1 -> {
+						final RavagerEntity ravager = new RavagerEntity(EntityType.RAVAGER, world);
+						findRandomOpenPos(world, wearer.getPos(), 50, 20, 5f).ifPresentOrElse(ravager::setPosition, () -> ravager.setPosition(wearer.getPos()));
+						copyTeam(world, ravager, wearer);
+						world.spawnEntity(ravager);
+					}
+					case 2 -> wearer.giveOrDropStack(Items.PIGLIN_HEAD.getDefaultStack());
+					case 3 -> {
+						final BlockPos centre = wearer.getBlockPos();
+						iterateInSphere(centre, 6f, 0f, pos -> {
+							if (centre.isWithinDistance(pos, 5f) || world.getBlockState(pos).isIn(ModBlockTags.IMMUNE)) return;
+							world.setBlockState(pos, Blocks.RESIN_BLOCK.getDefaultState());
+						});
+					}
+					case 4 -> {
+						wearer.addStatusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, 10 * 20, 3, false, true));
+						wearer.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 10 * 20, 1, false, true));
+						wearer.addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 10 * 20, 0, false, true));
+						wearer.addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, 10 * 20, 0, false, true));
+					}
+				}
+
+				return true;
+			})
+			.rarity(Rarity.RARE),
+			ItemGroups.COMBAT
+	);
+	@GenerateItem(GENERATED)
+	Item SUMMONERS_GARB = registerAndGroup("summoners_garb", SocWarsItem::new, new ExtendedItemSettings()
+			.armour(ModArmourMaterials.SUMMONERS_GARB, EquipmentType.CHESTPLATE)
+			.component(ModItemComponentsReworked.ARMOUR_HIT, (stack, wearer, world, source) -> {
+				if (world.isClient) return true;
+				final int random = world.random.nextBetween(1, 8);
+				switch (random) {
+					case 1 -> {
+						final RavagerEntity ravager = new RavagerEntity(EntityType.RAVAGER, world);
+						findRandomOpenPos(world, wearer.getPos(), 50, 20, 5f).ifPresentOrElse(ravager::setPosition, () -> ravager.setPosition(wearer.getPos()));
+						copyTeam(world, ravager, wearer);
+						world.spawnEntity(ravager);
+					}
+					case 2 -> wearer.giveOrDropStack(Items.PIGLIN_HEAD.getDefaultStack());
+					case 3 -> {
+						final BlockPos centre = wearer.getBlockPos();
+						iterateInSphere(centre, 6f, 0f, pos -> {
+							if (centre.isWithinDistance(pos, 5f) || world.getBlockState(pos).isIn(ModBlockTags.IMMUNE)) return;
+							world.setBlockState(pos, Blocks.RESIN_BLOCK.getDefaultState());
+						});
+					}
+					case 4 -> {
+						wearer.addStatusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, 10 * 20, 3, false, true));
+						wearer.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 10 * 20, 1, false, true));
+						wearer.addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 10 * 20, 0, false, true));
+						wearer.addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, 10 * 20, 0, false, true));
+					}
+				}
+
+				return true;
+			})
+			.rarity(Rarity.RARE),
+			ItemGroups.COMBAT
+	);
+	//@GenerateItem(GENERATED) //TODO: ??
+	//Item TRAINING_WEIGHTS = registerAndGroup("training_weights", TickingSocWarsItem::new, new ExtendedItemSettings()
+	//		.armour(ModArmourMaterials.TRAINING_WEIGHTS, EquipmentType.BOOTS)
+	//		.component(ModItemComponentsReworked.TRAINING_WEIGHTS, TrainingWeightsComponent.INSTANCE)
+	//		.rarity(Rarity.UNCOMMON)
+	//		.noComponentUpdateBob(),
+	//		ItemGroups.COMBAT
+	//);
+
 
 
 

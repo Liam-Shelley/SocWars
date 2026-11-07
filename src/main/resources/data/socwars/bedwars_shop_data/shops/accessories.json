@@ -31,7 +31,6 @@
       "x": 5,
       "y": 1,
       "options": [
-        "socwars:bedwars_shop_data/simple_items/training_weights",
         "socwars:bedwars_shop_data/simple_items/summoners_garb",
         "socwars:bedwars_shop_data/simple_items/portable_stepping_stool"
       ]

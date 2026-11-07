@@ -6,8 +6,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 @FunctionalInterface
-public interface FinishUseComponent {
-	Codec<FinishUseComponent> CODEC = Codec.unit(null);
+public interface ItemFinishUseComponent {
+	Codec<ItemFinishUseComponent> CODEC = Codec.unit(null);
 
 	void finishUsing(ItemStack stack, World world, LivingEntity user);
 }
