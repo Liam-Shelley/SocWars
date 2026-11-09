@@ -1,6 +1,7 @@
 package com.soc.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
+import com.soc.effects.util.OnEffectRemoved;
 import com.soc.items.components.ModItemComponents;
 import com.soc.items.components.ArmourSetBonus;
 import com.soc.lib.ModEntityAttributes;
@@ -12,6 +13,8 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.AttributeContainer;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.entry.RegistryEntry;
 import org.objectweb.asm.Opcodes;
@@ -46,6 +49,12 @@ public abstract class LivingEntityMixin {
         instance.add(attribute);
         instance.add(ModEntityAttributes.EXPLOSION_RESISTANCE);
         return instance;
+    }
+
+    @Inject(method = "removeStatusEffect", at = @At(value = "RETURN", ordinal = 0))
+    private void socwars_onRemoveEffect(RegistryEntry<StatusEffect> effect, CallbackInfoReturnable<Boolean> cir, @Local StatusEffectInstance statusEffectInstance) {
+        if (effect.value() instanceof OnEffectRemoved onEffectRemoved)
+            onEffectRemoved.onRemoved((LivingEntity)(Object)this, statusEffectInstance.getAmplifier());
     }
 
     @Inject(method = "getEquipmentChanges", at = @At(value = "JUMP", opcode = Opcodes.IFNULL, shift = At.Shift.AFTER))
