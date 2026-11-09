@@ -86,6 +86,7 @@ public abstract class AbstractHidingGameManager<MAP extends AbstractHidingGameMa
 				player.playSoundToPlayer(sound, SoundCategory.PLAYERS, 1, 1);
 			}, 10);
 		});
+		this.getPlayers(SEEKER_COLOUR).forEach(player -> player.getInventory().clear());
 
 		this.removePlayersMorphs();
 
