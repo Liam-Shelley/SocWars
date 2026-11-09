@@ -238,4 +238,11 @@ public class MatchmakingQueue {
         this.allowedSinglePlayerQueues.remove(gameType);
         this.markDirty();
     }
+
+	public boolean cancel(GameType gameType) {
+        this.queueCountdowns.remove(gameType);
+        this.markDirty();
+
+        return !this.queue.removeAll(gameType).isEmpty();
+	}
 }

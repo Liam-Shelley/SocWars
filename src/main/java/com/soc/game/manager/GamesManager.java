@@ -281,4 +281,8 @@ public class GamesManager {
     public boolean isGameWithUuidRunning(UUID gameUuid) {
         return this.games.stream().anyMatch(game -> game != null && game.getGameUuid().equals(gameUuid));
     }
+
+	public boolean cancel(GameType gameType) {
+		return this.queue.cancel(gameType);
+	}
 }

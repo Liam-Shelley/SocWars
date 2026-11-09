@@ -30,6 +30,7 @@
     "GetBlockEntityEvaluateNullPos",
     "GetItemSettingsComponent",
     "GetItemSettingsComponentsMap",
+    "HopperInventoryCrashBandaid",
     "HungerTweaks",
     "JadeBlockMorphSpoof",
     "JadeCrashFix",

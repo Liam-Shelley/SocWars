@@ -573,6 +573,8 @@
   "message.queue.not_in_queue.queue": "You are not in the queue for %s!",
   "message.queue.queue_failed": "The %s queue failed to start as there were not enough players.",
   "message.queue.queue_started": "%s has started a queue for %s!",
+  "message.queue.cancelled": "The queue for %s has been cancelled!",
+  "message.queue.not_cancelled": "There was no active queue for %s.",
   "message.shout.not_in_game": "",
   "potion.potency.10": "XI",
   "potion.potency.100": "(Full Heal)",

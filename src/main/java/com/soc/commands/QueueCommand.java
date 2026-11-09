@@ -7,6 +7,7 @@ import com.soc.commands.argumenttypes.GameTypeArgumentType;
 import com.soc.game.manager.GameType;
 import com.soc.game.manager.GamesManager;
 import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -23,7 +24,9 @@ public interface QueueCommand {
     String QUEUE_ALLOW_SINGLE_PLAYER_BOOL_ARGUMENT = "allowsingleplayer";
     String QUEUE_JOIN_ARGUMENT = "join";
     String QUEUE_LEAVE_ARGUMENT = "leave";
+    String QUEUE_CANCEL_ARGUMENT = "cancel";
     String QUEUE_TYPE_ARGUMENT = "gametype";
+    String QUEUE_TARGETS_ARGUMENT = "targets";
 
     static void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment environment) {
         dispatcher.register(CommandManager.literal(QUEUE_COMMAND_ID)
@@ -54,6 +57,10 @@ public interface QueueCommand {
                     .then(
                         CommandManager.argument(QUEUE_TYPE_ARGUMENT, new GameTypeArgumentType())
                             .executes(QueueCommand::join)
+                            .then(
+                                CommandManager.argument(QUEUE_TARGETS_ARGUMENT, EntityArgumentType.players())
+                                    .executes(QueueCommand::join)
+                            )
                     )
             )
             .then(
@@ -63,6 +70,15 @@ public interface QueueCommand {
                     .then(
                         CommandManager.argument(QUEUE_TYPE_ARGUMENT, new GameTypeArgumentType())
                             .executes(QueueCommand::leave)
+                    )
+            )
+            .then(
+                CommandManager.literal(QUEUE_CANCEL_ARGUMENT)
+                    .requires(QueueCommand::sourceIsNotInGame)
+                    .executes(QueueCommand::cancel)
+                    .then(
+                        CommandManager.argument(QUEUE_TYPE_ARGUMENT, new GameTypeArgumentType())
+                            .executes(QueueCommand::cancel)
                     )
             )
         );
@@ -144,6 +160,22 @@ public interface QueueCommand {
             player.sendMessage(Text.translatable("message.queue.left_queue", gameType.getVariantName()), false);
         } else {
             player.sendMessage(Text.translatable("message.queue.not_in_queue.queue", gameType.getVariantName()), false);
+        }
+
+        return 0;
+    }
+
+    static int cancel(CommandContext<ServerCommandSource> context) {
+        final Entity executor = context.getSource().getEntity();
+        if (!(executor instanceof ServerPlayerEntity player)) return -1;
+
+        final GameType gameType = resolveGameType(context, player);
+        if (gameType == null) return -1;
+
+        if (GamesManager.getInstance().cancel(gameType)) {
+            player.sendMessage(Text.translatable("message.queue.cancelled", gameType.getVariantName()), false);
+        } else {
+            player.sendMessage(Text.translatable("message.queue.not_cancelled", gameType.getVariantName()), false);
         }
 
         return 0;
