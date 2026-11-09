@@ -46,7 +46,10 @@ public abstract class AbstractHidingGameManager<MAP extends AbstractHidingGameMa
 	public void startGame() {
 		super.startGame();
 		this.getPlayers(SEEKER_COLOUR).forEach(player -> player.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 450, 0, false, false)));
-		this.getPlayers(HIDER_COLOUR).forEach(player -> player.addStatusEffect(new StatusEffectInstance(ModEffects.LETHARGY, 150, 255, false, false)));
+		this.getPlayers(HIDER_COLOUR).forEach(player -> {
+			player.addStatusEffect(new StatusEffectInstance(ModEffects.LETHARGY, 150, 255, false, false));
+			player.addStatusEffect(new StatusEffectInstance(ModEffects.ARTHRODESIS, 150, 1, false, false));
+		});
 
 		this.removePlayersFromLocators();
 	}

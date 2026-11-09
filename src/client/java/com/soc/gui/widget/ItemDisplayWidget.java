@@ -43,7 +43,7 @@ public class ItemDisplayWidget implements Widget, Selectable, Drawable, Element 
                 context.drawText(this.textRenderer, count, this.x + 17 - this.textRenderer.getWidth(count), this.y + 9, 0xffffffff, true);
             }
             this.isHovered = context.scissorContains(mouseX, mouseY) && this.mouseIsInBounds(mouseX, mouseY);
-            if (this.isHovered) context.drawTooltip(this.textRenderer, Screen.getTooltipFromItem(MinecraftClient.getInstance(), this.stack), this.stack.getTooltipData(), mouseX, mouseY, this.stack.get(DataComponentTypes.TOOLTIP_STYLE));
+            if (this.isHovered && !this.stack.isEmpty()) context.drawTooltip(this.textRenderer, Screen.getTooltipFromItem(MinecraftClient.getInstance(), this.stack), this.stack.getTooltipData(), mouseX, mouseY, this.stack.get(DataComponentTypes.TOOLTIP_STYLE));
         }
     }
 

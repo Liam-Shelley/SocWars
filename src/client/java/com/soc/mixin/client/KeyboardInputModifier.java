@@ -33,7 +33,7 @@ public abstract class KeyboardInputModifier extends Input {
 
         final boolean sneakInput = switch(arthrodesisLevel) {
             case -1 -> perplexed > 1 ? settings.sprintKey.isPressed() : settings.sneakKey.isPressed();
-            case 0 -> false;
+            case 0, 1 -> false;
             default -> true;
         };
 
@@ -42,7 +42,7 @@ public abstract class KeyboardInputModifier extends Input {
                 perplexed > 0 ? settings.forwardKey.isPressed() : settings.backKey.isPressed(),
                 perplexed > 0 ? settings.rightKey.isPressed() : settings.leftKey.isPressed(),
                 perplexed > 0 ? settings.leftKey.isPressed() : settings.rightKey.isPressed(),
-                settings.jumpKey.isPressed(),
+                settings.jumpKey.isPressed() && arthrodesisLevel < 1,
                 sneakInput,
                 perplexed > 1 ? settings.sneakKey.isPressed() : settings.sprintKey.isPressed()
         );
