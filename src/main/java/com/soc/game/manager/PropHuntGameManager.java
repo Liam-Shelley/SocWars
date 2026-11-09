@@ -4,11 +4,10 @@ import com.soc.database.stats.PropHuntTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.PropHuntGameMap;
 import com.soc.game.map.SpreadRules;
-import com.soc.itemsrework.SocWarsBowItem;
-import com.soc.itemsrework.ModItemsReworked;
+import com.soc.items.ModItems;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
@@ -47,14 +46,14 @@ public class PropHuntGameManager extends AbstractHidingGameManager<PropHuntGameM
 		this.map.spawnCages(false, HIDER_COLOUR);
 		this.getPlayers(HIDER_COLOUR).forEach(hider -> {
 			hider.changeGameMode(GameMode.SURVIVAL);
-			hider.giveItemStack(new ItemStack(ModItemsReworked.MORPH_WAND));
-			hider.giveItemStack(new ItemStack(ModItemsReworked.TAUNT_STICK));
+			hider.giveItemStack(new ItemStack(ModItems.MORPH_WAND));
+			hider.giveItemStack(new ItemStack(ModItems.TAUNT_STICK));
 		});
 
 		final TitleS2CPacket youAreSeekingPacket = new TitleS2CPacket(Text.translatable("game.hiding.you_are_seeking"));
 		this.getPlayers(SEEKER_COLOUR).forEach(seeker -> {
-			seeker.giveItemStack(new ItemStack(ModItemsReworked.SEEKING_STICK));
-			final ItemStack stack = new ItemStack(SocWarsBowItem.SEEKING_BOW);
+			seeker.giveItemStack(new ItemStack(ModItems.SEEKING_STICK));
+			final ItemStack stack = new ItemStack(ModItems.SEEKING_BOW);
 			stack.addEnchantment(enchantmentEntry(this.world, Enchantments.INFINITY), 1);
 			seeker.giveItemStack(stack);
 			seeker.networkHandler.sendPacket(youAreSeekingPacket);
@@ -113,7 +112,7 @@ public class PropHuntGameManager extends AbstractHidingGameManager<PropHuntGameM
 	}
 
 	@Override
-	public void tryFindPlayer(LivingEntity seeker, ServerPlayerEntity hider) {
+	public void tryFindPlayer(Entity seeker, ServerPlayerEntity hider) {
 
 	}
 }

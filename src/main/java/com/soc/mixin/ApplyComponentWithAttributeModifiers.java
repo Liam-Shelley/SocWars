@@ -1,6 +1,6 @@
 package com.soc.mixin;
 
-import com.soc.itemsrework.components.ComponentWithAttributeModifiers;
+import com.soc.items.components.ComponentWithAttributeModifiers;
 import net.minecraft.component.ComponentHolder;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.entity.EquipmentSlot;

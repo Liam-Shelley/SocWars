@@ -1,7 +1,6 @@
 package com.soc.mixin;
 
-import com.soc.itemsrework.components.ModItemComponentsReworked;
-import com.soc.networking.c2s.UpdateDoubleJumpPayload;
+import com.soc.items.components.ModItemComponents;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -23,8 +22,8 @@ public abstract class OnEntityLand{
 
             for (Hand hand : Hand.values()) {
                 final ItemStack stack = player.getStackInHand(hand);
-                if (stack.get(ModItemComponentsReworked.DOUBLE_JUMP) != null) {
-                    stack.set(ModItemComponentsReworked.DOUBLE_JUMP, true);
+                if (stack.get(ModItemComponents.DOUBLE_JUMP) != null) {
+                    stack.set(ModItemComponents.DOUBLE_JUMP, true);
                 }
             }
         }

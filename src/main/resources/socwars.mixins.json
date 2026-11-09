@@ -52,7 +52,6 @@
     "ProtectSignBlock",
     "ServerNetworkHandlerMixin",
     "SpongeSmokescreen",
-    "UseDurationScale",
     "VanillaExplosionBlockProtection",
     "VelocityPacketUnlimit"
   ],

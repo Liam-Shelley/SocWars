@@ -6,10 +6,10 @@
     "BlockProtectionOnBreak",
     "BlockProtectionOnPlace",
     "BlockProtectionRenderOutline",
+    "BowUseScale",
     "CancelItemInteractionClient",
     "CollectibleBlockEntitySparkles",
     "DoubleJump",
-    "SemiServerSideTime",
     "FovTweaks",
     "GamePlayerList",
     "GetLoadedModelGroups",
@@ -23,9 +23,11 @@
     "OpenMapBlockScreen",
     "PlayerRenderingMixin",
     "RenderFirstPersonMorph",
+    "SemiServerSideTime",
     "SideLocalPlayerDataGetter",
     "TransparentArmour",
-    "TrueInvisibility"
+    "TrueInvisibility",
+    "UseDurationPropertyScale"
   ],
   "injectors": {
     "defaultRequire": 1

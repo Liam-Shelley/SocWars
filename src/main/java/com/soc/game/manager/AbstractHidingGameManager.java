@@ -8,7 +8,6 @@ import com.soc.game.map.AbstractHidingGameMap;
 import com.soc.game.map.SpreadRules;
 import com.soc.lib.Events;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -175,9 +174,9 @@ public abstract class AbstractHidingGameManager<MAP extends AbstractHidingGameMa
 		if (this.getAlivePlayers().size() < 2) player.addStatusEffect(new StatusEffectInstance(StatusEffects.GLOWING, 10, 0, false, false));
 	}
 
-	public abstract void tryFindPlayer(LivingEntity seeker, ServerPlayerEntity hider);
+	public abstract void tryFindPlayer(Entity seeker, ServerPlayerEntity hider);
 
-	protected void findPlayer(LivingEntity seeker, ServerPlayerEntity hider) {
+	protected void findPlayer(Entity seeker, ServerPlayerEntity hider) {
 		hider.changeGameMode(GameMode.SPECTATOR);
 
 		this.broadcastTitle(HIDER_COLOUR, Text.translatable("game.hiding.hider_found", hider.getDisplayName()), true);

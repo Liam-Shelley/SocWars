@@ -2,7 +2,6 @@ package com.soc.mixin.client;
 
 import com.mojang.authlib.GameProfile;
 import com.soc.effects.util.ModEffects;
-import com.soc.items.util.ScaledUseDuration;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.player.PlayerEntity;
@@ -14,6 +13,8 @@ import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
+
+import static com.soc.items.SocWarsItem.getUseScale;
 
 @Mixin(AbstractClientPlayerEntity.class)
 abstract class FovTweaks extends PlayerEntity {
@@ -28,10 +29,7 @@ abstract class FovTweaks extends PlayerEntity {
 
     @Redirect(method = "getFovMultiplier", at = @At(value = "INVOKE", target = "Ljava/lang/Math;min(FF)F"))
     private float socwars_bowZoomFixClamp(float a, float b) {
-        if ((this.getActiveItem().getItem() instanceof ScaledUseDuration implementer)) {
-            return Math.clamp(a, 0f, b) * (float)Math.sqrt(implementer.getScale(this.getActiveItem()));
-        }
-        return Math.clamp(a, 0f, b);
+        return Math.min(a / (float)Math.sqrt(getUseScale(this.getActiveItem())), b);
     }
 
     @Redirect(method = "getFovMultiplier", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/AbstractClientPlayerEntity;getAttributeValue(Lnet/minecraft/registry/entry/RegistryEntry;)D"))

@@ -1,12 +1,10 @@
 package com.soc.game.manager.bedwars.shopitems;
 
-import com.soc.itemsrework.ModItemsReworked;
 import com.soc.resourcedata.deserialisation.Cost;
 import com.soc.screenhandler.AbstractShopScreenHandler;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.EquippableComponent;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.RegistryByteBuf;
@@ -21,7 +19,6 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static com.soc.lib.SocWarsLib.enchantment;
 import static com.soc.lib.SocWarsLib.inventoryCanAcceptStack;
 
 public interface ShopItem<INHERITOR> {
@@ -83,7 +80,7 @@ public interface ShopItem<INHERITOR> {
         if (equippableComponent != null && equippableComponent.slot().isArmorSlot()) {
             if (ItemStack.areItemsEqual(player.getEquippedStack(equippableComponent.slot()), stack)) return false;
 
-            if (!stack.isOf(ModItemsReworked.TRAINING_WEIGHTS)) stack.addEnchantment(enchantment(player.getWorld(), Enchantments.BINDING_CURSE), 1);
+            //if (!stack.isOf(ModItemsReworked.TRAINING_WEIGHTS)) stack.addEnchantment(enchantment(player.getWorld(), Enchantments.BINDING_CURSE), 1);
 
             player.equipStack(equippableComponent.slot(), stack);
             return true;

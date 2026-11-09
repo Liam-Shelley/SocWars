@@ -6,10 +6,9 @@ import com.soc.database.stats.HideAndSeekTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.HideAndSeekGameMap;
 import com.soc.game.map.SpreadRules;
-import com.soc.itemsrework.SocWarsBowItem;
-import com.soc.itemsrework.ModItemsReworked;
+import com.soc.items.ModItems;
 import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
@@ -49,14 +48,14 @@ public class HideAndSeekGameManager extends AbstractHidingGameManager<HideAndSee
         this.map.spawnCages(false, HIDER_COLOUR);
         this.getPlayers(HIDER_COLOUR).forEach(hider -> {
             hider.changeGameMode(GameMode.ADVENTURE);
-            hider.giveItemStack(new ItemStack(ModItemsReworked.TAUNT_STICK));
+            hider.giveItemStack(new ItemStack(ModItems.TAUNT_STICK));
             scaleEntity(hider, 0.75f);
         });
 
         final TitleS2CPacket youAreSeekingPacket = new TitleS2CPacket(Text.translatable("game.hiding.you_are_seeking"));
         this.getPlayers(SEEKER_COLOUR).forEach(seeker -> {
-            seeker.giveItemStack(new ItemStack(ModItemsReworked.SEEKING_STICK));
-            final ItemStack stack = new ItemStack(SocWarsBowItem.SEEKING_BOW);
+            seeker.giveItemStack(new ItemStack(ModItems.SEEKING_STICK));
+            final ItemStack stack = new ItemStack(ModItems.SEEKING_BOW);
             stack.addEnchantment(enchantmentEntry(this.world, Enchantments.INFINITY), 1);
             seeker.giveItemStack(stack);
             seeker.networkHandler.sendPacket(youAreSeekingPacket);
@@ -131,7 +130,7 @@ public class HideAndSeekGameManager extends AbstractHidingGameManager<HideAndSee
     }
 
     @Override
-    public void tryFindPlayer(LivingEntity seeker, ServerPlayerEntity hider) {
+    public void tryFindPlayer(Entity seeker, ServerPlayerEntity hider) {
         if (this.playerHasPowerup(hider, Powerup.EXTRA_LIFE)) {
             this.removePowerup(hider, Powerup.EXTRA_LIFE);
         } else {

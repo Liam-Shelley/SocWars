@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "socwars:gallium",
-    "socwars:glass_armour"
+    "socwars:glass_armour",
+    "socwars:catastrophe_bow",
+    "socwars:catastrophe_bow_backfire"
   ]
 }

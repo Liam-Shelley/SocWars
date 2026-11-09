@@ -96,7 +96,7 @@ public interface ModEntities {
     EntityType<MolotovCocktailEntity> MOLOTOV_COCKTAIL = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "molotov_cocktail"), EntityType.Builder.<MolotovCocktailEntity>create(MolotovCocktailEntity::new, SpawnGroup.MISC)
             .dropsNothing()
             .dimensions(0.2f, 0.5f)
-            .maxTrackingRange(4)
+            .maxTrackingRange(2)
             .eyeHeight(0.4f)
     );
     EntityType<RedShellEntity> RED_SHELL = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "red_shell"), EntityType.Builder.<RedShellEntity>create(RedShellEntity::new, SpawnGroup.MISC)
@@ -114,7 +114,7 @@ public interface ModEntities {
     EntityType<PocketSandEntity> POCKET_SAND = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "pocket_sand"), EntityType.Builder.<PocketSandEntity>create(PocketSandEntity::new, SpawnGroup.MISC)
             .dropsNothing()
             .dimensions(0.3f, 0.3f)
-            .maxTrackingRange(8)
+            .maxTrackingRange(2)
             .eyeHeight(0.1f)
     );
     EntityType<JetShoppingTrolleyEntity> JET_SHOPPING_TROLLEY = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "jet_shopping_trolley"), EntityType.Builder.<JetShoppingTrolleyEntity>create(JetShoppingTrolleyEntity::new, SpawnGroup.MISC)
@@ -128,6 +128,55 @@ public interface ModEntities {
             .dimensions(0.75f, 1f)
             .maxTrackingRange(4)
             .eyeHeight(0.5f)
+    );
+    EntityType<ArrowBoomBowEntity> BOOM_BOW_ARROW = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "boom_bow_arrow"), EntityType.Builder.create(ArrowBoomBowEntity::new, SpawnGroup.MISC)
+            .dropsNothing()
+            .dimensions(0.5F, 0.5F)
+            .eyeHeight(0.13F)
+            .maxTrackingRange(6)
+            .trackingTickInterval(20)
+    );
+    EntityType<ArrowMegaboomBowEntity> MEGABOOM_BOW_ARROW = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "megaboom_bow_arrow"), EntityType.Builder.create(ArrowMegaboomBowEntity::new, SpawnGroup.MISC)
+            .dropsNothing()
+            .dimensions(0.5F, 0.5F)
+            .eyeHeight(0.13F)
+            .maxTrackingRange(6)
+            .trackingTickInterval(20)
+    );
+    EntityType<ArrowFalconBowEntity> FALCON_BOW_ARROW = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "falcon_bow_arrow"), EntityType.Builder.create(ArrowFalconBowEntity::new, SpawnGroup.MISC)
+            .dropsNothing()
+            .dimensions(0.5F, 0.5F)
+            .eyeHeight(0.13F)
+            .maxTrackingRange(6)
+            .trackingTickInterval(20)
+    );
+    EntityType<ArrowHeaterBowEntity> HEATER_BOW_ARROW = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "heater_bow_arrow"), EntityType.Builder.create(ArrowHeaterBowEntity::new, SpawnGroup.MISC)
+            .dropsNothing()
+            .dimensions(0.5F, 0.5F)
+            .eyeHeight(0.13F)
+            .maxTrackingRange(6)
+            .trackingTickInterval(20)
+    );
+    EntityType<ArrowChorusBowEntity> CHORUS_BOW_ARROW = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "chorus_bow_arrow"), EntityType.Builder.create(ArrowChorusBowEntity::new, SpawnGroup.MISC)
+            .dropsNothing()
+            .dimensions(0.5F, 0.5F)
+            .eyeHeight(0.13F)
+            .maxTrackingRange(6)
+            .trackingTickInterval(20)
+    );
+    EntityType<ArrowCatastropheBowEntity> CATASTROPHE_BOW_ARROW = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "catastrophe_bow_arrow"), EntityType.Builder.create(ArrowCatastropheBowEntity::new, SpawnGroup.MISC)
+            .dropsNothing()
+            .dimensions(0.5F, 0.5F)
+            .eyeHeight(0.13F)
+            .maxTrackingRange(6)
+            .trackingTickInterval(20)
+    );
+    EntityType<ArrowSeekingBowEntity> SEEKING_BOW_ARROW = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "seeking_bow_arrow"), EntityType.Builder.create(ArrowSeekingBowEntity::new, SpawnGroup.MISC)
+            .dropsNothing()
+            .dimensions(0.5F, 0.5F)
+            .eyeHeight(0.13F)
+            .maxTrackingRange(6)
+            .trackingTickInterval(20)
     );
 
     static <T extends Entity> EntityType<T> registerType(Identifier id, EntityType.Builder<T> type) {

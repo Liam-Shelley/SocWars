@@ -650,6 +650,10 @@ public final class SocWarsLib {
         return def;
     }
 
+    public static <T> T getIfNotNull(@Nullable T o, T def) {
+        return o == null ? def : o;
+    }
+
     public static <T, U> U mapIfNotNull(@Nullable T o, Function<T, U> mapper) {
         return mapIfNotNull(o, mapper, null);
     }
@@ -741,7 +745,7 @@ public final class SocWarsLib {
         return 0L;
     }
 
-	public static void forceKillTarget(LivingEntity target, LivingEntity user) {
+	public static void forceKillTarget(LivingEntity target, Entity user) {
 		if (!target.getWorld().isClient) {
 			GamesManager.getInstance().getGame(target).ifPresentOrElse(
 					game -> game.onPlayerDeath((ServerPlayerEntity) target, damageSource(target.getWorld(), DamageTypes.CATASTROPHE_BOW, user), target.getHealth()),

@@ -1,6 +1,6 @@
 package com.soc.mixin;
 
-import com.soc.itemsrework.components.ArmourHitComponent;
+import com.soc.items.components.ArmourHitComponent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;

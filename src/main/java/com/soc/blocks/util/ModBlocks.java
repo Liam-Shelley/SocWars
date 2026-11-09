@@ -3,10 +3,10 @@ package com.soc.blocks.util;
 import com.soc.SocWars;
 import com.soc.blocks.*;
 import com.soc.entities.BigTntEntity;
-import com.soc.items.DoomBlockItem;
-import com.soc.items.FeatherBlockItem;
+import com.soc.items.old.DoomBlockItem;
+import com.soc.items.old.FeatherBlockItem;
 import com.soc.items.util.ModItemGroups;
-import com.soc.itemsrework.ModItemsReworked;
+import com.soc.items.ModItems;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.NoteBlockInstrument;
 import net.minecraft.block.piston.PistonBehavior;
@@ -56,7 +56,7 @@ public interface ModBlocks {
     TierBlock CHEST_PLACEHOLDER = ModBlocks.register("chest_placeholder", settings -> new TierBlock(settings, 1) {
         @Override
         protected ItemStack getPickStack(WorldView world, BlockPos pos, BlockState state, boolean includeData) {
-            return new ItemStack(ModItemsReworked.CHEST_PLACEHOLDERS.get(state.get(TierBlock.TIER)));
+            return new ItemStack(ModItems.CHEST_PLACEHOLDERS.get(state.get(TierBlock.TIER)));
         }
     }, AbstractBlock.Settings.create().sounds(BlockSoundGroup.STONE).noCollision().nonOpaque(), false, ModItemGroups.MAP_MAKING_TOOLS_KEY);
 

@@ -7,7 +7,7 @@ import com.soc.gui.hud.sidebar.QueueHud;
 import com.soc.gui.hud.sidebar.SkywarsTeamsHud;
 import com.soc.gui.screen.HandledScreens;
 import com.soc.item.ModItemProperties;
-import com.soc.items.FeatherBlockItem;
+import com.soc.items.old.FeatherBlockItem;
 import com.soc.lib.Coroutines;
 import com.soc.lib.Events;
 import com.soc.model.EntityModelLayers;

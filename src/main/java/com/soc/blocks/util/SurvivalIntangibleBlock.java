@@ -22,7 +22,7 @@ public class SurvivalIntangibleBlock extends Block {
     }
 
     public static VoxelShape getModifiedOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        if (context instanceof EntityShapeContext entityShapeContext && entityShapeContext.getEntity() instanceof PlayerEntity playerEntity && playerEntity.getGameMode() != GameMode.CREATIVE) {
+        if (context instanceof EntityShapeContext entityShapeContext && entityShapeContext.getEntity() instanceof PlayerEntity playerEntity && (playerEntity.getGameMode() == null || playerEntity.getGameMode().isSurvivalLike())) {
             return VoxelShapes.empty();
         }
 

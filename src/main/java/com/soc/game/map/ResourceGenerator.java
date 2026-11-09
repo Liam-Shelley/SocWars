@@ -1,6 +1,6 @@
 package com.soc.game.map;
 
-import com.soc.itemsrework.components.ModItemComponentsReworked;
+import com.soc.items.components.ModItemComponents;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -57,9 +57,9 @@ public class ResourceGenerator {
     private ItemStack getItemStack(int countToSpawn) {
         final ItemStack itemStack = new ItemStack(this.item, countToSpawn);
 
-        itemStack.set(ModItemComponentsReworked.RESOURCE_COUNTED, Unit.INSTANCE);
-        if (this.splitsDrops) itemStack.set(ModItemComponentsReworked.RESOURCE_SPLIT, Unit.INSTANCE);
-        itemStack.set(ModItemComponentsReworked.GENERATOR_REFERENCE, id);
+        itemStack.set(ModItemComponents.RESOURCE_COUNTED, Unit.INSTANCE);
+        if (this.splitsDrops) itemStack.set(ModItemComponents.RESOURCE_SPLIT, Unit.INSTANCE);
+        itemStack.set(ModItemComponents.GENERATOR_REFERENCE, id);
 
         return itemStack;
     }
@@ -99,7 +99,7 @@ public class ResourceGenerator {
         if (this.currentCount == 0) return; //Hopefully a worthy optimisation that won't break everything
 
         this.currentCount = this.world
-                .getEntitiesByType(TypeFilter.instanceOf(ItemEntity.class), new Box(this.pos.getX() - 5, this.pos.getY() - 5, this.pos.getZ() - 5, this.pos.getX() + 5, this.pos.getY() + 5, this.pos.getZ() + 5), itemEntity -> itemEntity.getStack().get(ModItemComponentsReworked.RESOURCE_COUNTED) != null && itemEntity.getStack().isOf(this.item))
+                .getEntitiesByType(TypeFilter.instanceOf(ItemEntity.class), new Box(this.pos.getX() - 5, this.pos.getY() - 5, this.pos.getZ() - 5, this.pos.getX() + 5, this.pos.getY() + 5, this.pos.getZ() + 5), itemEntity -> itemEntity.getStack().get(ModItemComponents.RESOURCE_COUNTED) != null && itemEntity.getStack().isOf(this.item))
                 .stream()
                 .map(itemEntity -> itemEntity.getStack().getCount())
                 .reduce(0, Integer::sum);

@@ -6,6 +6,7 @@ import com.soc.game.manager.bedwars.ShopType;
 import com.soc.renderer.entity.*;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.render.entity.ArrowEntityRenderer;
 import net.minecraft.util.Identifier;
 
 public interface EntityRenderers {
@@ -28,5 +29,12 @@ public interface EntityRenderers {
         EntityRendererRegistry.register(ModEntities.POCKET_SAND, context -> new SimpleCubeEntityRenderer(context, Blocks.SAND.getDefaultState(), 0.3f));
         EntityRendererRegistry.register(ModEntities.JET_SHOPPING_TROLLEY, JetShoppingTrolleyEntityRenderer::new);
         EntityRendererRegistry.register(ModEntities.POWERUP, PowerupEntityRenderer::new);
+        EntityRendererRegistry.register(ModEntities.BOOM_BOW_ARROW, ArrowEntityRenderer::new); //TODO: Custom renderers for custom arrows
+        EntityRendererRegistry.register(ModEntities.MEGABOOM_BOW_ARROW, ArrowEntityRenderer::new);
+        EntityRendererRegistry.register(ModEntities.FALCON_BOW_ARROW, ArrowEntityRenderer::new);
+        EntityRendererRegistry.register(ModEntities.HEATER_BOW_ARROW, ArrowEntityRenderer::new);
+        EntityRendererRegistry.register(ModEntities.CHORUS_BOW_ARROW, ArrowEntityRenderer::new);
+        EntityRendererRegistry.register(ModEntities.CATASTROPHE_BOW_ARROW, ArrowEntityRenderer::new);
+        EntityRendererRegistry.register(ModEntities.SEEKING_BOW_ARROW, ArrowEntityRenderer::new);
     }
 }

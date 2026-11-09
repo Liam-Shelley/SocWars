@@ -2,7 +2,7 @@ package com.soc.items.util;
 
 import com.soc.SocWars;
 import com.soc.blocks.util.ModBlocks;
-import com.soc.itemsrework.ModItemsReworked;
+import com.soc.items.ModItems;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.Item;
@@ -16,12 +16,12 @@ import net.minecraft.util.Identifier;
 
 import java.util.function.Function;
 
-import static com.soc.itemsrework.ModItemsReworked.register;
+import static com.soc.items.ModItems.register;
 
 public interface ModItemGroups {
     RegistryKey<ItemGroup> ITEMS_KEY = RegistryKey.of(Registries.ITEM_GROUP.getKey(), Identifier.of(SocWars.MOD_ID, "items_group"));
     ItemGroup ITEMS_GROUP = FabricItemGroup.builder()
-            .icon(() -> new ItemStack(ModItemsReworked.DEVASTATOR_PRIME))
+            .icon(() -> new ItemStack(ModItems.DEVASTATOR_PRIME))
             .displayName(Text.translatable("item_group.socwars.items"))
             .build();
 

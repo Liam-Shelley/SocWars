@@ -1,8 +1,8 @@
 package com.soc.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import com.soc.itemsrework.components.ModItemComponentsReworked;
-import com.soc.itemsrework.components.ArmourSetBonus;
+import com.soc.items.components.ModItemComponents;
+import com.soc.items.components.ArmourSetBonus;
 import com.soc.lib.ModEntityAttributes;
 import com.soc.util.MutableBoolean;
 import net.minecraft.component.DataComponentTypes;
@@ -54,7 +54,7 @@ public abstract class LivingEntityMixin {
 
         map.forEach((slot, stack) -> { //Kinda gross multi purpous loop to avoid iterating twice
 
-            hasSetBonus.orEquals(stack.get(ModItemComponentsReworked.ARMOUR_SET_BONUS) != null);
+            hasSetBonus.orEquals(stack.get(ModItemComponents.ARMOUR_SET_BONUS) != null);
         });
 
         if (hasSetBonus.getValue()) {
@@ -67,7 +67,7 @@ public abstract class LivingEntityMixin {
         final EquippableComponent equippableComponent = removedEquipment.get(DataComponentTypes.EQUIPPABLE);
         if (equippableComponent == null || equippableComponent.slot() != slot) return;
 
-        final ArmourSetBonus setBonus = removedEquipment.get(ModItemComponentsReworked.ARMOUR_SET_BONUS);
+        final ArmourSetBonus setBonus = removedEquipment.get(ModItemComponents.ARMOUR_SET_BONUS);
         if (setBonus == null) return; //Same thing here
 
         this.removeSetBonus(setBonus);
@@ -85,7 +85,7 @@ public abstract class LivingEntityMixin {
             final ItemStack equippedStack = this.getEquippedStack(slot);
             final EquippableComponent equippableComponent = equippedStack.get(DataComponentTypes.EQUIPPABLE);
 
-            return equippableComponent != null && equippableComponent.slot() == slot ? equippedStack.get(ModItemComponentsReworked.ARMOUR_SET_BONUS) : null;
+            return equippableComponent != null && equippableComponent.slot() == slot ? equippedStack.get(ModItemComponents.ARMOUR_SET_BONUS) : null;
         }).filter(Objects::nonNull).collect(Collectors.toMap(Function.identity(), a -> 1, Integer::sum));
 
         setBonusMap.forEach((setBonus, pieces) -> setBonus.applyAttributeModifiers((attribute, modifier) -> {

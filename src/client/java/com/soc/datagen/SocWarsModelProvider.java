@@ -1,8 +1,8 @@
 package com.soc.datagen;
 
 import com.soc.SocWars;
-import com.soc.itemsrework.ModItemsReworked;
-import com.soc.itemsrework.util.GenerateItem;
+import com.soc.items.ModItems;
+import com.soc.items.util.GenerateItem;
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.client.data.BlockStateModelGenerator;
@@ -27,7 +27,7 @@ public class SocWarsModelProvider extends FabricModelProvider {
 
 	@Override
 	public void generateItemModels(ItemModelGenerator itemModelGenerator) {
-		generateModelsForItemsDeclaredInClass(itemModelGenerator, ModItemsReworked.class);
+		generateModelsForItemsDeclaredInClass(itemModelGenerator, ModItems.class);
 	}
 
 	private static void generateModelsForItemsDeclaredInClass(ItemModelGenerator itemModelGenerator, Class<?> itemsClass) {

@@ -4,8 +4,8 @@ import com.soc.blocks.blockentities.KitBlockEntity;
 import com.soc.blocks.blockentities.MapBlockEntity;
 import com.soc.game.manager.GameType;
 import com.soc.game.manager.GamesManager;
-import com.soc.itemsrework.SocWarsItem;
-import com.soc.itemsrework.components.ModItemComponentsReworked;
+import com.soc.items.SocWarsItem;
+import com.soc.items.components.ModItemComponents;
 import com.soc.networking.c2s.*;
 import com.soc.networking.s2c.OpenQueueScreenPayload;
 import com.soc.networking.s2c.QueuePayload;
@@ -66,7 +66,7 @@ public class C2SReceivers {
             final ServerPlayerEntity player = context.player();
             for (Hand hand : Hand.values()) {
                 final ItemStack stack = player.getStackInHand(hand);
-                ifNotNull(stack.get(ModItemComponentsReworked.DOUBLE_JUMP), doubleJump -> stack.set(ModItemComponentsReworked.DOUBLE_JUMP, payload.allow()));
+                ifNotNull(stack.get(ModItemComponents.DOUBLE_JUMP), doubleJump -> stack.set(ModItemComponents.DOUBLE_JUMP, payload.allow()));
             }
         });
     }

@@ -1,6 +1,6 @@
 package com.soc.blocks;
 
-import com.soc.itemsrework.ModItemsReworked;
+import com.soc.items.ModItems;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.Entity;
@@ -41,6 +41,6 @@ public class ManyBedsBlock extends ColourStateBlock {
 
     @Override
     protected ItemStack getPickStack(WorldView world, BlockPos pos, BlockState state, boolean includeData) {
-        return new ItemStack(Objects.requireNonNullElse(ModItemsReworked.MANY_BEDS_BLOCKS.get(state.get(ColourStateBlock.COLOUR)), Items.AIR));
+        return new ItemStack(Objects.requireNonNullElse(ModItems.MANY_BEDS_BLOCKS.get(state.get(ColourStateBlock.COLOUR)), Items.AIR));
     }
 }

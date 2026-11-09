@@ -60,6 +60,6 @@ public class DisplayBlock extends BlockWithEntity {
 
     @Override
     protected ItemStack getPickStack(WorldView world, BlockPos pos, BlockState state, boolean includeData) {
-        return super.getPickStack(world, pos, state, includeData);
+        return includeData && world.getBlockEntity(pos) instanceof DisplayBlockEntity displayBlockEntity ? displayBlockEntity.getDisplayItem().copy() : super.getPickStack(world, pos, state, includeData);
     }
 }

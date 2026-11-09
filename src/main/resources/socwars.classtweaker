@@ -3,3 +3,8 @@ accessWidener v1 named
 accessible method net/minecraft/item/consume/ConsumeEffect$Type register (Ljava/lang/String;Lcom/mojang/serialization/MapCodec;Lnet/minecraft/network/codec/PacketCodec;)Lnet/minecraft/item/consume/ConsumeEffect$Type;
 accessible method net/minecraft/item/DebugStickItem cycle (Lnet/minecraft/block/BlockState;Lnet/minecraft/state/property/Property;Z)Lnet/minecraft/block/BlockState;
 accessible method net/minecraft/item/equipment/ArmorMaterials createDefenseMap (IIIII)Ljava/util/Map;
+
+accessible method net/minecraft/item/RangedWeaponItem load (Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemStack;Lnet/minecraft/entity/LivingEntity;)Ljava/util/List;
+accessible field net/minecraft/entity/projectile/PersistentProjectileEntity stack Lnet/minecraft/item/ItemStack;
+accessible field net/minecraft/entity/projectile/PersistentProjectileEntity weapon Lnet/minecraft/item/ItemStack;
+accessible method net/minecraft/entity/projectile/PersistentProjectileEntity setPierceLevel (B)V

@@ -1,6 +1,6 @@
 package com.soc.mixin.client;
 
-import com.soc.itemsrework.SocWarsItem;
+import com.soc.items.SocWarsItem;
 import com.soc.networking.c2s.OnAttackButtonPressedPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
