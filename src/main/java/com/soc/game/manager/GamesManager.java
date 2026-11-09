@@ -5,6 +5,7 @@ import com.mojang.brigadier.suggestion.Suggestion;
 import com.soc.SocWars;
 import com.soc.events.ModEvents;
 import com.soc.game.map.SpreadRules;
+import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -96,6 +97,9 @@ public class GamesManager {
         );
         ModEvents.ON_BED_USED.register((player, world, pos) ->
                 this.getGame(player).map(game -> game.onBedUsed(player, world, pos)).orElse(true)
+        );
+        EntitySleepEvents.ALLOW_SETTING_SPAWN.register((player, pos) ->
+                this.getGame(player).map(game -> game.allowSettingSpawn(player, pos)).orElse(true)
         );
         ServerMessageEvents.ALLOW_CHAT_MESSAGE.register((message, player, parameters) -> {
             this.getGame(player).ifPresentOrElse(

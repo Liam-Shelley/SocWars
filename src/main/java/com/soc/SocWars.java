@@ -86,7 +86,5 @@ public class SocWars implements ModInitializer {
 		CollectiblesManager.initialise();
 		PlayerDataManager.initialise();
 		OfflinePlayerTracker.initialise();
-
-		EntitySleepEvents.ALLOW_SETTING_SPAWN.register((player, pos) -> false);
 	}
 }

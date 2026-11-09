@@ -345,6 +345,10 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         return false;
     }
 
+    public boolean allowSettingSpawn(PlayerEntity player, BlockPos pos) {
+        return false;
+    }
+
     public void onChatMessage(SignedMessage message, ServerPlayerEntity player, MessageType.Parameters parameters) {
         final Text chatMessage = createChatMessage(message, player);
         if (this.hasTeamChat()) {
