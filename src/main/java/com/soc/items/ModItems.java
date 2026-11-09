@@ -1713,7 +1713,7 @@ public interface ModItems {
 	Item CATASTROPHE_BOW = registerAndGroup("catastrophe_bow", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.EPIC)
 			.maxDamage(10)
-			.bow(3f, 6f, ModEntities.CATASTROPHE_BOW_ARROW, 100)
+			.bow(3f, 6f, ModEntities.CATASTROPHE_BOW_ARROW, 150)
 			.itemFinishUse((stack, world, user) -> SphereExplosion.explode(world, user.getPos(), 7f, 1.5f, 12f, 3f, true, null, DamageTypes.CATASTROPHE_BOW_BACKFIRE)),
 			ItemGroups.COMBAT
 	);
