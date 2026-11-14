@@ -12,9 +12,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import static java.lang.Math.floor;
 
 @Mixin(PlayerEntity.class)
-abstract class MorphBoundingBox extends EntityGetBoundingBox {
+abstract class MorphBoundingBox extends EntityMixin {
 	@Override
-	protected void socwars_getBoundingBox(CallbackInfoReturnable<Box> cir) {
+	protected void socwars$getBoundingBox(CallbackInfoReturnable<Box> cir) {
 		final PlayerData playerData = PlayerDataManager.getSideLocalPlayerData((PlayerEntity)(Object)this);
 		if (playerData == null) return;
 

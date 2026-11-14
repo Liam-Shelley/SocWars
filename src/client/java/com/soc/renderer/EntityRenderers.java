@@ -35,6 +35,8 @@ public interface EntityRenderers {
         EntityRendererRegistry.register(ModEntities.HEATER_BOW_ARROW, ArrowEntityRenderer::new);
         EntityRendererRegistry.register(ModEntities.CHORUS_BOW_ARROW, ArrowEntityRenderer::new);
         EntityRendererRegistry.register(ModEntities.CATASTROPHE_BOW_ARROW, ArrowEntityRenderer::new);
+        EntityRendererRegistry.register(ModEntities.ANTI_GRAVITY_BOW_ARROW, ArrowEntityRenderer::new);
+        EntityRendererRegistry.register(ModEntities.UNSTOPPABLE_BOW_ARROW, ArrowEntityRenderer::new);
         EntityRendererRegistry.register(ModEntities.SEEKING_BOW_ARROW, ArrowEntityRenderer::new);
     }
 }

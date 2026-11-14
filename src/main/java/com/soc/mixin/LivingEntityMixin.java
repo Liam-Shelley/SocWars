@@ -13,7 +13,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.AttributeContainer;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttribute;
-import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -28,6 +27,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
@@ -51,10 +51,11 @@ public abstract class LivingEntityMixin {
         return instance;
     }
 
-    @Inject(method = "removeStatusEffect", at = @At(value = "RETURN", ordinal = 0))
-    private void socwars_onRemoveEffect(RegistryEntry<StatusEffect> effect, CallbackInfoReturnable<Boolean> cir, @Local StatusEffectInstance statusEffectInstance) {
-        if (effect.value() instanceof OnEffectRemoved onEffectRemoved)
+    @Inject(method = "onStatusEffectsRemoved", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/effect/StatusEffectInstance;getEffectType()Lnet/minecraft/registry/entry/RegistryEntry;"))
+    private void socwars_onRemoveEffect(Collection<StatusEffectInstance> effects, CallbackInfo ci, @Local StatusEffectInstance statusEffectInstance) {
+        if (statusEffectInstance.getEffectType().value() instanceof OnEffectRemoved onEffectRemoved) {
             onEffectRemoved.onRemoved((LivingEntity)(Object)this, statusEffectInstance.getAmplifier());
+        }
     }
 
     @Inject(method = "getEquipmentChanges", at = @At(value = "JUMP", opcode = Opcodes.IFNULL, shift = At.Shift.AFTER))

@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "socwars:block/invisible_passable_block"
+      "model": "minecraft:block/barrier"
     }
   }
 }

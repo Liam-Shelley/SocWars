@@ -50,8 +50,7 @@ public class BWFireballEntity extends FireballEntity {
     protected void onCollision(HitResult hitResult) {
         if (hitResult.getType() == HitResult.Type.ENTITY && ((EntityHitResult)hitResult).getEntity() == this.getOwner()) return;
         if (this.getWorld() instanceof ServerWorld world) {
-            final Entity owner = LazyEntityReference.resolve(super.owner, world, Entity.class);
-            this.explodeFunction.explode(world, this.getPos(), this.explosionPower, owner);
+            this.explodeFunction.explode(world, this.getPos(), this.explosionPower, this.getOwner());
         }
         this.discard();
     }

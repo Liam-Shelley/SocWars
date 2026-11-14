@@ -171,6 +171,20 @@ public interface ModEntities {
             .maxTrackingRange(6)
             .trackingTickInterval(20)
     );
+    EntityType<ArrowAntiGravityBowEntity> ANTI_GRAVITY_BOW_ARROW = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "anti_gravity_bow_arrow"), EntityType.Builder.create(ArrowAntiGravityBowEntity::new, SpawnGroup.MISC)
+            .dropsNothing()
+            .dimensions(0.5F, 0.5F)
+            .eyeHeight(0.13F)
+            .maxTrackingRange(6)
+            .trackingTickInterval(20)
+    );
+    EntityType<ArrowUnstoppableBowEntity> UNSTOPPABLE_BOW_ARROW = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "unstoppable_bow_arrow"), EntityType.Builder.create(ArrowUnstoppableBowEntity::new, SpawnGroup.MISC)
+            .dropsNothing()
+            .dimensions(0.5F, 0.5F)
+            .eyeHeight(0.13F)
+            .maxTrackingRange(6)
+            .trackingTickInterval(20)
+    );
     EntityType<ArrowSeekingBowEntity> SEEKING_BOW_ARROW = ModEntities.registerType(Identifier.of(SocWars.MOD_ID, "seeking_bow_arrow"), EntityType.Builder.create(ArrowSeekingBowEntity::new, SpawnGroup.MISC)
             .dropsNothing()
             .dimensions(0.5F, 0.5F)

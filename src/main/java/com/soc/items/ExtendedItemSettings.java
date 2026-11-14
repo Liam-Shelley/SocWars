@@ -70,6 +70,10 @@ public class ExtendedItemSettings extends Item.Settings {
 		return this.component(ModItemComponents.ITEM_FINISH_USE, component);
 	}
 
+	public ExtendedItemSettings itemTick(ItemTickComponent component) {
+		return this.component(ModItemComponents.ITEM_TICK, component);
+	}
+
 	public ExtendedItemSettings potionRing(RegistryEntry<StatusEffect> effect, int amplifier) {
 		return this.itemUse((world, user, hand) -> {
 			user.addStatusEffect(new StatusEffectInstance(effect, RING_GRACE_TICKS, amplifier, false, false, false));

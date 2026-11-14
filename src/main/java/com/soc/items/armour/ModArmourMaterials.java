@@ -50,6 +50,11 @@ public interface ModArmourMaterials {
 			20, createDefenseMap(2, 0, 0, 0, 6), 15, SoundEvents.ITEM_ARMOR_EQUIP_GOLD, 0.0F, 0.0F, null, TRAINING_WEIGHTS_MODEL_KEY
 	);
 
+	RegistryKey<EquipmentAsset> PILOT_HELMET_MODEL_KEY = ModArmourMaterials.registerEquipmentAsset("pilot_helmet");
+	ArmorMaterial PILOT_HELMET = new ArmorMaterial(
+			20, createDefenseMap(0, 0, 0, 4, 11), 15, SoundEvents.ITEM_ARMOR_EQUIP_TURTLE, 0.0F, 0.0F, null, PILOT_HELMET_MODEL_KEY
+	);
+
 	static RegistryKey<EquipmentAsset> registerEquipmentAsset(String name) {
 		return RegistryKey.of(RegistryKey.ofRegistry(Identifier.ofVanilla("equipment_asset")), Identifier.of(SocWars.MOD_ID, name));
 	}

@@ -1700,7 +1700,7 @@ public interface ModItems {
 	);
 	Item HEATER_BOW = registerAndGroup("heater_bow", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.UNCOMMON)
-			.maxDamage(250)
+			.maxDamage(50)
 			.bow(1f, 3f, ModEntities.HEATER_BOW_ARROW),
 			ItemGroups.COMBAT
 	);
@@ -1717,6 +1717,18 @@ public interface ModItems {
 			.itemFinishUse((stack, world, user) -> SphereExplosion.explode(world, user.getPos(), 7f, 1.5f, 12f, 3f, true, null, DamageTypes.CATASTROPHE_BOW_BACKFIRE)),
 			ItemGroups.COMBAT
 	);
+	Item ANTI_GRAVITY_BOW = registerAndGroup("anti_gravity_bow", SocWarsItem::new, new ExtendedItemSettings()
+			.rarity(Rarity.EPIC)
+			.maxDamage(100)
+			.bow(0.35f, 1f, ModEntities.ANTI_GRAVITY_BOW_ARROW),
+			ItemGroups.COMBAT
+	);
+	Item UNSTOPPABLE_BOW = registerAndGroup("unstoppable_bow", SocWarsItem::new, new ExtendedItemSettings()
+			.rarity(Rarity.EPIC)
+			.maxDamage(60)
+			.bow(1.2f, 4f, ModEntities.UNSTOPPABLE_BOW_ARROW),
+			ItemGroups.COMBAT
+	);
 	Item SEEKING_BOW = registerAndGroup("seeking_bow", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.UNCOMMON)
 			.maxDamage(500)
@@ -1724,6 +1736,18 @@ public interface ModItems {
 			.attributeModifiers(new AttributeModifiersComponent(List.of(
 					new AttributeModifiersComponent.Entry(EntityAttributes.MOVEMENT_SPEED, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "seeking_stick_speed"), 0.05d, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.MAINHAND, AttributeModifiersComponent.Display.getHidden())
 			))),
+			ItemGroups.COMBAT
+	);
+	@GenerateItem(GENERATED)
+	Item PILOT_HELMET = registerAndGroup("pilot_helmet", SocWarsTickingItem::new, new ExtendedItemSettings()
+			.rarity(Rarity.RARE)
+			.armour(ModArmourMaterials.PILOT_HELMET, EquipmentType.HELMET)
+			.itemTick((stack, world, entity, slot) -> {
+				if (slot == EquipmentSlot.HEAD && entity instanceof LivingEntity livingEntity) {
+					livingEntity.addStatusEffect(new StatusEffectInstance(ModEffects.FLIGHT, 10));
+				}
+			})
+			.maxDamage(35),
 			ItemGroups.COMBAT
 	);
 

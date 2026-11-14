@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "socwars:item/training_weights"
+    "layer0": "socwars:item/pilot_helmet"
   }
 }

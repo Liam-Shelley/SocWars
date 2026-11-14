@@ -1,0 +1,6 @@
+{
+  "parent": "socwars:item/unstoppable_bow/base",
+  "textures": {
+    "layer0": "socwars:item/unstoppable_bow/hold_2"
+  }
+}

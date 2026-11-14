@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/bow",
+  "textures": {
+    "layer0": "socwars:item/anti_gravity_bow/base"
+  }
+}
