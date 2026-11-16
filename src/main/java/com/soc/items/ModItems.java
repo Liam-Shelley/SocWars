@@ -18,7 +18,7 @@ import com.soc.items.util.ModItemGroups;
 import com.soc.lib.Coroutine;
 import com.soc.lib.Coroutines;
 import com.soc.lib.IntBox;
-import com.soc.materials.ToolMaterials;
+import com.soc.items.util.ToolMaterials;
 import com.soc.mixin.GetAbsorptionAmountDataTracker;
 import com.soc.networking.s2c.AddVelocityPayload;
 import com.soc.networking.s2c.BatchParticlePayload;

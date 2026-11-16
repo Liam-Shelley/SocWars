@@ -103,4 +103,16 @@ public interface ModEvents {
 
         return allowEvent;
     });
+
+    Event<OnDeathNoteKill> ON_DEATH_NOTE_KILL = EventFactory.createArrayBacked(OnDeathNoteKill.class, listeners -> (uuid, killer) -> {
+        OnDeathNoteKill.Result result = OnDeathNoteKill.Result.FAIL;
+
+        for (OnDeathNoteKill listener : listeners) {
+            final OnDeathNoteKill.Result thisResult = listener.tryKill(uuid, killer);
+            if (thisResult == OnDeathNoteKill.Result.CANCEL) return OnDeathNoteKill.Result.CANCEL;
+            if (thisResult == OnDeathNoteKill.Result.SUCCESS) result = OnDeathNoteKill.Result.SUCCESS;
+        }
+
+        return result;
+    });
 }

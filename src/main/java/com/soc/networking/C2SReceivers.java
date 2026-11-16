@@ -2,6 +2,8 @@ package com.soc.networking;
 
 import com.soc.blocks.blockentities.KitBlockEntity;
 import com.soc.blocks.blockentities.MapBlockEntity;
+import com.soc.events.ModEvents;
+import com.soc.events.OnDeathNoteKill;
 import com.soc.game.manager.GameType;
 import com.soc.game.manager.GamesManager;
 import com.soc.items.SocWarsItem;
@@ -67,6 +69,12 @@ public class C2SReceivers {
             for (Hand hand : Hand.values()) {
                 final ItemStack stack = player.getStackInHand(hand);
                 ifNotNull(stack.get(ModItemComponents.DOUBLE_JUMP), doubleJump -> stack.set(ModItemComponents.DOUBLE_JUMP, payload.allow()));
+            }
+        });
+        ServerPlayNetworking.registerGlobalReceiver(DeathNoteKillPayload.ID, (payload, context) -> {
+            final OnDeathNoteKill.Result result = ModEvents.ON_DEATH_NOTE_KILL.invoker().tryKill(payload.uuid(), context.player());
+            if (result == OnDeathNoteKill.Result.SUCCESS) {
+                context.server().getPlayerManager().getPlayer(payload.uuid())
             }
         });
     }

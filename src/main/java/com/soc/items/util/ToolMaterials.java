@@ -1,4 +1,4 @@
-package com.soc.materials;
+package com.soc.items.util;
 
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.registry.tag.BlockTags;
