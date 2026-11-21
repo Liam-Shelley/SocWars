@@ -2,7 +2,7 @@ package com.soc.items.components;
 
 import com.mojang.serialization.Codec;
 import com.soc.SocWars;
-import com.soc.items.TrainingWeightsComponent;
+import com.soc.items.util.ExtendedRarity;
 import net.minecraft.component.ComponentType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageType;
@@ -177,5 +177,10 @@ public interface ModItemComponents {
 			Registries.DATA_COMPONENT_TYPE,
 			Identifier.of(SocWars.MOD_ID, "bow"),
 			ComponentType.<BowComponent<?>>builder().codec(BowComponent.CODEC).build()
+	);
+	ComponentType<ExtendedRarity> EXTENDED_RARITY = Registry.register(
+			Registries.DATA_COMPONENT_TYPE,
+			Identifier.of(SocWars.MOD_ID, "extended_rarity"),
+			ComponentType.<ExtendedRarity>builder().codec(ExtendedRarity.CODEC).build()
 	);
 }

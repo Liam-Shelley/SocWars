@@ -5,6 +5,7 @@ import com.soc.SocWars;
 import com.soc.database.Database;
 import com.soc.database.stats.BaseGameTable;
 import com.soc.database.stats.CombatTable;
+import com.soc.events.OnDeathNoteKill;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.SpreadRules;
 import com.soc.lib.Events;
@@ -65,8 +66,7 @@ import java.util.stream.Collectors;
 import static com.soc.lib.SocWarsLib.*;
 
 public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE extends BaseGameTable, EVENT extends AbstractGameManager<?, ?, ?>> {
-
-    protected interface OnGameEnd {
+	protected interface OnGameEnd {
         void onGameEnd(ServerPlayerEntity player, boolean immediate);
 
         default void onGameEnd(ServerPlayerEntity player) {
@@ -357,6 +357,10 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
         } else {
             this.broadcast(chatMessage, false);
         }
+    }
+
+    public OnDeathNoteKill.Result onDeathNoteKill(PlayerEntity target, PlayerEntity killer) {
+        return OnDeathNoteKill.Result.SUCCESS;
     }
 
     public static Text createChatMessage(SignedMessage message, ServerPlayerEntity player) {

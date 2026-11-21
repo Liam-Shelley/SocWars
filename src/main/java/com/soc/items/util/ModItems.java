@@ -1,4 +1,4 @@
-package com.soc.items;
+package com.soc.items.util;
 
 import com.soc.SocWars;
 import com.soc.effects.util.ModEffects;
@@ -7,21 +7,21 @@ import com.soc.entities.util.ModEntities;
 import com.soc.game.manager.AbstractHidingGameManager;
 import com.soc.game.manager.GamesManager;
 import com.soc.game.map.DyeColourWithEmpty;
+import com.soc.items.SocWarsItem;
+import com.soc.items.SocWarsTickingItem;
 import com.soc.items.old.*;
 import com.soc.items.components.CommandFunctionComponent;
 import com.soc.items.armour.ArmourSetBonuses;
 import com.soc.items.armour.ModArmourMaterials;
 import com.soc.items.components.*;
-import com.soc.items.util.GenerateItem;
-import com.soc.items.util.ModConsumeEffects;
-import com.soc.items.util.ModItemGroups;
 import com.soc.lib.Coroutine;
 import com.soc.lib.Coroutines;
 import com.soc.lib.IntBox;
-import com.soc.items.util.ToolMaterials;
 import com.soc.mixin.GetAbsorptionAmountDataTracker;
 import com.soc.networking.s2c.AddVelocityPayload;
 import com.soc.networking.s2c.BatchParticlePayload;
+import com.soc.networking.s2c.OpenDeathNoteScreenPayload;
+import com.soc.player.DeathNoteState;
 import com.soc.player.Morph;
 import com.soc.util.*;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
@@ -87,7 +87,7 @@ import static com.soc.blocks.util.ModBlocks.MANY_BEDS_BLOCK;
 import static com.soc.game.manager.AbstractGameManager.getBlockDamagePredicate;
 import static com.soc.items.components.BowComponent.playBowSound;
 import static com.soc.items.util.ModItemGroups.registerAndGroup;
-import static com.soc.items.ExtendedItemSettings.spawnEntityWithVelocity;
+import static com.soc.items.util.ExtendedItemSettings.spawnEntityWithVelocity;
 import static com.soc.items.util.GenerateItem.Model.GENERATED;
 import static com.soc.items.util.GenerateItem.Model.HANDHELD;
 import static com.soc.lib.SocWarsLib.*;
@@ -162,7 +162,7 @@ public interface ModItems {
 
 
 	@GenerateItem(HANDHELD)
-	Item BAT = registerAndGroup("bat", SocWarsItem::new, new ExtendedItemSettings()
+	Item BAT = ModItemGroups.registerAndGroup("bat", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, 4f, -1.9f)
 			.simpleTooltip(Text.translatable("tooltip.bat")),
 			ItemGroups.COMBAT
@@ -207,7 +207,7 @@ public interface ModItems {
 						} else {
 							final World world = attacker.getWorld();
 							if (attacker instanceof LivingEntity && world instanceof ServerWorld serverWorld) {
-								final DamageSource damageSource = damageSource(world, DamageTypes.LIFETHIEF);
+								final DamageSource damageSource = damageSource(world, ModDamageTypes.LIFETHIEF);
 								attacker.damage(serverWorld, damageSource, 1.0f);
 							}
 						}
@@ -229,7 +229,7 @@ public interface ModItems {
 			.itemHit((stack, target, attacker) -> {
 				final World world = attacker.getWorld();
 				if (attacker instanceof LivingEntity && world instanceof ServerWorld serverWorld) {
-					final DamageSource damageSource = damageSource(world, DamageTypes.NETHERWRONG_SWORD);
+					final DamageSource damageSource = damageSource(world, ModDamageTypes.NETHERWRONG_SWORD);
 					attacker.damage(serverWorld, damageSource, 8f);
 				}
 			}),
@@ -406,7 +406,7 @@ public interface ModItems {
 			.itemHit((stack, target, attacker) -> {
 				attacker.getWorld().playSound(null, attacker.getBlockPos(), Sounds.GET_SOME, SoundCategory.PLAYERS, 1f, 1f);
 			})
-			.damageType(DamageTypes.FULL_METAL_SWORD)
+			.damageType(ModDamageTypes.FULL_METAL_SWORD)
 			.simpleTooltip(Text.translatable("tooltip.full_metal_sword")),
 			ItemGroups.COMBAT
 	);
@@ -724,7 +724,7 @@ public interface ModItems {
 						}
 					} while (hitResult != null && hitResult.getEntity().squaredDistanceTo(user.getPos()) <= maxDistance * maxDistance);
 
-					entities.forEach(entity -> entity.damage(serverWorld, damageSource(serverWorld, DamageTypes.SNIPER_RIFLE, user), 18f));
+					entities.forEach(entity -> entity.damage(serverWorld, damageSource(serverWorld, ModDamageTypes.SNIPER_RIFLE, user), 18f));
 				}
 
 				return ActionResult.SUCCESS;
@@ -977,7 +977,7 @@ public interface ModItems {
 			.simpleTooltip(Text.translatable("tooltip.pocket_sand")),
 			ItemGroups.COMBAT
 	);
-	Item EXPON = registerAndGroup("expon", SocWarsTickingItem::new, new ExtendedItemSettings()
+	Item EXPON = ModItemGroups.registerAndGroup("expon", SocWarsTickingItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, -0.5f, -1.6f)
 			.maxDamage(300)
 			.component(ModItemComponents.EXPON, ExponComponent.DEFAULT)
@@ -1284,7 +1284,7 @@ public interface ModItems {
 			.rarity(Rarity.EPIC) //TODO: Mythic
 			.itemHit((stack, target, attacker) -> {
 				if (attacker instanceof PlayerEntity playerEntity) stack.damage(1, playerEntity);
-				forceKillTarget(target, attacker);
+				forceKillTarget(target, attacker, ModDamageTypes.CATASTROPHE_BOW);
 			})
 			.simpleTooltip( //TODO: Colour this tooltip nicely
 					Text.translatable("tooltip.one_hit_wonder"),
@@ -1714,7 +1714,7 @@ public interface ModItems {
 			.rarity(Rarity.EPIC)
 			.maxDamage(10)
 			.bow(3f, 6f, ModEntities.CATASTROPHE_BOW_ARROW, 150)
-			.itemFinishUse((stack, world, user) -> SphereExplosion.explode(world, user.getPos(), 7f, 1.5f, 12f, 3f, true, null, DamageTypes.CATASTROPHE_BOW_BACKFIRE)),
+			.itemFinishUse((stack, world, user) -> SphereExplosion.explode(world, user.getPos(), 7f, 1.5f, 12f, 3f, true, null, ModDamageTypes.CATASTROPHE_BOW_BACKFIRE)),
 			ItemGroups.COMBAT
 	);
 	Item ANTI_GRAVITY_BOW = registerAndGroup("anti_gravity_bow", SocWarsItem::new, new ExtendedItemSettings()
@@ -1750,9 +1750,18 @@ public interface ModItems {
 			.maxDamage(35),
 			ItemGroups.COMBAT
 	);
-
-
-
+	@GenerateItem(GENERATED)
+	Item DEATH_NOTE = registerAndGroup("death_note", SocWarsItem::new, new ExtendedItemSettings()
+			.rarity(ExtendedRarity.MYTHIC)
+			.itemUse((world, user, hand) -> {
+				user.setCurrentHand(Hand.MAIN_HAND);
+				if (user instanceof ServerPlayerEntity serverUser) {
+					ServerPlayNetworking.send(serverUser, new OpenDeathNoteScreenPayload(DeathNoteState.getNames((ServerWorld)world)));
+				}
+				return ActionResult.SUCCESS;
+			}),
+			ItemGroups.COMBAT
+	);
 
 
 	Item DEPOSITABLE_CHEST = registerAndGroup("depositable_chest", DepositableChestBlockItem::new, new ExtendedItemSettings(),

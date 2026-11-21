@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(MinecraftClient.class)
-abstract class OnAttackButtonPressedMixin {
+abstract class MinecraftClientMixin {
 	@Shadow @Nullable public ClientPlayerEntity player;
 
 	@Inject(method = "doAttack", at = @At("HEAD"))

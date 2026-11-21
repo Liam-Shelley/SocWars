@@ -52,5 +52,11 @@
     "sounds": [
       "socwars:heavenly"
     ]
+  },
+  "death_note_buildup": {
+    "subtitle": "sound.socwars.death_note_buildup",
+    "sounds": [
+      "socwars:death_note_buildup"
+    ]
   }
 }

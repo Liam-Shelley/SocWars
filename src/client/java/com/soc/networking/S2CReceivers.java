@@ -1,12 +1,14 @@
 package com.soc.networking;
 
 import com.soc.blocks.blockentities.KitBlockEntity;
+import com.soc.gui.hud.DeathNoteVignette;
 import com.soc.gui.hud.JumpscareHud;
 import com.soc.gui.hud.sidebar.BedwarsTeamsHud;
 import com.soc.gui.hud.BlockProtectionManagerAndHud;
 import com.soc.gui.hud.sidebar.EventsHud;
 import com.soc.gui.hud.sidebar.QueueHud;
 import com.soc.gui.hud.sidebar.SkywarsTeamsHud;
+import com.soc.gui.screen.DeathNoteScreen;
 import com.soc.gui.screen.KitBlockCreationScreen;
 import com.soc.gui.screen.QueueScreen;
 import com.soc.lib.Coroutine;
@@ -50,6 +52,7 @@ public class S2CReceivers {
         traps();
         bedwars();
         skywars();
+        deathNote();
 
         ClientPlayNetworking.registerGlobalReceiver(UpdateHotbarPayload.ID, (payload, context) -> {
             final PlayerEntity player = context.player();
@@ -103,6 +106,15 @@ public class S2CReceivers {
             ) {
                 kitBlockCreationScreen.setBlockEntity(kitBlockEntity);
             }
+        }));
+    }
+
+    private static void deathNote() {
+        ClientPlayNetworking.registerGlobalReceiver(OpenDeathNoteScreenPayload.ID, ((payload, context) -> {
+            MinecraftClient.getInstance().setScreen(new DeathNoteScreen(payload.names()));
+        }));
+        ClientPlayNetworking.registerGlobalReceiver(ReceiveDeathNotePayload.ID, ((payload, context) -> {
+            DeathNoteVignette.receiveDeathNote();
         }));
     }
 

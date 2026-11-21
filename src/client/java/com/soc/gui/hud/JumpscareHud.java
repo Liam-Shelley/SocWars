@@ -3,6 +3,7 @@ package com.soc.gui.hud;
 import com.soc.SocWars;
 import com.soc.networking.s2c.JumpscarePayload;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -16,6 +17,7 @@ public class JumpscareHud { //Just awful class my god
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (INSTANCE != null && INSTANCE.remainingTime-- <= 0) INSTANCE = null;
         });
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> INSTANCE = null);
     }
 
     @Nullable

@@ -3,7 +3,7 @@ package com.soc.items.components;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.soc.networking.s2c.AddVelocityPayload;
-import com.soc.util.DamageTypes;
+import com.soc.util.ModDamageTypes;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
@@ -48,7 +48,7 @@ public record ExponComponent(long lastTimeUsed, int damageStage) implements Item
 				playerEntity.sendMessage(Text.of(String.valueOf(damage)), true); //maybe make a hud in 1.1?
 			}
 
-			target.damage(world, damageSource(world, DamageTypes.EXPON, attacker), damage);
+			target.damage(world, damageSource(world, ModDamageTypes.EXPON, attacker), damage);
 			stack.set(EXPON, component.doubleAndRefresh(world.getTime()));
 			stack.damage(component.damageStage() - 1, attacker, Hand.MAIN_HAND);
 

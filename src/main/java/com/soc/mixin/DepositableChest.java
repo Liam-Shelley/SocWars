@@ -1,7 +1,7 @@
 package com.soc.mixin;
 
 import com.soc.game.manager.GamesManager;
-import com.soc.items.ModItems;
+import com.soc.items.util.ModItems;
 import net.minecraft.block.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;

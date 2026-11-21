@@ -1,6 +1,6 @@
 package com.soc.mixin;
 
-import com.soc.items.ModItems;
+import com.soc.items.util.ModItems;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.EnderChestBlock;
 import net.minecraft.entity.player.PlayerEntity;

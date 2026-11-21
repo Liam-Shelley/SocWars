@@ -1,7 +1,7 @@
 package com.soc.datagen;
 
 import com.soc.SocWars;
-import com.soc.items.ModItems;
+import com.soc.items.util.ModItems;
 import com.soc.items.util.GenerateItem;
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;

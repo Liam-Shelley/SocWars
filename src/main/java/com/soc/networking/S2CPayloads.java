@@ -35,5 +35,7 @@ public class S2CPayloads {
         PayloadTypeRegistry.playS2C().register(LeaveSkywarsPayload.ID, LeaveSkywarsPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(SetTeamLivesPayload.ID, SetTeamLivesPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(KitBlockSendToScreen.ID, KitBlockSendToScreen.CODEC);
+        PayloadTypeRegistry.playS2C().register(OpenDeathNoteScreenPayload.ID, OpenDeathNoteScreenPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(ReceiveDeathNotePayload.ID, ReceiveDeathNotePayload.CODEC);
     }
 }

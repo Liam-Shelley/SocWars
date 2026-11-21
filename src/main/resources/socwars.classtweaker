@@ -9,4 +9,7 @@ accessible field net/minecraft/entity/projectile/PersistentProjectileEntity stac
 accessible field net/minecraft/entity/projectile/PersistentProjectileEntity weapon Lnet/minecraft/item/ItemStack;
 accessible method net/minecraft/entity/projectile/PersistentProjectileEntity setPierceLevel (B)V
 
+accessible field net/minecraft/client/gui/widget/EditBoxWidget textColor I
+mutable field net/minecraft/client/gui/widget/EditBoxWidget textColor I
+
 transitive-inject-interface net/minecraft/entity/ItemEntity net/minecraft/inventory/Inventory

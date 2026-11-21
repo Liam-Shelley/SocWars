@@ -7,7 +7,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.SplashPotionItem;
 
 import static com.soc.items.util.ModItemGroups.addItemToItemsGroup;
-import static com.soc.items.ModItems.register;
+import static com.soc.items.util.ModItems.register;
 
 public class ItemHardCodes {
     //TODO: Redo things so that this class isn't necessary

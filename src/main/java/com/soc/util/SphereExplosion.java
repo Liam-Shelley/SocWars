@@ -42,7 +42,7 @@ public class SphereExplosion {
                 if (damage.test(pos, currentState)) world.setBlockState(pos, Blocks.AIR.getDefaultState());
         });
 
-        applyDamageAndKnockback(world, centre, explosionRadius, damageFactor, knockbackFactor, damageSource(world, damageType == null ? DamageTypes.SPHERE_EXPLOSION : damageType, causingEntity));
+        applyDamageAndKnockback(world, centre, explosionRadius, damageFactor, knockbackFactor, damageSource(world, damageType == null ? ModDamageTypes.SPHERE_EXPLOSION : damageType, causingEntity));
     }
 
     private static void applyDamageAndKnockback(World world, Vec3d centre, float explosionRadius, float damageFactor, float knockbackFactor, DamageSource source) {

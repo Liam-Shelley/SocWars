@@ -6,7 +6,7 @@ import com.soc.entities.BigTntEntity;
 import com.soc.items.old.DoomBlockItem;
 import com.soc.items.old.FeatherBlockItem;
 import com.soc.items.util.ModItemGroups;
-import com.soc.items.ModItems;
+import com.soc.items.util.ModItems;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.NoteBlockInstrument;
 import net.minecraft.block.piston.PistonBehavior;

@@ -1,6 +1,6 @@
 package com.soc.blocks;
 
-import com.soc.items.ModItems;
+import com.soc.items.util.ModItems;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.Entity;

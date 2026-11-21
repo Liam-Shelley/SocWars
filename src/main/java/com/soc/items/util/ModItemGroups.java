@@ -2,7 +2,6 @@ package com.soc.items.util;
 
 import com.soc.SocWars;
 import com.soc.blocks.util.ModBlocks;
-import com.soc.items.ModItems;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.Item;
@@ -16,7 +15,7 @@ import net.minecraft.util.Identifier;
 
 import java.util.function.Function;
 
-import static com.soc.items.ModItems.register;
+import static com.soc.items.util.ModItems.register;
 
 public interface ModItemGroups {
     RegistryKey<ItemGroup> ITEMS_KEY = RegistryKey.of(Registries.ITEM_GROUP.getKey(), Identifier.of(SocWars.MOD_ID, "items_group"));

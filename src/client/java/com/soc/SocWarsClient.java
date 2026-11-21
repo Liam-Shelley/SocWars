@@ -49,6 +49,8 @@ public class SocWarsClient implements ClientModInitializer {
 		EventsHud.initialise();
 		QueueHud.initialise();
 		BlockProtectionManagerAndHud.initialise();
+		JumpscareHud.initialise();
+		DeathNoteVignette.initialise();
 
 		EntityModelLayers.initialise();
 		EntityRenderers.initialise();

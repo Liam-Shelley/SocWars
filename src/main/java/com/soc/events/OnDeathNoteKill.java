@@ -2,8 +2,6 @@ package com.soc.events;
 
 import net.minecraft.entity.player.PlayerEntity;
 
-import java.util.UUID;
-
 @FunctionalInterface
 public interface OnDeathNoteKill {
 	enum Result {
@@ -12,5 +10,5 @@ public interface OnDeathNoteKill {
 		CANCEL
 	}
 
-	Result tryKill(UUID uuid, PlayerEntity killer);
+	Result tryKill(PlayerEntity uuid, PlayerEntity killer);
 }

@@ -1,7 +1,7 @@
 package com.soc.items.components;
 
 import com.mojang.serialization.Codec;
-import com.soc.util.DamageTypes;
+import com.soc.util.ModDamageTypes;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.item.ItemStack;
@@ -17,8 +17,8 @@ public record GlassArmourComponent() implements ArmourHitComponent {
 
 	@Override
 	public boolean hit(ItemStack stack, LivingEntity wearer, World world, DamageSource source) {
-		if (world instanceof ServerWorld serverWorld && !source.isOf(DamageTypes.GLASS_ARMOUR)) {
-			final DamageSource glassSource = damageSource(serverWorld, DamageTypes.GLASS_ARMOUR, wearer);
+		if (world instanceof ServerWorld serverWorld && !source.isOf(ModDamageTypes.GLASS_ARMOUR)) {
+			final DamageSource glassSource = damageSource(serverWorld, ModDamageTypes.GLASS_ARMOUR, wearer);
 			final float baseAmount = world.random.nextFloat();
 
 			if (source.getSource() != null) source.getSource().damage(serverWorld, glassSource, baseAmount * 0.25f + 1f);

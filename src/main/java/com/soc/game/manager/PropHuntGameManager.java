@@ -4,7 +4,7 @@ import com.soc.database.stats.PropHuntTable;
 import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.PropHuntGameMap;
 import com.soc.game.map.SpreadRules;
-import com.soc.items.ModItems;
+import com.soc.items.util.ModItems;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;

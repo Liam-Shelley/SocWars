@@ -18,6 +18,7 @@ public interface Sounds {
     SoundEvent GET_SOME = register("get_some");
     SoundEvent SNIPER_RIFLE_SHOT = register("sniper_rifle_shot");
     SoundEvent HEAVENLY = register("heavenly");
+    SoundEvent DEATH_NOTE_BUILDUP = register("death_note_buildup");
 
     private static SoundEvent register(String id) {
         return Registry.register(Registries.SOUND_EVENT, Identifier.of(SocWars.MOD_ID, id), SoundEvent.of(Identifier.of(SocWars.MOD_ID, id)));

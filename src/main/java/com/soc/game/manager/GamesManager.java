@@ -4,6 +4,7 @@ import com.mojang.brigadier.context.StringRange;
 import com.mojang.brigadier.suggestion.Suggestion;
 import com.soc.SocWars;
 import com.soc.events.ModEvents;
+import com.soc.events.OnDeathNoteKill;
 import com.soc.game.map.SpreadRules;
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
@@ -17,10 +18,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
-import net.minecraft.world.World;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -102,11 +101,15 @@ public class GamesManager {
                 this.getGame(player).map(game -> game.allowSettingSpawn(player, pos)).orElse(true)
         );
         ServerMessageEvents.ALLOW_CHAT_MESSAGE.register((message, player, parameters) -> {
-            this.getGame(player).ifPresentOrElse(
-                    game -> game.onChatMessage(message, player, parameters),
-                    () -> this.getPlayersNotInGame().forEach(otherPlayer -> otherPlayer.sendMessage(createChatMessage(message, player), false))
-            );
-            return false;
+                this.getGame(player).ifPresentOrElse(
+                        game -> game.onChatMessage(message, player, parameters),
+                        () -> this.getPlayersNotInGame().forEach(otherPlayer -> otherPlayer.sendMessage(createChatMessage(message, player), false))
+                );
+                return false;
+        });
+        ModEvents.ON_DEATH_NOTE_KILL.register((target, killer) -> {
+                    final Optional<AbstractGameManager<?, ?, ?>> targetGameOptional = this.getGame(target);
+                    return targetGameOptional == this.getGame(killer) ? targetGameOptional.map(targetGame -> targetGame.onDeathNoteKill(target, killer)).orElse(OnDeathNoteKill.Result.SUCCESS) : OnDeathNoteKill.Result.CANCEL;
         });
     }
 

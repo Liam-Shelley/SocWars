@@ -13,7 +13,7 @@ import com.soc.game.manager.bedwars.traps.Abilities;
 import com.soc.game.manager.bedwars.shopitems.*;
 import com.soc.game.manager.bedwars.tickfunctions.TickFunctions;
 import com.soc.game.manager.bedwars.traps.Traps;
-import com.soc.items.ModItems;
+import com.soc.items.util.ModItems;
 import com.soc.items.old.ItemHardCodes;
 import com.soc.items.util.ModItemGroups;
 import com.soc.lib.Coroutines;
@@ -23,6 +23,7 @@ import com.soc.networking.C2SPayloads;
 import com.soc.networking.C2SReceivers;
 import com.soc.networking.S2CPayloads;
 import com.soc.player.CollectiblesManager;
+import com.soc.player.DeathNoteState;
 import com.soc.player.PlayerDataManager;
 import com.soc.resourcedata.ResourceManager;
 import com.soc.screenhandler.ScreenHandlers;
@@ -31,7 +32,6 @@ import com.soc.util.ModItemTags;
 import com.soc.util.Sounds;
 import net.fabricmc.api.ModInitializer;
 
-import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,5 +86,6 @@ public class SocWars implements ModInitializer {
 		CollectiblesManager.initialise();
 		PlayerDataManager.initialise();
 		OfflinePlayerTracker.initialise();
+		DeathNoteState.initialise();
 	}
 }

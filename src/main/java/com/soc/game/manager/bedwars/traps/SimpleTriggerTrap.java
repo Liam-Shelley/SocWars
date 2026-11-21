@@ -3,7 +3,7 @@ package com.soc.game.manager.bedwars.traps;
 import com.soc.SocWars;
 import com.soc.effects.util.ModEffects;
 import com.soc.game.manager.AbstractGameManager;
-import com.soc.items.ModItems;
+import com.soc.items.util.ModItems;
 import com.soc.lib.Events;
 import com.soc.networking.s2c.JumpscarePayload;
 import com.soc.networking.s2c.SilencePayload;

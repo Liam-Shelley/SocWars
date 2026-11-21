@@ -7,7 +7,6 @@ import com.soc.game.manager.GamesManager;
 import com.soc.mixin.GetItemSettingsComponent;
 import com.soc.mixin.GetItemSettingsComponentsMap;
 import com.soc.mixin.MostRecentDamage;
-import com.soc.util.DamageTypes;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.ComponentType;
 import net.minecraft.component.DataComponentTypes;
@@ -740,18 +739,21 @@ public final class SocWarsLib {
         return list.get(random.nextBetween(0, list.size() - 1));
     }
 
-    public static Long getWorldTime() { //Refactor this at some point because it also gets used in AttackFunctionWeapon
+    public static Long getWorldTime() { //TODO: Refactor this at some point because gross
         //I'm setting this in a client mixin because I'm too lazy to think of a better way to do it
         return 0L;
     }
 
-	public static void forceKillTarget(LivingEntity target, Entity user) {
-		if (!target.getWorld().isClient) {
-			GamesManager.getInstance().getGame(target).ifPresentOrElse(
-					game -> game.onPlayerDeath((ServerPlayerEntity) target, damageSource(target.getWorld(), DamageTypes.CATASTROPHE_BOW, user), target.getHealth()),
+	public static void forceKillTarget(LivingEntity target, Entity user, RegistryKey<DamageType> damageType) {
+		if (target.getWorld() instanceof ServerWorld serverWorld) {
+            final DamageSource source = damageSource(target.getWorld(), damageType, user);
+            GamesManager.getInstance().getGame(target).ifPresentOrElse(
+					game -> game.onPlayerDeath((ServerPlayerEntity) target, source, target.getHealth()),
 					() -> {
-						target.kill((ServerWorld)target.getWorld());
-						if (target.isAlive()) target.setHealth(0f);
+						target.damage(serverWorld, source, Float.MAX_VALUE);
+						if (target.isAlive()) {
+                            target.setHealth(0f);
+                        }
 					}
 			);
 		}

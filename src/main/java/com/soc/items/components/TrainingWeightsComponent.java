@@ -1,10 +1,7 @@
-package com.soc.items;
+package com.soc.items.components;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.soc.items.components.ItemTickComponent;
-import com.soc.items.components.ModItemComponents;
-import com.soc.items.components.SocWarsTooltipAppender;
 import net.minecraft.component.ComponentChanges;
 import net.minecraft.component.ComponentsAccess;
 import net.minecraft.entity.Entity;

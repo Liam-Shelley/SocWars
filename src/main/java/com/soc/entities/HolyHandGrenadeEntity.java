@@ -1,7 +1,7 @@
 package com.soc.entities;
 
 import com.soc.entities.util.ModEntities;
-import com.soc.util.DamageTypes;
+import com.soc.util.ModDamageTypes;
 import com.soc.util.SphereExplosion;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -24,6 +24,6 @@ public class HolyHandGrenadeEntity extends HandGrenadeEntity {
 
 	@Override
     protected void detonate() {
-        SphereExplosion.explode(this.getWorld(), this.getPos(), 8f, 1.5f, 7f, 1f, false, this.getOwner(), DamageTypes.HOLY_HAND_GRENADE);
+        SphereExplosion.explode(this.getWorld(), this.getPos(), 8f, 1.5f, 7f, 1f, false, this.getOwner(), ModDamageTypes.HOLY_HAND_GRENADE);
     }
 }

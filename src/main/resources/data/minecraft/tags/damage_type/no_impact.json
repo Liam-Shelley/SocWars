@@ -2,6 +2,7 @@
   "replace": false,
   "values": [
     "socwars:sphere_explosion",
-    "socwars:holy_hand_grenade"
+    "socwars:holy_hand_grenade",
+    "socwars:death_note"
   ]
 }

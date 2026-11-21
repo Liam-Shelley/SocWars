@@ -6,7 +6,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 
-public interface DamageTypes {
+public interface ModDamageTypes {
     RegistryKey<DamageType> LIFETHIEF = register("lifethief");
     RegistryKey<DamageType> NETHERWRONG_SWORD = register("netherwrong_sword");
     RegistryKey<DamageType> GALLIUM = register("gallium");
@@ -18,6 +18,7 @@ public interface DamageTypes {
     RegistryKey<DamageType> HOLY_HAND_GRENADE = register("holy_hand_grenade");
     RegistryKey<DamageType> GLASS_ARMOUR = register("glass_armour");
     RegistryKey<DamageType> SNIPER_RIFLE = register("sniper_rifle");
+    RegistryKey<DamageType> DEATH_NOTE = register("death_note");
 
     static RegistryKey<DamageType> register(String id) {
         return RegistryKey.of(RegistryKeys.DAMAGE_TYPE, Identifier.of(SocWars.MOD_ID, id));

@@ -1,6 +1,6 @@
 package com.soc.entities;
 
-import com.soc.util.DamageTypes;
+import com.soc.util.ModDamageTypes;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -21,7 +21,7 @@ public class ArrowCatastropheBowEntity extends ArrowEntity {
 		super.onHit(target);
 
 		this.discard();
-		forceKillTarget(target, this.getOwner());
+		forceKillTarget(target, this.getOwner(), ModDamageTypes.CATASTROPHE_BOW);
 	}
 
 	@Override
@@ -29,7 +29,7 @@ public class ArrowCatastropheBowEntity extends ArrowEntity {
 		super.onPlayerCollision(player);
 
 		if (player != this.getOwner() && this.getWorld() instanceof ServerWorld serverWorld) {
-			player.damage(serverWorld, damageSource(serverWorld, DamageTypes.CATASTROPHE_BOW), 1);
+			player.damage(serverWorld, damageSource(serverWorld, ModDamageTypes.CATASTROPHE_BOW), 1);
 		}
 	}
 }

@@ -1,4 +1,4 @@
-package com.soc.items;
+package com.soc.items.util;
 
 import com.soc.items.components.*;
 import com.soc.items.components.ArmourSetBonus;
@@ -213,6 +213,14 @@ public class ExtendedItemSettings extends Item.Settings {
 	public ExtendedItemSettings useTime(int useTime) {
 		return this.component(ModItemComponents.USE_TIME, useTime);
 	}
+
+	public ExtendedItemSettings rarity(ExtendedRarity rarity) {
+		return this.component(ModItemComponents.EXTENDED_RARITY, rarity);
+	}
+
+
+
+
 
 	public static <T extends Entity> T spawnEntityWithVelocity(T entity, ServerWorld world, LivingEntity user, float speed) {
 		entity.setPosition(user.getEyePos().add(user.getRotationVector().multiply(0.75d)));

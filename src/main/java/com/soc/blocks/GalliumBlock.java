@@ -1,6 +1,6 @@
 package com.soc.blocks;
 
-import com.soc.util.DamageTypes;
+import com.soc.util.ModDamageTypes;
 import com.soc.util.ModBlockTags;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -42,7 +42,7 @@ public class GalliumBlock extends ColoredFallingBlock {
     protected void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity, EntityCollisionHandler handler) {
         if (entity instanceof final LivingEntity livingEntity && !world.isClient()) {
             final float damage = livingEntity.getArmor() * 0.045f + 0.9f;
-            final DamageSource source = damageSource(world, DamageTypes.GALLIUM);
+            final DamageSource source = damageSource(world, ModDamageTypes.GALLIUM);
             livingEntity.damage((ServerWorld)world, source, damage);
         }
     }

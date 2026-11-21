@@ -1,12 +1,11 @@
 package com.soc.entities;
 
 import com.soc.entities.util.ModEntities;
-import com.soc.util.DamageTypes;
+import com.soc.util.ModDamageTypes;
 import com.soc.util.SphereExplosion;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MovementType;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.projectile.thrown.ThrownEntity;
@@ -15,9 +14,7 @@ import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 
 public class HandGrenadeEntity extends ThrownEntity {
     protected float detonationTime;
@@ -100,6 +97,6 @@ public class HandGrenadeEntity extends ThrownEntity {
     }
 
     protected void detonate() {
-        SphereExplosion.explode(this.getWorld(), this.getPos(), 3f, 1.5f, 12f, 3f, true, this.getOwner(), DamageTypes.SPHERE_EXPLOSION);
+        SphereExplosion.explode(this.getWorld(), this.getPos(), 3f, 1.5f, 12f, 3f, true, this.getOwner(), ModDamageTypes.SPHERE_EXPLOSION);
     }
 }
