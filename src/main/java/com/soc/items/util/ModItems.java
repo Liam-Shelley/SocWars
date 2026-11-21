@@ -41,6 +41,7 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.RavagerEntity;
 import net.minecraft.entity.mob.SlimeEntity;
 import net.minecraft.entity.mob.VexEntity;
+import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.entity.passive.CodEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.*;
@@ -52,6 +53,8 @@ import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.*;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.entry.RegistryEntryList;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -81,6 +84,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.soc.blocks.util.ModBlocks.CHEST_PLACEHOLDER;
 import static com.soc.blocks.util.ModBlocks.MANY_BEDS_BLOCK;
@@ -1149,7 +1153,7 @@ public interface ModItems {
 				}
 				return ActionResult.PASS;
 			})
-			.itemUseOnBlock((world, user, hand, state, pos) -> {
+			.itemUseOnBlock((world, user, hand, state, pos, face) -> {
 				if (user instanceof ServerPlayerEntity serverPlayer) {
 					if (user.isSneaking()) {
 						Morph.clearMorph(serverPlayer);
@@ -1762,6 +1766,37 @@ public interface ModItems {
 			}),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(GENERATED)
+	Item GOBLIN_SPAWN_EGG = registerAndGroup("goblin_spawn_egg", SocWarsItem::new, new ExtendedItemSettings()
+			.rarity(Rarity.RARE)
+			.itemUseOnBlock((world, user, hand, state, pos, face) -> {
+				final ZombieEntity goblin = new ZombieEntity(world);
+				goblin.setPosition(pos.offset(face).toBottomCenterPos());
+
+				goblin.setBaby(true);
+				copyTeam(world, goblin, user);
+				goblin.setCustomName(Text.translatable("entity.goblin", user.getDisplayName()));
+
+				goblin.equipStack(EquipmentSlot.HEAD, new ItemStack(Items.NETHERITE_HELMET));
+				goblin.equipStack(EquipmentSlot.CHEST, new ItemStack(Items.NETHERITE_CHESTPLATE));
+				goblin.equipStack(EquipmentSlot.LEGS, new ItemStack(Items.NETHERITE_LEGGINGS));
+				goblin.equipStack(EquipmentSlot.FEET, new ItemStack(Items.NETHERITE_BOOTS));
+
+				final List<Item> swords = world.getRegistryManager().getOrThrow(RegistryKeys.ITEM).getOptional(ModItemTags.SWORDS).map(RegistryEntryList.ListBacked::stream).orElseGet(Stream::empty).map(RegistryEntry::value).collect(Collectors.toList());
+				swords.add(Items.NETHERITE_SWORD);
+				goblin.equipStack(EquipmentSlot.MAINHAND, new ItemStack(getRandomElement(swords, world.random)));
+
+				world.spawnEntity(goblin);
+
+				return ActionResult.SUCCESS;
+			}),
+			ItemGroups.COMBAT
+	);
+
+
+
+
+
 
 
 	Item DEPOSITABLE_CHEST = registerAndGroup("depositable_chest", DepositableChestBlockItem::new, new ExtendedItemSettings(),

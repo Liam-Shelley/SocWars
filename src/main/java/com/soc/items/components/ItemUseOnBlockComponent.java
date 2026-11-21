@@ -6,11 +6,12 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 @FunctionalInterface
 public interface ItemUseOnBlockComponent {
 	Codec<ItemUseOnBlockComponent> CODEC = Codec.unit(null);
 
-	ActionResult use(World world, PlayerEntity user, Hand hand, BlockState state, BlockPos pos);
+	ActionResult use(World world, PlayerEntity user, Hand hand, BlockState state, BlockPos pos, Direction face);
 }

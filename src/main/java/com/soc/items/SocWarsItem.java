@@ -66,7 +66,7 @@ public class SocWarsItem extends Item { //I wonder if I should just turn this in
 
 		return user.getStackInHand(hand)
 				.streamAll(ItemUseOnBlockComponent.class)
-				.map(itemUse -> itemUse.use(world, user, hand, world.getBlockState(pos), pos))
+				.map(itemUse -> itemUse.use(world, user, hand, world.getBlockState(pos), pos, context.getSide()))
 				.reduce(super.useOnBlock(context), (a, b) -> b.isAccepted() ? a : a.isAccepted() ? b : a); //Ditto
 	}
 

@@ -39,6 +39,6 @@ public abstract class ItemStackMixin {
     @Redirect(method = "getFormattedName", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Rarity;getFormatting()Lnet/minecraft/util/Formatting;"))
     private Formatting socwars$extendedRarityFormatting(Rarity instance) {
         final ExtendedRarity extendedRarity = ((ComponentHolder) this).get(ModItemComponents.EXTENDED_RARITY);
-        return extendedRarity != null ? extendedRarity.getFormatting() : instance.getFormatting();
+        return extendedRarity != null ? extendedRarity.formatting() : instance.getFormatting();
     }
 }
