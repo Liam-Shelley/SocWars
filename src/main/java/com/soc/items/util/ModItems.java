@@ -1827,8 +1827,7 @@ public interface ModItems {
 					ServerPlayNetworking.send(serverUser, new OpenDeathNoteScreenPayload(DeathNoteState.getNames((ServerWorld)world)));
 				}
 				return ActionResult.SUCCESS;
-			}),
-			ItemGroups.COMBAT
+			})
 	);
 	@GenerateItem(GENERATED)
 	Item GOBLIN_SPAWN_EGG = registerAndGroup("goblin_spawn_egg", SocWarsItem::new, new ExtendedItemSettings()
@@ -1854,7 +1853,7 @@ public interface ModItems {
 
 				return ActionResult.SUCCESS;
 			}),
-			ItemGroups.COMBAT
+			ItemGroups.SPAWN_EGGS
 	);
 	Item THESE_HANDS = registerAndGroup("these_hands", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.EPIC)
