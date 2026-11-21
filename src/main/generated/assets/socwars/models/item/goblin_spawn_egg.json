@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "socwars:item/goblin_spawn_egg"
+  }
+}

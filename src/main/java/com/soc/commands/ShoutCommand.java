@@ -2,6 +2,7 @@ package com.soc.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.soc.game.manager.AbstractGameManager;
 import com.soc.game.manager.GamesManager;
 import net.minecraft.command.CommandRegistryAccess;
@@ -11,6 +12,8 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 
 import java.util.Optional;
+
+import static com.soc.lib.SocWarsLib.colouredTextFromColour;
 
 public interface ShoutCommand {
     String SHOUT_COMMAND_ID = "shout";
@@ -29,9 +32,23 @@ public interface ShoutCommand {
         final Optional<AbstractGameManager<?, ?, ?>> managerOptional = GamesManager.getInstance().getGame(context.getSource().getEntity());
         if (managerOptional.isEmpty()) {
             context.getSource().sendMessage(Text.translatable("message.shout.not_in_game"));
-            return 0;
+            return -1;
         }
 
-        return 0;
+        final AbstractGameManager<?, ?, ?> manager = managerOptional.get();
+
+        try {
+            final Text rawMessage = MessageArgumentType.getMessage(context, MESSAGE_ARGUMENT);
+
+            if (context.getSource().getPlayer() == null) {
+                manager.broadcast(Text.translatable("message.shout.chat_message.non_player_source", rawMessage), false);
+            } else {
+                manager.broadcast(Text.translatable("message.shout.chat_message", context.getSource().getPlayer().getDisplayName(), rawMessage), false);
+            }
+            return 0;
+        } catch (CommandSyntaxException e) {
+            context.getSource().sendMessage(Text.translatable("message.shout.failed"));
+            return -1;
+        }
     }
 }

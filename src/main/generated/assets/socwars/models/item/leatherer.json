@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "socwars:item/death_rain"
+    "layer0": "socwars:item/leatherer"
   }
 }

@@ -171,26 +171,31 @@ public interface ModItems {
 			.simpleTooltip(Text.translatable("tooltip.bat")),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(HANDHELD)
 	Item BARBED_WIRE_BAT = registerAndGroup("barbed_wire_bat", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, 5f, -1.95f),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(HANDHELD)
 	Item NAILED_BAT = registerAndGroup("nailed_bat", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, 6f, -2f)
 			.rarity(Rarity.UNCOMMON),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(HANDHELD)
 	Item RAZOR_WIRE_BAT = registerAndGroup("razor_wire_bat", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, 7.5f, -2.1f)
 			.rarity(Rarity.RARE),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(HANDHELD)
 	Item SAW_BLADE_BAT = registerAndGroup("saw_blade_bat", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, 9f, -2.4f)
 			.rarity(Rarity.RARE)
 			.simpleTooltip(Text.translatable("tooltip.saw_blade_bat")),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(HANDHELD)
 	Item DEVASTATOR = registerAndGroup("devastator", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.DEVASTATOR, 4f, -3.5f)
 			.rarity(Rarity.RARE),
@@ -200,6 +205,7 @@ public interface ModItems {
 			.sword(ToolMaterial.NETHERITE, -4.5f, 12f),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(HANDHELD)
 	Item LIFETHIEF = registerAndGroup("lifethief", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.RARE)
 			.sword(ToolMaterials.LIFETHIEF, 2.5f, -2.2f)
@@ -218,6 +224,7 @@ public interface ModItems {
 					}),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(HANDHELD)
 	Item DEVASTATOR_PRIME = registerAndGroup("devastator_prime", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.EPIC)
 			.sword(ToolMaterials.DEVASTATOR, 14.5f, -2.9f)
@@ -239,6 +246,7 @@ public interface ModItems {
 			}),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(HANDHELD)
 	Item ORANGE_SWORD = registerAndGroup("orange_sword", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, 5f, -2.1f)
 			.maxDamage(500)
@@ -247,6 +255,7 @@ public interface ModItems {
 			}),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(HANDHELD)
 	Item BLUE_SWORD = registerAndGroup("blue_sword", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.UNCOMMON)
 			.sword(ToolMaterials.BASE, 8f, -2.15f)
@@ -261,6 +270,7 @@ public interface ModItems {
 			}),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(HANDHELD)
 	Item PINK_SWORD = registerAndGroup("pink_sword", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.EPIC)
 			.sword(ToolMaterials.BASE, 10f, -2.2f)
@@ -271,6 +281,7 @@ public interface ModItems {
 			}),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(HANDHELD)
 	Item KNOCKFORWARD_SWORD = registerAndGroup("knockforward_sword", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.UNCOMMON)
 			.sword(ToolMaterials.BASE, 5.5f, -2.2f)
@@ -291,6 +302,7 @@ public interface ModItems {
 			),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(HANDHELD)
 	Item TRANSPORTAS = registerAndGroup("transportas", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.RARE)
 			.sword(ToolMaterials.BASE, 5.5f, -2f)
@@ -302,6 +314,7 @@ public interface ModItems {
 			}),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(HANDHELD)
 	Item STORMAGEDDON = registerAndGroup("stormageddon", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.UNCOMMON)
 			.sword(ToolMaterials.BASE, 5f, -2.1f)
@@ -314,6 +327,7 @@ public interface ModItems {
 			.simpleTooltip(Text.translatable("tooltip.stormageddon")),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(HANDHELD)
 	Item DETONATOR = registerAndGroup("detonator", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.RARE)
 			.sword(ToolMaterials.BASE, 4.5f, -2.2f)
@@ -323,6 +337,7 @@ public interface ModItems {
 			}),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(GENERATED)
 	Item SHATTERSTAR = registerAndGroup("shatterstar", SocWarsItem::new, new ExtendedItemSettings()
 			.maxCount(1)
 			.rarity(Rarity.RARE)
@@ -333,6 +348,7 @@ public interface ModItems {
 			}),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(GENERATED)
 	Item LEATHERER = registerAndGroup("leatherer", SocWarsItem::new, new ExtendedItemSettings()
 			.maxCount(1)
 			.rarity(Rarity.RARE)
@@ -347,6 +363,7 @@ public interface ModItems {
 			}),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(HANDHELD)
 	Item SPRING_SWORD = registerAndGroup("spring_sword", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, 8f, -1.2f)
 			.maxDamage(350)
@@ -363,6 +380,7 @@ public interface ModItems {
 			.simpleTooltip(Text.translatable("tooltip.spring_sword").formatted(Formatting.YELLOW)),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(HANDHELD)
 	Item FLESHY_BLADE = registerAndGroup("fleshy_blade", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, 6f, -2.2f)
 			.itemHit((stack, target, attacker) -> {
@@ -371,6 +389,7 @@ public interface ModItems {
 			.dynamicTooltip((stack, time) -> List.of(Text.translatable(time % 25 > 2 ? "tooltip.fleshy_blade" : "tooltip.fleshy_blade.wet").formatted(Formatting.RED))),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(HANDHELD)
 	Item FIRESTORM = registerAndGroup("firestorm", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, 5.5f, -2.5f)
 			.maxDamage(400)
@@ -380,6 +399,7 @@ public interface ModItems {
 			}),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(HANDHELD)
 	Item CORRUPTED_SWORD = registerAndGroup("corrupted_sword", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, 5.5f, -2.3f)
 			.maxDamage(550)
@@ -394,6 +414,7 @@ public interface ModItems {
 			}),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(GENERATED)
 	Item POSTURA = registerAndGroup("postura", SocWarsItem::new, new ExtendedItemSettings()
 			.maxCount(1)
 			.rarity(Rarity.UNCOMMON)
@@ -404,6 +425,7 @@ public interface ModItems {
 			.simpleTooltip(Text.translatable("tooltip.postura")),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(HANDHELD)
 	Item FULL_METAL_SWORD = registerAndGroup("full_metal_sword", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, 4.5f, -2.3f)
 			.maxDamage(500)
@@ -414,6 +436,7 @@ public interface ModItems {
 			.simpleTooltip(Text.translatable("tooltip.full_metal_sword")),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(HANDHELD)
 	Item SEEKING_STICK = registerAndGroup("seeking_stick", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.UNCOMMON)
 			.attributeModifiers(new AttributeModifiersComponent(List.of(
@@ -431,6 +454,7 @@ public interface ModItems {
 			.simpleTooltip(Text.translatable("tooltip.seeking_stick")),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(HANDHELD)
 	Item DASHREND = registerAndGroup("dashrend", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.DASH, 2.5f, -2f)
 			.useCooldown(3.5f)
@@ -442,6 +466,7 @@ public interface ModItems {
 			}),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(HANDHELD)
 	Item VELOCITY_STAFF = registerAndGroup("velocity_staff", SocWarsItem::new, new ExtendedItemSettings()
 			.maxDamage(300)
 			.useCooldown(2f)
@@ -453,6 +478,7 @@ public interface ModItems {
 			}),
 			ItemGroups.TOOLS
 	);
+	@GenerateItem(HANDHELD)
 	Item VEXING_STAFF = registerAndGroup("vexing_staff", SocWarsItem::new, new ExtendedItemSettings()
 			.maxDamage(5)
 			.useCooldown(30f)
@@ -473,6 +499,7 @@ public interface ModItems {
 			}),
 			ItemGroups.TOOLS
 	);
+	@GenerateItem(HANDHELD)
 	Item YELLOW_SWORD = registerAndGroup("yellow_sword", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, 6f, -2.1f)
 			.useCooldown(1.5f)
@@ -494,6 +521,7 @@ public interface ModItems {
 			}),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(GENERATED)
 	Item GOD_COMPLEX = registerAndGroup("god_complex", SocWarsItem::new, new ExtendedItemSettings()
 			.useCooldown(5f)
 			.enchantmentGlint()
@@ -507,6 +535,7 @@ public interface ModItems {
 			.simpleTooltip(Text.translatable("tooltip.god_complex")),
 			ItemGroups.TOOLS
 	);
+	@GenerateItem(GENERATED)
 	Item SCROLL_OF_EAU = registerAndGroup("scroll_of_eau", SocWarsItem::new, new ExtendedItemSettings()
 			.useCooldown(1f)
 			.maxDamage(3)
@@ -522,6 +551,7 @@ public interface ModItems {
 			.simpleTooltip(Text.translatable("tooltip.scroll_of_eau")),
 			ItemGroups.TOOLS
 	);
+	@GenerateItem(GENERATED)
 	Item SCROLL_OF_HELLFIRE = registerAndGroup("scroll_of_hellfire", SocWarsItem::new, new ExtendedItemSettings()
 			.useCooldown(1f)
 			.maxDamage(3)
@@ -536,6 +566,7 @@ public interface ModItems {
 			.simpleTooltip(Text.translatable("tooltip.scroll_of_hellfire")),
 			ItemGroups.TOOLS
 	);
+	@GenerateItem(GENERATED)
 	Item C_U_E_B = registerAndGroup("c_u_e_b", SocWarsItem::new, new ExtendedItemSettings()
 			.useCooldown(1f)
 			.itemUse((world, user, hand) -> {
@@ -574,6 +605,7 @@ public interface ModItems {
 			}),
 			ItemGroups.TOOLS
 	);
+	@GenerateItem(GENERATED)
 	Item THE_LINE = registerAndGroup("the_line", SocWarsItem::new, new ExtendedItemSettings()
 			.maxCount(4)
 			.useCooldown(2f)
@@ -606,6 +638,7 @@ public interface ModItems {
 			}),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(HANDHELD)
 	Item WHEATENATOR = registerAndGroup("wheatenator", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, 4.5f, -2.4f)
 			.maxDamage(350)
@@ -633,6 +666,7 @@ public interface ModItems {
 			.simpleTooltip(Text.translatable("tooltip.wheatenator")),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(HANDHELD)
 	Item DEATH_RAIN = registerAndGroup("death_rain", SocWarsItem::new, new ExtendedItemSettings()
 			.maxDamage(3)
 			.rarity(Rarity.RARE)
@@ -735,6 +769,7 @@ public interface ModItems {
 			}),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(GENERATED)
 	Item RED_SHELL = registerAndGroup("red_shell", SocWarsItem::new, new ExtendedItemSettings()
 			.useCooldown(5f)
 			.rarity(Rarity.RARE)
@@ -749,6 +784,7 @@ public interface ModItems {
 			.simpleTooltip(Text.translatable("tooltip.red_shell")),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(GENERATED)
 	Item BLUE_SHELL = registerAndGroup("blue_shell", SocWarsItem::new, new ExtendedItemSettings()
 			.useCooldown(5f)
 			.rarity(Rarity.RARE)
@@ -762,6 +798,7 @@ public interface ModItems {
 			}),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(HANDHELD)
 	Item TAUNT_STICK = registerAndGroup("taunt_stick", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.UNCOMMON)
 			.useCooldown(0.75f)
@@ -772,6 +809,7 @@ public interface ModItems {
 				return ActionResult.SUCCESS;
 			})
 	);
+	@GenerateItem(HANDHELD)
 	Item BIOHACKER = registerAndGroup("biohacker", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.POTIONWEAPON, 2.5f, -2.2f)
 			.rarity(Rarity.RARE)
@@ -781,6 +819,7 @@ public interface ModItems {
 			}),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(HANDHELD)
 	Item GOO_SHOVEL = registerAndGroup("goo_shovel", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.POTIONWEAPON, -2f, -3f)
 			.component(DataComponentTypes.TOOL, new ToolComponent(List.of(ToolComponent.Rule.ofNeverDropping(Registries.createEntryLookup(Registries.BLOCK).getOrThrow(BlockTags.INCORRECT_FOR_DIAMOND_TOOL)), ToolComponent.Rule.ofAlwaysDropping(Registries.createEntryLookup(Registries.BLOCK).getOrThrow(BlockTags.SHOVEL_MINEABLE), 6.5f)), 1.0f, 1, true))
@@ -791,6 +830,7 @@ public interface ModItems {
 			}),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(HANDHELD)
 	Item STATUE_BLADE = registerAndGroup("statue_blade", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.POTIONWEAPON, 3.5f, -2.3f)
 			.rarity(Rarity.RARE)
@@ -805,6 +845,7 @@ public interface ModItems {
 			}),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(HANDHELD)
 	Item ALCHEMISM = registerAndGroup("alchemism", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.POTIONWEAPON, 4f, -2.5f)
 			.rarity(Rarity.EPIC)
@@ -819,6 +860,7 @@ public interface ModItems {
 			}),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(HANDHELD)
 	Item RED_SWORD = registerAndGroup("red_sword", SocWarsItem::new, new ExtendedItemSettings()
 			.itemHit((stack, target, attacker) -> {
 				target.addStatusEffect(new StatusEffectInstance(StatusEffects.WEAKNESS, 5 * 20, 0, false, true));
@@ -827,6 +869,7 @@ public interface ModItems {
 			.maxDamage(400),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(HANDHELD)
 	Item PURPLE_SWORD = registerAndGroup("purple_sword", SocWarsItem::new, new ExtendedItemSettings()
 			.itemHit((stack, target, attacker) -> {
 				attacker.addStatusEffect(new StatusEffectInstance(StatusEffects.INVISIBILITY, 1 * 20, 0, false, true));
@@ -836,6 +879,7 @@ public interface ModItems {
 			.maxDamage(900),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(HANDHELD)
 	Item GREEN_SWORD = registerAndGroup("green_sword", SocWarsItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, 7f, -2.15f)
 			.rarity(Rarity.UNCOMMON)
@@ -879,6 +923,7 @@ public interface ModItems {
 				return ActionResult.FAIL;
 			})
 	);
+	@GenerateItem(GENERATED)
 	Item SHRINKING_PILLS = registerAndGroup("shrinking_pills", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.UNCOMMON)
 			.conditionallyConsumable(0.8f, (stack, world, user) -> {
@@ -889,6 +934,7 @@ public interface ModItems {
 			.simpleTooltip(Text.translatable("tooltip.shrinking_pills")),
 			ItemGroups.FOOD_AND_DRINK
 	);
+	@GenerateItem(GENERATED)
 	Item BIGGENING_PILLS = registerAndGroup("biggening_pills", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.UNCOMMON)
 			.conditionallyConsumable(0.8f, (stack, world, user) -> {
@@ -899,6 +945,7 @@ public interface ModItems {
 			.simpleTooltip(Text.translatable("tooltip.biggening_pills")),
 			ItemGroups.FOOD_AND_DRINK
 	);
+	@GenerateItem(GENERATED)
 	Item CHORUS_FRUIT_SALAD = registerAndGroup("chorus_fruit_salad", SocWarsItem::new, new ExtendedItemSettings()
 			.useCooldown(5f)
 			.consumable(2.4f, (stack, world, user) -> {
@@ -921,11 +968,13 @@ public interface ModItems {
 			.throwable(BWFireballEntity::kineticFireball, 3f),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(GENERATED)
 	Item WATERBALL = registerAndGroup("waterball", SocWarsItem::new, new ExtendedItemSettings()
 			.useCooldown(0.75f)
 			.throwable(BWFireballEntity::waterball, 3f),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(GENERATED)
 	Item SNAIL_FIREBALL = registerAndGroup("snail_fireball", SocWarsItem::new, new ExtendedItemSettings()
 			.useCooldown(0.75f)
 			.rarity(Rarity.EPIC)
@@ -933,6 +982,7 @@ public interface ModItems {
 			.simpleTooltip(Text.translatable("tooltip.snail_fireball").withColor(0xe6e475)),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(GENERATED)
 	Item LIGHTNING_ORB = registerAndGroup("lightning_orb", SocWarsItem::new, new ExtendedItemSettings()
 			.useCooldown(0.75f)
 			.throwable(BWFireballEntity::lightningOrb, 2f)
@@ -946,15 +996,18 @@ public interface ModItems {
 			.rarity(Rarity.UNCOMMON),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(GENERATED)
 	Item THROWABLE_TNT = registerAndGroup("throwable_tnt", SocWarsItem::new, new ExtendedItemSettings()
 			.throwable(BWFireballEntity::throwableTnt, 0.6f)
 			.useCooldown(0.75f)
 	);
+	@GenerateItem(GENERATED)
 	Item ENDER_BEAM = registerAndGroup("ender_beam", SocWarsItem::new, new ExtendedItemSettings()
 			.useCooldown(0.75f)
 			.throwable(EnderBeamEntity::new, 2.5f),
 			ItemGroups.TOOLS
 	);
+	@GenerateItem(GENERATED)
 	Item HAND_GRENADE = registerAndGroup("hand_grenade", SocWarsItem::new, new ExtendedItemSettings()
 			.useCooldown(1f)
 			.rarity(Rarity.UNCOMMON)
@@ -962,6 +1015,7 @@ public interface ModItems {
 			.simpleTooltip(Text.translatable("tooltip.hand_grenade")),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(GENERATED)
 	Item HOLY_HAND_GRENADE = registerAndGroup("holy_hand_grenade", SocWarsItem::new, new ExtendedItemSettings()
 			.useCooldown(3f)
 			.rarity(Rarity.RARE)
@@ -969,18 +1023,21 @@ public interface ModItems {
 			.simpleIterTooltip(10, i -> Text.translatable("tooltip.holy_hand_grenade." + i)),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(GENERATED)
 	Item MOLOTOV_COCKTAIL = registerAndGroup("molotov_cocktail", SocWarsItem::new, new ExtendedItemSettings()
 			.useCooldown(0.5f)
 			.throwable(MolotovCocktailEntity::new, 0.7f)
 			.rarity(Rarity.UNCOMMON),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(GENERATED)
 	Item POCKET_SAND = registerAndGroup("pocket_sand", SocWarsItem::new, new ExtendedItemSettings()
 			.useCooldown(0.5f)
 			.throwable(PocketSandEntity::new, 0.9f)
 			.simpleTooltip(Text.translatable("tooltip.pocket_sand")),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(HANDHELD)
 	Item EXPON = ModItemGroups.registerAndGroup("expon", SocWarsTickingItem::new, new ExtendedItemSettings()
 			.sword(ToolMaterials.BASE, -0.5f, -1.6f)
 			.maxDamage(300)
@@ -989,6 +1046,7 @@ public interface ModItems {
 			.simpleTooltip(Text.translatable("tooltip.expon")),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(GENERATED)
 	Item EXTENDO_BRIDGE = registerAndGroup("extendo_bridge", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.UNCOMMON)
 			.useCooldown(0.25f)
@@ -1019,6 +1077,7 @@ public interface ModItems {
 			}),
 			ItemGroups.TOOLS
 	);
+	@GenerateItem(HANDHELD)
 	Item SHARPENED_POKING_STICK = registerAndGroup("sharpened_poking_stick", SocWarsItem::new, new ExtendedItemSettings()
 			.maxDamage(150)
 			.rarity(Rarity.UNCOMMON)
@@ -1029,13 +1088,16 @@ public interface ModItems {
 			))),
 			ItemGroups.COMBAT
 	);
+	@GenerateItem(GENERATED)
 	Item BALUSTRADE = registerAndGroup("balustrade", SocWarsItem::new, new ExtendedItemSettings());
+	@GenerateItem(GENERATED)
 	Item PORTABLE_STEPPING_STOOL = registerAndGroup("portable_stepping_stool", SocWarsItem::new, new ExtendedItemSettings()
 			.maxCount(1)
 			.rarity(Rarity.RARE)
 			.component(ModItemComponents.DOUBLE_JUMP, true)
 			.simpleTooltip(Text.translatable("tooltip.portable_stepping_stool"))
 	);
+	@GenerateItem(GENERATED)
 	Item JET_SHOPPING_TROLLEY = registerAndGroup("jet_shopping_trolley", SocWarsItem::new, new ExtendedItemSettings()
 			.maxCount(1)
 			.rarity(Rarity.RARE)
@@ -1046,9 +1108,11 @@ public interface ModItems {
 				return ActionResult.SUCCESS;
 			})
 	);
+	@GenerateItem(HANDHELD)
 	Item PARKOUR_RESET = registerAndGroup("parkour_reset", SocWarsItem::new, new ExtendedItemSettings()
 			.component(ModItemComponents.COMMAND_FUNCTION, new CommandFunctionComponent("parkour:cancel", "parkour:checkpoint"))
 	);
+	@GenerateItem(GENERATED)
 	Item GRAVITY_ORB = registerAndGroup("gravity_orb", SocWarsItem::new, new ExtendedItemSettings()
 			.useCooldown(7.5f)
 			.rarity(Rarity.UNCOMMON)
@@ -1792,7 +1856,12 @@ public interface ModItems {
 			}),
 			ItemGroups.COMBAT
 	);
-
+	Item THESE_HANDS = registerAndGroup("these_hands", SocWarsItem::new, new ExtendedItemSettings()
+			.rarity(Rarity.EPIC)
+			.sword(ToolMaterials.BASE, 7f, -2f)
+			.maxDamage(10000),
+			ItemGroups.COMBAT
+	);
 
 
 

@@ -44,13 +44,13 @@ public interface EndGameCommand {
         } catch (Exception ignored) {
             final Entity source = context.getSource().getEntity();
             if (!(source instanceof PlayerEntity)) {
-                context.getSource().sendMessage(Text.translatable("command.fail.end_game.no_entity"));
+                context.getSource().sendError(Text.translatable("command.fail.end_game.no_entity"));
                 return 0;
             }
 
             final Optional<AbstractGameManager<?, ?, ?>> playerGame = GamesManager.getInstance().getGame((PlayerEntity)source);
             if (playerGame.isEmpty()) {
-                context.getSource().sendMessage(Text.translatable("command.fail.end_game.not_in_game"));
+                context.getSource().sendError(Text.translatable("command.fail.end_game.not_in_game"));
                 return 0;
             }
             gameId = playerGame.get().getGameId();
