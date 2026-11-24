@@ -18,7 +18,7 @@ import static net.minecraft.block.DoorBlock.OPEN;
 @Mixin(DoorBlock.class)
 abstract class NoMorphedDoorCollisions extends AbstractBlockMixin {
 	@Override
-	protected void socwars_getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context, CallbackInfoReturnable<VoxelShape> cir) {
+	protected void socwars$getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context, CallbackInfoReturnable<VoxelShape> cir) {
 		if (state.get(OPEN) && context instanceof EntityShapeContext entityContext && entityContext.getEntity() != null) {
 			final PlayerData playerData = PlayerDataManager.getSideLocalPlayerDataEntity(entityContext.getEntity());
 			if (playerData != null && playerData.getMorph() != null) cir.setReturnValue(VoxelShapes.empty());

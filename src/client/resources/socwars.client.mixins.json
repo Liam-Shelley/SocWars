@@ -2,15 +2,17 @@
   "required": true,
   "package": "com.soc.mixin.client",
   "compatibilityLevel": "JAVA_21",
+  "plugin": "com.soc.compat.MixinPlugin",
   "client": [
     "BlockProtectionOnBreak",
     "BlockProtectionOnPlace",
     "BlockProtectionRenderOutline",
     "BowUseScale",
-    "CancelItemInteractionClient",
+    "ClientPlayerInteractionManagerMixin",
     "CollectibleBlockEntitySparkles",
     "DeathNoteVignetteClearOnQuit",
     "DeathNoteVignetteClearOnRespawn",
+    "DisallowFreecam",
     "DoubleJump",
     "FovTweaks",
     "GamePlayerList",
@@ -25,6 +27,7 @@
     "OpenMapBlockScreen",
     "PlayerRenderingMixin",
     "RenderFirstPersonMorph",
+    "RenderPlayersThroughMorphInFreecam",
     "SemiServerSideTime",
     "SideLocalPlayerDataGetter",
     "TransparentArmour",
@@ -34,6 +37,7 @@
   "injectors": {
     "defaultRequire": 1
   },
-  "mixins": [
-  ]
+  "mixinextras": {
+    "minVersion": "0.5.0"
+  }
 }

@@ -47,6 +47,8 @@ public class ClientPlayerDataManager {
     }
 
     public static void setPlayerData(UUID player, PlayerData playerData) {
+        if (instance == null) instance = new ClientPlayerDataManager();
+
         instance.playerDataMap.computeIfAbsent(player, uuid -> new PlayerData()).merge(playerData);
         if (MinecraftClient.getInstance().player != null && player == MinecraftClient.getInstance().player.getUuid()) instance.ownClientData = playerData;
     }

@@ -37,5 +37,6 @@ public class S2CPayloads {
         PayloadTypeRegistry.playS2C().register(KitBlockSendToScreen.ID, KitBlockSendToScreen.CODEC);
         PayloadTypeRegistry.playS2C().register(OpenDeathNoteScreenPayload.ID, OpenDeathNoteScreenPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(ReceiveDeathNotePayload.ID, ReceiveDeathNotePayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(UpdatePreventFreecamPayload.ID, UpdatePreventFreecamPayload.CODEC);
     }
 }

@@ -109,7 +109,7 @@ public class GamesManager {
         });
         ModEvents.ON_DEATH_NOTE_KILL.register((target, killer) -> {
                     final Optional<AbstractGameManager<?, ?, ?>> targetGameOptional = this.getGame(target);
-                    return targetGameOptional == this.getGame(killer) ? targetGameOptional.map(targetGame -> targetGame.onDeathNoteKill(target, killer)).orElse(OnDeathNoteKill.Result.SUCCESS) : OnDeathNoteKill.Result.CANCEL;
+                    return targetGameOptional.equals(this.getGame(killer)) ? targetGameOptional.map(targetGame -> targetGame.onDeathNoteKill(target, killer)).orElse(OnDeathNoteKill.Result.SUCCESS) : OnDeathNoteKill.Result.CANCEL;
         });
     }
 

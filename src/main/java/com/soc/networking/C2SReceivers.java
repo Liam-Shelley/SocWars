@@ -8,6 +8,7 @@ import com.soc.game.manager.GameType;
 import com.soc.game.manager.GamesManager;
 import com.soc.items.SocWarsItem;
 import com.soc.items.components.ModItemComponents;
+import com.soc.items.util.ModItems;
 import com.soc.lib.Events;
 import com.soc.networking.c2s.*;
 import com.soc.networking.s2c.OpenQueueScreenPayload;
@@ -49,7 +50,12 @@ public class C2SReceivers {
             final OnDeathNoteKill.Result result = ModEvents.ON_DEATH_NOTE_KILL.invoker().tryKill(target, context.player());
 
             if (target != null && result == OnDeathNoteKill.Result.SUCCESS) {
-                context.player().getActiveItem().decrementUnlessCreative(1, context.player());
+                final ItemStack activeItem = context.player().getActiveItem();
+                if (activeItem.isOf(ModItems.DEATH_NOTE)) { //TODO: Replace this hack by actually fixing the root cause of the issue
+                    activeItem.decrementUnlessCreative(1, context.player());
+                } else {
+                    context.player().getInventory().remove(stack -> stack.isOf(ModItems.DEATH_NOTE), 1, context.player().playerScreenHandler.getCraftingInput());
+                }
 
                 target.addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, 20 * 20, 255, false, false));
                 target.addStatusEffect(new StatusEffectInstance(StatusEffects.WEAKNESS, 20 * 20, 255, false, false));

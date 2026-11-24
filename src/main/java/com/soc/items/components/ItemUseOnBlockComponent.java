@@ -13,5 +13,5 @@ import net.minecraft.world.World;
 public interface ItemUseOnBlockComponent {
 	Codec<ItemUseOnBlockComponent> CODEC = Codec.unit(null);
 
-	ActionResult use(World world, PlayerEntity user, Hand hand, BlockState state, BlockPos pos, Direction face);
+	ActionResult useOnBlock(World world, PlayerEntity user, Hand hand, BlockState state, BlockPos pos, Direction face);
 }

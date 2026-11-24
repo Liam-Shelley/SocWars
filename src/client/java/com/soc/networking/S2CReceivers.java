@@ -1,6 +1,7 @@
 package com.soc.networking;
 
 import com.soc.blocks.blockentities.KitBlockEntity;
+import com.soc.game.FreecamManager;
 import com.soc.gui.hud.DeathNoteVignette;
 import com.soc.gui.hud.JumpscareHud;
 import com.soc.gui.hud.sidebar.BedwarsTeamsHud;
@@ -191,12 +192,16 @@ public class S2CReceivers {
         ClientPlayNetworking.registerGlobalReceiver(LeaveGamePayload.ID, ((payload, context) -> {
             BlockProtectionManagerAndHud.INSTANCE.clearBlockProtection();
             EventsHud.clear();
+            FreecamManager.updatePreventFreecam(false);
         }));
         ClientPlayNetworking.registerGlobalReceiver(EventQueuePayload.ID, ((payload, context) -> {
             EventsHud.receivePayload(payload);
         }));
         ClientPlayNetworking.registerGlobalReceiver(BlockProtectionPayload.ID, ((payload, context) -> {
             BlockProtectionManagerAndHud.INSTANCE.setBlockProtection(payload);
+        }));
+        ClientPlayNetworking.registerGlobalReceiver(UpdatePreventFreecamPayload.ID, ((payload, context) -> {
+            FreecamManager.updatePreventFreecam(payload.prevent());
         }));
     }
 

@@ -36,7 +36,7 @@ public class Events {
         this.events.add(new Event<>(function, context, this.world.getTime() + time));
     }
 
-    public <T> void scheduleEvent(Runnable function, long time) {
+    public void scheduleEvent(Runnable function, long time) {
         this.events.add(new Event<>(function, this.world.getTime() + time));
     }
 }

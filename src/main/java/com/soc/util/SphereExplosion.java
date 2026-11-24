@@ -32,7 +32,15 @@ public class SphereExplosion {
 
     public static void explode(World world, Vec3d centre, float explosionRadius, float explosionVariance, float damageFactor, float knockbackFactor, boolean blockDamage, @Nullable Entity causingEntity, @Nullable RegistryKey<DamageType> damageType) {
         final BiPredicate<BlockPos, BlockState> baseDamage = getBlockDamagePredicate(world, blockDamage, causingEntity);
-        final BiPredicate<BlockPos, BlockState> damage = explosionRadius > 10f ? ((BiPredicate<BlockPos, BlockState>)((blockPos, blockState) -> !blockState.getFluidState().isEmpty())).or(baseDamage) : baseDamage;
+
+        final BiPredicate<BlockPos, BlockState> damage;
+        if (explosionRadius > 50f) {
+            damage = (a, b) -> true;
+        } else if (explosionRadius > 10f) {
+            damage = baseDamage.or((blockPos, blockState) -> !blockState.getFluidState().isEmpty());
+        } else {
+            damage = baseDamage;
+        }
 
         iterateInSphere(BlockPos.ofFloored(centre), explosionRadius, explosionVariance, pos -> {
                 final BlockState currentState = world.getBlockState(pos);

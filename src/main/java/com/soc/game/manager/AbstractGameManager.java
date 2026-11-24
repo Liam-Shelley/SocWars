@@ -10,10 +10,7 @@ import com.soc.game.map.AbstractGameMap;
 import com.soc.game.map.SpreadRules;
 import com.soc.lib.Events;
 import com.soc.lib.ScoreboardHelper;
-import com.soc.networking.s2c.EventQueuePayload;
-import com.soc.networking.s2c.JoinGamePayload;
-import com.soc.networking.s2c.LeaveGamePayload;
-import com.soc.networking.s2c.UpdateHotbarPayload;
+import com.soc.networking.s2c.*;
 import com.soc.player.Morph;
 import com.soc.player.PlayerDataManager;
 import com.soc.util.ModBlockTags;
@@ -167,6 +164,8 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
 
         ifNotNull(this.map.getBlockProtectionPacket(), packet -> ServerPlayNetworking.send(player, packet));
         if (!this.eventQueue.isEmpty()) ServerPlayNetworking.send(player, new EventQueuePayload(this.eventQueue, this.time));
+
+        if (this.shouldPreventFreecam(player)) ServerPlayNetworking.send(player, new UpdatePreventFreecamPayload(true));
     }
 
     protected void sendLeaveGamePayload(ServerPlayerEntity player) {
@@ -219,6 +218,10 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
 
     public void giveKits() {
         this.playersForEach((team, player) -> ifNotNullElse(PlayerDataManager.getPlayerData(player), playerData -> playerData.tryApplyKit(this.gameType, player), () -> SocWars.LOGGER.warn("Failed to apply kit for: {} as playerdata was null", player.getNameForScoreboard())));
+    }
+
+    protected boolean shouldPreventFreecam(ServerPlayerEntity player) {
+        return false;
     }
 
     @MustBeInvokedByOverriders

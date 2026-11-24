@@ -76,7 +76,7 @@ public record BowComponent<T extends ArrowEntity>(float drawTime, float arrowSpe
 		}
 
 		if (user instanceof PlayerEntity player) {
-			stack.damage(arrowStack.size(), player);
+			stack.damage(arrowStack.size(), player, user.getActiveHand());
 		}
 
 		playBowSound(world, user, drawProgress);
@@ -91,14 +91,14 @@ public record BowComponent<T extends ArrowEntity>(float drawTime, float arrowSpe
 			final ItemStack projectileStack = projectiles.get(i);
 			final float yaw = shooter.getYaw() + spread * (projectiles.size() - 1 - 2 * i);
 
-			final ProjectileEntity arrowEntity = this.createArrowEntity(world, shooter, stack, projectileStack, critical);
+			final ProjectileEntity arrowEntity = createArrowEntity(world, shooter, stack, projectileStack, critical, this.arrowType);
 			if (arrowEntity != null) ProjectileEntity.spawn(arrowEntity, world, projectileStack, projectile -> projectile.setVelocity(shooter, shooter.getPitch(), yaw, 0f, speed, divergence));
 		}
 		stack.damage(projectiles.size(), shooter, LivingEntity.getSlotForHand(hand));
 	}
 
-	private ProjectileEntity createArrowEntity(ServerWorld world, LivingEntity shooter, ItemStack weaponStack, ItemStack projectileStack, boolean critical) {
-		final ArrowEntity arrowEntity = this.arrowType.create(world, SpawnReason.SPAWN_ITEM_USE);
+	public static <T extends ArrowEntity> ArrowEntity createArrowEntity(ServerWorld world, LivingEntity shooter, ItemStack weaponStack, ItemStack projectileStack, boolean critical, EntityType<T> arrowType) {
+		final ArrowEntity arrowEntity = arrowType.create(world, SpawnReason.SPAWN_ITEM_USE);
 		if (arrowEntity == null) return null;
 
 		final Vec3d eyePos = shooter.getEyePos();

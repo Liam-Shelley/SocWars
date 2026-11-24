@@ -21,7 +21,7 @@ import static com.soc.lib.SocWarsLib.depositStackIntoInventory;
 @Mixin(EnderChestBlock.class)
 public abstract class DepositableEnderChest extends AbstractBlockMixin {
     @Override
-	protected void socwars_deposit(BlockState state, World world, BlockPos pos, PlayerEntity player, CallbackInfo ci) {
+	protected void socwars$deposit(BlockState state, World world, BlockPos pos, PlayerEntity player, CallbackInfo ci) {
 		if (!world.isClient && state.get(DEPOSITABLE)) {
 			final ItemStack stack = player.getStackInHand(Hand.MAIN_HAND);
 			final Inventory inventory = player.getEnderChestInventory();
@@ -31,7 +31,7 @@ public abstract class DepositableEnderChest extends AbstractBlockMixin {
 	}
 
 	@Override
-	protected void socwars_pickStack(WorldView world, BlockPos pos, BlockState state, boolean includeData, CallbackInfoReturnable<ItemStack> cir) {
+	protected void socwars$pickStack(WorldView world, BlockPos pos, BlockState state, boolean includeData, CallbackInfoReturnable<ItemStack> cir) {
 		cir.setReturnValue(new ItemStack(state.get(DEPOSITABLE) ? ModItems.DEPOSITABLE_ENDER_CHEST : Items.ENDER_CHEST));
 	}
 }

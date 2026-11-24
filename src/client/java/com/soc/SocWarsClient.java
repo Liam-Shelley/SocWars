@@ -1,5 +1,6 @@
 package com.soc;
 
+import com.soc.game.FreecamManager;
 import com.soc.gui.hud.*;
 import com.soc.gui.hud.sidebar.BedwarsTeamsHud;
 import com.soc.gui.hud.sidebar.EventsHud;
@@ -58,6 +59,8 @@ public class SocWarsClient implements ClientModInitializer {
 		BlockRenderLayers.initialise();
 
 		ModItemProperties.initialise();
+
+		FreecamManager.intialise();
 
 		ClientTickEvents.START_CLIENT_TICK.register(client -> {
 			if (!client.isIntegratedServerRunning()) {

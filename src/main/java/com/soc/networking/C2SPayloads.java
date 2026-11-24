@@ -2,6 +2,7 @@ package com.soc.networking;
 
 import com.soc.networking.c2s.*;
 import com.soc.networking.s2c.QueuePayload;
+import com.soc.networking.s2c.UpdatePreventFreecamPayload;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 
 public class C2SPayloads {

@@ -1,15 +1,26 @@
 classTweaker v2 named
 
+#misc
 accessible method net/minecraft/item/consume/ConsumeEffect$Type register (Ljava/lang/String;Lcom/mojang/serialization/MapCodec;Lnet/minecraft/network/codec/PacketCodec;)Lnet/minecraft/item/consume/ConsumeEffect$Type;
 accessible method net/minecraft/item/DebugStickItem cycle (Lnet/minecraft/block/BlockState;Lnet/minecraft/state/property/Property;Z)Lnet/minecraft/block/BlockState;
 accessible method net/minecraft/item/equipment/ArmorMaterials createDefenseMap (IIIII)Ljava/util/Map;
 
+#bow stuff
 accessible method net/minecraft/item/RangedWeaponItem load (Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemStack;Lnet/minecraft/entity/LivingEntity;)Ljava/util/List;
 accessible field net/minecraft/entity/projectile/PersistentProjectileEntity stack Lnet/minecraft/item/ItemStack;
 accessible field net/minecraft/entity/projectile/PersistentProjectileEntity weapon Lnet/minecraft/item/ItemStack;
 accessible method net/minecraft/entity/projectile/PersistentProjectileEntity setPierceLevel (B)V
 
+#recolourable edit boxes
 accessible field net/minecraft/client/gui/widget/EditBoxWidget textColor I
 mutable field net/minecraft/client/gui/widget/EditBoxWidget textColor I
 
+#structure template splitting
+accessible field net/minecraft/structure/StructureTemplate blockInfoLists Ljava/util/List;
+accessible field net/minecraft/structure/StructureTemplate entities Ljava/util/List;
+accessible field net/minecraft/structure/StructureTemplate size Lnet/minecraft/util/math/Vec3i;
+accessible field net/minecraft/structure/StructureTemplate author Ljava/lang/String;
+accessible method net/minecraft/structure/StructureTemplate$PalettedBlockInfoList <init> (Ljava/util/List;)V
+
+#stupid crashing fix that I don't understand the root cause of
 transitive-inject-interface net/minecraft/entity/ItemEntity net/minecraft/inventory/Inventory

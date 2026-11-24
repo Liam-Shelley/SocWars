@@ -55,6 +55,11 @@ public abstract class AbstractHidingGameManager<MAP extends AbstractHidingGameMa
 	}
 
 	@Override
+	protected boolean shouldPreventFreecam(ServerPlayerEntity player) {
+		return this.getTeam(player) == SEEKER_COLOUR;
+	}
+
+	@Override
 	@SuppressWarnings("MethodDoesntCallSuperMethod")
 	public void endGame(boolean immediate) {
 		this.endGame(immediate, HIDER_COLOUR);

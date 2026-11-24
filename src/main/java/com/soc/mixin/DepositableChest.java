@@ -23,7 +23,7 @@ import static com.soc.lib.SocWarsLib.depositStackIntoInventory;
 @Mixin(ChestBlock.class)
 public abstract class DepositableChest extends AbstractBlockMixin {
     @Override
-	protected void socwars_deposit(BlockState state, World world, BlockPos pos, PlayerEntity player, CallbackInfo ci) {
+	protected void socwars$deposit(BlockState state, World world, BlockPos pos, PlayerEntity player, CallbackInfo ci) {
 		if (!world.isClient && state.get(DEPOSITABLE)) {
 			GamesManager.getInstance().getGame(player).ifPresentOrElse(manager -> {
 				if (manager.onChestOpened((ServerPlayerEntity)player, pos)) {
@@ -42,7 +42,7 @@ public abstract class DepositableChest extends AbstractBlockMixin {
 	}
 
 	@Override
-	protected void socwars_pickStack(WorldView world, BlockPos pos, BlockState state, boolean includeData, CallbackInfoReturnable<ItemStack> cir) {
+	protected void socwars$pickStack(WorldView world, BlockPos pos, BlockState state, boolean includeData, CallbackInfoReturnable<ItemStack> cir) {
 		cir.setReturnValue(new ItemStack(state.get(DEPOSITABLE) ? ModItems.DEPOSITABLE_CHEST : Items.CHEST));
 	}
 }

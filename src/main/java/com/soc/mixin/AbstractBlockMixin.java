@@ -19,11 +19,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(AbstractBlock.class)
 public abstract class AbstractBlockMixin {
 	@Inject(method = "onBlockBreakStart", at = @At("HEAD"))
-	protected void socwars_deposit(BlockState state, World world, BlockPos pos, PlayerEntity player, CallbackInfo ci) {}
+	protected void socwars$deposit(BlockState state, World world, BlockPos pos, PlayerEntity player, CallbackInfo ci) {}
 
     @Inject(method = "getPickStack", at = @At("HEAD"), cancellable = true)
-    protected void socwars_pickStack(WorldView world, BlockPos pos, BlockState state, boolean includeData, CallbackInfoReturnable<ItemStack> cir) {}
+    protected void socwars$pickStack(WorldView world, BlockPos pos, BlockState state, boolean includeData, CallbackInfoReturnable<ItemStack> cir) {}
 
 	@Inject(method = "getCollisionShape", at = @At("HEAD"), cancellable = true)
-	protected void socwars_getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context, CallbackInfoReturnable<VoxelShape> cir) {}
+	protected void socwars$getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context, CallbackInfoReturnable<VoxelShape> cir) {}
 }

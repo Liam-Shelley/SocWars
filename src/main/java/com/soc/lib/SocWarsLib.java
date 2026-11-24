@@ -34,6 +34,7 @@ import net.minecraft.item.Items;
 import net.minecraft.item.equipment.trim.ArmorTrimMaterial;
 import net.minecraft.item.equipment.trim.ArmorTrimMaterials;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -757,5 +758,19 @@ public final class SocWarsLib {
 					}
 			);
 		}
+	}
+
+	public static void applyKnockback(LivingEntity target, Vec3d knockback) {
+        try {
+            final double knockbackResistance = target.getAttributeValue(EntityAttributes.KNOCKBACK_RESISTANCE);
+            if (knockbackResistance > 0d) {
+                knockback = knockback.multiply(1d - knockbackResistance);
+            }
+        } catch (Exception ignored) {}
+
+		if (target instanceof ServerPlayerEntity serverPlayer) {
+			serverPlayer.networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(serverPlayer.getId(), serverPlayer.getVelocity().add(knockback)));
+		}
+		target.addVelocity(knockback);
 	}
 }

@@ -62,6 +62,10 @@ public class ExtendedItemSettings extends Item.Settings {
 		return this.component(ModItemComponents.ITEM_USE_ON_BLOCK, component);
 	}
 
+	public ExtendedItemSettings itemPostMine(ItemPostMineComponent component) {
+		return this.component(ModItemComponents.ITEM_POST_MINE, component);
+	}
+
 	public ExtendedItemSettings itemStopUsing(ItemStopUsingComponent component) {
 		return this.component(ModItemComponents.ITEM_STOP_USING, component);
 	}
@@ -115,7 +119,7 @@ public class ExtendedItemSettings extends Item.Settings {
 	}
 
 	public ExtendedItemSettings noComponentUpdateBob() {
-		return this.component(ModItemComponents.NO_COMPONENT_UPDATE_BOB, Unit.INSTANCE);
+		return this.component(ModItemComponents.NO_COMPONENT_UPDATE_BOB);
 	}
 
 	public ExtendedItemSettings consumable(float consumeTime, ItemFinishUseComponent onConsumeEffect) {
@@ -146,10 +150,12 @@ public class ExtendedItemSettings extends Item.Settings {
 				.repairable(material.repairIngredient());
 	}
 
-
+	public ExtendedItemSettings component(ComponentType<Unit> componentType) {
+		return this.component(componentType, Unit.INSTANCE);
+	}
 
 	public ExtendedItemSettings transparentArmour() {
-		return this.component(ModItemComponents.TRANSPARENT_ARMOUR, Unit.INSTANCE);
+		return this.component(ModItemComponents.TRANSPARENT_ARMOUR);
 	}
 
 	@SuppressWarnings("unchecked")

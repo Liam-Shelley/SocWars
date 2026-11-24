@@ -48,6 +48,11 @@ public interface ModItemComponents {
 			Identifier.of(SocWars.MOD_ID, "item_use_on_block"),
 			ComponentType.<ItemUseOnBlockComponent>builder().codec(ItemUseOnBlockComponent.CODEC).build()
 	);
+	ComponentType<ItemPostMineComponent> ITEM_POST_MINE = Registry.register(
+			Registries.DATA_COMPONENT_TYPE,
+			Identifier.of(SocWars.MOD_ID, "item_post_mine"),
+			ComponentType.<ItemPostMineComponent>builder().codec(ItemPostMineComponent.CODEC).build()
+	);
 	ComponentType<ItemTickComponent> ITEM_TICK = Registry.register(
 			Registries.DATA_COMPONENT_TYPE,
 			Identifier.of(SocWars.MOD_ID, "item_tick"),
@@ -183,4 +188,9 @@ public interface ModItemComponents {
 			Identifier.of(SocWars.MOD_ID, "extended_rarity"),
 			ComponentType.<ExtendedRarity>builder().codec(ExtendedRarity.CODEC).build()
 	);
+	ComponentType<Unit> CREATIVE_MINING = Registry.register(
+			Registries.DATA_COMPONENT_TYPE,
+			Identifier.of(SocWars.MOD_ID, "creative_mining"),
+			ComponentType.<Unit>builder().codec(Unit.CODEC).build()
+	);;
 }

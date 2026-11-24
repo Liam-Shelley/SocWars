@@ -14,9 +14,7 @@ import com.soc.items.components.CommandFunctionComponent;
 import com.soc.items.armour.ArmourSetBonuses;
 import com.soc.items.armour.ModArmourMaterials;
 import com.soc.items.components.*;
-import com.soc.lib.Coroutine;
-import com.soc.lib.Coroutines;
-import com.soc.lib.IntBox;
+import com.soc.lib.*;
 import com.soc.mixin.GetAbsorptionAmountDataTracker;
 import com.soc.networking.s2c.AddVelocityPayload;
 import com.soc.networking.s2c.BatchParticlePayload;
@@ -49,7 +47,6 @@ import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
 import net.minecraft.item.*;
 import net.minecraft.item.consume.UseAction;
 import net.minecraft.item.equipment.EquipmentType;
-import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.*;
@@ -62,13 +59,13 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
+import net.minecraft.structure.StructurePlacementData;
+import net.minecraft.structure.StructureTemplate;
 import net.minecraft.text.Text;
 import net.minecraft.util.*;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
@@ -95,7 +92,6 @@ import static com.soc.items.util.ExtendedItemSettings.spawnEntityWithVelocity;
 import static com.soc.items.util.GenerateItem.Model.GENERATED;
 import static com.soc.items.util.GenerateItem.Model.HANDHELD;
 import static com.soc.lib.SocWarsLib.*;
-import static com.soc.lib.SocWarsLib.isBlockHidden;
 import static com.soc.util.SphereExplosion.fireExplosion;
 import static net.minecraft.item.Items.ENCHANTED_GOLDEN_APPLE;
 import static net.minecraft.item.Items.NETHERITE_SWORD;
@@ -232,7 +228,7 @@ public interface ModItems {
 			.itemHit((stack, target, attacker) -> {
 						target.addStatusEffect(new StatusEffectInstance(StatusEffects.WITHER, 3 * 20, 1));
 						target.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 3 * 20, 2));
-					}),
+			}),
 			ItemGroups.COMBAT
 	);
 	Item NETHERWRONG_SWORD = registerAndGroup("netherwrong_sword", SocWarsItem::new, new ExtendedItemSettings()
@@ -289,12 +285,7 @@ public interface ModItems {
 			.maxDamage(450)
 			.itemHit((stack, target, attacker) -> {
 				final Vec3d velocity = attacker.getRotationVector().multiply(-1.25f);
-
-				if (target instanceof ServerPlayerEntity serverPlayer) {
-					serverPlayer.networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(serverPlayer.getId(), serverPlayer.getVelocity().add(velocity)));
-				} else {
-					target.addVelocity(velocity);
-				}
+				applyKnockback(target, velocity);
 			})
 			.simpleTooltip(
 					Text.translatable("tooltip.knockforward_sword").formatted(Formatting.GOLD),
@@ -774,7 +765,7 @@ public interface ModItems {
 			.useCooldown(5f)
 			.rarity(Rarity.RARE)
 			.itemUse((world, user, hand) -> {
-				if (world.isClient) return null;
+				if (world.isClient) return ActionResult.FAIL;
 
 				world.spawnEntity(new RedShellEntity(world, user.getPos(), user));
 				user.getStackInHand(hand).decrementUnlessCreative(1, user);
@@ -789,7 +780,7 @@ public interface ModItems {
 			.useCooldown(5f)
 			.rarity(Rarity.RARE)
 			.itemUse((world, user, hand) -> {
-				if (world.isClient) return null;
+				if (world.isClient) return ActionResult.FAIL;
 
 				world.spawnEntity(new BlueShellEntity(world, user.getPos(), user));
 				user.getStackInHand(hand).decrementUnlessCreative(1, user);
@@ -1351,8 +1342,8 @@ public interface ModItems {
 			.maxDamage(1)
 			.rarity(Rarity.EPIC) //TODO: Mythic
 			.itemHit((stack, target, attacker) -> {
-				if (attacker instanceof PlayerEntity playerEntity) stack.damage(1, playerEntity);
-				forceKillTarget(target, attacker, ModDamageTypes.CATASTROPHE_BOW);
+				if (attacker instanceof PlayerEntity playerEntity) stack.damage(1, playerEntity, Hand.MAIN_HAND);
+				forceKillTarget(target, attacker, ModDamageTypes.ONE_HIT_WONDER);
 			})
 			.simpleTooltip( //TODO: Colour this tooltip nicely
 					Text.translatable("tooltip.one_hit_wonder"),
@@ -1363,7 +1354,7 @@ public interface ModItems {
 			ItemGroups.COMBAT
 	);
 	Item STASIS_CHAMBER = registerAndGroup("stasis_chamber", SocWarsItem::new, new ExtendedItemSettings()
-			.maxDamage(2)
+			.maxDamage(1)
 			.rarity(Rarity.EPIC)
 			.component(ModItemComponents.STASIS_CHAMBER, StasisChamberComponent.DEFAULT),
 			ItemGroups.TOOLS
@@ -1815,7 +1806,7 @@ public interface ModItems {
 					livingEntity.addStatusEffect(new StatusEffectInstance(ModEffects.FLIGHT, 10));
 				}
 			})
-			.maxDamage(35),
+			.maxDamage(5),
 			ItemGroups.COMBAT
 	);
 	@GenerateItem(GENERATED)
@@ -1845,11 +1836,19 @@ public interface ModItems {
 				goblin.equipStack(EquipmentSlot.LEGS, new ItemStack(Items.NETHERITE_LEGGINGS));
 				goblin.equipStack(EquipmentSlot.FEET, new ItemStack(Items.NETHERITE_BOOTS));
 
-				final List<Item> swords = world.getRegistryManager().getOrThrow(RegistryKeys.ITEM).getOptional(ModItemTags.SWORDS).map(RegistryEntryList.ListBacked::stream).orElseGet(Stream::empty).map(RegistryEntry::value).collect(Collectors.toList());
+				final List<Item> swords = world.getRegistryManager()
+						.getOrThrow(RegistryKeys.ITEM)
+						.getOptional(ModItemTags.SWORDS)
+						.map(RegistryEntryList.ListBacked::stream)
+						.orElseGet(Stream::empty)
+						.map(RegistryEntry::value)
+						.collect(Collectors.toList());
 				swords.add(Items.NETHERITE_SWORD);
 				goblin.equipStack(EquipmentSlot.MAINHAND, new ItemStack(getRandomElement(swords, world.random)));
 
 				world.spawnEntity(goblin);
+
+				user.getStackInHand(hand).decrementUnlessCreative(1, user);
 
 				return ActionResult.SUCCESS;
 			}),
@@ -1861,7 +1860,123 @@ public interface ModItems {
 			.maxDamage(10000),
 			ItemGroups.COMBAT
 	);
+	Item KNOCKBACK_STICK = registerAndGroup("knockback_stick", SocWarsItem::new, new ExtendedItemSettings()
+			.enchantmentGlint()
+			.itemHit((stack, target, attacker) -> {
+				final Vec3d velocity = attacker.getRotationVector().multiply(1.5f).add(0d, 0.2d, 0d);
+				applyKnockback(target, velocity);
+			})
+			.simpleTooltip(Text.translatable("tooltip.knockback_stick").formatted(Formatting.GRAY)),
+			ItemGroups.COMBAT
+	);
+	Item TRUE_KNOCKBACK_STICK = registerAndGroup("true_knockback_stick", SocWarsItem::new, new ExtendedItemSettings()
+			.enchantmentGlint()
+			.itemHit((stack, target, attacker) -> {
+				final Vec3d velocity = attacker.getRotationVector().multiply(5f).add(0d, 1d, 0d);
+				applyKnockback(target, velocity);
+				Events.getInstance().scheduleEvent(() -> applyKnockback(target, velocity), 20L);
+			})
+			.simpleTooltip(Text.translatable("tooltip.true_knockback_stick").formatted(Formatting.GRAY)),
+			ItemGroups.COMBAT
+	);
+	Item PORTAFORT = registerAndGroup("portafort", SocWarsItem::new, new ExtendedItemSettings()
+			.itemUseOnBlock((world, user, hand, state, pos, face) -> {
+				if (world instanceof ServerWorld serverWorld) {
+					serverWorld.getStructureTemplateManager().getTemplate(Identifier.of(SocWars.MOD_ID, "portafort")).ifPresent(portafort -> {
+						final YSplitStructureTemplate portafortLayers = new YSplitStructureTemplate(portafort);
+						final StructurePlacementData placementData = new StructurePlacementData().setRotation(BlockRotation.values()[5 - user.getHorizontalFacing().ordinal()]);
 
+						for (int i = 0; i < portafortLayers.getLayers().size(); i++) {
+							final int finalI = i;
+							Events.getInstance().scheduleEvent(() -> {
+								final StructureTemplate layer = portafortLayers.getLayer(finalI);
+								layer.place(serverWorld, pos.offset(face).subtract(new BlockPos(layer.getSize().getX() >> 1, 0, layer.getSize().getZ() >> 1).rotate(placementData.getRotation())), pos, placementData, serverWorld.random, Block.NOTIFY_LISTENERS);
+
+								serverWorld.playSound(null, pos, SoundEvents.BLOCK_NYLIUM_PLACE, SoundCategory.BLOCKS);
+							}, i * 5L);
+						}
+					});
+				}
+				user.getStackInHand(hand).decrementUnlessCreative(1, user);
+
+				return ActionResult.SUCCESS;
+			}),
+			ItemGroups.TOOLS
+	);
+	@GenerateItem(GENERATED)
+	Item SHELLSTORM = registerAndGroup("shellstorm", SocWarsItem::new, new ExtendedItemSettings()
+			.itemUse((world, user, hand) -> {
+				final Vec3d origin = user.getPos().add(0d, 5d, 0d);
+				for (int i = 0; i < 100; i++) {
+					final Vec3d pos = origin.add(randomCentredVec3d(world.random, 5d));
+					world.spawnEntity(new RedShellEntity(world, pos, user));
+				}
+
+				user.getStackInHand(hand).decrementUnlessCreative(1, user);
+				return ActionResult.SUCCESS;
+			})
+			.rarity(ExtendedRarity.LEGENDARY),
+			ItemGroups.COMBAT
+	);
+	@GenerateItem(HANDHELD)
+	Item BAN_HAMMER = registerAndGroup("ban_hammer", SocWarsItem::new, new ExtendedItemSettings()
+			.itemHit((stack, target, attacker) -> {
+				if (target instanceof ServerPlayerEntity serverPlayer) {
+					serverPlayer.networkHandler.disconnect(Text.translatable("get kicked lmao"));
+					if (attacker instanceof PlayerEntity playerAttacker) stack.damage(1, playerAttacker);
+				}
+			})
+			.sword(ToolMaterials.BASE, 9, -2f)
+			.rarity(Rarity.EPIC)
+			.maxDamage(1),
+			ItemGroups.COMBAT
+	);
+	@GenerateItem(GENERATED)
+	Item WIND_SUPERCHARGE = registerAndGroup("wind_supercharge", SocWarsItem::new, new ExtendedItemSettings()
+			.itemUse((world, user, hand) -> {
+				final WindChargeEntity entity = new WindChargeEntity(user, world, user.getX(), user.getEyeY(), user.getZ()) {
+					@Override
+					protected void createExplosion(Vec3d pos) {
+						this.getWorld().createExplosion(
+								this,
+								null,
+								new AdvancedExplosionBehavior(true, false, Optional.of(30f), Registries.BLOCK.getOptional(BlockTags.BLOCKS_WIND_CHARGE_EXPLOSIONS).map(Function.identity())),
+								pos.getX(),
+								pos.getY(),
+								pos.getZ(),
+								30f,
+								false,
+								World.ExplosionSourceType.TRIGGER,
+								ParticleTypes.GUST_EMITTER_SMALL,
+								ParticleTypes.GUST_EMITTER_LARGE,
+								SoundEvents.ENTITY_WIND_CHARGE_WIND_BURST
+						);
+					}
+				};
+
+				entity.setVelocity(user.getRotationVector().multiply(3f));
+
+				world.spawnEntity(entity);
+
+				user.getStackInHand(hand).decrementUnlessCreative(1, user);
+				return ActionResult.SUCCESS;
+			})
+			.rarity(Rarity.EPIC),
+			ItemGroups.COMBAT
+	);
+	@GenerateItem(HANDHELD)
+	Item LASER_DRILL = registerAndGroup("laser_drill", SocWarsItem::new, new ExtendedItemSettings()
+			.component(ModItemComponents.CREATIVE_MINING)
+			.itemPostMine((stack, world, state, pos, miner) -> {
+				int damage = (int) Math.ceil(state.getHardness(world, pos));
+				if (damage < 0) damage = 500; //Did not expect it to heal itself when you break bedrock
+				stack.damage(damage, miner, EquipmentSlot.MAINHAND);
+				return true;
+			})
+			.maxDamage(5000)
+			.rarity(Rarity.EPIC),
+			ItemGroups.TOOLS
+	);
 
 
 

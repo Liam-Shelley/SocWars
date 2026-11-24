@@ -2,6 +2,7 @@ package com.soc.items;
 
 import com.soc.items.components.ScaledUseDuration;
 import com.soc.items.components.*;
+import net.minecraft.block.BlockState;
 import net.minecraft.component.type.TooltipDisplayComponent;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
@@ -66,7 +67,7 @@ public class SocWarsItem extends Item { //I wonder if I should just turn this in
 
 		return user.getStackInHand(hand)
 				.streamAll(ItemUseOnBlockComponent.class)
-				.map(itemUse -> itemUse.use(world, user, hand, world.getBlockState(pos), pos, context.getSide()))
+				.map(itemUseOnBlock -> itemUseOnBlock.useOnBlock(world, user, hand, world.getBlockState(pos), pos, context.getSide()))
 				.reduce(super.useOnBlock(context), (a, b) -> b.isAccepted() ? a : a.isAccepted() ? b : a); //Ditto
 	}
 
@@ -74,6 +75,14 @@ public class SocWarsItem extends Item { //I wonder if I should just turn this in
 	public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
 		stack.streamAll(ItemFinishUseComponent.class).forEach(finishUse -> finishUse.finishUsing(stack, world, user));
 		return super.finishUsing(stack, world, user);
+	}
+
+	@Override
+	public boolean postMine(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity miner) {
+		return stack
+				.streamAll(ItemPostMineComponent.class)
+				.map(postMine -> postMine.postMine(stack, world, state, pos, miner))
+				.reduce(super.postMine(stack, world, state, pos, miner), Boolean::logicalOr);
 	}
 
 	@Override

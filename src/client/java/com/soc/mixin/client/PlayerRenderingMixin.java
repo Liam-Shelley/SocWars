@@ -2,7 +2,7 @@ package com.soc.mixin.client;
 
 import com.soc.player.ClientPlayerDataManager;
 import com.soc.player.Morph;
-import net.minecraft.block.BlockState;
+import com.soc.renderer.RenderUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -32,7 +32,7 @@ abstract class PlayerRenderingMixin {
 	@Shadow public Camera camera;
 
 	@Inject(method = "render(Lnet/minecraft/client/render/entity/state/EntityRenderState;DDDLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/client/render/entity/EntityRenderer;)V", at = @At("HEAD"), cancellable = true)
-	protected <S extends EntityRenderState> void socwars_livingEntityRender(S state, double x, double y, double z, MatrixStack matrices, VertexConsumerProvider vertices, int light, EntityRenderer<?, S> renderer, CallbackInfo ci) {
+	protected <S extends EntityRenderState> void socwars$livingEntityRender(S state, double x, double y, double z, MatrixStack matrices, VertexConsumerProvider vertices, int light, EntityRenderer<?, S> renderer, CallbackInfo ci) {
 		if (state instanceof PlayerEntityRenderState playerState) {
 			final PlayerEntityRenderer thisRenderer = (PlayerEntityRenderer)renderer;
 
@@ -40,25 +40,25 @@ abstract class PlayerRenderingMixin {
 
 			if (thisEntity == null) return;
 
-			this.tryRenderMorph(x, y, z, matrices, vertices, light, ci, playerState, thisEntity);
-			this.renderIllusions(x, y, z, matrices, vertices, light, playerState, thisRenderer, thisEntity);
+			this.socwars$tryRenderMorph(x, y, z, matrices, vertices, light, ci, playerState, thisEntity);
+			this.socwars$renderIllusions(x, y, z, matrices, vertices, light, playerState, thisRenderer, thisEntity);
 		}
 	}
 
 	@Unique
-	private void tryRenderMorph(double x, double y, double z, MatrixStack matrices, VertexConsumerProvider vertices, int light, CallbackInfo ci, PlayerEntityRenderState playerState, PlayerEntity thisEntity) {
+	private void socwars$tryRenderMorph(double x, double y, double z, MatrixStack matrices, VertexConsumerProvider vertices, int light, CallbackInfo ci, PlayerEntityRenderState playerState, PlayerEntity thisEntity) {
 		final Morph morph = thisEntity == null ? null : ClientPlayerDataManager.getMorph(thisEntity.getUuid());
 
 		final PlayerEntity player = MinecraftClient.getInstance().player;
 		if (morph != null && !thisEntity.isSpectator()) {
-			this.renderMorph(x, y, z, matrices, vertices, light, playerState, morph);
+			this.socwars$renderMorph(x, y, z, matrices, vertices, light, playerState, morph);
 
-			if (!((player.isCreative() && (this.camera.isThirdPerson() || thisEntity != player)) || player.isSpectator())) ci.cancel();
+			if (!RenderUtil.shouldSeePlayerThroughMorph((EntityRenderDispatcher)(Object)this, thisEntity, Objects.requireNonNull(player))) ci.cancel();
 		}
 	}
 
 	@Unique
-	private void renderMorph(double x, double y, double z, MatrixStack matrices, VertexConsumerProvider vertices, int light, PlayerEntityRenderState state, Morph morph) {
+	private void socwars$renderMorph(double x, double y, double z, MatrixStack matrices, VertexConsumerProvider vertices, int light, PlayerEntityRenderState state, Morph morph) {
 		matrices.push();
 
 		if (MinecraftClient.getInstance().world == null) return;
@@ -81,7 +81,7 @@ abstract class PlayerRenderingMixin {
 	}
 
 	@Unique
-	private void renderIllusions(double x, double y, double z, MatrixStack matrices, VertexConsumerProvider vertices, int light, PlayerEntityRenderState state, PlayerEntityRenderer renderer, PlayerEntity thisEntity) {
+	private void socwars$renderIllusions(double x, double y, double z, MatrixStack matrices, VertexConsumerProvider vertices, int light, PlayerEntityRenderState state, PlayerEntityRenderer renderer, PlayerEntity thisEntity) {
 		final Vec3d[] illusions = mapIfNotNull(ClientPlayerDataManager.getPlayerData(thisEntity.getUuid()), playerData -> playerData.getIllusions(Objects.requireNonNull(MinecraftClient.getInstance().world).getTime()), null);
 
 		if (illusions == null) return;
