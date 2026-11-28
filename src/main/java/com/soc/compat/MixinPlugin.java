@@ -14,6 +14,7 @@ public class MixinPlugin implements IMixinConfigPlugin {
 	public static final Map<String, List<String>> MIXIN_COMPAT_MAP = new HashMap<>(Map.of(
 			"JadeBlockMorphSpoof", List.of("jade"),
 			"DisallowFreecam", List.of("freecam"),
+			"NoHoldSneakInFreecam", List.of("freecam"),
 			"RenderPlayersThroughMorphInFreecam", List.of("freecam")
 	));
 
