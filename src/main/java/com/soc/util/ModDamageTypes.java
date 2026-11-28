@@ -20,6 +20,7 @@ public interface ModDamageTypes {
     RegistryKey<DamageType> SNIPER_RIFLE = register("sniper_rifle");
     RegistryKey<DamageType> DEATH_NOTE = register("death_note");
     RegistryKey<DamageType> ONE_HIT_WONDER = register("one_hit_wonder");
+    RegistryKey<DamageType> UNSWORD = register("unsword");
 
     static RegistryKey<DamageType> register(String id) {
         return RegistryKey.of(RegistryKeys.DAMAGE_TYPE, Identifier.of(SocWars.MOD_ID, id));

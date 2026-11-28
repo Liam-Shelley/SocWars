@@ -1341,7 +1341,7 @@ public interface ModItems {
 	@GenerateItem(HANDHELD)
 	Item ONE_HIT_WONDER = registerAndGroup("one_hit_wonder", SocWarsItem::new, new ExtendedItemSettings()
 			.maxDamage(1)
-			.rarity(Rarity.EPIC) //TODO: Mythic
+			.rarity(ExtendedRarity.MYTHIC)
 			.itemHit((stack, target, attacker) -> {
 				if (attacker instanceof PlayerEntity playerEntity) stack.damage(1, playerEntity, Hand.MAIN_HAND);
 				forceKillTarget(target, attacker, ModDamageTypes.ONE_HIT_WONDER);
@@ -1957,7 +1957,7 @@ public interface ModItems {
 	Item BAN_HAMMER = registerAndGroup("ban_hammer", SocWarsItem::new, new ExtendedItemSettings()
 			.itemHit((stack, target, attacker) -> {
 				if (target instanceof ServerPlayerEntity serverPlayer) {
-					serverPlayer.networkHandler.disconnect(Text.translatable("get kicked lmao"));
+					serverPlayer.networkHandler.disconnect(Text.translatable("message.ban_hammer"));
 					if (attacker instanceof PlayerEntity playerAttacker) stack.damage(1, playerAttacker);
 				}
 			})
@@ -2009,6 +2009,25 @@ public interface ModItems {
 				return true;
 			})
 			.maxDamage(5000)
+			.rarity(Rarity.EPIC),
+			ItemGroups.TOOLS
+	);
+	@GenerateItem(HANDHELD)
+	Item UNSWORD = registerAndGroup("unsword", SocWarsItem::new, new ExtendedItemSettings()
+			.itemHit((stack, target, attacker) -> {
+				if (!(target.getWorld() instanceof ServerWorld serverWorld)) return;
+
+				final int damage = (target.getArmor() >> 1) - 2;
+
+				if (damage >= 0) {
+					if (attacker instanceof PlayerEntity playerEntity) stack.damage(damage, playerEntity, Hand.MAIN_HAND);
+					target.damage(serverWorld, damageSource(serverWorld, ModDamageTypes.UNSWORD, attacker), damage);
+				} else {
+					if (attacker instanceof PlayerEntity) stack.setDamage(stack.getDamage() + damage);
+					target.heal(-damage);
+				}
+			})
+			.maxDamage(850)
 			.rarity(Rarity.EPIC),
 			ItemGroups.TOOLS
 	);
