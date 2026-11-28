@@ -1,6 +1,5 @@
 package com.soc.mixin;
 
-import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.Ownable;
@@ -26,7 +25,7 @@ import java.util.function.BiPredicate;
 import static com.soc.game.manager.AbstractGameManager.getBlockDamagePredicate;
 
 @Mixin(ExplosionImpl.class)
-abstract class VanillaExplosionBlockProtection {
+abstract class ExplosionImplMixin {
 	@Shadow @Final private ServerWorld world;
 	@Shadow @Final private DamageSource damageSource;
 
@@ -47,4 +46,6 @@ abstract class VanillaExplosionBlockProtection {
 	private boolean isTest(BlockPos pos, BlockState state) {
 		return this.damagePredicate.test(pos, state);
 	}
+
+
 }

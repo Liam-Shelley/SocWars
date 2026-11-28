@@ -3,6 +3,7 @@ package com.soc.items.components;
 import com.mojang.serialization.Codec;
 import com.soc.SocWars;
 import com.soc.items.util.ExtendedRarity;
+import com.soc.util.ServerArmPose;
 import net.minecraft.component.ComponentType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageType;
@@ -197,5 +198,20 @@ public interface ModItemComponents {
 			Registries.DATA_COMPONENT_TYPE,
 			Identifier.of(SocWars.MOD_ID, "cactus_armour"),
 			ComponentType.<Unit>builder().codec(Unit.CODEC).build()
-	);;
+	);
+	ComponentType<Unit> NO_HELD_ITEM_RENDERING = Registry.register(
+			Registries.DATA_COMPONENT_TYPE,
+			Identifier.of(SocWars.MOD_ID, "no_held_item_rendering"),
+			ComponentType.<Unit>builder().codec(Unit.CODEC).build()
+	);
+	ComponentType<Unit> RENDER_BOTH_HANDS = Registry.register(
+			Registries.DATA_COMPONENT_TYPE,
+			Identifier.of(SocWars.MOD_ID, "render_both_hands"),
+			ComponentType.<Unit>builder().codec(Unit.CODEC).build()
+	);
+	ComponentType<ServerArmPose> DEFAULT_ARM_POSE = Registry.register(
+			Registries.DATA_COMPONENT_TYPE,
+			Identifier.of(SocWars.MOD_ID, "default_arm_pose"),
+			ComponentType.<ServerArmPose>builder().codec(ServerArmPose.CODEC).build()
+	);
 }

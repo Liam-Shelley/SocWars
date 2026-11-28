@@ -2,6 +2,7 @@ package com.soc.lib;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import com.mojang.serialization.Codec;
 import com.soc.SocWars;
 import com.soc.game.manager.GamesManager;
 import com.soc.mixin.GetItemSettingsComponent;
@@ -773,4 +774,8 @@ public final class SocWarsLib {
 		}
 		target.addVelocity(knockback);
 	}
+
+    public static <T extends Enum<T>> Codec<T> enumCodec(T[] values) {
+        return Codec.intRange(0, values.length - 1).xmap(i -> values[i], Enum::ordinal);
+    }
 }

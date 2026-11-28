@@ -2,6 +2,7 @@ package com.soc.items.util;
 
 import com.soc.items.components.*;
 import com.soc.items.components.ArmourSetBonus;
+import com.soc.util.ServerArmPose;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.component.ComponentType;
@@ -127,6 +128,18 @@ public class ExtendedItemSettings extends Item.Settings {
 
 	public ExtendedItemSettings noComponentUpdateBob() {
 		return this.component(ModItemComponents.NO_COMPONENT_UPDATE_BOB);
+	}
+
+	public ExtendedItemSettings noHeldItemRendering() {
+		return this.component(ModItemComponents.NO_HELD_ITEM_RENDERING);
+	}
+
+	public ExtendedItemSettings renderBothHands() {
+		return this.component(ModItemComponents.RENDER_BOTH_HANDS);
+	}
+
+	public ExtendedItemSettings defaultArmPose(ServerArmPose armPose) {
+		return this.component(ModItemComponents.DEFAULT_ARM_POSE, armPose);
 	}
 
 	public ExtendedItemSettings consumable(float consumeTime, ItemFinishUseComponent onConsumeEffect) {

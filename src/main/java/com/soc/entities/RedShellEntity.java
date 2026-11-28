@@ -63,9 +63,15 @@ public class RedShellEntity extends Entity implements Ownable {
 
     @Override
     public void tick() {
+        if (this.target == null) {
+            this.setVelocity(this.getVelocity().multiply(0.97d));
+            this.move(MovementType.SELF, this.getVelocity());
+        }
+
         if (this.getWorld().isClient) return;
 
         this.findTarget();
+
         if (this.target == null) return;
 
         if (this.getWorld().getTime() % 8 == 0 && this.getWorld().random.nextFloat() < 0.75f) {
@@ -74,7 +80,8 @@ public class RedShellEntity extends Entity implements Ownable {
 
         double maximumMovement = 1d;
         if (this.direction != null) {
-            this.setVelocity(this.direction.getDoubleVector().multiply(0.8d));
+            final Vec3d targetVelocity = this.direction.getDoubleVector().multiply(0.08d);
+            this.setVelocity(this.getVelocity().multiply(0.9d).add(targetVelocity));
             this.velocityModified = true;
             this.velocityDirty = true;
 
@@ -105,7 +112,7 @@ public class RedShellEntity extends Entity implements Ownable {
     }
 
     private void pickAxis(List<Direction> except, boolean align) {
-        this.setVelocity(Vec3d.ZERO);
+        this.setVelocity(this.getVelocity().multiply(0.9d));
         this.velocityModified = true;
         this.velocityDirty = true;
 

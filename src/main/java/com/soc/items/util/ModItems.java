@@ -1889,9 +1889,13 @@ public interface ModItems {
 			}),
 			ItemGroups.SPAWN_EGGS
 	);
+	@GenerateItem(GENERATED)
 	Item THESE_HANDS = registerAndGroup("these_hands", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.EPIC)
 			.sword(ToolMaterials.BASE, 7f, -2f)
+			.noHeldItemRendering()
+			.renderBothHands()
+			.defaultArmPose(ServerArmPose.EMPTY)
 			.maxDamage(10000),
 			ItemGroups.COMBAT
 	);
@@ -1975,11 +1979,11 @@ public interface ModItems {
 						this.getWorld().createExplosion(
 								this,
 								null,
-								new AdvancedExplosionBehavior(true, false, Optional.of(30f), Registries.BLOCK.getOptional(BlockTags.BLOCKS_WIND_CHARGE_EXPLOSIONS).map(Function.identity())),
+								new AdvancedExplosionBehavior(true, false, Optional.of(20f), Registries.BLOCK.getOptional(BlockTags.BLOCKS_WIND_CHARGE_EXPLOSIONS).map(Function.identity())),
 								pos.getX(),
 								pos.getY(),
 								pos.getZ(),
-								30f,
+								10f,
 								false,
 								World.ExplosionSourceType.TRIGGER,
 								ParticleTypes.GUST_EMITTER_SMALL,
@@ -2017,7 +2021,7 @@ public interface ModItems {
 			.itemHit((stack, target, attacker) -> {
 				if (!(target.getWorld() instanceof ServerWorld serverWorld)) return;
 
-				final int damage = (target.getArmor() >> 1) - 2;
+				final int damage = (target.getArmor() >> 2) - 2;
 
 				if (damage >= 0) {
 					if (attacker instanceof PlayerEntity playerEntity) stack.damage(damage, playerEntity, Hand.MAIN_HAND);

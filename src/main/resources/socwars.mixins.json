@@ -23,6 +23,7 @@
     "DropSelectedItemOnDropTrigger",
     "EnderChestDepositableProperty",
     "EntityMixin",
+    "ExplosionImplMixin",
     "ExplosiveProjectileEntityToggleAddParticles",
     "FluidBlockBreakCancel",
     "GetAbsorptionAmountDataTracker",
@@ -60,7 +61,6 @@
     "SkeletonsUseCustomBows",
     "SpongeSmokescreen",
     "ThrownEntityMixin",
-    "VanillaExplosionBlockProtection",
     "VelocityPacketUnlimit"
   ],
   "injectors": {
