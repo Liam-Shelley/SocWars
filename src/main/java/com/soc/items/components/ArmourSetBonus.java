@@ -45,6 +45,10 @@ public record ArmourSetBonus(RegistryEntry<EntityAttribute> attribute, Identifie
 	}
 
 	public void applyAttributeModifiers(BiConsumer<RegistryEntry<EntityAttribute>, EntityAttributeModifier> attributeConsumer, int pieces) {
-		attributeConsumer.accept(this.attribute, new EntityAttributeModifier(this.id, pieces == 4 ? 1d : pieces * 0.2d, EntityAttributeModifier.Operation.ADD_VALUE));
+		attributeConsumer.accept(this.attribute, new EntityAttributeModifier(this.id, this.calculateAttributeValue(pieces), EntityAttributeModifier.Operation.ADD_VALUE));
+	}
+
+	private double calculateAttributeValue(int pieces) {
+		return pieces == 4 ? 1d : pieces * 0.2d;
 	}
 }

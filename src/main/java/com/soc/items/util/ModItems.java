@@ -2035,7 +2035,13 @@ public interface ModItems {
 			.rarity(Rarity.EPIC),
 			ItemGroups.TOOLS
 	);
-
+	@GenerateItem(HANDHELD)
+	Item GUARDIAN_FAIRY = registerAndGroup("guardian_fairy", SocWarsItem::new, new ExtendedItemSettings()
+			.fullDeathProtection(1f, DeathProtectionComponent.TOTEM_OF_UNDYING)
+			.maxCount(1)
+			.rarity(Rarity.RARE),
+			ItemGroups.COMBAT
+	);
 
 
 

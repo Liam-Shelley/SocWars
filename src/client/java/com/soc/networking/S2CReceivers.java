@@ -27,6 +27,7 @@ import com.soc.screenhandler.BedwarsTeamShopScreenHandler;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.SimpleOption;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
@@ -106,6 +107,15 @@ public class S2CReceivers {
                     MinecraftClient.getInstance().world.getBlockEntity(payload.block().pos()) instanceof KitBlockEntity kitBlockEntity
             ) {
                 kitBlockCreationScreen.setBlockEntity(kitBlockEntity);
+            }
+        }));
+        ClientPlayNetworking.registerGlobalReceiver(CustomDeathProtectionPayload.ID, ((payload, context) -> {
+            final Entity entity = context.client().world.getEntityById(payload.entityId());
+
+            context.client().particleManager.addEmitter(entity, ParticleTypes.TOTEM_OF_UNDYING, 30);
+            context.client().world.playSoundClient(entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ITEM_TOTEM_USE, entity.getSoundCategory(), 1.0F, 1.0F, false);
+            if (entity == context.client().player) {
+                context.client().gameRenderer.showFloatingItem(payload.stack());
             }
         }));
     }

@@ -32,20 +32,15 @@ abstract class ExplosionImplMixin {
 	@Unique private BiPredicate<BlockPos, BlockState> damagePredicate;
 
 	@Inject(method = "getBlocksToDestroy", at = @At("HEAD"))
-	private void socwars_vanillaExplosionBlockProtectionCachePredicate(CallbackInfoReturnable<List<BlockPos>> cir) {
+	private void socwars$vanillaExplosionBlockProtectionCachePredicate(CallbackInfoReturnable<List<BlockPos>> cir) {
 		final Entity source = this.damageSource.getSource();
 		this.damagePredicate = getBlockDamagePredicate(this.world, true, source instanceof Ownable ownableEntity ? ownableEntity.getOwner() : source);
 	}
 
 	@Redirect(method = "getBlocksToDestroy", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/explosion/ExplosionBehavior;canDestroyBlock(Lnet/minecraft/world/explosion/Explosion;Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;F)Z"))
-	private boolean socwars_vanillaExplosionBlockProtection(ExplosionBehavior instance, Explosion explosion, BlockView world, BlockPos pos, BlockState state, float power) {
-		return instance.canDestroyBlock(explosion, world, pos, state, power) && isTest(pos, state);
+	private boolean socwars$vanillaExplosionBlockProtection(ExplosionBehavior instance, Explosion explosion, BlockView world, BlockPos pos, BlockState state, float power) {
+		return instance.canDestroyBlock(explosion, world, pos, state, power) && this.damagePredicate.test(pos, state);
 	}
 
-	@Unique
-	private boolean isTest(BlockPos pos, BlockState state) {
-		return this.damagePredicate.test(pos, state);
-	}
-
-
+	//TODO: Steadfast knockback resistance?
 }

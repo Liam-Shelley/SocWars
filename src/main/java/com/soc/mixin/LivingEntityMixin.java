@@ -9,12 +9,12 @@ import com.soc.util.MutableBoolean;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.EquippableComponent;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityEquipment;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.AttributeContainer;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -45,6 +45,9 @@ public abstract class LivingEntityMixin extends EntityMixin {
     @Shadow
     @Final
     private AttributeContainer attributes;
+
+    @Shadow
+    public abstract void setHealth(float health);
 
     @Redirect(method = "createLivingAttributes", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/attribute/DefaultAttributeContainer$Builder;add(Lnet/minecraft/registry/entry/RegistryEntry;)Lnet/minecraft/entity/attribute/DefaultAttributeContainer$Builder;", ordinal = 0))
     private static DefaultAttributeContainer.Builder a(DefaultAttributeContainer.Builder instance, RegistryEntry<EntityAttribute> attribute) {
@@ -111,4 +114,8 @@ public abstract class LivingEntityMixin extends EntityMixin {
     @SuppressWarnings("CancellableInjectionUsage")
     @Inject(method = "pushAwayFrom", at = @At("HEAD"), cancellable = true)
     protected void socwars$pushAwayFrom(Entity entity, CallbackInfo ci) {}
+
+    @SuppressWarnings("CancellableInjectionUsage")
+    @Inject(method = "tryUseDeathProtector", at = @At(value = "JUMP", opcode = Opcodes.IFNULL, ordinal = 1), cancellable = true)
+    protected void socwars$customDeathProtectors(DamageSource source, CallbackInfoReturnable<Boolean> cir) {}
 }

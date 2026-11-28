@@ -1,23 +1,39 @@
 package com.soc.mixin;
 
+import com.soc.items.components.ModItemComponents;
+import com.soc.networking.s2c.CustomDeathProtectionPayload;
 import com.soc.player.Morph;
 import com.soc.player.PlayerData;
 import com.soc.player.PlayerDataManager;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import static com.soc.lib.SocWarsLib.ifNotNull;
 import static java.lang.Math.floor;
 
 @Mixin(PlayerEntity.class)
 abstract class PlayerEntityMixin extends LivingEntityMixin {
 	@Shadow
 	public abstract boolean isSpectator();
+
+	@Shadow
+	@Final
+	PlayerInventory inventory;
 
 	@Override
 	protected void socwars$getBoundingBox(CallbackInfoReturnable<Box> cir) {
@@ -55,5 +71,33 @@ abstract class PlayerEntityMixin extends LivingEntityMixin {
 	@Override
 	protected void socwars$pushAwayFrom(Entity entity, CallbackInfo ci) {
 		if (this.socwars$isMorphed()) ci.cancel();
+	}
+
+	@Override
+	protected void socwars$customDeathProtectors(DamageSource source, CallbackInfoReturnable<Boolean> cir) {
+		for (ItemStack itemStack : this.inventory) {
+			final Float deathProtection = itemStack.get(ModItemComponents.FULL_DEATH_PROTECTION);
+			if (deathProtection != null) {
+				this.socwars$savePlayer(deathProtection, itemStack);
+				cir.setReturnValue(true);
+				break;
+			}
+		}
+	}
+
+	@Unique
+	private void socwars$savePlayer(float health, ItemStack stack) {
+		this.setHealth(health);
+		ifNotNull(stack.get(DataComponentTypes.DEATH_PROTECTION), component -> component.applyDeathEffects(stack, (PlayerEntity)(Object)this));
+
+		if ((Object)this instanceof ServerPlayerEntity serverPlayer) {
+			final CustomDeathProtectionPayload payload = new CustomDeathProtectionPayload(serverPlayer.getId(), stack.copy());
+
+			for (ServerPlayerEntity nearbyPlayer : PlayerLookup.world(serverPlayer.getWorld())) {
+				ServerPlayNetworking.send(nearbyPlayer, payload);
+			}
+		}
+
+		stack.decrementUnlessCreative(1, (PlayerEntity)(Object)this);
 	}
 }

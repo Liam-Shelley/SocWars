@@ -15,14 +15,12 @@ import net.minecraft.entity.damage.DamageType;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.projectile.ArrowEntity;
-import net.minecraft.entity.projectile.WindChargeEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.item.consume.ApplyEffectsConsumeEffect;
 import net.minecraft.item.consume.UseAction;
 import net.minecraft.item.equipment.ArmorMaterial;
 import net.minecraft.item.equipment.EquipmentType;
-import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.RegistryKey;
@@ -36,13 +34,9 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.Unit;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-import net.minecraft.world.explosion.AdvancedExplosionBehavior;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
@@ -176,6 +170,12 @@ public class ExtendedItemSettings extends Item.Settings {
 
 	public ExtendedItemSettings transparentArmour() {
 		return this.component(ModItemComponents.TRANSPARENT_ARMOUR);
+	}
+
+	public ExtendedItemSettings fullDeathProtection(float health, DeathProtectionComponent deathProtection) {
+		return this
+				.component(ModItemComponents.FULL_DEATH_PROTECTION, health)
+				.component(DataComponentTypes.DEATH_PROTECTION, deathProtection);
 	}
 
 	@SuppressWarnings("unchecked")

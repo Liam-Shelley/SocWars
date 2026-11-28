@@ -214,4 +214,9 @@ public interface ModItemComponents {
 			Identifier.of(SocWars.MOD_ID, "default_arm_pose"),
 			ComponentType.<ServerArmPose>builder().codec(ServerArmPose.CODEC).build()
 	);
+	ComponentType<Float> FULL_DEATH_PROTECTION = Registry.register(
+			Registries.DATA_COMPONENT_TYPE,
+			Identifier.of(SocWars.MOD_ID, "full_death_protection"),
+			ComponentType.<Float>builder().codec(Codec.FLOAT).build()
+	);
 }
