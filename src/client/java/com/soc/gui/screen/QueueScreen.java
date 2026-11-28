@@ -4,7 +4,7 @@ import com.soc.SocWars;
 import com.soc.game.manager.GameType;
 import com.soc.networking.helper.QueueProgress;
 import com.soc.networking.s2c.QueuePayload;
-import com.soc.player.Hotkeys;
+import com.soc.player.KeyBindings;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
@@ -136,7 +136,7 @@ public class QueueScreen extends Screen {
 
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (Hotkeys.OPEN_QUEUE_SCREEN.matchesKey(keyCode, scanCode)) {
+		if (KeyBindings.OPEN_QUEUE_SCREEN.matchesKey(keyCode, scanCode)) {
 			this.close();
 			return true;
 		}

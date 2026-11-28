@@ -14,7 +14,7 @@ import com.soc.lib.Events;
 import com.soc.model.EntityModelLayers;
 import com.soc.networking.S2CReceivers;
 import com.soc.player.ClientPlayerDataManager;
-import com.soc.player.Hotkeys;
+import com.soc.player.KeyBindings;
 import com.soc.renderer.*;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -42,7 +42,7 @@ public class SocWarsClient implements ClientModInitializer {
 		S2CReceivers.initialise();
 		HandledScreens.initialise();
 		ClientPlayerDataManager.initialise();
-		Hotkeys.initialise();
+		KeyBindings.initialise();
 
 		SidebarHud.initialise();
 		BedwarsTeamsHud.initialise();
