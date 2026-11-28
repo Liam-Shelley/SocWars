@@ -8,14 +8,17 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
 import static java.lang.Math.floor;
 
 @Mixin(PlayerEntity.class)
 abstract class PlayerEntityMixin extends LivingEntityMixin {
+	@Shadow
+	public abstract boolean isSpectator();
+
 	@Override
 	protected void socwars$getBoundingBox(CallbackInfoReturnable<Box> cir) {
 		final PlayerData playerData = PlayerDataManager.getSideLocalPlayerData((PlayerEntity)(Object)this);

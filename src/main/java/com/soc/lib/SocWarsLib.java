@@ -329,7 +329,7 @@ public final class SocWarsLib {
         return new DamageSource(
                 world.getRegistryManager()
                         .getOrThrow(RegistryKeys.DAMAGE_TYPE)
-                        .getEntry(damageType.getValue()).get(),
+                        .getEntry(damageType.getValue()).orElseThrow(),
                 attacker
         );
     }

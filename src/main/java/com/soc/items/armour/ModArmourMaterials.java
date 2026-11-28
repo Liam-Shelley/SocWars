@@ -55,6 +55,11 @@ public interface ModArmourMaterials {
 			20, createDefenseMap(0, 0, 0, 4, 11), 15, SoundEvents.ITEM_ARMOR_EQUIP_TURTLE, 0.0F, 0.0F, null, PILOT_HELMET_MODEL_KEY
 	);
 
+	RegistryKey<EquipmentAsset> CACTUS_MODEL_KEY = ModArmourMaterials.registerEquipmentAsset("cactus");
+	ArmorMaterial CACTUS = new ArmorMaterial(
+			20, createDefenseMap(2, 4, 5, 3, 6), 18, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, null, CACTUS_MODEL_KEY
+	);
+
 	static RegistryKey<EquipmentAsset> registerEquipmentAsset(String name) {
 		return RegistryKey.of(RegistryKey.ofRegistry(Identifier.ofVanilla("equipment_asset")), Identifier.of(SocWars.MOD_ID, name));
 	}

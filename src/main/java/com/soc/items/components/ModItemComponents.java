@@ -192,5 +192,10 @@ public interface ModItemComponents {
 			Registries.DATA_COMPONENT_TYPE,
 			Identifier.of(SocWars.MOD_ID, "creative_mining"),
 			ComponentType.<Unit>builder().codec(Unit.CODEC).build()
+	);
+	ComponentType<Unit> CACTUS_ARMOUR = Registry.register(
+			Registries.DATA_COMPONENT_TYPE,
+			Identifier.of(SocWars.MOD_ID, "cactus_armour"),
+			ComponentType.<Unit>builder().codec(Unit.CODEC).build()
 	);;
 }

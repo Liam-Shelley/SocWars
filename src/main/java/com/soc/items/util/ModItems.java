@@ -1628,6 +1628,34 @@ public interface ModItems {
 			ItemGroups.COMBAT
 	);
 	@GenerateItem(GENERATED)
+	Item CACTUS_HELMET = registerAndGroup("cactus_helmet", SocWarsItem::new, new ExtendedItemSettings()
+			.armour(ModArmourMaterials.CACTUS, EquipmentType.HELMET)
+			.component(ModItemComponents.CACTUS_ARMOUR)
+			.rarity(Rarity.UNCOMMON),
+			ItemGroups.COMBAT
+	);
+	@GenerateItem(GENERATED)
+	Item CACTUS_CHESTPLATE = registerAndGroup("cactus_chestplate", SocWarsItem::new, new ExtendedItemSettings()
+			.armour(ModArmourMaterials.CACTUS, EquipmentType.CHESTPLATE)
+			.component(ModItemComponents.CACTUS_ARMOUR)
+			.rarity(Rarity.UNCOMMON),
+			ItemGroups.COMBAT
+	);
+	@GenerateItem(GENERATED)
+	Item CACTUS_LEGGINGS = registerAndGroup("cactus_leggings", SocWarsItem::new, new ExtendedItemSettings()
+			.armour(ModArmourMaterials.CACTUS, EquipmentType.LEGGINGS)
+			.component(ModItemComponents.CACTUS_ARMOUR)
+			.rarity(Rarity.UNCOMMON),
+			ItemGroups.COMBAT
+	);
+	@GenerateItem(GENERATED)
+	Item CACTUS_BOOTS = registerAndGroup("cactus_boots", SocWarsItem::new, new ExtendedItemSettings()
+			.armour(ModArmourMaterials.CACTUS, EquipmentType.BOOTS)
+			.component(ModItemComponents.CACTUS_ARMOUR)
+			.rarity(Rarity.UNCOMMON),
+			ItemGroups.COMBAT
+	);
+	@GenerateItem(GENERATED)
 	Item SUMMONERS_GARB = registerAndGroup("summoners_garb", SocWarsItem::new, new ExtendedItemSettings()
 			.armour(ModArmourMaterials.SUMMONERS_GARB, EquipmentType.CHESTPLATE)
 			.component(ModItemComponents.ARMOUR_HIT, (stack, wearer, world, source) -> {
