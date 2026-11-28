@@ -6,6 +6,7 @@ import com.soc.resourcedata.listeners.SkywarsLootData;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -26,7 +27,13 @@ public class Hotkeys {
 			"key.socwars.open_queue_screen",
 			InputUtil.Type.KEYSYM,
 			GLFW.GLFW_KEY_U,
-			"category.socwars.debug"
+			"category.socwars"
+	));
+	public static final KeyBinding HOLD_SNEAK = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+			"key.socwars.hold_sneak",
+			InputUtil.Type.KEYSYM,
+			GLFW.GLFW_KEY_RIGHT_BRACKET,
+			"category.socwars"
 	));
 
 	public static void initialise() {
@@ -41,6 +48,10 @@ public class Hotkeys {
 
 			while (OPEN_QUEUE_SCREEN.wasPressed()) {
 				ClientPlayNetworking.send(new RequestOpenQueueScreenPayload());
+			}
+
+			while (HOLD_SNEAK.wasPressed()) {
+				MinecraftClient.getInstance().options.sneakKey.setPressed(!MinecraftClient.getInstance().options.sneakKey.isPressed());
 			}
 		});
 	}
