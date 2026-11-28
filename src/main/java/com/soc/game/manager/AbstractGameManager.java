@@ -601,6 +601,7 @@ public abstract class AbstractGameManager<MAP extends AbstractGameMap, TABLE ext
     }
 
     protected static void removePlayerVelocity(ServerPlayerEntity player) {
+        player.fallDistance = 0d;
         player.networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(player.getId(), Vec3d.ZERO));
     }
 

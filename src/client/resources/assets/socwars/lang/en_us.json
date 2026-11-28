@@ -253,6 +253,8 @@
   "item.socwars.ban_hammer": "Ban Hammer",
   "item.socwars.wind_supercharge": "Wind Supercharge",
   "item.socwars.laser_drill": "Laser Drill",
+  "item.socwars.lightning_staff": "Lightning Staff",
+  "tooltip.lightning_staff": "*Flashbacks*",
   "item.socwars.blue_shell.info": "Right click to use, seeks the winning player",
   "item.socwars.blue_sword": "Blue Sword",
   "item.socwars.blue_sword.info": "Summons slimes on hit",

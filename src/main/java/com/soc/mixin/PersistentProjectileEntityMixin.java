@@ -85,10 +85,6 @@ public abstract class PersistentProjectileEntityMixin extends ProjectileEntityMi
 
 	@WrapMethod(method = "applyDrag")
 	private void socwar$modifyDrag(float drag, Operation<Void> original) {
-		if ((Object)this instanceof ModifyDrag modifyDrag) {
-			original.call(modifyDrag.getDrag());
-		} else {
-			original.call(drag);
-		}
+		original.call((Object)this instanceof ModifyDrag modifyDrag ? modifyDrag.getDrag() : drag);
 	}
 }

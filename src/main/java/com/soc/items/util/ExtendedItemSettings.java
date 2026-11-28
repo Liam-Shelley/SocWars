@@ -14,12 +14,14 @@ import net.minecraft.entity.damage.DamageType;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.projectile.ArrowEntity;
+import net.minecraft.entity.projectile.WindChargeEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.item.consume.ApplyEffectsConsumeEffect;
 import net.minecraft.item.consume.UseAction;
 import net.minecraft.item.equipment.ArmorMaterial;
 import net.minecraft.item.equipment.EquipmentType;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.RegistryKey;
@@ -33,14 +35,19 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.Unit;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
+import net.minecraft.world.explosion.AdvancedExplosionBehavior;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
+import static com.soc.lib.SocWarsLib.getHoldTimeSeconds;
 import static net.minecraft.component.type.PotionContentsComponent.buildTooltip;
 
 public class ExtendedItemSettings extends Item.Settings {
@@ -176,6 +183,22 @@ public class ExtendedItemSettings extends Item.Settings {
 				.simpleTooltip(lines);
 	}
 
+	public ExtendedItemSettings staff(StaffUseCallback callback, float cooldown, int durability) {
+		return this
+				.useAction(UseAction.SPEAR)
+				.itemUse((world, user, hand) -> {
+					user.setCurrentHand(hand);
+					return ActionResult.CONSUME;
+				})
+				.itemStopUsing((stack, world, user, remainingUseTicks) -> {
+					callback.useStaff(stack, world, user, getHoldTimeSeconds(remainingUseTicks));
+					stack.damage(1, user, user.getActiveHand());
+					return true;
+				})
+				.useCooldown(cooldown)
+				.maxDamage(durability);
+	}
+
 	public <T extends Entity> ExtendedItemSettings throwable(Function<LivingEntity, T> entityCreator, float speed) {
 		return this.itemUse((world, user, hand) -> {
 			if (world instanceof ServerWorld serverWorld) {
@@ -205,15 +228,16 @@ public class ExtendedItemSettings extends Item.Settings {
 				.enchantable(toolMaterial.enchantmentValue());
 	}
 
-	public <T extends ArrowEntity> ExtendedItemSettings bow(float drawTime, float arrowSpeed, EntityType<T> arrowType) {
-		return this.bow(drawTime, arrowSpeed, arrowType, 72000);
+	public <T extends ArrowEntity> ExtendedItemSettings bow(float drawTime, float arrowSpeed, EntityType<T> arrowType, int durability) {
+		return this.bow(drawTime, arrowSpeed, arrowType, durability, 72000);
 	}
 
-	public <T extends ArrowEntity> ExtendedItemSettings bow(float drawTime, float arrowSpeed, EntityType<T> arrowType, int maxUseTime) {
+	public <T extends ArrowEntity> ExtendedItemSettings bow(float drawTime, float arrowSpeed, EntityType<T> arrowType, int durability, int maxUseTime) {
 		return this
 				.component(ModItemComponents.BOW, new BowComponent<>(drawTime, arrowSpeed, arrowType))
 				.useAction(UseAction.BOW)
-				.useTime(maxUseTime);
+				.useTime(maxUseTime)
+				.maxDamage(durability);
 	}
 
 	public ExtendedItemSettings useTime(int useTime) {
@@ -223,10 +247,6 @@ public class ExtendedItemSettings extends Item.Settings {
 	public ExtendedItemSettings rarity(ExtendedRarity rarity) {
 		return this.component(ModItemComponents.EXTENDED_RARITY, rarity);
 	}
-
-
-
-
 
 	public static <T extends Entity> T spawnEntityWithVelocity(T entity, ServerWorld world, LivingEntity user, float speed) {
 		entity.setPosition(user.getEyePos().add(user.getRotationVector().multiply(0.75d)));

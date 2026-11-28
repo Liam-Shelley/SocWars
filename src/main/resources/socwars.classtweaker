@@ -23,4 +23,7 @@ accessible field net/minecraft/structure/StructureTemplate author Ljava/lang/Str
 accessible method net/minecraft/structure/StructureTemplate$PalettedBlockInfoList <init> (Ljava/util/List;)V
 
 #stupid crashing fix that I don't understand the root cause of
-transitive-inject-interface net/minecraft/entity/ItemEntity net/minecraft/inventory/Inventory
+inject-interface net/minecraft/entity/ItemEntity net/minecraft/inventory/Inventory
+
+#ownable lightning
+transitive-inject-interface net/minecraft/entity/LightningEntity net/minecraft/entity/Ownable

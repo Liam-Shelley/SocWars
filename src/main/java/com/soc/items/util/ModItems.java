@@ -1,5 +1,6 @@
 package com.soc.items.util;
 
+import com.google.common.util.concurrent.AtomicDouble;
 import com.soc.SocWars;
 import com.soc.effects.util.ModEffects;
 import com.soc.entities.*;
@@ -16,6 +17,7 @@ import com.soc.items.armour.ModArmourMaterials;
 import com.soc.items.components.*;
 import com.soc.lib.*;
 import com.soc.mixin.GetAbsorptionAmountDataTracker;
+import com.soc.mixinducks.OwnableLightningAccess;
 import com.soc.networking.s2c.AddVelocityPayload;
 import com.soc.networking.s2c.BatchParticlePayload;
 import com.soc.networking.s2c.OpenDeathNoteScreenPayload;
@@ -45,7 +47,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.*;
 import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
 import net.minecraft.item.*;
-import net.minecraft.item.consume.UseAction;
 import net.minecraft.item.equipment.EquipmentType;
 import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
 import net.minecraft.particle.ParticleTypes;
@@ -1549,8 +1550,14 @@ public interface ModItems {
 						SphereExplosion.explode(world, wearer.getPos(), 4.5f, 1.5f, 0.8f, 0.75f, true, wearer, null);
 					}
 					case 3 -> {
-						iterateInPlane(wearer.getBlockPos(), 1, pos -> world.setBlockState(pos, Blocks.AIR.getDefaultState()));
-						iterateInPlane(wearer.getBlockPos().down(), 1, pos -> world.setBlockState(pos, Blocks.SLIME_BLOCK.getDefaultState()));
+						iterateInPlane(wearer.getBlockPos(), 1, pos -> {
+							if (world.getBlockState(pos).isIn(ModBlockTags.IMMUNE)) return;
+							world.setBlockState(pos, Blocks.AIR.getDefaultState());
+						});
+						iterateInPlane(wearer.getBlockPos().down(), 1, pos -> {
+							if (world.getBlockState(pos).isIn(ModBlockTags.IMMUNE)) return;
+							world.setBlockState(pos, Blocks.SLIME_BLOCK.getDefaultState());
+						});
 					}
 					case 4 -> wearer.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 2 * 20, 2, false, true));
 				}
@@ -1663,36 +1670,25 @@ public interface ModItems {
 	//		ItemGroups.COMBAT
 	//);
 	Item ENDER_STAFF = registerAndGroup("ender_staff", SocWarsItem::new, new ExtendedItemSettings()
-			.maxDamage(6)
-			.rarity(Rarity.UNCOMMON)
-			.useAction(UseAction.SPEAR)
-			.itemUse(StaffUseComponent.INSTANCE)
-			.itemStopUsing((stack, world, user, remainingUseTicks) -> {
+			.staff((stack, world, user, holdTime) -> {
 				final EnderPearlEntity pearl = new EnderPearlEntity(world, user, Items.ENDER_PEARL.getDefaultStack());
                 pearl.setPosition(user.getEyePos());
-                pearl.setVelocity(user.getRotationVector().multiply(getHoldTimeSeconds(remainingUseTicks) * 1.5f + 0.5f));
+                pearl.setVelocity(user.getRotationVector().multiply(holdTime * 1.5f + 0.5f));
 
                 world.spawnEntity(pearl);
-
-                stack.damage(1, user, user.getActiveHand());
-                return false;
-			})
-			.useCooldown(0.5f),
+			}, 0.5f, 6)
+			.rarity(Rarity.UNCOMMON),
 			ItemGroups.TOOLS
 	);
 	Item WIND_STAFF = registerAndGroup("wind_staff", SocWarsItem::new, new ExtendedItemSettings()
-			.maxDamage(12)
-			.rarity(Rarity.UNCOMMON)
-			.useAction(UseAction.SPEAR)
-			.itemUse(StaffUseComponent.INSTANCE)
-			.itemStopUsing((stack, world, user, remainingUseTicks) -> {
+			.staff((stack, world, user, holdTime) -> {
 				final WindChargeEntity charge = new WindChargeEntity(EntityType.WIND_CHARGE, world) {
                     @Override
                     protected void createExplosion(Vec3d pos) {
                         this.getWorld().createExplosion(
                                 this,
                                 null,
-                                new AdvancedExplosionBehavior(true, false, Optional.of(1.2f + getHoldTimeSeconds(remainingUseTicks) * 0.3f), Registries.BLOCK.getOptional(BlockTags.BLOCKS_WIND_CHARGE_EXPLOSIONS).map(Function.identity())),
+                                new AdvancedExplosionBehavior(true, false, Optional.of(1.2f + holdTime * 0.3f), Registries.BLOCK.getOptional(BlockTags.BLOCKS_WIND_CHARGE_EXPLOSIONS).map(Function.identity())),
                                 pos.getX(),
                                 pos.getY(),
                                 pos.getZ(),
@@ -1706,92 +1702,103 @@ public interface ModItems {
                     }
                 };
                 charge.setPosition(user.getEyePos());
-                charge.setVelocity(user.getRotationVector().multiply(getHoldTimeSeconds(remainingUseTicks) * 1.5f + 0.5f));
+                charge.setVelocity(user.getRotationVector().multiply(holdTime * 1.5f + 0.5f));
                 charge.setOwner(user);
 
                 world.spawnEntity(charge);
-
-                stack.damage(1, user, user.getActiveHand());
-                return false;
-			})
-			.useCooldown(0.5f),
+			}, 0.5f, 12)
+			.rarity(Rarity.UNCOMMON),
 			ItemGroups.TOOLS
 	);
 	Item MOBBING_STAFF = registerAndGroup("mobbing_staff", SocWarsItem::new, new ExtendedItemSettings()
-			.maxDamage(40)
-			.rarity(Rarity.RARE)
-			.useAction(UseAction.SPEAR)
-			.itemUse(StaffUseComponent.INSTANCE)
-			.itemStopUsing((stack, world, user, remainingUseTicks) -> {
+			.staff((stack, world, user, holdTime) -> {
 				if (world instanceof ServerWorld serverWorld) {
                     final LivingEntity mob = randomHostileMob(serverWorld, user.getEyePos());
+                    if (mob == null) return;
 
-                    if (mob == null) return false;
-
-                    mob.setVelocity(user.getRotationVector().multiply(getHoldTimeSeconds(remainingUseTicks) * 1.2f + 0.3f));
+                    mob.setVelocity(user.getRotationVector().multiply(holdTime * 1.2f + 0.3f));
                     copyTeam(world, mob, user);
                     world.spawnEntity(mob);
-
-                    stack.damage(1, user, user.getActiveHand());
                 }
-                return false;
-			})
-			.useCooldown(5f),
+			}, 5f, 40)
+			.rarity(Rarity.RARE),
+			ItemGroups.COMBAT
+	);
+	Item LIGHTNING_STAFF = registerAndGroup("lightning_staff", SocWarsItem::new, new ExtendedItemSettings()
+			.staff((stack, world, user, holdTime) -> {
+				if (world.isClient) return;
+
+				final Vec3d cachedPosition = new Vec3d(user.getEyePos().toVector3f());
+
+				final AtomicDouble beginContext = new AtomicDouble(6d);
+				final Vec3d cachedDirection = new Vec3d(user.getRotationVector().toVector3f());
+
+				final long startTimeMod = world.getTime() % 2;
+
+				Coroutines.getInstance().startCoroutine(new Coroutine<>(beginContext, context -> {
+					final double d = context.getAndAdd(1.5d);
+
+					if (d >= holdTime * 100d + 6d) return true;
+					final Vec3d pos = cachedPosition.add(cachedDirection.getX() * d, cachedDirection.getY() * d - 0.009 * d * d, cachedDirection.getZ() * d);
+
+					if (world.getTime() % 2 != startTimeMod) {
+						final Entity lightning = new LightningEntity(EntityType.LIGHTNING_BOLT, world);
+						lightning.setPosition(pos);
+						((OwnableLightningAccess)lightning).socwars$setOwner(user);
+						world.spawnEntity(lightning);
+					}
+
+					return !world.getBlockState(BlockPos.ofFloored(pos)).isAir();
+				}));
+			}, 1f, 50)
+			.rarity(Rarity.RARE)
+			.simpleTooltip(Text.translatable("tooltip.lightning_staff")),
 			ItemGroups.COMBAT
 	);
 	Item BOOM_BOW = registerAndGroup("boom_bow", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.UNCOMMON)
-			.maxDamage(30)
-			.bow(1.5f, 2.75f, ModEntities.BOOM_BOW_ARROW),
+			.bow(1.5f, 2.75f, ModEntities.BOOM_BOW_ARROW, 30),
 			ItemGroups.COMBAT
 	);
 	Item MEGABOOM_BOW = registerAndGroup("megaboom_bow", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.RARE)
-			.maxDamage(15)
-			.bow(2f, 2.25f, ModEntities.MEGABOOM_BOW_ARROW),
+			.bow(2f, 2.25f, ModEntities.MEGABOOM_BOW_ARROW, 15),
 			ItemGroups.COMBAT
 	);
 	Item FALCON_BOW = registerAndGroup("falcon_bow", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.EPIC)
-			.maxDamage(15)
-			.bow(0.75f, 4f, ModEntities.FALCON_BOW_ARROW),
+			.bow(0.75f, 4f, ModEntities.FALCON_BOW_ARROW, 15),
 			ItemGroups.COMBAT
 	);
 	Item HEATER_BOW = registerAndGroup("heater_bow", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.UNCOMMON)
-			.maxDamage(50)
-			.bow(1f, 3f, ModEntities.HEATER_BOW_ARROW),
+			.bow(1f, 3f, ModEntities.HEATER_BOW_ARROW, 50),
 			ItemGroups.COMBAT
 	);
 	Item CHORUS_BOW = registerAndGroup("chorus_bow", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.RARE)
-			.maxDamage(75)
-			.bow(0.9f, 3.5f, ModEntities.CHORUS_BOW_ARROW),
+			.bow(0.9f, 3.5f, ModEntities.CHORUS_BOW_ARROW, 75),
 			ItemGroups.COMBAT
 	);
 	Item CATASTROPHE_BOW = registerAndGroup("catastrophe_bow", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.EPIC)
-			.maxDamage(10)
-			.bow(3f, 6f, ModEntities.CATASTROPHE_BOW_ARROW, 150)
+			.bow(3f, 6f, ModEntities.CATASTROPHE_BOW_ARROW, 10, 150)
 			.itemFinishUse((stack, world, user) -> SphereExplosion.explode(world, user.getPos(), 7f, 1.5f, 12f, 3f, true, null, ModDamageTypes.CATASTROPHE_BOW_BACKFIRE)),
 			ItemGroups.COMBAT
 	);
 	Item ANTI_GRAVITY_BOW = registerAndGroup("anti_gravity_bow", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.EPIC)
-			.maxDamage(100)
-			.bow(0.35f, 1f, ModEntities.ANTI_GRAVITY_BOW_ARROW),
+			.bow(0.35f, 1f, ModEntities.ANTI_GRAVITY_BOW_ARROW, 100),
 			ItemGroups.COMBAT
 	);
 	Item UNSTOPPABLE_BOW = registerAndGroup("unstoppable_bow", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.EPIC)
-			.maxDamage(60)
-			.bow(1.2f, 4f, ModEntities.UNSTOPPABLE_BOW_ARROW),
+			.bow(1.2f, 4f, ModEntities.UNSTOPPABLE_BOW_ARROW, 60),
 			ItemGroups.COMBAT
 	);
 	Item SEEKING_BOW = registerAndGroup("seeking_bow", SocWarsItem::new, new ExtendedItemSettings()
 			.rarity(Rarity.UNCOMMON)
-			.maxDamage(500)
-			.bow(00.5f, 3.5f, ModEntities.SEEKING_BOW_ARROW)
+			.bow(00.5f, 3.5f, ModEntities.SEEKING_BOW_ARROW, 500)
 			.attributeModifiers(new AttributeModifiersComponent(List.of(
 					new AttributeModifiersComponent.Entry(EntityAttributes.MOVEMENT_SPEED, new EntityAttributeModifier(Identifier.of(SocWars.MOD_ID, "seeking_stick_speed"), 0.05d, EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.MAINHAND, AttributeModifiersComponent.Display.getHidden())
 			))),

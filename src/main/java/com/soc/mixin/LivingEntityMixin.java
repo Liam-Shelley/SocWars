@@ -8,6 +8,7 @@ import com.soc.lib.ModEntityAttributes;
 import com.soc.util.MutableBoolean;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.EquippableComponent;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.AttributeContainer;
@@ -36,7 +37,7 @@ import java.util.stream.Collectors;
 import static com.soc.lib.SocWarsLib.ifNotNull;
 
 @Mixin(LivingEntity.class)
-public abstract class LivingEntityMixin {
+public abstract class LivingEntityMixin extends EntityMixin {
     @Shadow
     public abstract ItemStack getEquippedStack(EquipmentSlot slot);
 
@@ -105,4 +106,8 @@ public abstract class LivingEntityMixin {
             });
         }, pieces));
     }
+
+    @SuppressWarnings("CancellableInjectionUsage")
+    @Inject(method = "pushAwayFrom", at = @At("HEAD"), cancellable = true)
+    protected void socwars$pushAwayFrom(Entity entity, CallbackInfo ci) {}
 }

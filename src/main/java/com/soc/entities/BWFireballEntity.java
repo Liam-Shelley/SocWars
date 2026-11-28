@@ -3,6 +3,7 @@ package com.soc.entities;
 import com.soc.entities.util.ExplodeFunction;
 import com.soc.entities.util.ModEntities;
 import com.soc.lib.Events;
+import com.soc.mixinducks.OwnableLightningAccess;
 import com.soc.util.SphereExplosion;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.*;
@@ -81,9 +82,10 @@ public class BWFireballEntity extends FireballEntity {
     public static void lightningOrbExplosion(ServerWorld world, Vec3d pos, float explosionPower, Entity owner) {
         final Events events = Events.getInstance();
         for (int i = 0; i < 20; i++) {
-            final Entity entity = new LightningEntity(EntityType.LIGHTNING_BOLT, world);
-            entity.setPosition(pos);
-            events.scheduleEvent(() -> world.spawnEntity(entity), i * 3);
+            final Entity lightning = new LightningEntity(EntityType.LIGHTNING_BOLT, world);
+            lightning.setPosition(pos);
+            ((OwnableLightningAccess)lightning).socwars$setOwner(owner);
+            events.scheduleEvent(() -> world.spawnEntity(lightning), i * 3);
         }
     }
 
